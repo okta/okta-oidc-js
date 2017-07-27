@@ -102,7 +102,8 @@ tokenClientMethods.signInSilently = async (context, oauthParams) => {
   return oauthUtil.handleOAuthResponse(context, resp);
 };
 
-tokenClientMethods.signOutWithRedirect = async (context, {post_logout_redirect_uri, state}) => {
+tokenClientMethods.signOutWithRedirect = async (context, options = {}) => {
+  const {post_logout_redirect_uri, state} = options;
   const signOutUrl = oauthUtil.buildSignOutUrl(context, {post_logout_redirect_uri, state});
   oauthUtil.resetStorage(context);
   window.location = signOutUrl;
