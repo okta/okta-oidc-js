@@ -88,11 +88,11 @@ export default class TokenClient {
     }
 
     privateContext.signInWithRedirect = prepFunction(tokenClientMethods.signInWithRedirect);
-    privateContext.handleSignInRedirect = prepFunction(tokenClientMethods.handleSignInRedirect);
+    privateContext.handleSignInWithRedirect = prepFunction(tokenClientMethods.handleSignInWithRedirect);
     privateContext.signInWithPopup = prepFunction(tokenClientMethods.signInWithPopup);
     privateContext.signInSilently = prepFunction(tokenClientMethods.signInSilently);
     privateContext.signOutWithRedirect = prepFunction(tokenClientMethods.signOutWithRedirect);
-    privateContext.handleSignOutRedirect = prepFunction(tokenClientMethods.handleSignOutRedirect);
+    privateContext.handleSignOutWithRedirect = prepFunction(tokenClientMethods.handleSignOutWithRedirect);
     privateContext.signOutSilently = prepFunction(tokenClientMethods.signOutSilently);
     privateContext.getAccessTokenMethod = prepFunction(tokenClientMethods.getAccessToken);
     privateContext.getIdTokenMethod = prepFunction(tokenClientMethods.getIdToken);
@@ -100,11 +100,11 @@ export default class TokenClient {
 
     // add public methods
     client.signInWithRedirect = privateContext.signInWithRedirect;
-    client.handleSignInRedirect = privateContext.handleSignInRedirect;
+    client.handleSignInWithRedirect = privateContext.handleSignInWithRedirect;
     client.signInWithPopup = privateContext.signInWithPopup;
     client.signInSilently = privateContext.signInSilently;
     client.signOutWithRedirect = privateContext.signOutWithRedirect;
-    client.handleSignOutRedirect = privateContext.handleSignOutRedirect;
+    client.handleSignOutWithRedirect = privateContext.handleSignOutWithRedirect;
     client.signOutSilently = privateContext.signOutSilently;
     client.getAccessToken = privateContext.getAccessTokenMethod;
     client.getIdToken = privateContext.getIdTokenMethod;

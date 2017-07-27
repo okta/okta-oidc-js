@@ -16,7 +16,7 @@ tokenClientMethods.signInWithRedirect = async (context, oauthParams) => {
   return new Promise(() => {});
 };
 
-tokenClientMethods.handleSignInRedirect = async (context, hash = window.location.hash) => {
+tokenClientMethods.handleSignInWithRedirect = async (context, hash = window.location.hash) => {
   const resp = queryString.parse(hash);
   if (!resp.id_token && !resp.access_token && !resp.error) {
     return;
@@ -112,7 +112,7 @@ tokenClientMethods.signOutWithRedirect = async (context, {post_logout_redirect_u
   return new Promise(() => {});
 };
 
-tokenClientMethods.handleSignOutRedirect = async () => queryString.parse(window.location.search);
+tokenClientMethods.handleSignOutWithRedirect = async () => queryString.parse(window.location.search);
 
 tokenClientMethods.signOutSilently = async (context, options = {}) => {
   const {post_logout_redirect_uri, state} = options;
