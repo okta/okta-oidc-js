@@ -1,5 +1,3 @@
-/* eslint no-restricted-globals: 0 */ // for the location references
-
 import queryString from 'query-string';
 import storage from './storage';
 import oauthUtil from './oauthUtil';
@@ -10,143 +8,195 @@ import {TokenClientError} from './errors';
 const tokenClientMethods = {};
 export default tokenClientMethods;
 
-tokenClientMethods.loginWithRedirect = async (context, oauthParams) => {
-  context.config = await oauthUtil.getWellKnownConfig(context);
-  oauthParams = Object.assign(context.oauthDefaults, oauthParams);
-  oauthParams = oauthUtil.buildOAuthParams(oauthParams);
-  context.setRequestParams(oauthParams);
-  window.location = oauthUtil.buildAuthorizeUrl(context, oauthParams);
+tokenClientMethods.signInWithRedirect = async (context, oauthParams) => {
+  window.location = oauthUtil.prepareAuthorizationRequest(context, oauthParams);
 
   // To ensure that no processing happens after this,
   // return a Promise that doesn't resolve
   return new Promise(() => {});
 };
 
-tokenClientMethods.loginSilently = async (context, oauthParams) => {
-  context.config = await oauthUtil.getWellKnownConfig(context);
-  oauthParams = Object.assign(context.oauthDefaults, oauthParams);
-  oauthParams = oauthUtil.buildOAuthParams(oauthParams);
-  context.setRequestParams(oauthParams);
+tokenClientMethods.handleSignInRedirect = async (context, hash = window.location.hash) => {
+  const resp = queryString.parse(hash);
+  if (!resp.id_token && !resp.access_token && !resp.error) {
+    return;
+  }
 
-  oauthParams.prompt = 'none';
-  oauthParams.responseMode = 'okta_post_message';
+  const tokens = await oauthUtil.handleOAuthResponse(context, resp);
+  
+  // Remove the hash, per the spec
+  if (hash === window.location.hash) {
+    window.location.hash = '';
+  }
 
-  // listen on postMessage
-  const promise = new Promise((resolve, reject) => {
-    window.addEventListener('message', e => {
-      try {
-        const issuerOrigin = util.getOrigin(context.config.issuer);
-        if (!e.data || e.data.state !== oauthParams.state || e.origin !== issuerOrigin) {
-          return;
-        }
-        resolve(e.data);
-      } catch(err) {
-        reject(new TokenClientError(`Unable to handle the postMessage response: ${err.message}`));
-      }
-    });
-  });
+  return tokens;
+};
 
-  const authorizeUrl = oauthUtil.buildAuthorizeUrl(oauthParams);
-  const iframe = oauthUtil.createIframe(authorizeUrl);
-  const resp = await promise;
-  if (document.body.contains(iframe)) {
-    iframe.parentElement.removeChild(iframe);
+tokenClientMethods.signInWithPopup = async (context, oauthParams) => {
+  const supportsPostMessage = oauthUtil.supportsPostMessage(context);
+
+  const paramOverrides = {
+    display: 'popup'
+  };
+
+  let promise;
+  if (supportsPostMessage) {
+    paramOverrides.response_mode = 'okta_post_message';
+    promise = oauthUtil.waitForPostMessage(context, oauthParams);
+  } else {
+    paramOverrides.response_mode = 'fragment';
+  }
+  
+  const authorizeUrl = oauthUtil.prepareAuthorizationRequest(context, oauthParams, paramOverrides);
+
+  const popup = oauthUtil.createPopup(authorizeUrl);
+
+  if (!supportsPostMessage) {
+    promise = oauthUtil.pollUrlForResponse(context, oauthParams, popup, 'hash');
+  }
+
+  let resp;
+  try {
+    resp = await promise;
+  } finally {
+    !popup.closed && popup.close();
   }
 
   // handle the response
   return oauthUtil.handleOAuthResponse(context, resp);
 };
 
-tokenClientMethods.logoutWithRedirect = async (context, {postLogoutRedirectUri, state}) => {
-  context.config = await oauthUtil.getWellKnownConfig(context);
-  if (!context.config.end_session_endpoint) {
-    throw new TokenClientError('No end_session_endpoint is defined to redirect to');
+tokenClientMethods.signInSilently = async (context, oauthParams) => {
+  const supportsPostMessage = oauthUtil.supportsPostMessage(context);
+
+  const paramOverrides = {
+    prompt: 'none'
+  };
+
+  delete oauthParams.display;
+
+  let promise;
+  if (supportsPostMessage) {
+    paramOverrides.response_mode = 'okta_post_message';
+    promise = oauthUtil.waitForPostMessage(context, oauthParams);
+  } else {
+    paramOverrides.response_mode = 'fragment';
   }
-  const idToken = storage.getIdToken(context);
-  if (!idToken) {
-    throw new TokenClientError('Unable to log out, because a user is not logged in');
+  
+  const authorizeUrl = oauthUtil.prepareAuthorizationRequest(context, oauthParams, paramOverrides);
+
+  const iframe = oauthUtil.createIframe(authorizeUrl);
+
+  if (!supportsPostMessage) {
+    promise = oauthUtil.pollUrlForResponse(context, oauthParams, iframe, 'hash');
   }
-  oauthUtil.resetStorage(context, {
-    emitEvents: false
-  });
-  const queryParams = queryString.stringify({
-    id_token_hint: idToken,
-    post_logout_redirect_uri: postLogoutRedirectUri,
-    state
-  });
-  window.location = `${context.config.end_session_endpoint}?${queryParams}`;
+
+  let resp;
+  try {
+    resp = await promise;
+  } finally {
+    document.body.contains(iframe) && iframe.parentElement.removeChild(iframe);
+  }
+
+  // handle the response
+  return oauthUtil.handleOAuthResponse(context, resp);
+};
+
+tokenClientMethods.signOutWithRedirect = async (context, {post_logout_redirect_uri, state}) => {
+  const signOutUrl = oauthUtil.buildSignOutUrl(context, {post_logout_redirect_uri, state});
+  oauthUtil.resetStorage(context);
+  window.location = signOutUrl;
 
   // To ensure that no processing happens after this,
   // return a Promise that doesn't resolve
   return new Promise(() => {});
 };
 
-tokenClientMethods.logoutSilently = async context => {
-  context.config = await oauthUtil.getWellKnownConfig(context);
-  const oktaUrl = util.getOrigin(context.config.issuer);
-  await fetch(`${oktaUrl}/api/v1/sessions/me`, {
-    method: 'delete',
-    credentials: 'include'
-  });
-  // we can't reset the storage until we successfully delete the cookie
-  oauthUtil.resetStorage(context);
-};
+tokenClientMethods.handleSignOutRedirect = async () => queryString.parse(window.location.search);
 
-tokenClientMethods.parseFromUri = async context => {
-  context.config = await oauthUtil.getWellKnownConfig(context);
-  const resp = queryString.parse(location.hash);
-  if (!resp.id_token && !resp.access_token && !resp.error) {
+tokenClientMethods.signOutSilently = async (context, options = {}) => {
+  const {post_logout_redirect_uri, state} = options;
+  const isOkta = oauthUtil.supportsPostMessage(context);
+
+  if (isOkta) {
+    const oktaUrl = util.getOrigin(context.issuer);
+    await fetch(`${oktaUrl}/api/v1/sessions/me`, {
+      method: 'delete',
+      credentials: 'include'
+    });
+    // we can't reset the storage until we successfully delete the cookie
+    oauthUtil.resetStorage(context);
     return;
   }
-  const tokens = await oauthUtil.handleOAuthResponse(context, resp);
-  location.hash = '';
-  return tokens;
+
+  const params = {
+    state: state || util.randomString(),
+    post_logout_redirect_uri
+  };
+
+  const signOutUrl = oauthUtil.buildSignOutUrl(context, params);
+  const iframe = oauthUtil.createIframe(signOutUrl);
+  const promise = oauthUtil.pollUrlForResponse(context, params, iframe, 'search');
+
+  let resp;
+  try {
+    resp = await promise;
+    oauthUtil.resetStorage(context);
+  } finally {
+    document.body.contains(iframe) && iframe.parentElement.removeChild(iframe);
+  }
+
+  return resp;
 };
 
-tokenClientMethods.isAccessTokenExpired = context => {
+tokenClientMethods.getAccessToken = async context => {
   const accessToken = context.getAccessToken();
-  if (accessToken && Date.now() < accessToken.expiresAt) {
-    return false;
+  if (accessToken.expiration * 1000 > Date.now()) {
+    return accessToken;
   }
-  return true;
+  const tokens = await oauthUtil.renewTokens(context);
+  return tokens.accessToken;
 };
 
-tokenClientMethods.isIdTokenExpired = context => {
+tokenClientMethods.getIdToken = async context => {
   const idToken = context.getIdToken();
-  if (idToken && Date.now() < idToken.expiresAt) {
-    return false;
+  if (idToken.expiration * 1000 > Date.now()) {
+    return idToken;
   }
-  return true;
+  const tokens = await oauthUtil.renewTokens(context);
+  return tokens.idToken;
 };
 
-tokenClientMethods.renewTokens = async context => {
-  return await oauthUtil.renewTokens(context);
-};
-
-tokenClientMethods.refreshUserInfo = async context => {
-  context.config = await oauthUtil.getWellKnownConfig(context);
-  if (!context.isAccessTokenExpired() && context.isIdTokenExpired()) {
-    await context.renewTokens();
+tokenClientMethods.getUser = async context => {
+  let user = context.getUser();
+  if (user && user.expiration * 1000 > Date.now()) {
+    return user;
   }
-  let userInfo;
-  // if we have everything to hit the userinfo endpoint
-  const accessToken = context.getAccessTokenString();
-  if (accessToken && context.config.userinfo_endpoint) {
-    const userInfoResp = await fetch(context.config.userinfo_endpoint, {
-      headers: {
-        'Authorization': `Bearer ${accessToken}`
-      }
-    });
-    try {
-      userInfo = await userInfoResp.json();
-    } catch (e) {
-      throw new TokenClientError(`Unable to retrieve userinfo: ${e.message}`);
-    }
-  // if we only have an idToken
-  } else if (context.getIdToken()) {
-    const idTokenJwt = jwtUtil.decode(context.getIdToken().string);
-    const claims = idTokenJwt.payload;
-    userInfo = util.omit(claims, [
+  context.removeUser();
+
+  user = {};
+
+  const idToken = await context.getIdTokenMethod();
+  const accessToken = await context.getAccessTokenMethod();
+
+  if (!idToken && !accessToken) {
+    return;
+  }
+
+  if (idToken && accessToken) {
+    user.idToken = idToken;
+    user.accessToken = accessToken;
+    user.expiration = Math.min(idToken.expiration, accessToken.expiration);
+  } else if (idToken) {
+    user.idToken = idToken;
+    user.expiration = idToken.expiration;
+  } else {
+    user.accessToken = accessToken;
+    user.expiration = accessToken.expiration;
+  }
+
+  if (idToken && !accessToken) {
+    user.profile = util.omit(idToken.claims, [
       'ver',
       'iss',
       'aud',
@@ -159,13 +209,23 @@ tokenClientMethods.refreshUserInfo = async context => {
       'at_hash',
       'c_hash'
     ]);
+
+    return user;
   }
-  const existingUserInfo = context.getUser();
-  if (userInfo) {
-    context.setUser(userInfo);
-  } else {
-    context.removeUser();
+
+  const userinfo_endpoint = oauthUtil.getEndpoint(context, 'userinfo_endpoint');
+  const userInfoResp = await fetch(userinfo_endpoint, {
+    headers: {
+      'Authorization': `Bearer ${accessToken.string}`
+    }
+  });
+
+  try {
+    user.profile = await userInfoResp.json();
+  } catch (e) {
+    throw new TokenClientError(`Unable to retrieve userinfo: ${e.message}`);
   }
-  context.eventEmitter.emit('user_changed', userInfo, existingUserInfo);
-  return userInfo;
+
+  context.setUser(user);
+  return user;
 };

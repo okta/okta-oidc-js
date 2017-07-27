@@ -1,118 +1,91 @@
-import snakeCase from 'lodash.snakecase';
 import queryString from 'query-string';
-import {OAuthError, TokenValidationError} from './errors';
+import {TokenClientError, OAuthError, TokenValidationError} from './errors';
 import util from './util';
 import jwtUtil from './jwtUtil';
 
 const oauthUtil = {};
 export default oauthUtil;
 
+oauthUtil.getWellKnownConfig = async context => {
+  if (context.config) {
+    return context.config;
+  }
+
+  const wellKnown = context.issuer + '/.well-known/openid-configuration';
+  try {
+    const resp = await fetch(wellKnown);
+    if (!resp.ok) {
+      throw Error(resp.statusText);
+    }
+    return await resp.json();
+  } catch (e) {
+    console.log(`Unable to get configuration from ${wellKnown}: ${e}`);
+    return {};
+  }
+};
+
 oauthUtil.buildOAuthParams = oauthParams => {
   oauthParams = Object.assign({
     state: util.randomString(),
     nonce: util.randomString(),
-    scopes: ['openid'],
-    responseTypes: ['id_token', 'token']
+    scope: 'openid',
+    response_type: 'id_token token'
   }, oauthParams);
 
   // add the openid scope if requesting an id_token
-  if (oauthParams.responseTypes.includes('id_token') &&
-    oauthParams.scopes && !oauthParams.scopes.includes('openid')) {
-    oauthParams.scopes.push('openid');
+  if (oauthParams.response_type.includes('id_token') &&
+    oauthParams.scope && !oauthParams.scope.includes('openid')) {
+    oauthParams.scope += ' openid';
   }
 
   // determine the most appropriate responseMode if none is provided
-  if (!oauthParams.responseMode) {
-    if (oauthParams.responseTypes.length === 1 && oauthParams.responseTypes[0] === 'code') {
-      oauthParams.responseMode = 'query';
+  if (!oauthParams.response_mode) {
+    if (oauthParams.response_type === 'code') {
+      oauthParams.response_mode = 'query';
     } else {
-      oauthParams.responseMode = 'fragment';
+      oauthParams.response_mode = 'fragment';
     }
   }
 
   return oauthParams;
 };
 
-oauthUtil.snakeCaseOAuthParams = oauthParams => {
-  const snakedParams = {};
-
-  // for each key
-  for (let [key, value] of Object.entries(oauthParams)) {
-    // convert it to snakeCase unless it's sessionToken
-    if (key === 'sessionToken') {
-      snakedParams.sessionToken = value;
-      continue;
-    }
-
-    let snakedKey = snakeCase(key);
-    let flatValue = value;
-    
-    // if it's an array
-    if (Array.isArray(value)) {
-      // join with a space and remove the trailing 's'
-      flatValue = value.join(' ');
-      if (snakedKey[snakedKey.length - 1] === 's') {
-        snakedKey = snakedKey.slice(0, -1);
-      }
-    }
-
-    // if it was already snakeCase
-    if (key === snakedKey) {
-      snakedParams[key] = value;
-      continue;
-    }
-
-    // if a snakeCase key is in the params
-    if (oauthParams[snakedKey]) {
-      continue;
-    }
-
-    snakedParams[snakedKey] = flatValue;
-  }
-
-  return snakedParams;
-};
-
 oauthUtil.buildAuthorizeUrl = (context, oauthParams) => {
-  const authorizeUrl = context.config['authorization_endpoint'];
-  const snakecasedParams = oauthUtil.snakeCaseOAuthParams(oauthParams);
-  const query = queryString.stringify(snakecasedParams);
-  return `${authorizeUrl}?${query}`;
+  const authorization_endpoint = oauthUtil.getEndpoint(context, 'authorization_endpoint');
+  const query = queryString.stringify(oauthParams);
+  return `${authorization_endpoint}?${query}`;
 };
 
-oauthUtil.getWellKnownConfig = async context => {
-  if (context.config) {
-    return context.config;
+oauthUtil.buildSignOutUrl = (context, {post_logout_redirect_uri, state}) => {
+  const end_session_endpoint = oauthUtil.getEndpoint(context, 'end_session_endpoint');
+
+  const idToken = storage.getIdToken(context);
+  if (!idToken) {
+    throw new TokenClientError('Unable to sign out, because a user is not signed in');
   }
-  return await (await fetch(context.wellKnownConfiguration)).json();
+
+  const queryParams = queryString.stringify({
+    id_token_hint: idToken.string,
+    post_logout_redirect_uri: post_logout_redirect_uri || context.definedEndpoints.post_logout_redirect_uri,
+    state
+  });
+
+  return `${end_session_endpoint}?${queryParams}`;
+}
+
+oauthUtil.prepareAuthorizationRequest = (context, oauthParams, paramOverrides = {}) => {
+  oauthParams = Object.assign(context.oauthDefaults, oauthParams, paramOverrides);
+  oauthParams = oauthUtil.buildOAuthParams(oauthParams);
+  context.setRequestParams(oauthParams);
+  return oauthUtil.buildAuthorizeUrl(context, oauthParams);
 };
 
-oauthUtil.createIframe = src => {
-  const iframe = document.createElement('iframe');
-  iframe.style.display = 'none';
-  iframe.src = src;
-  return document.body.appendChild(iframe);
-};
-
-oauthUtil.resetStorage = (context, options={}) => {
-  // backup current storage
-  const existingUser = context.getUser();
-  const existingTokens = {
-    'accessToken': context.getAccessTokenString(),
-    'idToken': context.getIdTokenString()
-  };
-
-  // reset the storage
-  context.removeUser();
-  context.removeAccessToken();
-  context.removeIdToken();
-  context.removeRequestParams();
-
-  // trigger changes by default
-  if (options.emitEvents !== false) {
-    context.eventEmitter.emit('user_changed', undefined, existingUser);
-    context.eventEmitter.emit('tokens_changed', undefined, existingTokens);
+oauthUtil.getEndpoint = (context, name) => {
+  const endpoint = context.definedEndpoints[name] || context.config[name];
+  if (!endpoint) {
+    throw new TokenClientError(`Unable to discover the ${name}, so it must be provided`);
   }
+  return endpoint;
 };
 
 oauthUtil.handleOAuthResponse = async (context, resp) => {
@@ -130,46 +103,34 @@ oauthUtil.handleOAuthResponse = async (context, resp) => {
     throw new TokenValidationError('The returned state does not match our expected state.');
   }
 
-  // track these so we can trigger a change event later
-  const previousTokens = {
-    idToken: context.getIdTokenString(),
-    accessToken: context.getAccessTokenString()
-  };
-
   const tokens = {};
 
   if (resp.id_token) {
     const idToken = await oauthUtil.validateIdToken(context, resp.id_token);
 
     // estimate our drift using the issued-at time vs now
-    const timeDifference = Date.now() - (idToken.payload.iat * 1000);
+    const timeDifference = Math.floor(Date.now()/1000) - idToken.payload.iat;
     
-    tokens.idToken = resp.id_token;
-    context.setIdToken({
+    tokens.idToken = {
       string: resp.id_token,
-      expiresAt: (idToken.payload.exp * 1000) + timeDifference
-    });
+      expiration: idToken.payload.exp + timeDifference,
+      claims: idToken.payload
+    };
+    context.setIdToken(tokens.idToken);
   }
 
   if (resp.access_token) {
-    tokens.accessToken = resp.access_token;
-    context.setAccessToken({
+    tokens.accessToken = {
       string: resp.access_token,
-      expiresAt: Date.now() + Number.parseInt(resp.expires_in, 10) * 1000,
-      tokenType: resp.token_type
-    });
+      expiration: Math.floor(Date.now()/1000) + Number.parseInt(resp.expires_in, 10),
+      tokenType: resp.token_type,
+      scope: resp.scope || requestParams.scope
+    };
+    context.setAccessToken(tokens.accessToken);
   }
 
   if (resp.code) {
     tokens.code = resp.code;
-  }
-
-  if (!tokens.idToken && !tokens.accessToken) {
-    oauthUtil.resetStorage(context);
-  } else {
-    // this will trigger the user_changed event before the tokens_changed event
-    await context.refreshUserInfo();
-    context.eventEmitter.emit('tokens_changed', util.omit(tokens, ['code']), previousTokens);
   }
 
   return tokens;
@@ -198,20 +159,98 @@ oauthUtil.validateIdToken = async (context, idToken) => {
   }
 
   // validate the audience contains the client_id (aud)
-  if (!claims.aud.includes(requestParams.clientId)) {
-    throw new TokenValidationError('The aud of the returned id_token does not include our client\'s clientId.');
+  if (!claims.aud.includes(requestParams.client_id)) {
+    throw new TokenValidationError('The aud of the returned id_token does not include our client\'s client_id.');
   }
 
   // validate the issuer
-  if (claims.iss !== context.config.issuer) {
+  if (claims.iss !== context.issuer) {
     throw new TokenValidationError('The iss of the returned id_token is not the issuer we requested an id_token for.');
   }
 
   // verify the signature
-  await jwtUtil.verifyTokenSignature({
-    jwksEndpoint: context.config.jwks_uri,
-    token: idToken
-  });
+  const jwks_uri = oauthUtil.getEndpoint(context, 'jwks_uri');
+  await jwtUtil.verifyTokenSignature(jwks_uri, idToken);
 
   return idTokenJwt;
+};
+
+oauthUtil.createIframe = src => {
+  const iframe = document.createElement('iframe');
+  iframe.style.display = 'none';
+  iframe.src = src;
+  return document.body.appendChild(iframe);
+};
+
+oauthUtil.createPopup = src => {
+  const title = 'External Identity Provider User Authentication';
+  const appearance = 'toolbar=no, scrollbars=yes, resizable=yes, top=100, left=500, width=600, height=600';
+  return window.open(src, title, appearance);
+};
+
+oauthUtil.resetStorage = (context) => {
+  // reset the storage
+  context.removeUser();
+  context.removeAccessToken();
+  context.removeIdToken();
+  context.removeRequestParams();
+};
+
+oauthUtil.supportsPostMessage = context => 
+  context.config.response_modes_supported &&
+  context.config.response_modes_supported.includes('okta_post_message');
+
+oauthUtil.pollUrlForResponse = async (context, oauthParams, windowEl, responseType = 'hash') => {
+  return new Promise((resolve, reject) => {
+    const windowType = windowEl.location ? 'popup' : 'iframe';
+    const pollFrequency = 1000;
+    const maxPollTime = 120000;
+    let currentPollTime = 0;
+
+    const interval = setInterval(() => {
+      currentPollTime += pollFrequency;
+
+      if (windowType === 'popup' && windowEl.closed) {
+        clearInterval(interval);
+        return reject(new TokenClientError('The popup was closed while polling for an OAuth response'));
+      }
+
+      const windowLoc = windowType === 'iframe' ?
+        windowEl.contentWindow.location :
+        windowEl.location;
+      const resp = queryString.parse(windowLoc[responseType]);
+      if (resp && resp.state === oauthParams.state) {
+        clearInterval(interval);
+        return resolve(resp);
+      }
+
+      if (currentPollTime >= maxPollTime) {
+        clearInterval(interval);
+        return reject(new TokenClientError(`Timed out while waiting for the ${windowType} url ${responseType} to change`));
+      }
+    }, pollFrequency); // Check every second
+  });
+};
+
+oauthUtil.waitForPostMessage = async (context, oauthParams) => {
+  return new Promise((resolve, reject) => {
+    window.addEventListener('message', e => {
+      try {
+        const issuerOrigin = util.getOrigin(context.issuer);
+        if (!e.data || e.data.state !== oauthParams.state || e.origin !== issuerOrigin) {
+          return;
+        }
+        resolve(e.data);
+      } catch(err) {
+        reject(new TokenClientError(`Unable to handle the postMessage response: ${err.message}`));
+      }
+    });
+  });
+};
+
+oauthUtil.renewTokens = async context => {
+  const requestParams = context.getRequestParams() || {};
+  delete requestParams.state;
+  delete requestParams.nonce;
+  return context.signInSilently(requestParams);
 };

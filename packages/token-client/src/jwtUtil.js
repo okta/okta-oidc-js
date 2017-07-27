@@ -19,9 +19,9 @@ jwtUtil.browserSupportsCrypto = () =>
   && crypto.subtle
   && typeof Uint8Array !== 'undefined';
 
-jwtUtil.verifyTokenSignature = async ({jwksEndpoint, token}) => {
+jwtUtil.verifyTokenSignature = async (jwks_uri, token) => {
   const decodedToken = jwtUtil.decode(token);
-  const keysResp = await fetch(jwksEndpoint);
+  const keysResp = await fetch(jwks_uri);
   const keysJson = await keysResp.json();
 
   const key = keysJson.keys.find(key => key.kid === decodedToken.header.kid);

@@ -6,7 +6,7 @@ util.isString = str => typeof str === 'string' || str instanceof String;
 const RANDOM_CHARSET = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz';
 util.randomString = length => {
   length = length || 20;
-  const random = '';
+  let random = '';
   for (let c = 0, cl = length; c < length; c++) {
     random += RANDOM_CHARSET[Math.floor(Math.random() * cl)];
   }
