@@ -151,7 +151,7 @@ tokenClientMethods.signOutSilently = async (context, options = {}) => {
 
 tokenClientMethods.getAccessToken = async context => {
   const accessToken = context.getAccessToken();
-  if (accessToken.expiration * 1000 > Date.now()) {
+  if (accessToken && accessToken.expiration * 1000 > Date.now()) {
     return accessToken;
   }
   const tokens = await oauthUtil.renewTokens(context);
@@ -160,7 +160,7 @@ tokenClientMethods.getAccessToken = async context => {
 
 tokenClientMethods.getIdToken = async context => {
   const idToken = context.getIdToken();
-  if (idToken.expiration * 1000 > Date.now()) {
+  if (idToken && idToken.expiration * 1000 > Date.now()) {
     return idToken;
   }
   const tokens = await oauthUtil.renewTokens(context);
