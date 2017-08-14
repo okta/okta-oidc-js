@@ -1,0 +1,34 @@
+{
+  "name": "@okta/oidc-middleware",
+  "version": "0.0.1",
+  "description": "OpenId Connect middleware for authorization code flows",
+  "keywords": [
+    "okta",
+    "oidc",
+    "OpenId Connect",
+    "authentication",
+    "auth"
+  ],
+  "main": "index.js",
+  "scripts": {
+    "test": "webdriver-manager update && protractor test/e2e/conf.js"
+  },
+  "engines": {
+    "node": ">=6"
+  },
+  "license": "Apache-2.0",
+  "dependencies": {
+    "connect-ensure-login": "^0.1.1",
+    "express": "^4.15.4",
+    "lodash": "^4.17.4",
+    "negotiator": "^0.6.1",
+    "openid-client": "^1.12.0",
+    "passport": "^0.3.2"
+  },
+  "devDependencies": {
+    "express-session": "^1.15.5",
+    "protractor": "^5.1.2",
+    "wait-on": "^2.0.2",
+    "webdriver-manager": "^12.0.6"
+  }
+}
