@@ -1,0 +1,23 @@
+{
+  "name": "oidc-middleware",
+  "version": "0.0.1",
+  "description": "OpenId Connect middleware for Node.js authorization code flows",
+  "main": "oidc-middleware.js",
+  "scripts": {
+    "test": "webdriver-manager update && protractor test/e2e/conf.js"
+  },
+  "license": "Apache-2.0",
+  "dependencies": {
+    "connect-ensure-login": "^0.1.1",
+    "express": "^4.15.4",
+    "express-session": "^1.15.5",
+    "negotiator": "^0.6.1",
+    "openid-client": "^1.12.0",
+    "passport": "^0.3.2"
+  },
+  "devDependencies": {
+    "protractor": "^5.1.2",
+    "wait-on": "^2.0.2",
+    "webdriver-manager": "^12.0.6"
+  }
+}
