@@ -26,7 +26,8 @@ describe('/login', () => {
     app.listen(3000, done);
   });
 
-  it('should send me to the authorize endpoint FOO', () => {
+  it('should send me to the authorize endpoint with the correct params', () => {
+    const expectedLocationHeader;
     return request(app)
       .get('/login')
       .expect(302)
@@ -35,4 +36,5 @@ describe('/login', () => {
         // assert that the Location (authorizeUrl) has the correct auth request params
       });
   });
+
 });
