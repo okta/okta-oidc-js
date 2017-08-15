@@ -6,7 +6,7 @@ const { ExpressOIDC } = require('./oidc-middleware');
 const app = express();
 
 app.use(session({
-  secret: uuid.v4(), // 
+  secret: uuid(), // this will invalidate all sessions on each restart
   resave: true,
   saveUninitialized: false
 }));
@@ -21,15 +21,15 @@ const oidc = new ExpressOIDC({
 app.use(oidc.router);
 
 app.get('/', (req, res) => {
-  if (req.user) {
-    res.send(`Hello ${req.user.first_name}!`);
+  if (req.userinfo) {
+    res.send(`Hello ${req.userinfo.sub}!`);
   } else {
     res.send('Hello World!');
   }
 });
 
 app.get('/protected', oidc.ensureLoggedIn(), (req, res) => {
-  res.send(JSON.stringify(req.user));
+  res.send(JSON.stringify(req.userinfo));
 });
 
 app.get('/logout', (req, res) => {

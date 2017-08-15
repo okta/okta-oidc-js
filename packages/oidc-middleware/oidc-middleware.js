@@ -5,6 +5,7 @@ const passport = require('passport');
 const Strategy = require('openid-client').Strategy;
 const Issuer = require('openid-client').Issuer;
 const ensureLoggedIn = require('connect-ensure-login').ensureLoggedIn;
+const uuid = require('uuid');
 
 class OIDCMiddlewareError extends Error {}
 
@@ -26,8 +27,6 @@ function depromisify(fn) {
 
 module.exports.ExpressOIDC = class ExpressOIDC {
   constructor(options) {
-
-    // define default serializeUser and deserializeUser
     const {
       issuer,
       client_id,
@@ -37,23 +36,22 @@ module.exports.ExpressOIDC = class ExpressOIDC {
       scope = 'openid',
       routes = {},
       serializeUser,
-      deserializeUser
     } = options;
+
+    const sessionKey = `oidc:${issuer.issuer}`;
 
     const missing = [];
     if (!issuer) missing.push('issuer');
     if (!client_id) missing.push('client_id');
     if (!client_secret) missing.push('client_secret');
     if (!redirect_uri) missing.push('redirect_uri');
-    if (!serializeUser) missing.push('serializeUser');
-    if (!deserializeUser) missing.push('deserializeUser');
     if (missing.length) {
       throw new OIDCMiddlewareError(`${missing.join(',')} must be defined`);
     }
 
-    // bypass passport's top-level serializeUser
+    // bypass passport's serializers
     passport.serializeUser((user, done) => done(null, user));
-    passport.deserializeUser(depromisify(deserializeUser));
+    passport.deserializeUser((user, done) => done(null, user));
 
     let client;
     let clientError;
@@ -69,12 +67,17 @@ module.exports.ExpressOIDC = class ExpressOIDC {
         ]
       });
 
+      const defaultSerializeUser = (tokens, userinfo, done) => {
+        done(null, userinfo);
+      };
+
       const strategy = new Strategy({
         params: {
           scope: scope || 'openid'
         },
+        sessionKey,
         client
-      }, depromisify(serializeUser));
+      }, serializeUser && depromisify(serializeUser) || defaultSerializeUser);
 
       passport.use('oidc', strategy);
 
@@ -101,14 +104,34 @@ module.exports.ExpressOIDC = class ExpressOIDC {
       callback:callbackRoute = {}
     } = routes;
 
-    // requires adding custom sessionKey for use to add state and nonce
     // always write state and nonce before login
+    const state = uuid();
+    const nonce = uuid();
+
     // add authorizeUrl to req and res.locals
     const defaultLoginHandler = passport.authenticate('oidc');
     const {
       path:loginPath = '/login',
       handler:loginHandler = defaultLoginHandler
     } = loginRoute;
+
+    /*
+    const loginHandler = (req, res, next) => {
+      // create state and nonce
+      // attach them to the sessionKey
+      // if there's a custom handler
+        // create an authorizeUrl and attach it to req and res.locals
+      // otherwise, just call call the middleware
+
+      const loginNext = (err, result) => {
+        if (loginRoute.handler) {
+          loginRoute
+        }
+      };
+
+      passport.authenticate('oidc')(req, res, loginNext)
+    };
+    */
 
     // pass options if default, custom handlers get no options
     const defaultCallbackHandler = passport.authenticate('oidc', {
@@ -123,7 +146,7 @@ module.exports.ExpressOIDC = class ExpressOIDC {
     // constructor express router
     const oidcRouter = new Router();
     oidcRouter.use(oidcClientGatingMiddleware);
-    oidcRouter.use(passport.initialize());
+    oidcRouter.use(passport.initialize({ userProperty: 'userinfo' }));
     oidcRouter.use(passport.session());
     oidcRouter.use(loginPath, loginHandler);
     oidcRouter.use(callbackPath, callbackHandler);
