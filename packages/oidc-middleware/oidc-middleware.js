@@ -1,6 +1,5 @@
 const { Router } = require('express');
 const EventEmitter = require('events').EventEmitter;
-const session = require('express-session');
 const passport = require('passport');
 const Strategy = require('openid-client').Strategy;
 const Issuer = require('openid-client').Issuer;
