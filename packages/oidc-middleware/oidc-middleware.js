@@ -30,7 +30,7 @@ module.exports.ExpressOIDC = class ExpressOIDC {
       throw new OIDCMiddlewareError(`${missing.join(', ')} must be defined`);
     }
 
-    const sessionKey = `oidc:${issuer.issuer}`;
+    const sessionKey = `oidc:${issuer}`;
 
     // bypass passport's serializers
     passport.serializeUser((user, done) => done(null, user));
