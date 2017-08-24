@@ -2,7 +2,7 @@ const EventEmitter = require('events').EventEmitter;
 const uuid = require('uuid');
 const { Router } = require('express');
 const passport = require('passport');
-const Strategy = require('openid-client').Strategy;
+const Strategy = require('openid-client').Strategy; // rename to OpenIdClientStrategy for clarity further down, Strategy is abused in passport examples/docs
 const Issuer = require('openid-client').Issuer;
 const ensureLoggedIn = require('connect-ensure-login').ensureLoggedIn;
 const Negotiator = require('negotiator');
@@ -35,10 +35,10 @@ module.exports.ExpressOIDC = class ExpressOIDC {
       response_type = 'code',
       scope = 'openid',
       routes = {},
-      serializeUser,
-    } = options;
+      serializeUser, // needed?
+    } = options; // exception if no options object is provided, should have options default to {}
 
-    const sessionKey = `oidc:${issuer.issuer}`;
+    const sessionKey = `oidc:${issuer.issuer}`; // exception if issuer is not defined, move this down below missing checks
 
     const missing = [];
     if (!issuer) missing.push('issuer');
@@ -46,7 +46,7 @@ module.exports.ExpressOIDC = class ExpressOIDC {
     if (!client_secret) missing.push('client_secret');
     if (!redirect_uri) missing.push('redirect_uri');
     if (missing.length) {
-      throw new OIDCMiddlewareError(`${missing.join(',')} must be defined`);
+      throw new OIDCMiddlewareError(`${missing.join(', ')} must be defined`);
     }
 
     // bypass passport's serializers
@@ -60,7 +60,7 @@ module.exports.ExpressOIDC = class ExpressOIDC {
     // create middleware that ensures the client exists
     function oidcClientGatingMiddleware(req, res, next) {
       if (client) return next();
-      if (clientError) return next(clientError);
+      if (clientError) return next(clientError); // test this error flow
       createClientListener.on('completed', next);
     }
 
@@ -167,11 +167,11 @@ module.exports.ExpressOIDC = class ExpressOIDC {
       }
     } else {
       callbackHandler = passport.authenticate('oidc', {
-        successReturnToOrRedirect: '/'
+        successReturnToOrRedirect: '/' // hard coded? this seems like something they may want to change
       });
     }
 
-    // constructor express router
+    // construct our express router
     const oidcRouter = new Router();
     oidcRouter.use(oidcClientGatingMiddleware);
     oidcRouter.use(passport.initialize({ userProperty: 'userinfo' }));

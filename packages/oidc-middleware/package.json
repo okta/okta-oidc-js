@@ -3,6 +3,7 @@
   "version": "0.0.1",
   "description": "OpenId Connect middleware for Node.js authorization code flows",
   "main": "oidc-middleware.js",
+  "engines": "add this",
   "scripts": {
     "test": "webdriver-manager update && protractor test/e2e/conf.js"
   },
