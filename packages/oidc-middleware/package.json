@@ -1,10 +1,13 @@
 {
-  "name": "oidc-middleware",
+  "name": "@okta/oidc-middleware",
   "version": "0.0.1",
   "description": "OpenId Connect middleware for Node.js authorization code flows",
   "main": "oidc-middleware.js",
   "scripts": {
     "test": "webdriver-manager update && protractor test/e2e/conf.js"
+  },
+  "engines" : {
+    "node" : ">=6"
   },
   "license": "Apache-2.0",
   "dependencies": {

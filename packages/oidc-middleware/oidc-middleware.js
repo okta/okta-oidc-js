@@ -2,31 +2,15 @@ const EventEmitter = require('events').EventEmitter;
 const uuid = require('uuid');
 const { Router } = require('express');
 const passport = require('passport');
-const Strategy = require('openid-client').Strategy;
+const OpenIdClientStrategy = require('openid-client').Strategy;
 const Issuer = require('openid-client').Issuer;
 const ensureLoggedIn = require('connect-ensure-login').ensureLoggedIn;
 const Negotiator = require('negotiator');
 
 class OIDCMiddlewareError extends Error {}
 
-function depromisify(fn) {
-  if (fn.length === 1) {
-    return (arg1, cb) => {
-      return fn(arg1)
-      .then(res => cb(null, res))
-      .catch(cb);
-    }
-  } else if (fn.length === 2) {
-    return (arg1, arg2, cb) => {
-      return fn(arg1, arg2)
-      .then(res => cb(null, res))
-      .catch(cb);
-    }
-  }
-}
-
 module.exports.ExpressOIDC = class ExpressOIDC {
-  constructor(options) {
+  constructor(options = {}) {
     const {
       issuer,
       client_id,
@@ -35,10 +19,7 @@ module.exports.ExpressOIDC = class ExpressOIDC {
       response_type = 'code',
       scope = 'openid',
       routes = {},
-      serializeUser,
     } = options;
-
-    const sessionKey = `oidc:${issuer.issuer}`;
 
     const missing = [];
     if (!issuer) missing.push('issuer');
@@ -46,8 +27,10 @@ module.exports.ExpressOIDC = class ExpressOIDC {
     if (!client_secret) missing.push('client_secret');
     if (!redirect_uri) missing.push('redirect_uri');
     if (missing.length) {
-      throw new OIDCMiddlewareError(`${missing.join(',')} must be defined`);
+      throw new OIDCMiddlewareError(`${missing.join(', ')} must be defined`);
     }
+
+    const sessionKey = `oidc:${issuer.issuer}`;
 
     // bypass passport's serializers
     passport.serializeUser((user, done) => done(null, user));
@@ -74,17 +57,15 @@ module.exports.ExpressOIDC = class ExpressOIDC {
         ]
       });
 
-      const defaultSerializeUser = (tokens, userinfo, done) => {
-        done(null, userinfo);
-      };
-
-      const strategy = new Strategy({
+      const strategy = new OpenIdClientStrategy({
         params: {
-          scope: scope || 'openid'
+          scope
         },
         sessionKey,
         client
-      }, serializeUser && depromisify(serializeUser) || defaultSerializeUser);
+      }, (tokens, userinfo, done) => {
+        done(null, userinfo);
+      });
 
       passport.use('oidc', strategy);
 
@@ -167,11 +148,11 @@ module.exports.ExpressOIDC = class ExpressOIDC {
       }
     } else {
       callbackHandler = passport.authenticate('oidc', {
-        successReturnToOrRedirect: '/'
+        successReturnToOrRedirect: callbackRoute.defaultRedirect || '/'
       });
     }
 
-    // constructor express router
+    // construct our express router
     const oidcRouter = new Router();
     oidcRouter.use(oidcClientGatingMiddleware);
     oidcRouter.use(passport.initialize({ userProperty: 'userinfo' }));
