@@ -2,7 +2,7 @@ const express = require('express');
 const session = require('express-session');
 const uuid = require('uuid');
 const constants = require('../util/constants');
-const { ExpressOIDC } = require('../../../oidc-middleware');
+const { ExpressOIDC } = require('../../../index.js');
 
 const app = express();
 
