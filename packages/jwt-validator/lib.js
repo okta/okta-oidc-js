@@ -23,7 +23,7 @@ class OktaJwtVerifier {
       jwksUri: options.issuer + '/v1/keys',
       cache: true,
       cacheMaxAge: options.cacheMaxAge || (60 * 60 * 1000),
-      cacheMaxEntries: options.cacheMaxEntries || 10,
+      cacheMaxEntries: 3,
       jwksRequestsPerMinute: options.jwksRequestsPerMinute || 10,
       rateLimit: true
     });

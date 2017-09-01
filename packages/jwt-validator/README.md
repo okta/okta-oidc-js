@@ -53,7 +53,7 @@ Validation will fail and an error returned if an access token does not have the 
 
 ## Caching & Rate Limiting
 
-* By default, found keys are cached by key ID for one hour. This can be configured with the `cacheMaxAge` option for cache entries, and the total number of keys stored in the cache can be controlled with the `cacheMaxEntries` option.
+* By default, found keys are cached by key ID for one hour. This can be configured with the `cacheMaxAge` option for cache entries.
 * If a key ID is not found in the cache, the JWKs endpoint will be requested. To prevent a DoS if many not-found keys are requested, a rate limit of 10 JWKs requests per minute is enforced. This is configurable with the `jwksRequestsPerMinute` option.
 
 Here is a configuration example that shows the default values:
@@ -62,7 +62,6 @@ Here is a configuration example that shows the default values:
 // All values are default files
 const oktaJwtVerifier = new OktaJwtVerifier({
   cacheMaxAge: 60 * 60 * 1000, // 1 hour
-  cacheMaxEntries: 10,
   jwksRequestsPerMinute: 10
-})
+});
 ```
