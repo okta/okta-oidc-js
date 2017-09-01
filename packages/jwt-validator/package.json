@@ -1,14 +1,22 @@
 {
-  "name": "jwt-validator",
-  "version": "1.0.0",
-  "description": "",
+  "name": "@okta/jwt-validator",
+  "version": "0.0.1",
+  "description": "Easily validate Okta access tokens",
   "main": "lib.js",
   "scripts": {
     "test": "mocha --timeout 10000 test/spec"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
+  "keywords": [
+    "okta",
+    "oidc",
+    "OpenId Connect",
+    "authentication",
+    "auth"
+  ],
+  "engines": {
+    "node": ">=6"
+  },
+  "license": "Apache-2.0",
   "dependencies": {
     "jwks-rsa": "^1.2.0",
     "njwt": "^0.4.0"

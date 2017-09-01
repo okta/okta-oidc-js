@@ -1,8 +1,8 @@
 # Okta JWT Validator
 
-This library verifies Okta access tokens (issued by Okta authorization servers) by fetching the public RSA keys from the JWKS endpoint of the authorization server. If the access token is valid it will be converted to a JSON object and returned to your code. For an access token to be valid, the following are asserted:
+This library verifies Okta access tokens (issued by Okta authorization servers) by fetching the public keys from the JWKS endpoint of the authorization server. If the access token is valid it will be converted to a JSON object and returned to your code. For an access token to be valid, the following are asserted:
 
-* Signature is valid (the token was signed by a private RSA key which has a corresponding public key in the JWKS response from the authorization server).
+* Signature is valid (the token was signed by a private key which has a corresponding public key in the JWKS response from the authorization server).
 * Access token is not expired (requires local system time to be in sync with Okta, checks the `exp` claim of the access token).
 * Any custom claim assertions that have been configured.
 
@@ -61,7 +61,7 @@ Here is a configuration example that shows the default values:
 ```javascript
 // All values are default files
 const oktaJwtVerifier = new OktaJwtVerifier({
-  cacheMaxAge: 60 * 60 * 1000,    // milliseconds
+  cacheMaxAge: 60 * 60 * 1000, // 1 hour
   cacheMaxEntries: 10,
   jwksRequestsPerMinute: 10
 })

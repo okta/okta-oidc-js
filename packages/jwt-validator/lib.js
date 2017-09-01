@@ -1,3 +1,15 @@
+/*!
+ * Copyright (c) 2017-Present, Okta, Inc. and/or its affiliates. All rights reserved.
+ * The Okta software accompanied by this notice is provided pursuant to the Apache License, Version 2.0 (the "License.")
+ *
+ * You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0.
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+ * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *
+ * See the License for the specific language governing permissions and limitations under the License.
+ */
+
 const jwksClient = require('jwks-rsa');
 const nJwt = require('njwt');
 
@@ -23,18 +35,17 @@ class OktaJwtVerifier {
   }
 
   verifyAccessToken(accessTokenString) {
-    const self = this;
     return new Promise((resolve, reject) => {
-      self.verifier.verify(accessTokenString, (err, jwt) => {
+      this.verifier.verify(accessTokenString, (err, jwt) => {
         if (err) {
           return reject(err);
         }
         jwt.claims = jwt.body;
         delete jwt.body;
         const errors = [];
-        for (let claim of Object.keys(self.claimsToAssert)) {
+        for (let claim of Object.keys(this.claimsToAssert)) {
           const actualValue = jwt.claims[claim];
-          const expectedValue = self.claimsToAssert[claim];
+          const expectedValue = this.claimsToAssert[claim];
           if (actualValue !== expectedValue) {
             errors.push(`claim '${claim}' value '${actualValue}' does not match expected value '${expectedValue}'`);
           }
