@@ -1,7 +1,9 @@
 {
-  "name": "@okta/jwt-validator",
+  "name": "@okta/jwt-verifier",
   "version": "0.0.1",
   "description": "Easily validate Okta access tokens",
+  "repository": "https://github.com/okta/okta-oidc-js",
+  "homepage": "https://github.com/okta/okta-oidc-js/tree/master/packages/jwt-verifier",
   "main": "lib.js",
   "scripts": {
     "test": "mocha --timeout 10000 test/spec"
@@ -11,7 +13,8 @@
     "oidc",
     "OpenId Connect",
     "authentication",
-    "auth"
+    "auth",
+    "jwt"
   ],
   "engines": {
     "node": ">=6"
