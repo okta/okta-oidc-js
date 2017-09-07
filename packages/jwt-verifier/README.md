@@ -1,4 +1,4 @@
-# Okta JWT Validator
+# Okta JWT Verifier
 
 This library verifies Okta access tokens (issued by Okta authorization servers) by fetching the public keys from the JWKS endpoint of the authorization server. If the access token is valid it will be converted to a JSON object and returned to your code. For an access token to be valid, the following are asserted:
 
@@ -11,14 +11,15 @@ This library verifies Okta access tokens (issued by Okta authorization servers) 
 Install this library from npm:
 
 ```bash
-npm install --save @okta/jwt-validator
+npm install --save @okta/jwt-verifier
 ```
 
 Create a verifier instance, bound to the issuer (authorization server URL) and the client ID (the Okta application that will use this authorization server):
 
 ```javascript
+const OktaJwtVerifier = require('@okta/jwt-verifier');
+
 const oktaJwtVerifier = new OktaJwtVerifier({
-  client_id: 'xxxxx'
   issuer: 'http://{your-okta-org-url}/oauth2/default'
 })
 ```
@@ -44,7 +45,7 @@ For basic use cases, you can ask the verifier to assert a custom set of claims. 
 const verifier = new OktaJwtVerifier({
   issuer: ISSUER,
   assertClaims: {
-    cid: `myKnownClientId`
+    cid: 'myKnownClientId'
   }
 });
 ```
