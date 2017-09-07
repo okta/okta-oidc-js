@@ -27,7 +27,7 @@ export class OktaAuthGuard implements CanActivate {
     this.oktaAuth.setFromUri(state.url);
 
     // Redirect to login flow.
-    this.oktaAuth.login();
+    this.oktaAuth.loginRedirect();
     return false;
   }
 }

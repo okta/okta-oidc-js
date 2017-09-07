@@ -12,7 +12,6 @@ import { OktaCallbackComponent, OktaLoginRedirectComponent } from './components/
     OktaLoginRedirectComponent
   ],
   exports: [
-    CommonModule,
     OktaCallbackComponent,
     OktaLoginRedirectComponent
   ]

@@ -15,12 +15,13 @@
   ],
   "license": "Apache-2.0",
   "dependencies": {
+    "@okta/okta-auth-js": "^1.8.0"
+  },
+  "peerDependencies": {
     "@angular/common": "^4.4.0-RC.0",
     "@angular/core": "^4.4.0-RC.0",
     "@angular/platform-browser": "^4.4.0-RC.0",
     "@angular/router": "^4.4.0-RC.0",
-    "@okta/okta-auth-js": "^1.8.0",
-    "rxjs": "^5.4.3",
-    "zone.js": "^0.8.17"
+    "rxjs": "^5.4.3"
   }
 }
