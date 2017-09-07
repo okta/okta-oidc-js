@@ -10,12 +10,11 @@ import { OktaAuthService } from '../../../../../src/';
   <button *ngIf="oktaAuth.isAuthenticated()" (click)="oktaAuth.logout()"> Logout </button>
   <button routerLink="/protected"> Protected </button>
 
-  <pre *ngFor="let token of tokens">{{token | json}}\n</pre>
   <router-outlet></router-outlet>  
   `,
 })
 export class AppComponent {
   tokens;
 
-  constructor(public oktaAuth: OktaAuthService) {this.tokens = oktaAuth.getTokens()}
+  constructor(public oktaAuth: OktaAuthService) { }
 }

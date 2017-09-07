@@ -40,15 +40,23 @@ export class OktaAuthService {
     }
 
     isAuthenticated() {
-        // Checks if there is a current accessToken in the TokenManger.
-        return !!this.oktaAuth.tokenManager.get('accessToken');
-      }
+      // Checks if there is a current accessToken in the TokenManger.
+      return !!getAccessToken();
+    }
+
+    getAccessToken() {
+      return this.oktaAuth.tokenManger.get('accessToken');
+    }
+
+    getIdToken() {
+      return this.oktaAuth.tokenManager.get('idToken');
+    }
 
     loginRedirect() {
       // Launches the login redirect.
       this.oktaAuth.token.getWithRedirect({
-          responseType: this.auth.responseType || ['id_token', 'token'],
-          scopes: this.auth.scopes || ['openid', 'email']
+        responseType: this.auth.responseType || ['id_token', 'token'],
+        scopes: this.auth.scopes || ['openid', 'email']
       });
     }
 
@@ -78,15 +86,6 @@ export class OktaAuthService {
 
       // Navigate back to the initial view
       this.router.navigate([this.getFromUri()]);
-    }
-
-    getTokens() {
-      // Returns the tokens in their raw form
-      return [
-        this.oktaAuth.tokenManager.get('accessToken'),
-        this.oktaAuth.tokenManager.get('idToken'),
-        this.oktaAuth.tokenManager.get('refreshToken')
-      ]
     }
 
     async logout() {
