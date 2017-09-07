@@ -1,0 +1,18 @@
+{
+    "name": "@okta/okta-angular",
+    "version": "0.1.0",
+    "description": "Okta + Angular",
+    "main": "index.ts",
+    "scripts": {
+      "test": "echo \"Error: no test specified\" && exit 1"
+    },
+    "keywords": [
+      "okta",
+      "oidc",
+      "OpenID Connect",
+      "authentication",
+      "auth"
+    ],
+    "license": "Apache-2.0"
+  }
+  
