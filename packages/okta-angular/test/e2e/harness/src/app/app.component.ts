@@ -5,16 +5,15 @@ import { OktaAuthService } from '../../../../../src/';
 @Component({
   selector: 'app-root',
   template: `
-  <button routerLink="/"> Home </button>
-  <button *ngIf="!oktaAuth.isAuthenticated()" routerLink="/login"> Login </button>
-  <button *ngIf="oktaAuth.isAuthenticated()" (click)="oktaAuth.logout()"> Logout </button>
-  <button routerLink="/protected"> Protected </button>
+  <button id="home-button" routerLink="/"> Home </button>
+  <button id="login-button" *ngIf="!oktaAuth.isAuthenticated()" routerLink="/login"> Login </button>
+  <button id="logout-button" *ngIf="oktaAuth.isAuthenticated()" (click)="oktaAuth.logout()"> Logout </button>
+  <button id="protected-button" routerLink="/protected"> Protected </button>
 
-  <router-outlet></router-outlet>  
+  <router-outlet></router-outlet>
   `,
 })
 export class AppComponent {
-  tokens;
 
   constructor(public oktaAuth: OktaAuthService) { }
 }

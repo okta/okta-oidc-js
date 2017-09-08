@@ -1,9 +1,9 @@
-import { BrowserModule }        from '@angular/platform-browser';
-import { NgModule }             from '@angular/core';
+import { BrowserModule } from '@angular/platform-browser';
+import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 
 // Okta Library
-import { 
+import {
   OKTA_CONFIG,
   OktaAuthGuard,
   OktaAuthModule,
@@ -14,7 +14,7 @@ import {
 
 // App Components
 import { ProtectedComponent } from './protected.component';
-import { AppComponent }       from './app.component';
+import { AppComponent } from './app.component';
 
 const appRoutes: Routes = [
   {
@@ -30,13 +30,13 @@ const appRoutes: Routes = [
     path: 'login',
     component: OktaLoginRedirectComponent
   }
-]
+];
 
 const config = {
   issuer: 'https://jordandemo.oktapreview.com',
   redirectUri: 'http://localhost:3000/implicit/callback',
   clientId: '0oab8olsehwF1x7bM0h7'
-}
+};
 
 @NgModule({
   imports: [

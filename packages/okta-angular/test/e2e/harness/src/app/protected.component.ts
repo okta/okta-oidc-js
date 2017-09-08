@@ -5,5 +5,5 @@ import { Component } from '@angular/core';
   template: ``
 })
 export class ProtectedComponent {
-  constructor() { console.log("Protected endpont!"); }
+  constructor() { console.log('Protected endpont!'); }
 }

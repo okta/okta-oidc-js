@@ -40,12 +40,12 @@ export class OktaAuthService {
     }
 
     isAuthenticated() {
-      // Checks if there is a current accessToken in the TokenManger.
-      return !!getAccessToken();
+      // Checks if there is a current accessToken in the TokenManager.
+      return !!this.oktaAuth.tokenManager.get('accessToken');
     }
 
     getAccessToken() {
-      return this.oktaAuth.tokenManger.get('accessToken');
+      return this.oktaAuth.tokenManager.get('accessToken');
     }
 
     getIdToken() {
