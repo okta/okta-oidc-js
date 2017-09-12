@@ -10,16 +10,16 @@ import { OktaAuthService } from './okta.service';
 
 @Injectable()
 export class OktaAuthGuard implements CanActivate {
-  authenticated;
   oktaAuth;
 
   constructor(private okta: OktaAuthService, private router: Router) {
     this.oktaAuth = okta;
-    this.authenticated = okta.isAuthenticated();
   }
 
   async canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot) {
-    if (this.authenticated) {
+    // Gateway for protected route. Returns true if there is a valid accessToken,
+    // otherwise it will cache the route and start the login flow.
+    if (this.oktaAuth.isAuthenticated()) {
       return true;
     }
 

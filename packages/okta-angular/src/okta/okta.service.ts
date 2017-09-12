@@ -25,18 +25,23 @@ export class OktaAuthService {
       }
 
       if (missing.length) {
-          throw new Error(`${missing.join(', ')} must be defined`);
+        throw new Error(`${missing.join(', ')} must be defined`);
       }
 
       this.oktaAuth = new OktaAuth({
-          url: auth.issuer.split('/oauth2/')[0],
-          clientId: auth.clientId,
-          issuer: auth.issuer,
-          redirectUri: auth.redirectUri
+        url: auth.issuer.split('/oauth2/')[0],
+        clientId: auth.clientId,
+        issuer: auth.issuer,
+        redirectUri: auth.redirectUri
       });
 
-      // Cache the auth config
+      // Cache the auth config.
       this.config = auth;
+    }
+
+    getOktaAuth() {
+      // Returns the OktaAuth object to handle flows outside of this lib.
+      return this.oktaAuth;
     }
 
     isAuthenticated() {
@@ -45,18 +50,20 @@ export class OktaAuthService {
     }
 
     getAccessToken() {
+      // Returns the current accessToken in the tokenManager.
       return this.oktaAuth.tokenManager.get('accessToken');
     }
 
     getIdToken() {
+      // Returns the current idToken in the tokenManager.
       return this.oktaAuth.tokenManager.get('idToken');
     }
 
     loginRedirect() {
       // Launches the login redirect.
       this.oktaAuth.token.getWithRedirect({
-        responseType: this.auth.responseType || ['id_token', 'token'],
-        scopes: this.auth.scopes || ['openid', 'email']
+        responseType: this.config.responseType || ['id_token', 'token'],
+        scopes: this.config.scopes || ['openid', 'email', 'profile']
       });
     }
 
@@ -66,7 +73,7 @@ export class OktaAuthService {
     }
 
     getFromUri() {
-      // Returns the referrer path from localStorage.
+      // Returns the referrer path from localStorage or app root.
       const path = localStorage.getItem('referrerPath') || '/';
       localStorage.removeItem('referrerPath');
       return path;
@@ -84,14 +91,13 @@ export class OktaAuthService {
         }
       });
 
-      // Navigate back to the initial view
+      // Navigate back to the initial view or root of application.
       this.router.navigate([this.getFromUri()]);
     }
 
     async logout() {
       // Clears the user session in Okta and removes
       // tokens stored in the tokenManager.
-
       this.oktaAuth.tokenManager.clear();
       await this.oktaAuth.signOut();
     }

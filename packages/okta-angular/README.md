@@ -1,1 +1,1 @@
-# Okta + Angular SDK
+# Okta Angular SDK

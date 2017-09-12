@@ -2,8 +2,12 @@ import { Component } from '@angular/core';
 
 @Component({
   selector: 'app-secure',
-  template: ``
+  template: `{{message}}`
 })
 export class ProtectedComponent {
-  constructor() { console.log('Protected endpont!'); }
+  message;
+
+  constructor() {
+    this.message = 'Protected endpont!';
+  }
 }

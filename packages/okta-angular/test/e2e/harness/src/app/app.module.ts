@@ -4,10 +4,8 @@ import { Routes, RouterModule } from '@angular/router';
 
 // Okta Library
 import {
-  OKTA_CONFIG,
   OktaAuthGuard,
   OktaAuthModule,
-  OktaAuthService,
   OktaCallbackComponent,
   OktaLoginRedirectComponent
 } from '../../../../../src/';
@@ -33,25 +31,20 @@ const appRoutes: Routes = [
 ];
 
 const config = {
-  issuer: 'https://jordandemo.oktapreview.com',
+  issuer: 'https://{yourOktaOrg}.com',
   redirectUri: 'http://localhost:3000/implicit/callback',
-  clientId: '0oab8olsehwF1x7bM0h7'
+  clientId: '{clientId}'
 };
 
 @NgModule({
   imports: [
     BrowserModule,
     RouterModule.forRoot(appRoutes),
-    OktaAuthModule
+    OktaAuthModule.initAuth(config)
   ],
   declarations: [
     AppComponent,
     ProtectedComponent
-  ],
-  providers: [
-    OktaAuthGuard,
-    OktaAuthService,
-    { provide: OKTA_CONFIG, useValue: config },
   ],
   bootstrap: [ AppComponent ]
 })
