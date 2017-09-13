@@ -24,6 +24,6 @@ export class OktaAuthModule {
         OktaAuthService,
         { provide: OKTA_CONFIG, useValue: config }
       ]
-    }
+    };
   }
 }

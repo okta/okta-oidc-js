@@ -6,7 +6,8 @@
   "scripts": {
     "test": "npm run --prefix test/e2e/harness/ e2e",
     "start": "npm run --prefix test/e2e/harness/ start",
-    "docs": "typedoc --options typedoc.json --exclude '{**/*.spec.ts,**/test/**}' ./src/"
+    "docs": "typedoc --options typedoc.json --exclude '{**/*.spec.ts,**/test/**}' ./src/",
+    "lint": "npm run --prefix test/e2e/harness/ lint"
   },
   "keywords": [
     "okta",
