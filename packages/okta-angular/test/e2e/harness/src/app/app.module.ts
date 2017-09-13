@@ -31,7 +31,7 @@ const appRoutes: Routes = [
 ];
 
 const config = {
-  issuer: 'https://{yourOktaOrg}.com',
+  issuer: 'https://{yourOktaDomain}.com/oauth2/default',
   redirectUri: 'http://localhost:3000/implicit/callback',
   clientId: '{clientId}'
 };

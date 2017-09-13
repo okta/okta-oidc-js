@@ -2,7 +2,7 @@ const PORT = process.env.PORT || 3000;
 const BASE_URI = process.env.BASE_URI || `http://localhost:${PORT}`;
 
 export const Constants = {
-  REDIRECT_URI: `${BASE_URI}/authorization-code/callback`,
+  REDIRECT_URI: `${BASE_URI}/implicit/callback`,
   LOGIN_PATH: `${BASE_URI}/login`,
   LOGOUT_PATH: `${BASE_URI}/logout`,
   PROTECTED_PATH: `${BASE_URI}/protected`,

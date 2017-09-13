@@ -8,11 +8,6 @@ import {
 import { Constants } from './constants';
 import { Utils } from './utils';
 
-// Hack to slowdown the tests due to the Okta session
-// not being removed in time for the second login call
-const util = new Utils();
-util.slowDown(50);
-
 describe('Angular + Okta App', () => {
   let page: AppPage;
   let oktaLoginPage: OktaSignInPage;
@@ -24,26 +19,6 @@ describe('Angular + Okta App', () => {
     loginPage = new LoginPage();
     oktaLoginPage = new OktaSignInPage();
     protectedPage = new ProtectedPage();
-  });
-
-  it('should have a home button', () => {
-    page.navigateTo();
-    expect(page.getHomeButton().isPresent()).toBeTruthy();
-  });
-
-  it('should have a login button', () => {
-    page.navigateTo();
-    expect(page.getLoginButton().isPresent()).toBeTruthy();
-  });
-
-  it('should not have a logout button', () => {
-    page.navigateTo();
-    expect(page.getLogoutButton().isPresent()).toBeFalsy();
-  });
-
-  it('should have a protected button', () => {
-    page.navigateTo();
-    expect(page.getProtectedButton().isPresent()).toBeTruthy();
   });
 
   it('should redirect to Okta for login when trying to access a protected page', () => {
@@ -63,10 +38,10 @@ describe('Angular + Okta App', () => {
     expect(protectedPage.getLoginButton().isPresent()).toBeTruthy();
   });
 
-  it('should redirect back to home', () => {
-    page.navigateTo();
-    expect(page.getHomeButton().isPresent()).toBeTruthy();
-  });
+  // Hack to slowdown the tests due to the Okta session
+  // not being removed in time for the second login call
+  const util = new Utils();
+  util.slowDown(100);    
 
   it('should redirect to Okta for login', () => {
     loginPage.navigateTo();

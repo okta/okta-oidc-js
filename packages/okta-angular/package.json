@@ -2,7 +2,7 @@
   "name": "@okta/okta-angular",
   "version": "0.1.0",
   "description": "Angular support for Okta",
-  "main": "index.ts",
+  "main": "src/index.ts",
   "scripts": {
     "test": "npm run --prefix test/e2e/harness/ e2e",
     "start": "npm run --prefix test/e2e/harness/ start",

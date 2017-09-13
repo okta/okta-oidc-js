@@ -1,6 +1,5 @@
 import { Injectable } from '@angular/core';
 import {
-  Router,
   CanActivate,
   ActivatedRouteSnapshot,
   RouterStateSnapshot
@@ -10,9 +9,9 @@ import { OktaAuthService } from './okta.service';
 
 @Injectable()
 export class OktaAuthGuard implements CanActivate {
-  oktaAuth;
+  private oktaAuth: OktaAuthService;
 
-  constructor(private okta: OktaAuthService, private router: Router) {
+  constructor(private okta: OktaAuthService) {
     this.oktaAuth = okta;
   }
 
