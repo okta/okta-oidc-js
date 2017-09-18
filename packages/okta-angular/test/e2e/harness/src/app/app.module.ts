@@ -2,7 +2,9 @@ import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 
-// Okta Library
+/**
+ * Okta Library
+ */
 import {
   OktaAuthGuard,
   OktaAuthModule,
@@ -10,9 +12,13 @@ import {
   OktaLoginRedirectComponent
 } from '../../../../../src/';
 
-// App Components
+/**
+ * App Components
+ */
 import { ProtectedComponent } from './protected.component';
 import { AppComponent } from './app.component';
+
+import { Constants } from '../constants';
 
 const appRoutes: Routes = [
   {
@@ -31,9 +37,9 @@ const appRoutes: Routes = [
 ];
 
 const config = {
-  issuer: 'https://{yourOktaDomain}.com/oauth2/default',
-  redirectUri: 'http://localhost:3000/implicit/callback',
-  clientId: '{clientId}'
+  issuer: Constants.ISSUER,
+  redirectUri: Constants.REDIRECT_URI,
+  clientId: Constants.CLIENT_ID
 };
 
 @NgModule({

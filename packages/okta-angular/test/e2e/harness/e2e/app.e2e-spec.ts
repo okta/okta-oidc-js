@@ -5,7 +5,7 @@ import {
   ProtectedPage
 } from './page-objects';
 
-import { Constants } from './constants';
+import { Constants } from '../src/constants';
 import { Utils } from './utils';
 
 describe('Angular + Okta App', () => {
@@ -33,13 +33,17 @@ describe('Angular + Okta App', () => {
     protectedPage.waitUntilVisible();
     expect(protectedPage.getLogoutButton().isPresent()).toBeTruthy();
 
-    // Logout
+    /**
+     * Logout
+     */
     protectedPage.getLogoutButton().click();
     expect(protectedPage.getLoginButton().isPresent()).toBeTruthy();
   });
 
-  // Hack to slowdown the tests due to the Okta session
-  // not being removed in time for the second login call
+  /**
+   * Hack to slowdown the tests due to the Okta session
+   * not being removed in time for the second login call.
+   */
   const util = new Utils();
   util.slowDown(100);
 
@@ -56,7 +60,9 @@ describe('Angular + Okta App', () => {
     loginPage.waitUntilVisible();
     expect(loginPage.getLogoutButton().isPresent()).toBeTruthy();
 
-    // Logout
+    /**
+     * Logout
+     */
     loginPage.getLogoutButton().click();
     expect(loginPage.getLoginButton().isPresent()).toBeTruthy();
   });
