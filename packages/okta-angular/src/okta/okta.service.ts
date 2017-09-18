@@ -15,7 +15,9 @@ import { Router } from '@angular/router';
 
 import { OKTA_CONFIG } from './okta.config';
 
-// Import the okta-auth-js library
+/**
+ * Import the okta-auth-js library
+ */
 import * as OktaAuth from '@okta/okta-auth-js';
 
 @Injectable()
@@ -47,52 +49,71 @@ export class OktaAuthService {
         redirectUri: auth.redirectUri
       });
 
-      // Cache the auth config.
+      /**
+       * Cache the auth config.
+       */
       this.config = auth;
     }
 
+    /**
+     * Returns the OktaAuth object to handle flows outside of this lib.
+     */
     getOktaAuth() {
-      // Returns the OktaAuth object to handle flows outside of this lib.
       return this.oktaAuth;
     }
 
+    /**
+     * Checks if there is a current accessToken in the TokenManager.
+     */
     isAuthenticated() {
-      // Checks if there is a current accessToken in the TokenManager.
       return !!this.oktaAuth.tokenManager.get('accessToken');
     }
 
+    /**
+     * Returns the current accessToken in the tokenManager.
+     */
     getAccessToken() {
-      // Returns the current accessToken in the tokenManager.
       return this.oktaAuth.tokenManager.get('accessToken');
     }
 
+    /**
+     * Returns the current idToken in the tokenManager.
+     */
     getIdToken() {
-      // Returns the current idToken in the tokenManager.
       return this.oktaAuth.tokenManager.get('idToken');
     }
 
+    /**
+     * Launches the login redirect.
+     */
     loginRedirect() {
-      // Launches the login redirect.
       this.oktaAuth.token.getWithRedirect({
         responseType: this.config.responseType || ['id_token', 'token'],
         scopes: this.config.scopes || ['openid', 'email', 'profile']
       });
     }
 
+    /**
+     * Stores the intended path to redirect after successful login.
+     * @param uri 
+     */
     setFromUri(uri) {
-      // Stores the intended path to redirect after successful login.
       localStorage.setItem('referrerPath', uri);
     }
 
+    /**
+     * Returns the referrer path from localStorage or app root.
+     */
     getFromUri() {
-      // Returns the referrer path from localStorage or app root.
       const path = localStorage.getItem('referrerPath') || '/';
       localStorage.removeItem('referrerPath');
       return path;
     }
 
+    /**
+     * Parses the tokens from the callback URL.
+     */
     async handleAuthentication() {
-      // Parses the tokens from the callback URL.
       const tokens = await this.oktaAuth.token.parseFromUrl();
       tokens.forEach(token => {
         if (token.idToken) {
@@ -103,13 +124,17 @@ export class OktaAuthService {
         }
       });
 
-      // Navigate back to the initial view or root of application.
+      /**
+       * Navigate back to the initial view or root of application.
+       */
       this.router.navigate([this.getFromUri()]);
     }
 
+    /**
+     * Clears the user session in Okta and removes
+     * tokens stored in the tokenManager.
+     */
     async logout() {
-      // Clears the user session in Okta and removes
-      // tokens stored in the tokenManager.
       this.oktaAuth.tokenManager.clear();
       await this.oktaAuth.signOut();
     }

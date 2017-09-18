@@ -27,17 +27,25 @@ export class OktaAuthGuard implements CanActivate {
     this.oktaAuth = okta;
   }
 
+  /**
+   * Gateway for protected route. Returns true if there is a valid accessToken,
+   * otherwise it will cache the route and start the login flow.
+   * @param route 
+   * @param state 
+   */
   async canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot) {
-    // Gateway for protected route. Returns true if there is a valid accessToken,
-    // otherwise it will cache the route and start the login flow.
     if (this.oktaAuth.isAuthenticated()) {
       return true;
     }
 
-    // Store the current path
+    /** 
+     * Store the current path
+     */
     this.oktaAuth.setFromUri(state.url);
 
-    // Redirect to login flow.
+    /**
+     * Redirect to login flow.
+     */
     this.oktaAuth.loginRedirect();
     return false;
   }
