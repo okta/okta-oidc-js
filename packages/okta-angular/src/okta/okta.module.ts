@@ -27,7 +27,7 @@ import { OktaConfig, OKTA_CONFIG } from './okta.config';
     OktaLoginRedirectComponent
   ]
 })
-export class OktaAuthModule  {
+export class OktaAuthModule {
   static initAuth(config: OktaConfig) {
     return {
       ngModule: OktaAuthModule,
