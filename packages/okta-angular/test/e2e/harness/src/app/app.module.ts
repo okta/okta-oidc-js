@@ -2,6 +2,8 @@ import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 
+import { environment } from './../environments/environment';
+
 /**
  * Okta Library
  */
@@ -10,15 +12,13 @@ import {
   OktaAuthModule,
   OktaCallbackComponent,
   OktaLoginRedirectComponent
-} from '../../../../../src/';
+} from '@okta/okta-angular';
 
 /**
  * App Components
  */
 import { ProtectedComponent } from './protected.component';
 import { AppComponent } from './app.component';
-
-import { Constants } from '../constants';
 
 const appRoutes: Routes = [
   {
@@ -37,9 +37,9 @@ const appRoutes: Routes = [
 ];
 
 const config = {
-  issuer: Constants.ISSUER,
-  redirectUri: Constants.REDIRECT_URI,
-  clientId: Constants.CLIENT_ID
+  issuer: environment.ISSUER,
+  redirectUri: environment.REDIRECT_URI,
+  clientId: environment.CLIENT_ID
 };
 
 @NgModule({

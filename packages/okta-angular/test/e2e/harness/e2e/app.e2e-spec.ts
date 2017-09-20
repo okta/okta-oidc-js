@@ -5,7 +5,7 @@ import {
   ProtectedPage
 } from './page-objects';
 
-import { Constants } from '../src/constants';
+import { environment } from '../src/environments/environment';
 import { Utils } from './utils';
 
 describe('Angular + Okta App', () => {
@@ -26,8 +26,8 @@ describe('Angular + Okta App', () => {
 
     oktaLoginPage.waitUntilVisible();
     oktaLoginPage.signIn({
-      username: Constants.USERNAME,
-      password: Constants.PASSWORD
+      username: environment.USERNAME,
+      password: environment.PASSWORD
     });
 
     protectedPage.waitUntilVisible();
@@ -53,8 +53,8 @@ describe('Angular + Okta App', () => {
     oktaLoginPage.waitUntilVisible();
 
     oktaLoginPage.signIn({
-      username: Constants.USERNAME,
-      password: Constants.PASSWORD
+      username: environment.USERNAME,
+      password: environment.PASSWORD
     });
 
     loginPage.waitUntilVisible();

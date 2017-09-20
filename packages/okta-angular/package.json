@@ -8,8 +8,11 @@
     "dist"
   ],
   "scripts": {
+    "build:dependencies": "npm run ngc && npm pack && cd test/e2e/harness && npm install",
     "ngc": "./node_modules/.bin/ngc -p tsconfig.json",
+    "pretest": "npm run build:dependencies",
     "test": "npm run --prefix test/e2e/harness/ e2e",
+    "prestart": "npm run build:dependencies",
     "start": "npm run --prefix test/e2e/harness/ start",
     "docs": "typedoc --options typedoc.json --exclude '{**/*.spec.ts,**/test/**}' ./src/",
     "lint": "npm run --prefix test/e2e/harness/ lint"

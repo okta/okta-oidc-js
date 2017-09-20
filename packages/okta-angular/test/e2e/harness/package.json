@@ -4,11 +4,12 @@
   "license": "MIT",
   "scripts": {
     "ng": "ng",
-    "start": "ng serve --port=3000",
+    "start": "npm run env && ng serve --port=3000",
+    "env": "node ./scripts/prebuild.js",
     "build": "ng build",
     "test": "ng test",
     "lint": "ng lint",
-    "e2e": "ng e2e -port 3000"
+    "e2e": "npm run env && ng e2e -port 3000"
   },
   "private": true,
   "dependencies": {
@@ -21,6 +22,8 @@
     "@angular/platform-browser": "^4.2.4",
     "@angular/platform-browser-dynamic": "^4.2.4",
     "@angular/router": "^4.2.4",
+    "@okta/okta-angular": "file:../../../okta-okta-angular-0.1.0.tgz",
+    "ejs": "^2.5.6",
     "core-js": "^2.4.1",
     "rxjs": "^5.4.2",
     "zone.js": "^0.8.14"
