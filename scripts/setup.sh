@@ -9,6 +9,9 @@ git checkout -- scripts
 git checkout $BRANCH
 git reset --hard $SHA
 
+git config --global user.email "oktauploader@okta.com"
+git config --global user.name "oktauploader-okta"
+
 # Use newer, faster npm
 npm install -g npm@5.0.3
 
