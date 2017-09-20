@@ -1,0 +1,50 @@
+{
+  "name": "@okta/okta-angular",
+  "version": "0.1.0",
+  "description": "Angular support for Okta",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "pretest": "npm run build:dependencies",
+    "prestart": "npm run build:dependencies",
+    "prepublish": "npm run ngc",
+    "ngc": "./node_modules/.bin/ngc -p tsconfig.json",
+    "test": "npm run --prefix test/e2e/harness/ e2e",
+    "start": "npm run --prefix test/e2e/harness/ start",
+    "docs": "typedoc --options typedoc.json --exclude '{**/*.spec.ts,**/test/**}' ./src/",
+    "lint": "npm run --prefix test/e2e/harness/ lint",
+    "build:dependencies": "npm run ngc && npm pack && cd test/e2e/harness && npm install"    
+  },
+  "keywords": [
+    "okta",
+    "oidc",
+    "OpenID Connect",
+    "authentication",
+    "auth",
+    "oauth2"
+  ],
+  "license": "Apache-2.0",
+  "dependencies": {
+    "@okta/okta-auth-js": "^1.8.0"
+  },
+  "devDependencies": {
+    "@angular/common": "^4.4.3",
+    "@angular/compiler": "^4.4.3",
+    "@angular/compiler-cli": "^4.4.3",
+    "@angular/core": "^4.4.3",
+    "@angular/platform-browser": "^4.4.3",
+    "@angular/router": "^4.4.3",
+    "rxjs": "^5.4.3",
+    "typescript": "^2.5.2"
+  },
+  "peerDependencies": {
+    "@angular/common": "^4.0.0",
+    "@angular/core": "^4.0.0",
+    "@angular/platform-browser": "^4.0.0",
+    "@angular/router": "^4.0.0",
+    "rxjs": "^5.4.3"
+  }
+}

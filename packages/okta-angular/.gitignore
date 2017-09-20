@@ -1,0 +1,4 @@
+typedocs
+dist
+node_modules
+environment.ts
