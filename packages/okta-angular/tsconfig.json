@@ -1,7 +1,8 @@
 {
   "compilerOptions": {
+    "outDir": "./dist",
     "sourceMap": true,
-    "declaration": false,
+    "declaration": true,
     "moduleResolution": "node",
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
@@ -11,6 +12,9 @@
       "dom"
     ]
   },
+  "include": [
+    "src"
+  ],
   "exclude": [
     "node_modules"
   ]
