@@ -1,6 +1,6 @@
 {
   "name": "@okta/okta-angular",
-  "version": "0.1.0",
+  "version": "0.0.2",
   "description": "Angular support for Okta",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
@@ -16,7 +16,7 @@
     "start": "npm run --prefix test/e2e/harness/ start",
     "docs": "typedoc --options typedoc.json --exclude '{**/*.spec.ts,**/test/**}' ./src/",
     "lint": "npm run --prefix test/e2e/harness/ lint",
-    "build:dependencies": "npm run ngc && npm pack && cd test/e2e/harness && npm install"    
+    "build:dependencies": "npm run ngc && npm pack && cd test/e2e/harness && npm install"
   },
   "keywords": [
     "okta",
