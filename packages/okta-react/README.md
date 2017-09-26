@@ -55,7 +55,7 @@ Here are the minimum requirements for a working example:
 * **/protected** - Protected is only visible to authenticated users
 * **/implicit/callback** - This is where auth is handled for you after redirection
 
-```javascript
+```typescript
 // src/App.js
 
 import React, { Component } from 'react';
@@ -87,6 +87,8 @@ export default App;
 In the relevant location in your application, you will want to provide `Login` and `Logout` buttons for the user. You can show/hide the correct button by using the `auth.isAuthenticated()` method. For example:
 
 ```typescript
+// src/Home.js
+
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 import { withAuth } from '@okta/okta-react';
