@@ -154,6 +154,8 @@ app.get('/', (req, res) => {
 });
 ```
 
+Note: The default scope of `openid` will only return the `sub` claim.  To obtain more information about the user, set the `scope` option to `openid profile` when creating the middleware.  For a list of scopes and claims, please see [Scope-dependent claims](https://developer.okta.com/standards/OIDC/index.html#scope-dependent-claims-not-always-returned) for more information.
+
 ### Customizing routes
 
 If you need to modify the default login and callback routes, the `routes` config option is available.
@@ -180,6 +182,31 @@ const oidc = new ExpressOIDC({
 * **path** - where our middleware attaches
 * **handler** - additional middleware for after we validate the OpenId Connect response
 * **defaultRedirect** - where we redirect to after login when there's no protected route to return to
+
+### Using a Custom Login Page
+
+By default the end-user will be redirected to the Okta Sign-In Page when authentication is required, this page is hosted on your Okta Org domain.  It is possible to host this experience within your own application by installing the [Okta Sign-In Widget](https://github.com/okta/okta-signin-widget) into a page in your application.  Please refer to the [test example file](test/e2e/harness/views/login.ejs) for an example of how the widget should be configured for this use case.
+
+Once you have created your login page, you can use the `viewHandler` option to intercept the login page request and render your own custom page:
+
+```javascript
+
+const oidc = new ExpressOIDC({
+  { /* options */ }
+  routes: {
+    login: {
+      viewHandler: (req, res, next) => {
+        const baseUrl = url.parse(baseConfig.issuer).protocol + '//' + url.parse(baseConfig.issuer).host;
+        // Render your custom login page, you must create this view for your application and use the Okta Sign-In Widget
+        res.render('login', {
+          csrfToken: req.csrfToken(),
+          baseUrl: baseUrl
+        });
+      }
+    }
+  }
+});
+```
 
 ### Extending the User
 

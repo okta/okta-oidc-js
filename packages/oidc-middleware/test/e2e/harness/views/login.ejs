@@ -1,0 +1,40 @@
+<html>
+  <head>
+    <style>
+      body {
+        font-family: Helvetica Neue,Helvetica,Arial,sans-serif;
+      }
+    </style>
+    <script src="https://ok1static.oktacdn.com/assets/js/sdk/okta-signin-widget/1.13.0/js/okta-sign-in.min.js" type="text/javascript"></script>
+    <link href="https://ok1static.oktacdn.com/assets/js/sdk/okta-signin-widget/1.13.0/css/okta-sign-in.min.css" type="text/css" rel="stylesheet"/>
+    <!-- Optional, customizable css theme options. Link your own customized copy of this file or override styles in-line -->
+    <link href="https://ok1static.oktacdn.com/assets/js/sdk/okta-signin-widget/1.13.0/css/okta-theme.css" type="text/css" rel="stylesheet"/>
+    <script src="https://code.jquery.com/jquery-3.2.1.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
+  </head>
+  <body>
+    <div id="banner"><center>Custom Login Page</center></div>
+    <div id="app-container"></div>
+    <script type="text/javascript">
+      const signIn = new OktaSignIn({
+        baseUrl: '<%= baseUrl %>'  // e.g. https://dev-1234.oktapreview.com
+      });
+
+      signIn.renderEl({ el: '#app-container' }, (res) => {
+        var form = $('<form>', {
+          method: 'POST',
+          action: '/login'
+        });
+        $(document.body).append(form);
+        var sessionTokenField = $('<input type="hidden" name="sessionToken"/>');
+        var csrfTokenField = $('<input type="hidden" name="_csrf" value="<%= csrfToken %>"/>');
+        sessionTokenField.val(res.session.token)
+        form.append(sessionTokenField);
+        form.append(csrfTokenField);
+        form.submit();
+      }, (err) => {
+        console.error(err);
+      });
+
+    </script>
+  </body>
+</html>
