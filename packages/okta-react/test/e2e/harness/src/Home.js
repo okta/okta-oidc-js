@@ -31,8 +31,8 @@ export default withAuth(class Home extends Component {
     }
 
     const button = this.state.authenticated ?
-      <button onClick={this.props.auth.logout}>Logout</button> :
-      <button onClick={this.props.auth.login}>Login</button>;
+      <button id="logout-button" onClick={this.props.auth.logout}>Logout</button> :
+      <button id="login-button" onClick={this.props.auth.login}>Login</button>;
 
     return (
       <div>

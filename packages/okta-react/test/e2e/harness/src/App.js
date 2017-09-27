@@ -11,7 +11,7 @@ class App extends Component {
         <Security issuer={process.env.REACT_APP_ISSUER}
                   client_id={process.env.REACT_APP_CLIENT_ID}
                   redirect_uri={window.location.origin + '/implicit/callback'} >
-          <Route path='/' exact={true} component={Home}/>
+          <Route path='/' component={Home}/>
           <SecureRoute path='/protected' component={Protected}/>
           <Route path='/implicit/callback' component={ImplicitCallback} />
         </Security>
