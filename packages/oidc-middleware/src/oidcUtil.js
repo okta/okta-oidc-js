@@ -27,11 +27,11 @@ oidcUtil.createClient = context => {
 }
 
 oidcUtil.bootstrapPassportStrategy = context => {
-  const strategy = new OpenIdClientStrategy({
+  context.oidcStrategy = new OpenIdClientStrategy({
     params: {
       scope: context.options.scope
     },
-    sessionKey: `oidc:${context.options.issuer}`,
+    sessionKey: context.options.sessionKey,
     client: context.client
   }, (tokens, userinfo, done) => {
     done(null, userinfo);
@@ -40,7 +40,8 @@ oidcUtil.bootstrapPassportStrategy = context => {
   // bypass passport's serializers
   passport.serializeUser((user, done) => done(null, user));
   passport.deserializeUser((user, done) => done(null, user));
-  passport.use('oidc', strategy);
+  passport.use('oidc', context.oidcStrategy);
+
 }
 
 oidcUtil.ensureAuthenticated = (context, options) => {

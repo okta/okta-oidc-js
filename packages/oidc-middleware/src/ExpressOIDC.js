@@ -8,14 +8,14 @@ class OIDCMiddlewareError extends Error {}
 
 /**
  * Class to easily integrate OpenId Connect with Express
- * 
+ *
  * @class ExpressOIDC
  */
 module.exports = class ExpressOIDC extends EventEmitter {
 
   /**
    * Creates an instance of ExpressOIDC
-   * 
+   *
    * @param {Object} options
    * @param {string} options.issuer The OpenId Connect issuer
    * @param {string} options.client_id This app's OpenId Connect client id
@@ -38,7 +38,8 @@ module.exports = class ExpressOIDC extends EventEmitter {
       issuer,
       client_id,
       client_secret,
-      redirect_uri
+      redirect_uri,
+      sessionKey
     } = options;
 
     const missing = [];
@@ -62,7 +63,8 @@ module.exports = class ExpressOIDC extends EventEmitter {
           path: '/authorization-code/callback',
           defaultRedirect: '/'
         }
-      }
+      },
+      sessionKey: sessionKey || `oidc:${options.issuer}`
     }, options)
 
     const context = {
@@ -71,7 +73,7 @@ module.exports = class ExpressOIDC extends EventEmitter {
 
     /**
      * Construct an Express router that should be added to an app
-     * 
+     *
      * @instance
      * @property
      * @memberof ExpressOIDC
@@ -82,7 +84,7 @@ module.exports = class ExpressOIDC extends EventEmitter {
      * Ensure that a user is authenticated before continuing.
      * If not authenticated, then redirects to the login route.
      * If not authenticated and not requesting text/html, return a 401.
-     * 
+     *
      * @instance
      * @function
      * @memberof ExpressOIDC
