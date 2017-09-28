@@ -30,7 +30,6 @@ export default class Auth {
     this.getUser = this.getUser.bind(this);
     this.getIdToken = this.getIdToken.bind(this);
     this.getAccessToken = this.getAccessToken.bind(this);
-    this.setLoginPath = this.setLoginPath.bind(this);
     this.login = this.login.bind(this);
     this.logout = this.logout.bind(this);
     this.redirect = this.redirect.bind(this);
@@ -68,17 +67,8 @@ export default class Auth {
     return accessToken ? accessToken.accessToken : undefined;
   }
 
-  setLoginPath(loginPath) {
-    this._loginPath = loginPath;
-  }
-
   async login() {
     localStorage.setItem('secureRouterReferrerPath', this._history.location.pathname);
-
-    if (this._loginPath) {
-      return this._history.push(this._loginPath);
-    }
-
     await this.redirect();
   }
 

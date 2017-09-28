@@ -45,7 +45,6 @@ npm install --save @okta/okta-react
 * **Security** - (required) Allows you to supply your OpenID Connect client configuration.
 * **SecureRoute** - (required) A normal `Route` except authentication is needed to render the component.
 * **Callback** - (required) Handles the implicit flow callback. This will parse the tokens and store them automatically.
-* **LoginRoute** - (optional) Defines where to redirect if authentication is required. If this is not defined, Okta's hosted login page is used.
 
 ## Create Routes
 
@@ -90,7 +89,6 @@ In the relevant location in your application, you will want to provide `Login` a
 // src/Home.js
 
 import React, { Component } from 'react';
-import { Link } from 'react-router-dom';
 import { withAuth } from '@okta/okta-react';
 
 export default withAuth(class Home extends Component {
