@@ -1,5 +1,9 @@
 {
 	"devDependencies": {
+		"globby": "^6.1.0",
 		"lerna": "^2.1.0"
+	},
+	"scripts": {
+		"banners": "util/maintain-banners.js"
 	}
 }
