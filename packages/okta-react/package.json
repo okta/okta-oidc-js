@@ -1,6 +1,6 @@
 {
   "name": "@okta/okta-react",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "description": "React support for Okta",
   "main": "./dist/index.js",
   "scripts": {
