@@ -63,10 +63,10 @@ export class OktaAuthService {
     }
 
     /**
-     * Checks if there is a current accessToken in the TokenManager.
+     * Checks if there is a current accessToken or idToken in the TokenManager.
      */
     isAuthenticated() {
-      return !!this.oktaAuth.tokenManager.get('accessToken');
+      return !!this.oktaAuth.tokenManager.get('accessToken') || !!this.oktaAuth.tokenManager.get('idToken');
     }
 
     /**
@@ -114,7 +114,8 @@ export class OktaAuthService {
      * Parses the tokens from the callback URL.
      */
     async handleAuthentication() {
-      const tokens = await this.oktaAuth.token.parseFromUrl();
+      let tokens = await this.oktaAuth.token.parseFromUrl();
+      tokens = Object.prototype.toString.call(tokens) === '[object Array]' ? tokens : [tokens];
       tokens.forEach(token => {
         if (token.idToken) {
           this.oktaAuth.tokenManager.add('idToken', token);
