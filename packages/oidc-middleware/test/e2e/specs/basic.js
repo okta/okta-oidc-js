@@ -10,12 +10,11 @@ describe('Basic login redirect', () => {
 
   let server;
   beforeEach(async () => {
-    server = await util.startServer();
+    server = util.createDemoServer();
+    await server.start();
   });
 
-  afterEach(async () => {
-    await util.stopServer(server);
-  });
+  afterEach(async () => await server.stop());
 
   it('should redirect to Okta if login is required, then return to the protected page', async () => {
     // attempt to navigate to a protected page
@@ -29,7 +28,7 @@ describe('Basic login redirect', () => {
       username: constants.USERNAME,
       password: constants.PASSWORD
     });
-  
+
     // wait for protected page to appear with contents
     await privatePage.waitUntilVisible();
     expect(privatePage.getBodyText()).toContain('sub');

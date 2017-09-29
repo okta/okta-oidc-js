@@ -1,45 +1,38 @@
-const { execFile } = require('child_process');
-const path = require('path');
-const waitOn = require('wait-on');
 const constants = require('./constants');
+const url = require('url');
 
 const util = module.exports;
 
-util.startServer = () => {
-  const serverLocation = path.resolve(__dirname, '../harness/server.js');
-  return new Promise((resolve, reject) => {
-    const child = execFile('node', [serverLocation], (err, stdout, stderr) => {
-      if (err) {
-        return reject(err);
-      }
-    });
+const DemoServer = require('../harness/server');
 
-    waitOn({
-      resources: [
-        `tcp:localhost:${constants.PORT}`
-      ]
-    }, err => {
-      if (err) {
-        return reject(err);
-      }
-      resolve(child);
-    });
-  });
+const environmentConfig = {
+  issuer: constants.ISSUER,
+  client_id: constants.CLIENT_ID,
+  client_secret: constants.CLIENT_SECRET,
+  redirect_uri: constants.REDIRECT_URI
 };
 
-util.stopServer = server => {
-  return new Promise((resolve, reject) => {
-    server.once('error', err => {
-      reject(err);
-    });
-
-    server.once('close', (code, signal) => {
-      resolve();
-    });
-
-    server.kill('SIGTERM');
-  });
+util.createDemoServer = (options) => {
+  return new DemoServer(Object.assign({}, environmentConfig, options || {}));
 };
+
+util.createDemoServerWithCustomLoginPage = (options) => {
+  const baseConfig = Object.assign({}, environmentConfig, options || {});
+  return new DemoServer(Object.assign(baseConfig, {
+    routes: {
+      login: {
+        viewHandler: (req, res, next) => {
+          const baseUrl = url.parse(baseConfig.issuer).protocol + '//' + url.parse(baseConfig.issuer).host;
+          res.render('login', {
+            csrfToken: req.csrfToken(),
+            baseUrl: baseUrl
+          });
+        }
+      }
+    }
+  }));
+};
+
 
 util.ensureTrailingSlash = str => {
   if (str.slice(-1) === '/') {

@@ -10,8 +10,12 @@
  * See the License for the specific language governing permissions and limitations under the License.
  */
 
+const csrf = require('csurf');
 const passport = require('passport');
 const { Router } = require('express');
+const querystring = require('querystring');
+const uuid = require('uuid');
+const bodyParser = require('body-parser');
 
 const connectUtil = module.exports;
 
@@ -29,13 +33,46 @@ connectUtil.createOIDCRouter = context => {
       path:callbackPath
     }
   } = context.options.routes;
-  oidcRouter.use(loginPath, connectUtil.createLoginHandler(context));
+  oidcRouter.use(loginPath, bodyParser.urlencoded({ extended: false}), connectUtil.createLoginHandler(context));
   oidcRouter.use(callbackPath, connectUtil.createCallbackHandler(context));
   return oidcRouter;
 };
 
 connectUtil.createLoginHandler = context => {
-  return passport.authenticate('oidc');
+  const passportHandler = passport.authenticate('oidc');
+  const csrfProtection = csrf();
+
+  return function(req, res, next) {
+    const viewHandler = context.options.routes.login.viewHandler;
+    if (req.method === 'GET' && viewHandler) {
+      return csrfProtection(req, res, viewHandler.bind(null, req, res, next));
+    }
+    if (req.method === 'POST') {
+      return csrfProtection(req, res, (err) => {
+        if (err) {
+          return next(err);
+        }
+        const nonce = uuid.v4();
+        const state = uuid.v4();
+        const params = {
+          nonce,
+          state,
+          client_id: context.options.client_id,
+          redirect_uri: context.options.redirect_uri,
+          scope: context.options.scope,
+          response_type: 'code',
+          sessionToken: req.body.sessionToken
+        };
+        req.session[context.options.sessionKey] = {
+          nonce,
+          state
+        };
+        const url = `${context.options.issuer}/v1/authorize?${querystring.stringify(params)}`;
+        return res.redirect(url);
+      });
+    }
+    return passportHandler.apply(this, arguments);
+  }
 };
 
 connectUtil.createCallbackHandler = context => {
