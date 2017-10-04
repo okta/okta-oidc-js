@@ -1,0 +1,36 @@
+{
+  "name": "@okta/isomorphic-jwt",
+  "version": "1.0.0",
+  "description": "",
+  "main": "dist/index.js",
+  "browser": "src/browser.js",
+  "scripts": {
+    "test": "npm run test:node",
+    "test:node": "node test/simple.js",
+    "build": "rm -rf dist && npm run build:node && npm run build:browser",
+    "build:node": "BABEL_ENV=node babel src --out-dir dist",
+    "build:browser": "webpack --config webpack.browser.config.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "Apache-2.0",
+  "dependencies": {
+    "@trust/webcrypto": "^0.6.0",
+    "base64url": "^2.0.0",
+    "webcrypto-shim": "^0.1.2"
+  },
+  "files": [
+    "README.md",
+    "dist",
+    "src"
+  ],
+  "devDependencies": {
+    "babel-cli": "^6.26.0",
+    "babel-core": "^6.26.0",
+    "babel-loader": "^7.1.2",
+    "babel-preset-env": "^1.6.0",
+    "jasmine": "^2.8.0",
+    "uglifyjs-webpack-plugin": "^0.4.6",
+    "webpack": "^3.6.0"
+  }
+}
