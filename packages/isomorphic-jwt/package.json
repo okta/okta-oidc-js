@@ -5,8 +5,9 @@
   "main": "dist/index.js",
   "browser": "src/browser.js",
   "scripts": {
-    "test": "npm run test:node",
-    "test:node": "node test/simple.js",
+    "test": "npm run test:node && npm run test:browser",
+    "test:node": "npm run build:node && jasmine --config=./jasmine.json",
+    "test:browser": "echo \"add browser tests\"",
     "build": "rm -rf dist && npm run build:node && npm run build:browser",
     "build:node": "BABEL_ENV=node babel src --out-dir dist",
     "build:browser": "webpack --config webpack.browser.config.js"

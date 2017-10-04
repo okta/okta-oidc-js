@@ -20,9 +20,23 @@ module.exports = b64uUtil => {
       const b64uPayload = parts[1];
       const b64uSignature = parts[2];
       
+      let header;
+      try {
+        header = JSON.parse(b64uUtil.decode(b64uHeader));
+      } catch (e) {
+        throw new JwtError('The jwt header is malformed');
+      }
+
+      let payload;
+      try {
+        payload = JSON.parse(b64uUtil.decode(b64uPayload));
+      } catch (e) {
+        throw new JwtError('The jwt payload is malformed');
+      }
+      
       return {
-        header: JSON.parse(b64uUtil.decode(b64uHeader)),
-        payload: JSON.parse(b64uUtil.decode(b64uPayload)),
+        header,
+        payload,
         b64uSignature,
         b64uHeader,
         b64uPayload
