@@ -2,9 +2,10 @@ const { JwtTypeError, JwtError } = require('./errors');
 
 const util = module.exports = {};
 
-module.exports = b64uUtil => {
+module.exports = (b64uUtil, algoMap) => {
   return {
     b64u: b64uUtil,
+    algoMap,
     
     decodeJwtString(string) {
       if (!string || typeof string !== 'string') {
@@ -41,25 +42,6 @@ module.exports = b64uUtil => {
         b64uHeader,
         b64uPayload
       };
-    },
-    
-    algoMap: {
-      HS256: {
-        name: 'HMAC',
-        hash: { name: 'SHA-256' }
-      },
-      HS384: {
-        name: 'HMAC',
-        hash: { name: 'SHA-384' }
-      },
-      RS256: {
-        name: 'RSASSA-PKCS1-v1_5',
-        hash: { name: 'SHA-256' }
-      },
-      RS384: {
-        name: 'RSASSA-PKCS1-v1_5',
-        hash: { name: 'SHA-384' }
-      }
     }
   };
 };

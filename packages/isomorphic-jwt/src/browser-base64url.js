@@ -11,17 +11,16 @@ const base64url = {
       .replace(/_/g, '/');
   },
   decode(b64uString) {
-    const b64 = base64url.toBase64(b64uString);
-    const utf8 = atob(b64);
+    const str = atob(base64url.toBase64(b64uString));
     try {
-      return decodeURIComponent(escape(utf8));
+      // ensures that unicode is handled properly
+      return decodeURIComponent(escape(str));
     } catch (e) {
-      return utf8;
+      return str;
     }
   },
   toBuffer(b64uString) {
-    const b64 = base64url.toBase64(b64uString);
-    return strUtil.toBuffer(b64);
+    return strUtil.toBuffer(base64url.toBase64(b64uString));
   }
 };
 

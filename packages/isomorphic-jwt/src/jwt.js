@@ -1,7 +1,7 @@
 const { JwtError } = require('./errors');
 const strUtil = require('./strUtil');
 
-module.exports = (crypto, util) => {
+module.exports = ({environment, crypto, util, supportedAlgorithms}) => {
   return {
     decode(token) {
       return util.decodeJwtString(token).payload;
@@ -25,9 +25,15 @@ module.exports = (crypto, util) => {
         }
   
         const format = 'jwk';
-        const algo = util.algoMap[header.alg];
+        const algo = supportedAlgorithms[header.alg];
         if (!algo) {
-          throw new JwtError(`${algo} is an unrecognized algorithm type`);
+          throw new JwtError(`jwt in ${environment} does not support ${algo}`);
+        }
+
+        // alg is optional, but we'll use it to provide a better error message
+        // https://tools.ietf.org/html/rfc7517#section-4.4
+        if (jwk.alg && jwk.alg !== header.alg) {
+          throw new JwtError(`The jwt has an alg of ${header.alg}, but the key is for ${jwk.alg}`);
         }
   
         const extractable = true;
@@ -46,7 +52,10 @@ module.exports = (crypto, util) => {
           extractable,
           usages
         )
+        .catch(() => reject(new JwtError('Unable to import key')))
         .then(cryptoKey => {
+          if (!cryptoKey) return;
+
           const payloadBuffer = strUtil.toBuffer(b64uHeader + '.' + b64uPayload);
           const signature = util.b64u.toBuffer(b64uSignature);
     
@@ -55,16 +64,16 @@ module.exports = (crypto, util) => {
             cryptoKey,
             signature,
             payloadBuffer
-          );
-        })
-        .then(result => {
-          if (result) {
-            resolve(payload); 
-          } else {
-            resolve(false);
-          }
-        })
-        .catch(reject);
+          )
+          .then(result => {
+            if (result) {
+              resolve(payload); 
+            } else {
+              resolve(false);
+            }
+          })
+          .catch(() => reject(new JwtError('Unable to verify key')));
+        });
       });
     }
   };
