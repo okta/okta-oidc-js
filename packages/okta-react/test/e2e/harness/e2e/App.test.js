@@ -1,21 +1,18 @@
 import {
   AppPage,
   OktaSignInPage,
-  LoginPage,
   ProtectedPage
 } from './page-objects';
 
 import { Utils } from './utils';
 
 describe('React + Okta App', () => {
-  let page;
+  let appPage;
   let oktaLoginPage;
-  let loginPage;
   let protectedPage;
 
   beforeEach(() => {
-    page = new AppPage();
-    loginPage = new LoginPage();
+    appPage = new AppPage();
     oktaLoginPage = new OktaSignInPage();
     protectedPage = new ProtectedPage();
   });
@@ -44,9 +41,11 @@ describe('React + Okta App', () => {
   util.slowDown(100);
 
   it('should redirect to Okta for login', () => {
-    loginPage.navigateTo();
+    appPage.navigateTo();
 
-    loginPage.getLoginButton().click();
+    appPage.waitUntilVisible();
+
+    appPage.getLoginButton().click();
 
     oktaLoginPage.waitUntilVisible();
 
@@ -55,10 +54,10 @@ describe('React + Okta App', () => {
       password: process.env.PASSWORD
     });
 
-    loginPage.waitUntilVisible();
-    expect(loginPage.getLogoutButton().isPresent()).toBeTruthy();
+    appPage.waitUntilVisible();
+    expect(appPage.getLogoutButton().isPresent()).toBeTruthy();
 
     // Logout
-    loginPage.getLogoutButton().click();
+    appPage.getLogoutButton().click();
   });
 });

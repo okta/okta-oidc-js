@@ -49,7 +49,7 @@ export default class Auth {
   async isAuthenticated() {
     // If there could be tokens in the url
     if (location && location.hash && containsAuthTokens.test(location.hash)) return null;
-    return !!(await this.getAccessToken()) && !!(await this.getIdToken());
+    return !!(await this.getAccessToken()) || !!(await this.getIdToken());
   }
 
   async getUser() {
@@ -69,6 +69,11 @@ export default class Auth {
 
   async login() {
     localStorage.setItem('secureRouterReferrerPath', this._history.location.pathname);
+    if (this._config.onAuthRequired) {
+      const auth = this;
+      const history = this._history;
+      return this._config.onAuthRequired({ auth, history });
+    }
     await this.redirect();
   }
 

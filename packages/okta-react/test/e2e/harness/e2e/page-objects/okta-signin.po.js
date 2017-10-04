@@ -1,13 +1,8 @@
 import { browser, by, element, ExpectedConditions } from 'protractor';
 
 export class OktaSignInPage {
-
-    constructor() {
-      browser.waitForAngularEnabled(false);
-    }
-
     waitUntilVisible() {
-      browser.wait(ExpectedConditions.urlContains('/login'), 5000);
+      browser.wait(ExpectedConditions.presenceOf(this.getSubmitButton()), 5000);
     }
 
     getUsernameField() {
