@@ -5,7 +5,9 @@ module.exports = {
   entry: './src/browser.js',
   output: {
     path: path.resolve('./dist'),
-    filename: 'jwt.min.js'
+    filename: 'jwt.min.js',
+    library: 'jwt',
+    libraryTarget: 'umd'
   },
   target: 'web',
   module: {

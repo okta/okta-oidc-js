@@ -5,5 +5,19 @@ module.exports = {
       buffer[i] = str.charCodeAt(i);
     }
     return buffer;
+  },
+  isString(obj) {
+    return typeof obj === 'string';
+  },
+  representsObject(str) {
+    try {
+      const result = JSON.parse(str);
+      if (result && typeof result === 'object') {
+        return true;
+      }
+      return false;
+    } catch(e) {
+      return false;
+    }
   }
 };

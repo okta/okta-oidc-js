@@ -1,4 +1,5 @@
 const { JwtTypeError, JwtError } = require('./errors');
+const strUtil = require('./strUtil');
 
 const util = module.exports = {};
 
@@ -8,17 +9,17 @@ module.exports = (b64uUtil, algoMap) => {
     algoMap,
     
     decodeJwtString(string) {
-      if (!string || typeof string !== 'string') {
+      if (!string || !strUtil.isString(string)) {
         throw new JwtTypeError('A jwt must be provided as a string');
       }
     
       const parts = string.split('.');
       if (parts.length !== 3) {
-        throw new JwtError('The jwt must have a header, payload and signature');
+        throw new JwtError('The jwt must have a header, claims set and signature');
       }
     
       const b64uHeader = parts[0];
-      const b64uPayload = parts[1];
+      const b64uClaimsSet = parts[1];
       const b64uSignature = parts[2];
       
       let header;
@@ -28,19 +29,19 @@ module.exports = (b64uUtil, algoMap) => {
         throw new JwtError('The jwt header is malformed');
       }
 
-      let payload;
+      let claimsSet;
       try {
-        payload = JSON.parse(b64uUtil.decode(b64uPayload));
+        claimsSet = JSON.parse(b64uUtil.decode(b64uClaimsSet));
       } catch (e) {
-        throw new JwtError('The jwt payload is malformed');
+        throw new JwtError('The jwt claims set is malformed');
       }
       
       return {
         header,
-        payload,
+        claimsSet,
         b64uSignature,
         b64uHeader,
-        b64uPayload
+        b64uClaimsSet
       };
     }
   };

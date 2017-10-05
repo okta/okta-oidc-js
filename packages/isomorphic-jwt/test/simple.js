@@ -12,11 +12,11 @@ const key = {
 };
 
 async function main() {
-  const payload = await jwt.verify({
+  const claimsSet = await jwt.verify({
     token,
     jwk: key
   });
-  console.log(payload);
+  console.log(claimsSet);
 }
 
 main();

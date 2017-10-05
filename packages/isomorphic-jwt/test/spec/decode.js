@@ -1,14 +1,18 @@
-const jwt = require('../../dist/index');
+const jwt = require('../../dist/node');
 const errors = require('../../src/errors');
 const tokens = require('../tokens');
 
 describe('jwt.decode', () => {
   it('should decode unicode', () => {
-    expect(jwt.decode(tokens.unicodeToken)).toEqual(tokens.unicodeClaims);
+    expect(jwt.decode(tokens.unicodeToken)).toEqual(tokens.unicodeClaimsSet);
   });
 
   it('should decode utf8', () => {
-    expect(jwt.decode(tokens.standardToken)).toEqual(tokens.standardPayload);
+    expect(jwt.decode(tokens.standardToken)).toEqual(tokens.standardClaimsSet);
+  });
+
+  it('should decode an unsecured jwt', () => {
+    expect(jwt.decode(tokens.unsecuredJWT)).toEqual(tokens.standardClaimsSet);
   });
 
   it('should throw an error if no jwt is passed', () => {
@@ -23,7 +27,7 @@ describe('jwt.decode', () => {
 
   it('should throw an error if the jwt does not have 3 parts', () => {
     expect(() => jwt.decode('part1.part2'))
-      .toThrowError('The jwt must have a header, payload and signature');
+      .toThrowError('The jwt must have a header, claims set and signature');
   });
 
   it('should throw an error if the header is malformed', () => {
@@ -31,8 +35,8 @@ describe('jwt.decode', () => {
       .toThrowError('The jwt header is malformed');
   });
 
-  it('should throw an error if the payload is malformed', () => {
-    expect(() => jwt.decode(tokens.malformedPayload))
-      .toThrowError('The jwt payload is malformed');
+  it('should throw an error if the claims set is malformed', () => {
+    expect(() => jwt.decode(tokens.malformedClaimsSet))
+      .toThrowError('The jwt claims set is malformed');
   });
 });
