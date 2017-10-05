@@ -83,10 +83,11 @@ export default class Auth {
     this._history.push('/');
   }
 
-  async redirect() {
+  async redirect({sessionToken} = {}) {
     this._oktaAuth.token.getWithRedirect({
       responseType: this._config.response_type || ['id_token', 'token'],
-      scopes: this._config.scope || ['openid', 'email', 'profile']
+      scopes: this._config.scope || ['openid', 'email', 'profile'],
+      sessionToken
     });
 
     // return a promise that doesn't terminate so nothing

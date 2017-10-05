@@ -182,6 +182,7 @@ Security is the top-most component of okta-react. This is where most of the conf
 
 ```typescript
 function customAuthHandler({auth, history}) {
+  // Redirect to the /login page that has a CustomLoginComponent
   history.push('/login');
 }
 
@@ -240,11 +241,18 @@ class App extends Component {
 
 * `auth.logout()`
 
-  Removes all the tokens.
+  Removes all the tokens and redirects to `/`.
 
-* `auth.redirect()`
+* `auth.redirect({sessionToken})`
 
-  Performs a redirect to Okta.
+  Performs a redirect to Okta with an optional `sessionToken`.
+
+  Example:
+  ```typescript
+  auth.redirect({
+    sessionToken: '{sampleSessionToken}'
+  });
+  ```
 
 * `auth.handleAuthentication()`
 

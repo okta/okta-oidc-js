@@ -4,6 +4,7 @@ import { Security, SecureRoute, ImplicitCallback } from '@okta/okta-react';
 import Home from './Home';
 import Protected from './Protected';
 import CustomLogin from './CustomLogin';
+import SessionTokenLogin from './SessionTokenLogin';
 
 class App extends Component {
   render() {
@@ -15,6 +16,7 @@ class App extends Component {
                   onAuthRequired={({history}) => history.push('/login')} >
           <Route path='/' component={Home}/>
           <Route path='/login' component={CustomLogin}/>
+          <Route path='/sessionToken-login' component={SessionTokenLogin}/>
           <SecureRoute path='/protected' component={Protected}/>
           <Route path='/implicit/callback' component={ImplicitCallback} />
         </Security>
