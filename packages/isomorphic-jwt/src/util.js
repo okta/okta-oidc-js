@@ -1,5 +1,5 @@
-const Base64 = require('js-base64').Base64;
 const { JwtTypeError, JwtError } = require('./errors');
+const b64uUtil = require('./b64uUtil');
 const strUtil = require('./strUtil');
 
 const util = module.exports = {};
@@ -21,14 +21,14 @@ module.exports = {
     
     let header;
     try {
-      header = JSON.parse(Base64.decode(b64uHeader));
+      header = JSON.parse(b64uUtil.decode(b64uHeader));
     } catch (e) {
       throw new JwtError('The jwt header is malformed');
     }
 
     let claimsSet;
     try {
-      claimsSet = JSON.parse(Base64.decode(b64uClaimsSet));
+      claimsSet = JSON.parse(b64uUtil.decode(b64uClaimsSet));
     } catch (e) {
       throw new JwtError('The jwt claims set is malformed');
     }

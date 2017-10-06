@@ -1,4 +1,4 @@
-// require('webcrypto-shim');
+require('webcrypto-shim');
 const util = require('./util');
 
 const supportedAlgorithms = {

@@ -46,7 +46,7 @@ describe('jwt.verify', () => {
     }), 'Unable to import key');
   });
 
-  xdescribe('RS256', () => {
+  describe('RS256', () => {
     it('should return claims set on success', () => {
       return jwt.verify({
         token: tokens.RS256token,

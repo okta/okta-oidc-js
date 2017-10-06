@@ -1,7 +1,6 @@
-const Base64 = require('js-base64').Base64;
-const b64 = require('base64-js');
 const { JwtError } = require('./errors');
 const strUtil = require('./strUtil');
+const b64uUtil = require('./b64uUtil');
 
 module.exports = ({environment, crypto, util, supportedAlgorithms}) => {
   return {
@@ -70,7 +69,7 @@ module.exports = ({environment, crypto, util, supportedAlgorithms}) => {
         // Compute the encoded payload value BASE64URL(JWS Payload).
         let b64uPayload;
         try {
-          b64uPayload = Base64.encodeURI(string);
+          b64uPayload = b64uUtil.encode(string);
         } catch(e) {
           throw new JwtError(`Unable to encode payload: ${e.message}`);
         }
@@ -83,7 +82,9 @@ module.exports = ({environment, crypto, util, supportedAlgorithms}) => {
         if (!algo) {
           throw new JwtError(`jwt in ${environment} does not support ${algo}`);
         }
-        const header = Object.assign({}, algo);
+        const header = {
+          alg: jwk.alg
+        };
 
         // 5.1.4
         // Compute the encoded header value BASE64URL(UTF8(JWS Protected
@@ -93,7 +94,7 @@ module.exports = ({environment, crypto, util, supportedAlgorithms}) => {
         // string.
         let b64uHeader;
         try {
-          b64uHeader = Base64.encodeURI(JSON.stringify(header));
+          b64uHeader = b64uUtil.encode(JSON.stringify(header));
         } catch (e) {
           throw new JwtError(`Unable to encode header: ${e.message}`);
         }
@@ -131,7 +132,7 @@ module.exports = ({environment, crypto, util, supportedAlgorithms}) => {
 
           // 5.1.6
           // Compute the encoded signature value BASE64URL(JWS Signature).
-          const b64uSignature = Base64.encodeURI(b64.fromByteArray(new Uint8Array(signatureBuffer)));
+          const b64uSignature = b64uUtil.encode(signatureBuffer);
 
           // 5.1.7
           // If the JWS JSON Serialization is being used, repeat this process
@@ -203,7 +204,7 @@ module.exports = ({environment, crypto, util, supportedAlgorithms}) => {
           if (!cryptoKey) return;
 
           const claimsSetBuffer = strUtil.toBuffer(b64uHeader + '.' + b64uClaimsSet);
-          const signature = strUtil.toBuffer(Base64.encodeURI(b64uSignature));
+          const signature = strUtil.toBuffer(b64uUtil.encode(b64uSignature));
     
           return crypto.subtle.verify(
             algo,

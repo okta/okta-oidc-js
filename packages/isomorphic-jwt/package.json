@@ -2,8 +2,8 @@
   "name": "@okta/isomorphic-jwt",
   "version": "1.0.0",
   "description": "",
-  "main": "dist/index.js",
-  "browser": "src/browser.js",
+  "main": "node.js",
+  "browser": "browser.js",
   "scripts": {
     "test": "npm run test:node && npm run test:browser",
     "test:node": "npm run build:node && node test/jasmine-node.js",
@@ -11,7 +11,7 @@
     "start:browser": "karma start karma.conf.js",
     "build": "rm -rf dist && npm run build:node && npm run build:browser",
     "build:node": "BABEL_ENV=node babel src --out-dir dist",
-    "build:browser": "webpack --config webpack.browser.config.js"
+    "build:browser": "webpack --config webpack.browser.config.js --display-modules"
   },
   "keywords": [],
   "author": "",
