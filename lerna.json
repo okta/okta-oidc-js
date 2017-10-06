@@ -4,6 +4,6 @@
     "packages/*",
     "packages/okta-react/test/e2e/harness"
   ],
-  "version": "0.0.6",
+  "version": "0.0.7",
   "hoist": true
 }
