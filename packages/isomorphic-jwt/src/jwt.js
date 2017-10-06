@@ -1,6 +1,6 @@
 const { JwtError } = require('./errors');
 const strUtil = require('./strUtil');
-const b64uUtil = require('./b64uUtil');
+const base64url = require('base64url');
 
 module.exports = ({environment, crypto, util, supportedAlgorithms}) => {
   return {
@@ -69,7 +69,7 @@ module.exports = ({environment, crypto, util, supportedAlgorithms}) => {
         // Compute the encoded payload value BASE64URL(JWS Payload).
         let b64uPayload;
         try {
-          b64uPayload = b64uUtil.encode(string);
+          b64uPayload = base64url.encode(string);
         } catch(e) {
           throw new JwtError(`Unable to encode payload: ${e.message}`);
         }
@@ -94,7 +94,7 @@ module.exports = ({environment, crypto, util, supportedAlgorithms}) => {
         // string.
         let b64uHeader;
         try {
-          b64uHeader = b64uUtil.encode(JSON.stringify(header));
+          b64uHeader = base64url.encode(JSON.stringify(header));
         } catch (e) {
           throw new JwtError(`Unable to encode header: ${e.message}`);
         }
@@ -132,7 +132,7 @@ module.exports = ({environment, crypto, util, supportedAlgorithms}) => {
 
           // 5.1.6
           // Compute the encoded signature value BASE64URL(JWS Signature).
-          const b64uSignature = b64uUtil.encode(signatureBuffer);
+          const b64uSignature = base64url.encode(signatureBuffer);
 
           // 5.1.7
           // If the JWS JSON Serialization is being used, repeat this process
@@ -202,7 +202,7 @@ module.exports = ({environment, crypto, util, supportedAlgorithms}) => {
           if (!cryptoKey) return;
 
           const claimsSetBuffer = strUtil.toBuffer(b64uHeader + '.' + b64uClaimsSet);
-          const signature = strUtil.toBuffer(b64uUtil.encode(b64uSignature));
+          const signature = base64url.toBuffer(b64uSignature);
     
           return crypto.subtle.verify(
             algo,

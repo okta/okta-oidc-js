@@ -3,6 +3,12 @@ module.exports = {
     let error = {};
     return promise
       .catch(err => error = err)
-      .then(() => expect(error.message).toEqual(errorMessage));
+      .then(() => {
+        if (typeof errorMessage === 'string') {
+          expect(error.message).toEqual(errorMessage);
+        } else {
+          expect(error.message).toMatch(errorMessage);
+        }
+      });
   }
 }

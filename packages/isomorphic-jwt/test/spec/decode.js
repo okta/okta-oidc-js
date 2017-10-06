@@ -1,7 +1,7 @@
 const tokens = require('../tokens');
 const jwt = require('../env').jwt;
 
-xdescribe('jwt.decode', () => {
+describe('jwt.decode', () => {
   it('should decode unicode', () => {
     expect(jwt.decode(tokens.unicodeToken)).toEqual(tokens.unicodeClaimsSet);
   });

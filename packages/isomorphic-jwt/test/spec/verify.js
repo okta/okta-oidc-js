@@ -2,7 +2,7 @@ const tokens = require('../tokens');
 const jwt = require('../env').jwt;
 const util = require('../util');
 
-xdescribe('jwt.verify', () => {
+describe('jwt.verify', () => {
   it('should throw an error for an unsecured jwt', () => {
     return util.expectPromiseError(jwt.verify({
       token: tokens.unsecuredJWT,
@@ -43,7 +43,7 @@ xdescribe('jwt.verify', () => {
     return util.expectPromiseError(jwt.verify({
       token: tokens.unicodeToken,
       jwk: tokens.keyWithoutAlg
-    }), 'Unable to import key');
+    }), new RegExp('Unable to import key:'));
   });
 
   describe('RS256', () => {
@@ -64,7 +64,7 @@ xdescribe('jwt.verify', () => {
     });
   });
 
-  xdescribe('RS384', () => {
+  describe('RS384', () => {
     it('should return claims set on success', () => {
       return jwt.verify({
         token: tokens.RS384token,
@@ -77,42 +77,6 @@ xdescribe('jwt.verify', () => {
       return jwt.verify({
         token: tokens.RS384invalidToken,
         jwk: tokens.RS384publicKey
-      })
-      .then(res => expect(res).toBe(false));
-    });
-  });
-
-  xdescribe('HS256', () => {
-    it('should return claims set on success', () => {
-      return jwt.verify({
-        token: tokens.HS256token,
-        jwk: tokens.HS256sharedKey
-      })
-      .then(res => expect(res).toEqual(tokens.standardClaimsSet));
-    });
-
-    it('should return false on failure', () => {
-      return jwt.verify({
-        token: tokens.HS256invalidToken,
-        jwk: tokens.HS256sharedKey
-      })
-      .then(res => expect(res).toBe(false));
-    });
-  });
-
-  xdescribe('HS384', () => {
-    it('should return claims set on success', () => {
-      return jwt.verify({
-        token: tokens.HS384token,
-        jwk: tokens.HS384sharedKey
-      })
-      .then(res => expect(res).toEqual(tokens.standardClaimsSet));
-    });
-
-    it('should return false on failure', () => {
-      return jwt.verify({
-        token: tokens.HS384invalidToken,
-        jwk: tokens.HS384sharedKey
       })
       .then(res => expect(res).toBe(false));
     });
