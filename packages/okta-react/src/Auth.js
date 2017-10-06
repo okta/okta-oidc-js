@@ -36,7 +36,8 @@ export default class Auth {
   }
 
   async handleAuthentication() {
-    const tokens = await this._oktaAuth.token.parseFromUrl();
+    let tokens = await this._oktaAuth.token.parseFromUrl();
+    tokens = Array.isArray(tokens) ? tokens : [tokens];
     for (let token of tokens) {
       if (token.idToken) {
         this._oktaAuth.tokenManager.add('idToken', token);
