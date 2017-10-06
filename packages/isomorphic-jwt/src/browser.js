@@ -1,6 +1,6 @@
-require('webcrypto-shim');
-const base64url = require('./browser-base64url');
-const util = require('./util')(base64url);
+// require('webcrypto-shim');
+const b64uUtil = require('./browser-base64url');
+const util = require('./util')(b64uUtil);
 
 const supportedAlgorithms = {
   HS256: {
@@ -25,5 +25,6 @@ module.exports = require('./jwt')({
   environment: 'browser',
   crypto,
   util,
+  b64uUtil,
   supportedAlgorithms
 });

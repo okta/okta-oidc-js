@@ -5,7 +5,6 @@ const util = module.exports = {};
 
 module.exports = (b64uUtil, algoMap) => {
   return {
-    b64u: b64uUtil,
     algoMap,
     
     decodeJwtString(string) {

@@ -2,6 +2,10 @@ const Jasmine = require('jasmine');
 const path = require('path');
 const SpecReporter = require('jasmine-spec-reporter').SpecReporter;
 
+const env = require('./env');
+env.name = 'node';
+env.jwt = require('../src/node');
+
 const jasmine = new Jasmine({
   // Jasmine uses the wrong base directory if it's hoisted with lerna
   projectBaseDir: path.resolve(__dirname, '..')

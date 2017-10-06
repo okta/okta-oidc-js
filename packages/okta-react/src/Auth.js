@@ -36,6 +36,7 @@ export default class Auth {
   }
 
   async handleAuthentication() {
+    /*
     const tokens = await this._oktaAuth.token.parseFromUrl();
     for (let token of tokens) {
       if (token.idToken) {
@@ -44,6 +45,7 @@ export default class Auth {
         this._oktaAuth.tokenManager.add('accessToken', token);
       }
     }
+    */
   }
 
   async isAuthenticated() {

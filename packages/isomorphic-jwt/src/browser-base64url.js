@@ -1,17 +1,21 @@
 const strUtil = require('./strUtil');
 
-const base64url = {
+const b64Util = {
+
+};
+
+const b64uUtil = {
   toBase64(b64uString) {
-    const paddingRequired = b64uString % 4;
-    if (paddingRequired === 1) {
-      throw new Error('Not a valid Base64Url');
+    const paddingRequired = 4 - (b64uString % 4);
+    if (paddingRequired === 3) {
+      throw new Error('Not a valid base64url');
     }
     return (b64uString + '=='.slice(0, paddingRequired))
       .replace(/\-/g, '+')
       .replace(/_/g, '/');
   },
   decode(b64uString) {
-    const str = atob(base64url.toBase64(b64uString));
+    const str = atob(b64uUtil.toBase64(b64uString));
     try {
       // ensures that unicode is handled properly
       return decodeURIComponent(escape(str));
@@ -19,9 +23,13 @@ const base64url = {
       return str;
     }
   },
+  encode(str) {
+    const b64 = strUtil.toBase64(str);
+    return b64Util.toBase64Url(b64);
+  },
   toBuffer(b64uString) {
-    return strUtil.toBuffer(base64url.toBase64(b64uString));
+    return strUtil.toBuffer(b64uUtil.decode(b64uString));
   }
 };
 
-module.exports = base64url;
+module.exports = b64uUtil;

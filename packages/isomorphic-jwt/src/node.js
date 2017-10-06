@@ -1,6 +1,6 @@
 const crypto = require('@trust/webcrypto');
-const base64url = require('base64url');
-const util = require('./util')(base64url);
+const b64uUtil = require('base64url');
+const util = require('./util')(b64uUtil);
 
 const supportedAlgorithms = {
   HS256: {
@@ -25,5 +25,6 @@ module.exports = require('./jwt')({
   environment: 'node',
   crypto,
   util,
+  b64uUtil,
   supportedAlgorithms
 });

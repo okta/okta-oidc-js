@@ -1,6 +1,5 @@
-const jwt = require('../../dist/node');
-const errors = require('../../src/errors');
 const tokens = require('../tokens');
+const jwt = require('../env').jwt;
 
 describe('jwt.decode', () => {
   it('should decode unicode', () => {

@@ -1,4 +1,7 @@
-module.exports = {
+const strUtil = {
+  toBase64(str) {
+
+  },
   toBuffer(str) {
     const buffer = new Uint8Array(str.length);
     for (let i = 0; i < str.length; i++) {
@@ -21,3 +24,5 @@ module.exports = {
     }
   }
 };
+
+module.exports = strUtil;

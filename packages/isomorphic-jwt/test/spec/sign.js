@@ -1,22 +1,15 @@
-const jwt = require('../../dist/universal');
-const errors = require('../../src/errors');
 const tokens = require('../tokens');
-
-function expectError(promise, errorMessage) {
-  let error = {};
-  return promise
-    .catch(err => error = err)
-    .then(() => expect(error.message).toEqual(errorMessage));
-}
+const jwt = require('../env').jwt;
+const util = require('../util');
 
 describe('jwt.sign', () => {
-  describe('RS384', () => {
+  describe('RS256', () => {
     it('should allow signing claims', () => {
       return jwt.sign({
         claims: tokens.standardClaimsSet,
-        jwk: tokens.RS384privateKey
+        jwk: tokens.RS256privateKey
       })
-      .then(res => expect(res).toEqual(''));
+      .then(res => expect(res).toEqual(tokens.RS256token));
     });
   });
 });

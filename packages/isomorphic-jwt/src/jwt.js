@@ -1,13 +1,42 @@
 const { JwtError } = require('./errors');
 const strUtil = require('./strUtil');
 
-module.exports = ({environment, crypto, util, supportedAlgorithms}) => {
+module.exports = ({environment, crypto, util, b64uUtil, supportedAlgorithms}) => {
   return {
     decode(token) {
       return util.decodeJwtString(token).claimsSet;
     },
     generateKey({alg}) {
+      return new Promise((resolve, reject) => {
+        const supportedAlgo = supportedAlgorithms[alg];
+        if (!supportedAlgo) {
+          throw new JwtError(`jwt in ${environment} cannot generate ${alg} keys`);
+        }
 
+        const algo = Object.assign({
+          modulusLength: 2048,
+          publicExponent: new Uint8Array([0x01, 0x00, 0x01]),
+        }, supportedAlgo);
+        const extractable = true;
+        const usages = ['sign', 'verify'];
+
+        crypto.subtle.generateKey(
+          algo,
+          extractable,
+          usages
+        )
+        .catch(err => reject(new JwtError(`Unable to generate key: ${err.message}`)))
+        .then(key => {
+          if (!key) return;
+
+          return Promise.all([
+            crypto.subtle.exportKey('jwk', key.publicKey),
+            crypto.subtle.exportKey('jwk', key.privateKey)
+          ])
+          .then(([publicKey, privateKey] = []) => resolve({ publicKey, privateKey }));
+        })
+        .catch(err => reject(new JwtError(`Unable to export key: ${err.message}`)));
+      });
     },
     sign({claims, jwk}) {
       return new Promise((resolve, reject) => {
@@ -19,32 +48,66 @@ module.exports = ({environment, crypto, util, supportedAlgorithms}) => {
           throw new JwtError('Must provide a jwk to sign with');
         }
 
-        // 7.1.1
-        const string = strUtil.isString(claims) ? claims : JSON.stringify(claims);
-
-        if (!strUtil.representsObject(string)) {
-          throw new JwtError('Provided claims must be JSON');
-        }
-
-        // 7.1.2
-        const message = strUtil.toBuffer(string);
-
-        // 7.1.3
         if (!jwk.alg) {
           throw new JwtError('An alg is currently required to sign using a jwk');
         }
+
+        // JSON Web Signature (JWS) - rfc7515
+        // 5.1  Message Signature or MAC Computation
+
+        // 5.1.1
+        // Create the content to be used as the JWS Payload.
+        let string;
+        try {
+          string = JSON.stringify(claims);
+        } catch (e) {
+          throw new JwtError(`Unable to stringify claims: ${e.message}`);
+        }
+
+        // 5.1.2
+        // Compute the encoded payload value BASE64URL(JWS Payload).
+        let b64uPayload;
+        try {
+          b64uPayload = b64uUtil.encode(string);
+        } catch(e) {
+          throw new JwtError(`Unable to encode payload: ${e.message}`);
+        }
+
+        // 5.1.3
+        // Create the JSON object(s) containing the desired set of Header
+        // Parameters, which together comprise the JOSE Header (the JWS
+        // Protected Header and/or the JWS Unprotected Header).
         const algo = supportedAlgorithms[jwk.alg];
         if (!algo) {
           throw new JwtError(`jwt in ${environment} does not support ${algo}`);
         }
+        const header = Object.assign({}, algo);
 
-        // 7.1.4
+        // 5.1.4
+        // Compute the encoded header value BASE64URL(UTF8(JWS Protected
+        // Header)).  If the JWS Protected Header is not present (which can
+        // only happen when using the JWS JSON Serialization and no
+        // "protected" member is present), let this value be the empty
+        // string.
+        let b64uHeader;
+        try {
+          b64uHeader = b64uUtil.encode(JSON.stringify(header));
+        } catch (e) {
+          throw new JwtError(`Unable to encode header: ${e.message}`);
+        }
+
+        // 5.1.5
+        // Compute the JWS Signature in the manner defined for the
+        // particular algorithm being used over the JWS Signing Input
+        // ASCII(BASE64URL(UTF8(JWS Protected Header)) || '.' ||
+        // BASE64URL(JWS Payload)).  The "alg" (algorithm) Header Parameter
+        // MUST be present in the JOSE Header, with the algorithm value
+        // accurately representing the algorithm used to construct the JWS
+        // Signature.
+        const claimsSetBuffer = strUtil.toBuffer(b64uHeader + '.' + b64uPayload);
         const format = 'jwk';
         const extractable = false;
         const usages = ['sign'];
-
-        jwk = Object.assign({}, jwk);
-        delete jwk.use;
 
         return crypto.subtle.importKey(
           format,
@@ -53,19 +116,36 @@ module.exports = ({environment, crypto, util, supportedAlgorithms}) => {
           extractable,
           usages
         )
-        .catch(err => reject(new JwtError('Unable to import key: ' + err.message)))
+        .catch(err => reject(new JwtError(`Unable to import key: ${err.message}`)))
         .then(cryptoKey => {
           if (!cryptoKey) return;
-          return crypto.subtle.sign({
+          return crypto.subtle.sign(
             algo,
             cryptoKey,
-            message
-          });
+            claimsSetBuffer
+          );
         })
         .then(signatureBuffer => {
-          resolve(signatureBuffer.toString());
+
+          // 5.1.6
+          // Compute the encoded signature value BASE64URL(JWS Signature).
+          const b64uSignature = b64uUtil.encode(signatureBuffer);
+
+          // 5.1.7
+          // If the JWS JSON Serialization is being used, repeat this process
+          // (steps 3-6) for each digital signature or MAC operation being
+          // performed.
+          // TODO: currently unsupported
+
+          // 5.1.8
+          // Create the desired serialized output.  The JWS Compact
+          // Serialization of this result is BASE64URL(UTF8(JWS Protected
+          // Header)) || '.' || BASE64URL(JWS Payload) || '.' || BASE64URL(JWS
+          // Signature).  The JWS JSON Serialization is described in
+          // Section 7.2.
+          resolve(`${b64uHeader}.${b64uPayload}.${b64uSignature}`);
         })
-        .catch(() => reject(new JwtError('Unable to sign the claims')))
+        .catch(err => reject(new JwtError(`Unable to sign the claims: ${err.message}`)));
       });
     },
     verify({token, jwk} = {}) {
@@ -121,7 +201,7 @@ module.exports = ({environment, crypto, util, supportedAlgorithms}) => {
           if (!cryptoKey) return;
 
           const claimsSetBuffer = strUtil.toBuffer(b64uHeader + '.' + b64uClaimsSet);
-          const signature = util.b64u.toBuffer(b64uSignature);
+          const signature = b64uUtil.toBuffer(b64uSignature);
     
           return crypto.subtle.verify(
             algo,

@@ -7,7 +7,8 @@
   "scripts": {
     "test": "npm run test:node && npm run test:browser",
     "test:node": "npm run build:node && node test/jasmine-node.js",
-    "test:browser": "echo \"add browser tests\"",
+    "test:browser": "karma start karma.conf.js --single-run",
+    "start:browser": "karma start karma.conf.js",
     "build": "rm -rf dist && npm run build:node && npm run build:browser",
     "build:node": "BABEL_ENV=node babel src --out-dir dist",
     "build:browser": "webpack --config webpack.browser.config.js"
@@ -32,7 +33,16 @@
     "babel-preset-env": "^1.6.0",
     "common-tags": "^1.4.0",
     "jasmine": "^2.8.0",
+    "jasmine-core": "^2.8.0",
     "jasmine-spec-reporter": "^4.2.1",
+    "karma": "^1.7.1",
+    "karma-chrome-launcher": "^2.2.0",
+    "karma-firefox-launcher": "^1.0.1",
+    "karma-ie-launcher": "^1.0.0",
+    "karma-jasmine": "^1.1.0",
+    "karma-opera-launcher": "^1.0.0",
+    "karma-safari-launcher": "^1.0.0",
+    "karma-webpack": "^2.0.4",
     "uglifyjs-webpack-plugin": "^0.4.6",
     "webpack": "^3.6.0"
   }

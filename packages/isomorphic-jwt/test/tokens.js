@@ -24,10 +24,7 @@ tokens.malformedClaimsSet = 'eyJhbGciOiJub25lIn0.BAD.WACuDR_AlXngagNOa90c92xbWXY
 tokens.noAlgInHeader = 'e30=.eyJhIjoiYiJ9.DRwcShm-M7fOQcRhdmtqzzuiNPsv2tAnkV2gfnDMmM0';
 tokens.unsecuredJWT = 'eyJhbGciOiJub25lIn0.eyJhIjoiYiJ9.';
 
-tokens.RS256token = oneLineTrim`
-  eyJhbGciOiJSUzI1NiJ9.eyJhIjoiYiJ9.0rXhRx-Dtqs_EICINM_hOci-6OkvDlss0FvtOwdkyEy
-  82yYNJdjxSyNWOPdRnwiHrWp-vL-He-ul6xm7BtZ-tQnbZnU2QlT2nRTciOlt9_x7PVE1SnZVzMbc
-  8PYoc49ipbLsmjjqrIpvGP-le1vctXsw2zg5IbMCEBkIH20Kc1U`;
+tokens.RS256token = oneLineTrim`eyJuYW1lIjoiUlNBU1NBLVBLQ1MxLXYxXzUiLCJoYXNoIjp7Im5hbWUiOiJTSEEtMjU2In19.eyJhIjoiYiJ9.SNAmC4qBa3mAi5F_fmAvu-WsphHwXPK2XJ_1fQVR2xTkqT0_and6qVcOFoN9clCxsRRtnqWY8QKxIy0MRPgFq6fS6-rJrFg73s9g2xGEmQtQIrnHDDe2gYO5q75L4dPoSORItf6Ne9xoHTt64tv-yrzgTMUDO40Y6IeTMvs6OBTyLVpnXy2m4cWCtZe1MIRlOtu9SvBZHWuyaJgOFIDNNidiUlS1XGAEVWmSIT74_Y9a5yIg-DmoNoitOj5VObwofo6aioQWRuMbizC7-PlWp5ZiTEzUKYrJYbhUgyj-Fp22lkJJ1vuNxX2CjmompKnTr49N-wSeqbO3mTWfFHfU9w`;
 
 tokens.RS256invalidToken = oneLineTrim`
   eyJhbGciOiJSUzI1NiJ9.eyJhIjoiYyJ9.0rXhRx-Dtqs_EICINM_hOci-6OkvDlss0FvtOwdkyEy
@@ -35,19 +32,32 @@ tokens.RS256invalidToken = oneLineTrim`
   8PYoc49ipbLsmjjqrIpvGP-le1vctXsw2zg5IbMCEBkIH20Kc1U`;
 
 tokens.RS256publicKey = {
-  alg: 'RS256',
-  kty: 'RSA',
-  n: oneLineTrim`3ZWrUY0Y6IKN1qI4BhxR2C7oHVFgGPYkd38uGq1jQNSqEvJFcN93CYm16_G78F
-    AFKWqwsJb3Wx-nbxDn6LtP4AhULB1H0K0g7_jLklDAHvI8yhOKlvoyvsUFPWtNxlJyh5JJXvkNK
-    V_4Oo12e69f8QCuQ6NpEPl-cSvXIqUYBCs`,
-  e: 'AQAB',
-  use: 'sig',
-  kid: 'U5R8cHbGw445Qbq8zVO1PcCpXL8yG6IcovVa3laCoxM'
+  "kty": "RSA",
+  "alg": "RS256",
+  "n": "o1VZ9_2XsijRDA5eIRNtZmqgN_3QG4N_NhiwBJNekg7ufpj0rakjEjFbq8bUHcxxJJGTmdKa--K3chJ8jTaf9hlQWgVAplD9waPXqfT480ejjyXW0qA7Rqg48g2bvG_tA1EUVSyrkmjkNIF7j1-1F1UJ3dgiHq8686G7dFR7TkmXOD3RiMQ2LEtUcmbZLanmGWVRgXSFkjCl7mSA2qN-nq2X79c06x14LZWeLKE0IdNET4L_UIrG7XOdwSgOisOWagJWHGmcq_sEbNngSQFf1iAeEhmZW6OBGGi3m3WfFPtJCUmC8usBaO-H8ONVV3_DZxcR5P33sRyvOIQ2bnuEIQ",
+  "e": "AQAB",
+  "key_ops": [
+    "verify"
+  ],
+  "ext": true
 };
 
-tokens.RS256privateKey = Object.assign({
-  d: oneLineTrim``
-}, tokens.RS384publicKey);
+tokens.RS256privateKey = {
+  "kty": "RSA",
+  "alg": "RS256",
+  "n": "o1VZ9_2XsijRDA5eIRNtZmqgN_3QG4N_NhiwBJNekg7ufpj0rakjEjFbq8bUHcxxJJGTmdKa--K3chJ8jTaf9hlQWgVAplD9waPXqfT480ejjyXW0qA7Rqg48g2bvG_tA1EUVSyrkmjkNIF7j1-1F1UJ3dgiHq8686G7dFR7TkmXOD3RiMQ2LEtUcmbZLanmGWVRgXSFkjCl7mSA2qN-nq2X79c06x14LZWeLKE0IdNET4L_UIrG7XOdwSgOisOWagJWHGmcq_sEbNngSQFf1iAeEhmZW6OBGGi3m3WfFPtJCUmC8usBaO-H8ONVV3_DZxcR5P33sRyvOIQ2bnuEIQ",
+  "e": "AQAB",
+  "d": "lvJvVj-4LP-JyuGQXnMM3OTXs0dPR84sB7ujGGd1s_g2syr6nW-9qLeS59q19-AUBF7BkRxQ_U6WiMbK8tqz1IWqe7d0-v_ItGeODVUHqhXf85Bdy4Qno_Idxp2K-whZe4I4D0tcOM_VbyznGyaxPqHpn2t6hO8exUAH9MeKuVrQ8TwUVbZZTkPwEYw-nRjDSmA6tUEIbFrCKLoh5d4oNOsGO0diEv5DL_dYpY2gy4ySxh5aXsP4ii5jQLkqwJbBEV1lqZeAVd2b4r7jwH9NOYLTyoq4JZiH9W2nLlDQq85t_vti8iHEjpFSclmTwDSKzUWcuT4LLMrgSpQaNKh9QQ",
+  "p": "1-VELkzKCwa4POoPE_vT3M1KnFxfCmR1ZLb3ikl2tEWHBa7z_L52IvcvvXDdSmXjyt4Svs6hV-IUg3YMPsvrVePs073hWu1NjdfOd6QQ5qxUQIt53m8IIur6nXtwxlB3y4ScBJpiW41g1NNDu7aGtSQSrJglaVHnhefCPJtJovk",
+  "q": "wayI_SIj_e07N4fz4jfYSrA3YIprtBb_1vI3TWAj-AwZyf-abOA4ahZaWELsDYEPUkZ-kwRQNIzWG8fd-PctJsc9wYmnENK7z0y1mIB5pPPymhuqHuszZYYP2QZzlS8U4_SWSgRM9IYmBUNz2Do9uRkqp_GMttoYYIXj5FvEDGk",
+  "dp": "yll_IuokAFum-KjjwvYn526efJjzFzl68g-vSXR7hpEX8VK-KeiVr0YA_8y2DBIdg7nK1f2zKTyjv2c4KO9VvmXnRbpVarS6GLTpNieXE6z3NpvDeKCWfqvAgzP8SlOHREAhPws4HtkOpcrxVBHKhiKuQghEIEd8-Xt0CPv-83k",
+  "dq": "sY_ypEmJwAOg1_-wDIXwqkE29C7UIe84LiQxqaHsOD0346eROCK19iV6PRNWAeeCWYdCAp3gvt0ka6Hpk5libvwaVXdTkSvzflIw55labW4uzTVx2hj_LSQlIW81xt-8gmY6569bso_PCeJWsjZrYml9Xy4pOXdpBA2c6z9q1Yk",
+  "qi": "slBr8AVMS2hLSHuicTEDJxAPx9MxeVIpQA44KyQECWFd-asoWY6LZs5-XexJqJFMcfWzwrZ7-RALWyRhwXNls3WAV9KUBWjKeA7ruaZJHSh10XVwXRzRW-IUI2ylb_KrxdBDi3Z2wwixXsM8ji4AVOZVIwlTEWHCpWg3bCDL23Y",
+  "key_ops": [
+    "sign"
+  ],
+  "ext": true
+};
 
 tokens.RS384token = oneLineTrim``;
 
