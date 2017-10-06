@@ -1,6 +1,8 @@
-const strUtil = {
-  toBase64(str) {
+const base64ArrayBuffer = require('./base64ArrayBuffer');
 
+const strUtil = {
+  fromBuffer(buffer) {
+    return base64ArrayBuffer(buffer);
   },
   toBuffer(str) {
     const buffer = new Uint8Array(str.length);

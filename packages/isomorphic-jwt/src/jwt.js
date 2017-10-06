@@ -1,7 +1,9 @@
+const Base64 = require('js-base64').Base64;
+const b64 = require('base64-js');
 const { JwtError } = require('./errors');
 const strUtil = require('./strUtil');
 
-module.exports = ({environment, crypto, util, b64uUtil, supportedAlgorithms}) => {
+module.exports = ({environment, crypto, util, supportedAlgorithms}) => {
   return {
     decode(token) {
       return util.decodeJwtString(token).claimsSet;
@@ -68,7 +70,7 @@ module.exports = ({environment, crypto, util, b64uUtil, supportedAlgorithms}) =>
         // Compute the encoded payload value BASE64URL(JWS Payload).
         let b64uPayload;
         try {
-          b64uPayload = b64uUtil.encode(string);
+          b64uPayload = Base64.encodeURI(string);
         } catch(e) {
           throw new JwtError(`Unable to encode payload: ${e.message}`);
         }
@@ -91,7 +93,7 @@ module.exports = ({environment, crypto, util, b64uUtil, supportedAlgorithms}) =>
         // string.
         let b64uHeader;
         try {
-          b64uHeader = b64uUtil.encode(JSON.stringify(header));
+          b64uHeader = Base64.encodeURI(JSON.stringify(header));
         } catch (e) {
           throw new JwtError(`Unable to encode header: ${e.message}`);
         }
@@ -129,7 +131,7 @@ module.exports = ({environment, crypto, util, b64uUtil, supportedAlgorithms}) =>
 
           // 5.1.6
           // Compute the encoded signature value BASE64URL(JWS Signature).
-          const b64uSignature = b64uUtil.encode(signatureBuffer);
+          const b64uSignature = Base64.encodeURI(b64.fromByteArray(new Uint8Array(signatureBuffer)));
 
           // 5.1.7
           // If the JWS JSON Serialization is being used, repeat this process
@@ -201,7 +203,7 @@ module.exports = ({environment, crypto, util, b64uUtil, supportedAlgorithms}) =>
           if (!cryptoKey) return;
 
           const claimsSetBuffer = strUtil.toBuffer(b64uHeader + '.' + b64uClaimsSet);
-          const signature = b64uUtil.toBuffer(b64uSignature);
+          const signature = strUtil.toBuffer(Base64.encodeURI(b64uSignature));
     
           return crypto.subtle.verify(
             algo,
