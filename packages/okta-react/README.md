@@ -162,6 +162,102 @@ export default withAuth(class MessageList extends Component {
 }));
 ```
 
+## Reference
+
+### `Security`
+
+Security is the top-most component of okta-react. This is where most of the configuration is provided.
+
+#### Configuration options
+* **issuer** (required) - The OpenId Connect `issuer`
+* **client_id** (required) - The OpenId Connect `client_id`
+* **redirect_uri** (required) - Where the callback handler is hosted
+* **onAuthRequired** (optional)
+
+  Accepts a callback to make a decision when authentication is required. If this is not supplied, `okta-react` redirects to Okta. This callback will receive `auth` and `history` parameters. This is triggered when:
+    1. `auth.login` is called
+    2. SecureRoute is accessed without authentication
+
+#### Example
+
+```typescript
+function customAuthHandler({auth, history}) {
+  // Redirect to the /login page that has a CustomLoginComponent
+  history.push('/login');
+}
+
+class App extends Component {
+  render() {
+    return (
+      <Router>
+        <Security issuer='https://{yourOktaDomain}.com/oauth2/default'
+                  client_id='{clientId}'
+                  redirect_uri={window.location.origin + '/implicit/callback'}
+                  onAuthRequired={customAuthHandler} >
+          <Router path='/login' component={CustomLoginComponent}>
+          {/* some routes here */}
+        </Security>
+      </Router>
+    );
+  }
+}
+```
+
+### `SecureRoute`
+
+`SecureRoute` ensures that a route is only rendered if the user is authenticated. If the user is not authenticated, it calls `onAuthRequired` if it exists, otherwise, it redirects to Okta.
+
+### `ImplicitCallback`
+
+`ImplicitCallback` handles the callback after the redirect. By default, it parses the tokens from the uri, stores them, then redirects to `/`. If a `SecureRoute` caused the redirect, then the callback redirects to the secured route.
+
+### `withAuth`
+
+`withAuth` provides a way for components to make decisions based on auth state. It injects an `auth` prop into the component.
+
+### `auth`
+
+`auth` provides methods that allow managing tokens and auth state. All of the methods return Promises.
+
+* `auth.isAuthenticated()`
+
+  Returns `true` or `false`, depending on whether the user has an active access or id token.
+
+* `auth.getUser()`
+
+  Returns the result of the userinfo endpoint if an access token exists.
+
+* `auth.getIdToken()`
+
+  Retrieves the id token from storage if it exists.
+
+* `auth.getAccessToken()`
+
+  Retrieves the access token from storage if it exists.
+
+* `auth.login()`
+
+  Calls `onAuthRequired` or redirects to Okta if `onAuthRequired` is undefined.
+
+* `auth.logout()`
+
+  Removes all the tokens and redirects to `/`.
+
+* `auth.redirect({sessionToken})`
+
+  Performs a redirect to Okta with an optional `sessionToken`.
+
+  Example:
+  ```typescript
+  auth.redirect({
+    sessionToken: '{sampleSessionToken}'
+  });
+  ```
+
+* `auth.handleAuthentication()`
+
+  Parses tokens from the url and stores them.
+
 ## Development
 1. Clone the repo:
   - `git clone git@github.com:okta/okta-oidc-js.git`

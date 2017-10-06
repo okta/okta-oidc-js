@@ -1,23 +1,21 @@
 import {
   AppPage,
   OktaSignInPage,
-  LoginPage,
-  ProtectedPage
+  ProtectedPage,
+  SessionTokenSignInPage
 } from './page-objects';
 
-import { Utils } from './utils';
-
 describe('React + Okta App', () => {
-  let page;
+  let appPage;
   let oktaLoginPage;
-  let loginPage;
   let protectedPage;
+  let sessionTokenSignInPage;
 
   beforeEach(() => {
-    page = new AppPage();
-    loginPage = new LoginPage();
+    appPage = new AppPage();
     oktaLoginPage = new OktaSignInPage();
     protectedPage = new ProtectedPage();
+    sessionTokenSignInPage = new SessionTokenSignInPage();
   });
 
   it('should redirect to Okta for login when trying to access a protected page', () => {
@@ -34,19 +32,16 @@ describe('React + Okta App', () => {
 
     // Logout
     protectedPage.getLogoutButton().click();
+
+    appPage.waitUntilLoggedOut();
   });
 
-  /**
-   * Hack to slowdown the tests due to the Okta session
-   * not being removed in time for the second login call.
-   */
-  const util = new Utils();
-  util.slowDown(100);
-
   it('should redirect to Okta for login', () => {
-    loginPage.navigateTo();
+    appPage.navigateTo();
 
-    loginPage.getLoginButton().click();
+    appPage.waitUntilVisible();
+
+    appPage.getLoginButton().click();
 
     oktaLoginPage.waitUntilVisible();
 
@@ -55,10 +50,31 @@ describe('React + Okta App', () => {
       password: process.env.PASSWORD
     });
 
-    loginPage.waitUntilVisible();
-    expect(loginPage.getLogoutButton().isPresent()).toBeTruthy();
+    appPage.waitUntilVisible();
+    expect(appPage.getLogoutButton().isPresent()).toBeTruthy();
 
     // Logout
-    loginPage.getLogoutButton().click();
+    appPage.getLogoutButton().click();
+
+    appPage.waitUntilLoggedOut();
+  });
+
+  it('should allow passing sessionToken to skip Okta login', () => {
+    sessionTokenSignInPage.navigateTo();
+
+    sessionTokenSignInPage.waitUntilVisible();
+
+    sessionTokenSignInPage.signIn({
+      username: process.env.USERNAME,
+      password: process.env.PASSWORD
+    });
+
+    appPage.waitUntilLoggedIn();
+    expect(appPage.getLogoutButton().isPresent()).toBeTruthy();
+
+    // Logout
+    appPage.getLogoutButton().click();
+
+    appPage.waitUntilLoggedOut();
   });
 });
