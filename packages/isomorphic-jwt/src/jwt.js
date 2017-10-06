@@ -197,9 +197,7 @@ module.exports = ({environment, crypto, util, supportedAlgorithms}) => {
           extractable,
           usages
         )
-        .catch(err => {
-          reject(new JwtError('Unable to import key'))
-        })
+        .catch(err => reject(new JwtError(`Unable to import key: ${err.message}`)))
         .then(cryptoKey => {
           if (!cryptoKey) return;
 

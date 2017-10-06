@@ -2,7 +2,7 @@ const tokens = require('../tokens');
 const jwt = require('../env').jwt;
 const util = require('../util');
 
-describe('jwt.verify', () => {
+xdescribe('jwt.verify', () => {
   it('should throw an error for an unsecured jwt', () => {
     return util.expectPromiseError(jwt.verify({
       token: tokens.unsecuredJWT,

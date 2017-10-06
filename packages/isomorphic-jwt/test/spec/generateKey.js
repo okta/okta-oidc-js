@@ -3,7 +3,7 @@ const env = require('../env');
 const jwt = env.jwt;
 const util = require('../util');
 
-describe('jwt.generateKey', () => {
+xdescribe('jwt.generateKey', () => {
   it('should throw an error if an algorithm is unsupported', () => {
     util.expectPromiseError(jwt.generateKey({ alg: 'nonexistant' }),
       `jwt in ${env.name} cannot generate nonexistant keys`);
