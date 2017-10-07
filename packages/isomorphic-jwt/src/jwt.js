@@ -1,6 +1,6 @@
 const { JwtError } = require('./errors');
 const strUtil = require('./strUtil');
-const base64url = require('base64url');
+const base64url = require('./base64url');
 
 module.exports = ({environment, crypto, util, supportedAlgorithms}) => {
   return {
@@ -16,7 +16,7 @@ module.exports = ({environment, crypto, util, supportedAlgorithms}) => {
 
         const algo = Object.assign({
           modulusLength: 2048,
-          publicExponent: new Uint8Array([0x01, 0x00, 0x01]),
+          publicExponent: new Uint8Array([0x01, 0x00, 0x01]), // 65537
         }, supportedAlgo);
         const extractable = true;
         const usages = ['sign', 'verify'];

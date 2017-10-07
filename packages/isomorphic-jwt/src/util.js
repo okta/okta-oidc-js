@@ -1,5 +1,5 @@
 const { JwtTypeError, JwtError } = require('./errors');
-const base64url = require('base64url');
+const base64url = require('./base64url');
 const strUtil = require('./strUtil');
 
 const util = module.exports = {};
