@@ -9,7 +9,7 @@ describe('jwt.generateKey', () => {
       `jwt in ${env.name} cannot generate nonexistant keys`);
   });
 
-  it('should return a RS256 key', () => {
+  env.supports('RS256').it('should return a RS256 key', () => {
     return jwt.generateKey({
       alg: 'RS256'
     })
@@ -39,7 +39,7 @@ describe('jwt.generateKey', () => {
     });
   });
 
-  it('should return a RS384 key', () => {
+  env.supports('RS384').it('should return a RS384 key', () => {
     return jwt.generateKey({
       alg: 'RS384'
     })

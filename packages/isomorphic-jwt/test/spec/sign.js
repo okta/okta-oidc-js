@@ -1,9 +1,10 @@
 const tokens = require('../tokens');
-const jwt = require('../env').jwt;
+const env = require('../env');
+const jwt = env.jwt;
 const util = require('../util');
 
 describe('jwt.sign', () => {
-  describe('RS256', () => {
+  env.supports('RS256').describe('RS256', () => {
     it('should allow signing claims', () => {
       return jwt.sign({
         claims: tokens.standardClaimsSet,
@@ -13,7 +14,7 @@ describe('jwt.sign', () => {
     });
   });
 
-  describe('RS384', () => {
+  env.supports('RS384').describe('RS384', () => {
     it('should allow signing claims', () => {
       return jwt.sign({
         claims: tokens.standardClaimsSet,

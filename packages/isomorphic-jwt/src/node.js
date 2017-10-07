@@ -14,10 +14,10 @@ const supportedAlgorithms = {
     name: 'RSASSA-PKCS1-v1_5',
     hash: { name: 'SHA-256' }
   },
-  RS384: {
-    name: 'RSASSA-PKCS1-v1_5',
-    hash: { name: 'SHA-384' }
-  }
+  // RS384: {
+  //   name: 'RSASSA-PKCS1-v1_5',
+  //   hash: { name: 'SHA-384' }
+  // }
 };
 
 module.exports = require('./jwt')({

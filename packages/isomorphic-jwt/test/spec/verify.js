@@ -1,5 +1,6 @@
 const tokens = require('../tokens');
-const jwt = require('../env').jwt;
+const env = require('../env');
+const jwt = env.jwt;
 const util = require('../util');
 
 describe('jwt.verify', () => {
@@ -46,7 +47,7 @@ describe('jwt.verify', () => {
     }), new RegExp('Unable to import key:'));
   });
 
-  describe('RS256', () => {
+  env.supports('RS256').describe('RS256', () => {
     it('should return claims set on success', () => {
       return jwt.verify({
         token: tokens.RS256token,
@@ -64,7 +65,7 @@ describe('jwt.verify', () => {
     });
   });
 
-  describe('RS384', () => {
+  env.supports('RS384').describe('RS384', () => {
     it('should return claims set on success', () => {
       return jwt.verify({
         token: tokens.RS384token,

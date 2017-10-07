@@ -4,7 +4,7 @@ const jwt = env.jwt;
 const util = require('../util');
 
 describe('using jwt operations end-to-end', () => {
-  it('should allow generating, signing and verifying using RS256', () => {
+  env.supports('RS256').it('should allow generating, signing and verifying using RS256', () => {
     return jwt.generateKey({
       alg: 'RS256'
     })
@@ -23,7 +23,7 @@ describe('using jwt operations end-to-end', () => {
     .then(res => expect(res).toEqual(tokens.standardClaimsSet));
   });
 
-  it('should allow generating, signing and verifying using RS384', () => {
+  env.supports('RS384').it('should allow generating, signing and verifying using RS384', () => {
     return jwt.generateKey({
       alg: 'RS384'
     })

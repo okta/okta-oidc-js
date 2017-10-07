@@ -80,7 +80,7 @@ module.exports = ({environment, crypto, util, supportedAlgorithms}) => {
         // Protected Header and/or the JWS Unprotected Header).
         const algo = supportedAlgorithms[jwk.alg];
         if (!algo) {
-          throw new JwtError(`jwt in ${environment} does not support ${algo}`);
+          throw new JwtError(`jwt in ${environment} does not support ${jwk.alg}`);
         }
         const header = {
           alg: jwk.alg
@@ -172,7 +172,7 @@ module.exports = ({environment, crypto, util, supportedAlgorithms}) => {
         const format = 'jwk';
         const algo = supportedAlgorithms[header.alg];
         if (!algo) {
-          throw new JwtError(`jwt in ${environment} does not support ${algo}`);
+          throw new JwtError(`jwt in ${environment} does not support ${jwk.alg}`);
         }
 
         // alg is optional, but we'll use it to provide a better error message
