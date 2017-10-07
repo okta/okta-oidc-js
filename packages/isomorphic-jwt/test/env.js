@@ -13,9 +13,8 @@ const env = {
       it: (description) => {
         it(description, () => pending(`${env.name} does not support ${algo}`)); 
       },
-      describe: (description, cb) => {
+      describe: (description) => {
         it(description, () => pending(`${env.name} does not support ${algo}`));
-        xdescribe(description, cb);
       }
     };
   }

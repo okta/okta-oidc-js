@@ -4,6 +4,7 @@ env.jwt = require('../src/browser');
 env.supportedAlgorithms = new Set([
   'RS256',
   'RS384',
+  'RS512',
   'HS256',
   'HS384'
 ]);

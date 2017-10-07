@@ -82,4 +82,22 @@ describe('jwt.verify', () => {
       .then(res => expect(res).toBe(false));
     });
   });
+
+  env.supports('RS512').describe('RS512', () => {
+    it('should return claims set on success', () => {
+      return jwt.verify({
+        token: tokens.RS512token,
+        jwk: tokens.RS512publicKey
+      })
+      .then(res => expect(res).toEqual(tokens.standardClaimsSet));
+    });
+
+    it('should return false on failure', () => {
+      return jwt.verify({
+        token: tokens.RS512invalidToken,
+        jwk: tokens.RS512publicKey
+      })
+      .then(res => expect(res).toBe(false));
+    });
+  });
 });

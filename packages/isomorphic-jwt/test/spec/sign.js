@@ -23,4 +23,14 @@ describe('jwt.sign', () => {
       .then(res => expect(res).toEqual(tokens.RS384token));
     });
   });
+
+  env.supports('RS512').describe('RS512', () => {
+    it('should allow signing claims', () => {
+      return jwt.sign({
+        claims: tokens.standardClaimsSet,
+        jwk: tokens.RS512privateKey
+      })
+      .then(res => expect(res).toEqual(tokens.RS512token));
+    });
+  });
 });

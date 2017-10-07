@@ -68,4 +68,34 @@ describe('jwt.generateKey', () => {
       expect(res.privateKey.qi).toBeDefined();
     });
   });
+
+  env.supports('RS512').it('should return a RS512 key', () => {
+    return jwt.generateKey({
+      alg: 'RS512'
+    })
+    .then(res => {
+      expect(res.publicKey).toBeDefined();
+      expect(res.publicKey.alg).toEqual('RS512');
+      expect(res.publicKey.e).toEqual('AQAB');
+      expect(res.publicKey.ext).toBe(true);
+      expect(res.publicKey.key_ops).toEqual(['verify']); // WebCrypto in node returns ['verify']
+      expect(res.publicKey.kty).toEqual('RSA');
+      expect(res.publicKey.n).toBeDefined();
+
+      expect(res.privateKey).toBeDefined();
+      expect(res.privateKey.alg).toEqual('RS512');
+      expect(res.privateKey.e).toEqual('AQAB');
+      expect(res.privateKey.ext).toBe(true);
+      expect(res.privateKey.key_ops).toEqual(['sign']);
+      expect(res.privateKey.kty).toEqual('RSA');
+      expect(res.privateKey.n).toBeDefined();
+      
+      expect(res.privateKey.d).toBeDefined();
+      expect(res.privateKey.dp).toBeDefined();
+      expect(res.privateKey.dq).toBeDefined();
+      expect(res.privateKey.p).toBeDefined();
+      expect(res.privateKey.q).toBeDefined();
+      expect(res.privateKey.qi).toBeDefined();
+    });
+  });
 });

@@ -17,6 +17,10 @@ const supportedAlgorithms = {
   RS384: {
     name: 'RSASSA-PKCS1-v1_5',
     hash: { name: 'SHA-384' }
+  },
+  RS512: {
+    name: 'RSASSA-PKCS1-v1_5',
+    hash: { name: 'SHA-512' }
   }
 };
 

@@ -172,7 +172,7 @@ module.exports = ({environment, crypto, util, supportedAlgorithms}) => {
         const format = 'jwk';
         const algo = supportedAlgorithms[header.alg];
         if (!algo) {
-          throw new JwtError(`jwt in ${environment} does not support ${jwk.alg}`);
+          throw new JwtError(`jwt in ${environment} does not support ${header.alg}`);
         }
 
         // alg is optional, but we'll use it to provide a better error message

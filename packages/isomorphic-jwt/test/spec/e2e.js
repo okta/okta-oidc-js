@@ -28,6 +28,25 @@ describe('using jwt operations end-to-end', () => {
       alg: 'RS384'
     })
     .then(res => {
+      return jwt.sign({
+        claims: tokens.standardClaimsSet,
+        jwk: res.privateKey
+      })
+      .then(signedJwt => {
+        return jwt.verify({
+          token: signedJwt,
+          jwk: res.publicKey
+        })
+      });
+    })
+    .then(res => expect(res).toEqual(tokens.standardClaimsSet));
+  });
+
+  env.supports('RS512').it('should allow generating, signing and verifying using RS512', () => {
+    return jwt.generateKey({
+      alg: 'RS512'
+    })
+    .then(res => {
       //console.log(JSON.stringify(res, null, 2));
       return jwt.sign({
         claims: tokens.standardClaimsSet,

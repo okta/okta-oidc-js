@@ -8,6 +8,7 @@ env.jwt = require('../src/node');
 env.supportedAlgorithms = new Set([
   'RS256',
   // 'RS384',
+  // 'RS512',
   'HS256',
   'HS384'
 ]);
