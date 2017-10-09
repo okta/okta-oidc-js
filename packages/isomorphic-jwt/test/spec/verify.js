@@ -118,4 +118,22 @@ describe('jwt.verify', () => {
       .then(res => expect(res).toBe(false));
     });
   });
+
+  env.supports('HS384').describe('HS384', () => {
+    it('should return claims set on success', () => {
+      return jwt.verify({
+        token: tokens.HS384token,
+        jwk: tokens.HS384sharedKey
+      })
+      .then(res => expect(res).toEqual(tokens.standardClaimsSet));
+    });
+
+    it('should return false on failure', () => {
+      return jwt.verify({
+        token: tokens.HS384invalidToken,
+        jwk: tokens.HS384sharedKey
+      })
+      .then(res => expect(res).toBe(false));
+    });
+  });
 });

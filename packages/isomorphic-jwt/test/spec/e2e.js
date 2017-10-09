@@ -66,6 +66,25 @@ describe('using jwt operations end-to-end', () => {
       alg: 'HS256'
     })
     .then(res => {
+      return jwt.sign({
+        claims: tokens.standardClaimsSet,
+        jwk: res.sharedKey
+      })
+      .then(signedJwt => {
+        return jwt.verify({
+          token: signedJwt,
+          jwk: res.sharedKey
+        })
+      });
+    })
+    .then(res => expect(res).toEqual(tokens.standardClaimsSet));
+  });
+
+  env.supports('HS384').it('should allow generating, signing and verifying using HS384', () => {
+    return jwt.generateKey({
+      alg: 'HS384'
+    })
+    .then(res => {
       //console.log('generatedKey', JSON.stringify(res, null, 2));
       return jwt.sign({
         claims: tokens.standardClaimsSet,

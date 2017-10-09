@@ -140,19 +140,19 @@ tokens.HS256sharedKey = {
   "kty": "oct"
 };
 
-tokens.HS384token = oneLineTrim``;
+tokens.HS384token = oneLineTrim`eyJhbGciOiJIUzM4NCJ9.eyJhIjoiYiJ9.gXNnRzvVAzFuazMNaAlYQV6WV5rVzNgeyM2nZQ-409JDeeHTRtBz5u_pFc0MjL-p`;
 
-tokens.HS384invalidToken = oneLineTrim``;
+tokens.HS384invalidToken = oneLineTrim`eyJhbGciOiJIUzM4NCJ9.eyJhIjoiYyJ9.gXNnRzvVAzFuazMNaAlYQV6WV5rVzNgeyM2nZQ-409JDeeHTRtBz5u_pFc0MjL-p`;
 
 tokens.HS384sharedKey = {
-  kty: 'oct',
-  use: 'sig',
-  k: oneLineTrim`r386O3QKO7vm7A3f5D98F-n2TBWW_SkWoSW3I0rb_pV_cV17MofSo7v8YBMMXw
-    Hm4HFCmV2_CAYjIEoYaQYgiH_Tm5YVw5lWYvEvKl7Fo8jKESHTcog_NSQgQTlOhRvzbRKOAukNY
-    5ulIsPNnaBgadvehm_F_YPOD0tUuC_Uts7Wk9AKObIyrOJej1lVcCzqcABYBs5dKWtv7Q6_Pi1i
-    lksM4OnZIJEuKcf-Bk8hY097WFLmgavTsCYBkMj32RmLxeBpkOMPp--g8PuzcS1nTnhrVnvu9Lc
-    NAVEuwxzMK6PV4QgMmrkMNrmTZcNwczIDFNvHnRegNQ5YtBMmfRXMug`,
-  alg: 'HS384'
+  "alg": "HS384",
+  "ext": true,
+  "k": "RsjOkcfWhvsID1EYlZ1bW2ijVCdTsRE7a8I53aEmnawod-souXwK-l3br6_obMJu_HRvi3TW6riLSaND5KzjTDlju0EwZvG5k0U4XGnSB2hd7shV_AfkbxCtMfXDJq1hORtn09hfLzxKQ9tl0xVS2IyLyfXkjHRLmk9DfnS6vLM",
+  "key_ops": [
+    "sign",
+    "verify"
+  ],
+  "kty": "oct"
 };
 
 tokens.standardToken = tokens.RS256token;

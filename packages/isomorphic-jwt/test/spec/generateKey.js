@@ -112,4 +112,18 @@ describe('jwt.generateKey', () => {
       expect(res.sharedKey.kty).toEqual('oct');
     });
   });
+
+  env.supports('HS384').it('should return a HS384 key', () => {
+    return jwt.generateKey({
+      alg: 'HS384'
+    })
+    .then(res => {
+      expect(res.sharedKey).toBeDefined();
+      expect(res.sharedKey.alg).toEqual('HS384');
+      expect(res.sharedKey.ext).toBe(true);
+      expect(res.sharedKey.k).toBeDefined();
+      expect(res.sharedKey.key_ops).toEqual(['sign', 'verify']); // WebCrypto in node returns ['verify']
+      expect(res.sharedKey.kty).toEqual('oct');
+    });
+  });
 });
