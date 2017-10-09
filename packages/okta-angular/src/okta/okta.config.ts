@@ -16,7 +16,7 @@ export interface OktaConfig {
   issuer?: string;
   redirectUri?: string;
   clientId?: string;
-  responseType?: string;
+  responseType?: string | string[];
   scopes?: any[];
 }
 
