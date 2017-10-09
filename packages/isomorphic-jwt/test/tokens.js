@@ -155,6 +155,21 @@ tokens.HS384sharedKey = {
   "kty": "oct"
 };
 
+tokens.HS512token = oneLineTrim`eyJhbGciOiJIUzUxMiJ9.eyJhIjoiYiJ9.dli60766qQ7ksSOPQTzL--R-FnfTcCMR5s7_h57tkEPNZITEXndPP88YJQ60mZr8PcbFI6XvjwC9gKucA3eIzg`;
+
+tokens.HS512invalidToken = oneLineTrim`eyJhbGciOiJIUzUxMiJ9.eyJhIjoiYyJ9.dli60766qQ7ksSOPQTzL--R-FnfTcCMR5s7_h57tkEPNZITEXndPP88YJQ60mZr8PcbFI6XvjwC9gKucA3eIzg`;
+
+tokens.HS512sharedKey = {
+  "alg": "HS512",
+  "ext": true,
+  "k": "ugRLYsPNGICtatMOJs-UJhVbRpG83XlqwNtgz4N89j_Go3_-b3kstlM0KuUZbr9IP9IJRQCf6ElvG2c_bYH9YHrEXBCmrSMp9-s5Byw-AYerIQhVBvW4ZOE1L3ku6eqta8CVxj0ciydk_bhK1qCNdX2534UPMq4z52FE5pcI5OM",
+  "key_ops": [
+    "sign",
+    "verify"
+  ],
+  "kty": "oct"
+};
+
 tokens.standardToken = tokens.RS256token;
 tokens.standardKey = tokens.RS256publicKey;
 tokens.standardClaimsSet = {

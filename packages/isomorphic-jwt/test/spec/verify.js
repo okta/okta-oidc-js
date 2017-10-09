@@ -136,4 +136,22 @@ describe('jwt.verify', () => {
       .then(res => expect(res).toBe(false));
     });
   });
+
+  env.supports('HS512').describe('HS512', () => {
+    it('should return claims set on success', () => {
+      return jwt.verify({
+        token: tokens.HS512token,
+        jwk: tokens.HS512sharedKey
+      })
+      .then(res => expect(res).toEqual(tokens.standardClaimsSet));
+    });
+
+    it('should return false on failure', () => {
+      return jwt.verify({
+        token: tokens.HS512invalidToken,
+        jwk: tokens.HS512sharedKey
+      })
+      .then(res => expect(res).toBe(false));
+    });
+  });
 });

@@ -10,6 +10,10 @@ const supportedAlgorithms = {
     name: 'HMAC',
     hash: { name: 'SHA-384' }
   },
+  HS512: {
+    name: 'HMAC',
+    hash: { name: 'SHA-512' }
+  },
   RS256: {
     name: 'RSASSA-PKCS1-v1_5',
     hash: { name: 'SHA-256' }
