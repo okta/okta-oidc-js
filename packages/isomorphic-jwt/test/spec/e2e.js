@@ -47,16 +47,35 @@ describe('using jwt operations end-to-end', () => {
       alg: 'RS512'
     })
     .then(res => {
-      //console.log(JSON.stringify(res, null, 2));
       return jwt.sign({
         claims: tokens.standardClaimsSet,
         jwk: res.privateKey
       })
       .then(signedJwt => {
-        //console.log(JSON.stringify(signedJwt, null, 2));
         return jwt.verify({
           token: signedJwt,
           jwk: res.publicKey
+        })
+      });
+    })
+    .then(res => expect(res).toEqual(tokens.standardClaimsSet));
+  });
+
+  env.supports('HS256').it('should allow generating, signing and verifying using HS256', () => {
+    return jwt.generateKey({
+      alg: 'HS256'
+    })
+    .then(res => {
+      //console.log('generatedKey', JSON.stringify(res, null, 2));
+      return jwt.sign({
+        claims: tokens.standardClaimsSet,
+        jwk: res.sharedKey
+      })
+      .then(signedJwt => {
+        //console.log('signedJwt', JSON.stringify(signedJwt, null, 2));
+        return jwt.verify({
+          token: signedJwt,
+          jwk: res.sharedKey
         })
       });
     })

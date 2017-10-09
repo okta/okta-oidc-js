@@ -14,10 +14,12 @@ module.exports = ({environment, crypto, util, supportedAlgorithms}) => {
           throw new JwtError(`jwt in ${environment} cannot generate ${alg} keys`);
         }
 
-        const algo = Object.assign({
-          modulusLength: 2048,
-          publicExponent: new Uint8Array([0x01, 0x00, 0x01]), // 65537
-        }, supportedAlgo);
+        const algo = supportedAlgo;
+        if (supportedAlgo.name === 'RSASSA-PKCS1-v1_5') {
+          algo.modulusLength = 2048;
+          algo.publicExponent = new Uint8Array([0x01, 0x00, 0x01]); // 65537
+        }
+
         const extractable = true;
         const usages = ['sign', 'verify'];
 
@@ -29,6 +31,11 @@ module.exports = ({environment, crypto, util, supportedAlgorithms}) => {
         .catch(err => reject(new JwtError(`Unable to generate key: ${err.message}`)))
         .then(key => {
           if (!key) return;
+
+          if (key && key.algorithm && key.algorithm.name === 'HMAC') {
+            return crypto.subtle.exportKey('jwk', key)
+            .then(sharedKey => resolve({ sharedKey }));
+          }
 
           return Promise.all([
             crypto.subtle.exportKey('jwk', key.publicKey),

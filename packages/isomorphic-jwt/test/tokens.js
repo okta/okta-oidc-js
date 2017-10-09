@@ -125,19 +125,19 @@ tokens.RS512privateKey = {
   "qi": "K9-Cq6MPltnC7h9yq9PM8RcP8fNuL8pc_u2Xz46azTWST_j7HAQRW4IsEm8OV2-hsvNcHklj0BNUxWukBRCf-T9AoGXnzdgUNAU6GoMlHhN3oxrHYS80mUiPpGvOy1GbvKH6zUjW7dpBntPiK79UegOwjS7AWlAKFN5Fos0xqTg"
 };
 
-tokens.HS256token = oneLineTrim``;
+tokens.HS256token = oneLineTrim`eyJhbGciOiJIUzI1NiJ9.eyJhIjoiYiJ9.AuPyDcttfqiDCUGeZzN2Zi5Y14QiEEf5YusaDXGMHVk`;
 
-tokens.HS256invalidToken = oneLineTrim``;
+tokens.HS256invalidToken = oneLineTrim`eyJhbGciOiJIUzI1NiJ9.eyJhIjoiYyJ9.AuPyDcttfqiDCUGeZzN2Zi5Y14QiEEf5YusaDXGMHVk`;
 
 tokens.HS256sharedKey = {
-  kty: 'oct',
-  use: 'sig',
-  k: oneLineTrim`k087JsfY6xxjqVesgLHe1CZzKHIhNQyehvOsETIkpMWAU4PcaN3NkYUJR9pFGt
-    OB2I9l5ECXOKVPccjNXRHP1aWpdJU2P0hqzmx-1r3QO79i2-TAQyQtcyyBXZR18-V_YIEV6YSkx
-    6LiPkNcrl-sz2stgQ4PzK1mwUfl45nQ0ySxYKV8NgVmCSo4fXaxLSrCWozj1iGbZhWXCpMOLLoE
-    pekHnoePD1hmFv_bq6r489YgwvwzoKdu-7vG5AhItm68X_yf_fimL8jyDG-RZ7HdssxjHl8Gpld
-    -iBSO_MDC7IxWuU8Y_o9E69X7SpFrEqGs6lFXEHYgaNDL3BSK9DMVeg`,
-  alg: 'HS256'
+  "alg": "HS256",
+  "ext": true,
+  "k": "YYqgcZK9g_FTeOR66yAiU86VV-kTN_c5iMODBK8tXuYKui5khc_iYUrvXQqSmyZ-wljrMR-ez2mKsnWfCzRROA",
+  "key_ops": [
+    "sign",
+    "verify"
+  ],
+  "kty": "oct"
 };
 
 tokens.HS384token = oneLineTrim``;

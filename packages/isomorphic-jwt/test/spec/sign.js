@@ -33,4 +33,14 @@ describe('jwt.sign', () => {
       .then(res => expect(res).toEqual(tokens.RS512token));
     });
   });
+
+  env.supports('HS256').describe('HS256', () => {
+    it('should allow signing claims', () => {
+      return jwt.sign({
+        claims: tokens.standardClaimsSet,
+        jwk: tokens.HS256sharedKey
+      })
+      .then(res => expect(res).toEqual(tokens.HS256token));
+    });
+  });
 });

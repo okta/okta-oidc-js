@@ -100,4 +100,22 @@ describe('jwt.verify', () => {
       .then(res => expect(res).toBe(false));
     });
   });
+
+  env.supports('HS256').describe('HS256', () => {
+    it('should return claims set on success', () => {
+      return jwt.verify({
+        token: tokens.HS256token,
+        jwk: tokens.HS256sharedKey
+      })
+      .then(res => expect(res).toEqual(tokens.standardClaimsSet));
+    });
+
+    it('should return false on failure', () => {
+      return jwt.verify({
+        token: tokens.HS256invalidToken,
+        jwk: tokens.HS256sharedKey
+      })
+      .then(res => expect(res).toBe(false));
+    });
+  });
 });
