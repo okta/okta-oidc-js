@@ -140,4 +140,76 @@ describe('jwt.generateKey', () => {
       expect(res.sharedKey.kty).toEqual('oct');
     });
   });
+
+  env.supports('ES256').it('should return a ES256 key', () => {
+    return jwt.generateKey({
+      alg: 'ES256'
+    })
+    .then(res => {
+      expect(res.publicKey).toBeDefined();
+      expect(res.publicKey.crv).toEqual('P-256');
+      expect(res.publicKey.ext).toBe(true);
+      expect(res.publicKey.key_ops).toEqual(['verify']);
+      expect(res.publicKey.kty).toEqual('EC');
+      expect(res.publicKey.x).toBeDefined();
+      expect(res.publicKey.y).toBeDefined();
+
+      expect(res.privateKey).toBeDefined();
+      expect(res.privateKey.crv).toEqual('P-256');
+      expect(res.privateKey.ext).toBe(true);
+      expect(res.privateKey.key_ops).toEqual(['sign']);
+      expect(res.privateKey.kty).toEqual('EC');
+      expect(res.privateKey.x).toBeDefined();
+      expect(res.privateKey.y).toBeDefined();
+      expect(res.privateKey.d).toBeDefined();
+    });
+  });
+
+  env.supports('ES384').it('should return a ES384 key', () => {
+    return jwt.generateKey({
+      alg: 'ES384'
+    })
+    .then(res => {
+      expect(res.publicKey).toBeDefined();
+      expect(res.publicKey.crv).toEqual('P-256');
+      expect(res.publicKey.ext).toBe(true);
+      expect(res.publicKey.key_ops).toEqual(['verify']);
+      expect(res.publicKey.kty).toEqual('EC');
+      expect(res.publicKey.x).toBeDefined();
+      expect(res.publicKey.y).toBeDefined();
+
+      expect(res.privateKey).toBeDefined();
+      expect(res.privateKey.crv).toEqual('P-256');
+      expect(res.privateKey.ext).toBe(true);
+      expect(res.privateKey.key_ops).toEqual(['sign']);
+      expect(res.privateKey.kty).toEqual('EC');
+      expect(res.privateKey.x).toBeDefined();
+      expect(res.privateKey.y).toBeDefined();
+      expect(res.privateKey.d).toBeDefined();
+    });
+  });
+
+  env.supports('ES512').it('should return a ES512 key', () => {
+    return jwt.generateKey({
+      alg: 'ES512'
+    })
+    .then(res => {
+      expect(res.publicKey).toBeDefined();
+      expect(res.publicKey.crv).toEqual('P-256');
+      expect(res.publicKey.ext).toBe(true);
+      expect(res.publicKey.key_ops).toEqual(['verify']);
+      expect(res.publicKey.kty).toEqual('EC');
+      expect(res.publicKey.x).toBeDefined();
+      expect(res.publicKey.y).toBeDefined();
+
+      expect(res.privateKey).toBeDefined();
+      expect(res.privateKey.crv).toEqual('P-256');
+      expect(res.privateKey.ext).toBe(true);
+      expect(res.privateKey.key_ops).toEqual(['sign']);
+      expect(res.privateKey.kty).toEqual('EC');
+      expect(res.privateKey.x).toBeDefined();
+      expect(res.privateKey.y).toBeDefined();
+      expect(res.privateKey.d).toBeDefined();
+    });
+  });
 });

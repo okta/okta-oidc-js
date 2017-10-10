@@ -4,6 +4,10 @@ const jwt = env.jwt;
 const util = require('../util');
 
 describe('jwt.sign', () => {
+
+  // Cannot check elliptic curve signatures against existing
+  // signatures, because they change every time.
+
   env.supports('RS256').describe('RS256', () => {
     it('should allow signing claims', () => {
       return jwt.sign({

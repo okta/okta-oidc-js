@@ -154,4 +154,58 @@ describe('jwt.verify', () => {
       .then(res => expect(res).toBe(false));
     });
   });
+
+  env.supports('ES256').describe('ES256', () => {
+    it('should return claims set on success', () => {
+      return jwt.verify({
+        token: tokens.ES256token,
+        jwk: tokens.ES256publicKey
+      })
+      .then(res => expect(res).toEqual(tokens.standardClaimsSet));
+    });
+
+    it('should return false on failure', () => {
+      return jwt.verify({
+        token: tokens.ES256invalidToken,
+        jwk: tokens.ES256publicKey
+      })
+      .then(res => expect(res).toBe(false));
+    });
+  });
+
+  env.supports('ES384').describe('ES384', () => {
+    it('should return claims set on success', () => {
+      return jwt.verify({
+        token: tokens.ES384token,
+        jwk: tokens.ES384publicKey
+      })
+      .then(res => expect(res).toEqual(tokens.standardClaimsSet));
+    });
+
+    it('should return false on failure', () => {
+      return jwt.verify({
+        token: tokens.ES384invalidToken,
+        jwk: tokens.ES384publicKey
+      })
+      .then(res => expect(res).toBe(false));
+    });
+  });
+
+  env.supports('ES512').describe('ES512', () => {
+    it('should return claims set on success', () => {
+      return jwt.verify({
+        token: tokens.ES512token,
+        jwk: tokens.ES512publicKey
+      })
+      .then(res => expect(res).toEqual(tokens.standardClaimsSet));
+    });
+
+    it('should return false on failure', () => {
+      return jwt.verify({
+        token: tokens.ES512invalidToken,
+        jwk: tokens.ES512publicKey
+      })
+      .then(res => expect(res).toBe(false));
+    });
+  });
 });

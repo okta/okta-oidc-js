@@ -117,4 +117,64 @@ describe('using jwt operations end-to-end', () => {
     })
     .then(res => expect(res).toEqual(tokens.standardClaimsSet));
   });
+
+  env.supports('ES256').it('should allow generating, signing and verifying using ES256', () => {
+    return jwt.generateKey({
+      alg: 'ES256'
+    })
+    .then(res => {
+      return jwt.sign({
+        claims: tokens.standardClaimsSet,
+        jwk: res.privateKey,
+        alg: 'ES256'
+      })
+      .then(signedJwt => {
+        return jwt.verify({
+          token: signedJwt,
+          jwk: res.publicKey
+        })
+      });
+    })
+    .then(res => expect(res).toEqual(tokens.standardClaimsSet));
+  });
+
+  env.supports('ES384').it('should allow generating, signing and verifying using ES384', () => {
+    return jwt.generateKey({
+      alg: 'ES384'
+    })
+    .then(res => {
+      return jwt.sign({
+        claims: tokens.standardClaimsSet,
+        jwk: res.privateKey,
+        alg: 'ES384'
+      })
+      .then(signedJwt => {
+        return jwt.verify({
+          token: signedJwt,
+          jwk: res.publicKey
+        })
+      });
+    })
+    .then(res => expect(res).toEqual(tokens.standardClaimsSet));
+  });
+
+  env.supports('ES512').it('should allow generating, signing and verifying using ES512', () => {
+    return jwt.generateKey({
+      alg: 'ES512'
+    })
+    .then(res => {
+      return jwt.sign({
+        claims: tokens.standardClaimsSet,
+        jwk: res.privateKey,
+        alg: 'ES512'
+      })
+      .then(signedJwt => {
+        return jwt.verify({
+          token: signedJwt,
+          jwk: res.publicKey
+        })
+      });
+    })
+    .then(res => expect(res).toEqual(tokens.standardClaimsSet));
+  });
 });

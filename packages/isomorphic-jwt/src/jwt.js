@@ -7,17 +7,24 @@ module.exports = ({environment, crypto, util, supportedAlgorithms}) => {
     decode(token) {
       return util.decodeJwtString(token).claimsSet;
     },
-    generateKey({alg}) {
+    generateKey({alg, namedCurve, modulusLength, publicExponent}) {
       return new Promise((resolve, reject) => {
         const supportedAlgo = supportedAlgorithms[alg];
         if (!supportedAlgo) {
           throw new JwtError(`jwt in ${environment} cannot generate ${alg} keys`);
         }
 
-        const algo = supportedAlgo;
+        // Shallow clone supportedAlgo
+        const algo = Object.assign({}, supportedAlgo);
+
         if (supportedAlgo.name === 'RSASSA-PKCS1-v1_5') {
-          algo.modulusLength = 2048;
-          algo.publicExponent = new Uint8Array([0x01, 0x00, 0x01]); // 65537
+          algo.modulusLength = modulusLength || 2048;
+          algo.publicExponent = publicExponent || new Uint8Array([0x01, 0x00, 0x01]); // 65537
+        }
+
+        if (supportedAlgo.name === 'ECDSA') {
+          algo.namedCurve = namedCurve || 'P-256';
+          delete algo.hash;
         }
 
         const extractable = true;
@@ -46,7 +53,7 @@ module.exports = ({environment, crypto, util, supportedAlgorithms}) => {
         .catch(err => reject(new JwtError(`Unable to export key: ${err.message}`)));
       });
     },
-    sign({claims, jwk}) {
+    sign({claims, jwk, alg}) {
       return new Promise((resolve, reject) => {
         if (!claims) {
           throw new JwtError('Must provide claims to sign');
@@ -56,7 +63,8 @@ module.exports = ({environment, crypto, util, supportedAlgorithms}) => {
           throw new JwtError('Must provide a jwk to sign with');
         }
 
-        if (!jwk.alg) {
+        const al = alg || jwk.alg;
+        if (!al) {
           throw new JwtError('An alg is currently required to sign using a jwk');
         }
 
@@ -85,12 +93,19 @@ module.exports = ({environment, crypto, util, supportedAlgorithms}) => {
         // Create the JSON object(s) containing the desired set of Header
         // Parameters, which together comprise the JOSE Header (the JWS
         // Protected Header and/or the JWS Unprotected Header).
-        const algo = supportedAlgorithms[jwk.alg];
+        const algo = supportedAlgorithms[al];
         if (!algo) {
-          throw new JwtError(`jwt in ${environment} does not support ${jwk.alg}`);
+          throw new JwtError(`jwt in ${environment} does not support ${al}`);
         }
+        let importingAlgo = algo;
+        if (jwk.kty === 'EC') {
+          importingAlgo = Object.assign({}, algo);
+          importingAlgo.namedCurve = jwk.crv;
+          delete importingAlgo.hash;
+        }
+
         const header = {
-          alg: jwk.alg
+          alg: al
         };
 
         // 5.1.4
@@ -122,7 +137,7 @@ module.exports = ({environment, crypto, util, supportedAlgorithms}) => {
         return crypto.subtle.importKey(
           format,
           jwk,
-          algo,
+          importingAlgo,
           extractable,
           usages
         )
@@ -181,6 +196,12 @@ module.exports = ({environment, crypto, util, supportedAlgorithms}) => {
         if (!algo) {
           throw new JwtError(`jwt in ${environment} does not support ${header.alg}`);
         }
+        let importingAlgo = algo;
+        if (jwk.kty === 'EC') {
+          importingAlgo = Object.assign({}, algo);
+          importingAlgo.namedCurve = jwk.crv;
+          delete importingAlgo.hash;
+        }
 
         // alg is optional, but we'll use it to provide a better error message
         // https://tools.ietf.org/html/rfc7517#section-4.4
@@ -200,7 +221,7 @@ module.exports = ({environment, crypto, util, supportedAlgorithms}) => {
         return crypto.subtle.importKey(
           format,
           jwk,
-          algo,
+          importingAlgo,
           extractable,
           usages
         )

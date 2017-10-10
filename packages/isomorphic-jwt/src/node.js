@@ -26,6 +26,18 @@ const supportedAlgorithms = {
   //   name: 'RSASSA-PKCS1-v1_5',
   //   hash: { name: 'SHA-512' }
   // },
+  // ES256: {
+  //   name: 'ECDSA',
+  //   hash: { name: 'SHA-256' }
+  // },
+  // ES384: {
+  //   name: 'ECDSA',
+  //   hash: { name: 'SHA-384' }
+  // },
+  // ES512: {
+  //   name: 'ECDSA',
+  //   hash: { name: 'SHA-512' }
+  // }
 };
 
 module.exports = require('./jwt')({

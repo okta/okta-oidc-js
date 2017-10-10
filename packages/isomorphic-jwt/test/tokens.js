@@ -170,6 +170,87 @@ tokens.HS512sharedKey = {
   "kty": "oct"
 };
 
+tokens.ES256token = oneLineTrim`eyJhbGciOiJFUzI1NiJ9.eyJhIjoiYiJ9.zr5BgAjLO3sAep1JJjcsx-tHB5Uygv0MfG_X3izb0B3PufP1vC8aCIFumjHvtDTa55GhgZSVL75RHZAPY_wRIQ`;
+
+tokens.ES256invalidToken = oneLineTrim`eyJhbGciOiJFUzI1NiJ9.eyJhIjoiYyJ9.zr5BgAjLO3sAep1JJjcsx-tHB5Uygv0MfG_X3izb0B3PufP1vC8aCIFumjHvtDTa55GhgZSVL75RHZAPY_wRIQ`;
+
+tokens.ES256publicKey = {
+  "crv": "P-256",
+  "ext": true,
+  "key_ops": [
+    "verify"
+  ],
+  "kty": "EC",
+  "x": "upJTeLFy6-jvF_HEbgTfwl35j7vHrbsrC16VlGkDK4A",
+  "y": "GFb5rSTBMg0nr-5eoDNPMzpWLEsBAz1YbTuKyD06fMI"
+};
+
+tokens.ES256privateKey = {
+  "crv": "P-256",
+  "d": "IAJNZyy00-LaC8zZk-3885Zg1KeM_1DhbHiyB5EF3n0",
+  "ext": true,
+  "key_ops": [
+    "sign"
+  ],
+  "kty": "EC",
+  "x": "upJTeLFy6-jvF_HEbgTfwl35j7vHrbsrC16VlGkDK4A",
+  "y": "GFb5rSTBMg0nr-5eoDNPMzpWLEsBAz1YbTuKyD06fMI"
+};
+
+tokens.ES384token = 'eyJhbGciOiJFUzM4NCJ9.eyJhIjoiYiJ9.iJUG1bvnwKq710CM2NaTfZJzVa4xeR32UZoz4QhT_DPWnvCwcKbQFkTLNbxfPrf3-D7vC0GQw2iZ4fGT89iYtw';
+
+tokens.ES384invalidToken = oneLineTrim`eyJhbGciOiJFUzM4NCJ9.eyJhIjoiYyJ9.iJUG1bvnwKq710CM2NaTfZJzVa4xeR32UZoz4QhT_DPWnvCwcKbQFkTLNbxfPrf3-D7vC0GQw2iZ4fGT89iYtw`;
+
+tokens.ES384publicKey = {
+  "crv": "P-256",
+  "ext": true,
+  "key_ops": [
+    "verify"
+  ],
+  "kty": "EC",
+  "x": "QMXgOCzOgRtRoIZP3AMB5iggIOGMwiQq_BzJ0H8aKkA",
+  "y": "Kc9lBFa7S1ctstWdIMmgBOeNYEg8HXIkClM9oRriGWY"
+};
+
+tokens.ES384privateKey = {
+  "crv": "P-256",
+  "d": "QHwXFY5oC7Pd1s39Ya7BBka2EMS8b1W-M38EERgXHis",
+  "ext": true,
+  "key_ops": [
+    "sign"
+  ],
+  "kty": "EC",
+  "x": "QMXgOCzOgRtRoIZP3AMB5iggIOGMwiQq_BzJ0H8aKkA",
+  "y": "Kc9lBFa7S1ctstWdIMmgBOeNYEg8HXIkClM9oRriGWY"
+};
+
+tokens.ES512token = 'eyJhbGciOiJFUzUxMiJ9.eyJhIjoiYiJ9.YFneZzWXSIuYmVXLg8nY5EajBAOsIiAkbTOOyhwW_zKRSC3q2-bGg590tq3wA6lkSOOg9X208VPH40hXfTFP5Q';
+
+tokens.ES512invalidToken = oneLineTrim`eyJhbGciOiJFUzUxMiJ9.eyJhIjoiYyJ9.YFneZzWXSIuYmVXLg8nY5EajBAOsIiAkbTOOyhwW_zKRSC3q2-bGg590tq3wA6lkSOOg9X208VPH40hXfTFP5Q`;
+
+tokens.ES512publicKey = {
+  "crv": "P-256",
+  "ext": true,
+  "key_ops": [
+    "verify"
+  ],
+  "kty": "EC",
+  "x": "qv8z81rn8ZlKgtbXrqOmPFt9BuABKii5wO0paJfmofY",
+  "y": "GKd0TjFVkL8UDrTE2x5FOaUCw18gHjMi5V-IKVRfFC4"
+};
+
+tokens.ES512privateKey = {
+  "crv": "P-256",
+  "d": "X77fxmOisFiWLmTDFgf0dxHOea0ryFqzBg0BqKO6Ovg",
+  "ext": true,
+  "key_ops": [
+    "sign"
+  ],
+  "kty": "EC",
+  "x": "qv8z81rn8ZlKgtbXrqOmPFt9BuABKii5wO0paJfmofY",
+  "y": "GKd0TjFVkL8UDrTE2x5FOaUCw18gHjMi5V-IKVRfFC4"
+};
+
 tokens.standardToken = tokens.RS256token;
 tokens.standardKey = tokens.RS256publicKey;
 tokens.standardClaimsSet = {

@@ -11,7 +11,10 @@ env.supportedAlgorithms = new Set([
   // 'RS512',
   'HS256',
   'HS384',
-  'HS512'
+  'HS512',
+  // 'ES256',
+  // 'ES384',
+  // 'ES512'
 ]);
 
 const jasmine = new Jasmine({
