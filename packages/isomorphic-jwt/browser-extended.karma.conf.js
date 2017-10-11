@@ -3,13 +3,13 @@ module.exports = function(config) {
     basePath: '',
     frameworks: ['jasmine'],
     files: [
-      'test/browser-index.js'
+      'test/browser-extended.js'
     ],
     exclude: [],
     // preprocess matching files before serving them to the browser
     // available preprocessors: https://npmjs.org/browse/keyword/karma-preprocessor
     preprocessors: {
-      'test/browser-index.js': ['webpack']
+      'test/browser-extended.js': ['webpack']
     },
 
     // test results reporter to use

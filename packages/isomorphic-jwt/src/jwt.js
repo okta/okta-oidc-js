@@ -2,6 +2,45 @@ const { JwtError } = require('./errors');
 const strUtil = require('./strUtil');
 const base64url = require('./base64url');
 
+const algorithms = {
+  HS256: {
+    name: 'HMAC',
+    hash: { name: 'SHA-256' }
+  },
+  HS384: {
+    name: 'HMAC',
+    hash: { name: 'SHA-384' }
+  },
+  HS512: {
+    name: 'HMAC',
+    hash: { name: 'SHA-512' }
+  },
+  RS256: {
+    name: 'RSASSA-PKCS1-v1_5',
+    hash: { name: 'SHA-256' }
+  },
+  RS384: {
+    name: 'RSASSA-PKCS1-v1_5',
+    hash: { name: 'SHA-384' }
+  },
+  RS512: {
+    name: 'RSASSA-PKCS1-v1_5',
+    hash: { name: 'SHA-512' }
+  },
+  ES256: {
+    name: 'ECDSA',
+    hash: { name: 'SHA-256' }
+  },
+  ES384: {
+    name: 'ECDSA',
+    hash: { name: 'SHA-384' }
+  },
+  ES512: {
+    name: 'ECDSA',
+    hash: { name: 'SHA-512' }
+  }
+};
+
 module.exports = ({environment, crypto, util, supportedAlgorithms}) => {
   return {
     decode(token) {
@@ -9,10 +48,10 @@ module.exports = ({environment, crypto, util, supportedAlgorithms}) => {
     },
     generateKey({alg, namedCurve, modulusLength, publicExponent}) {
       return new Promise((resolve, reject) => {
-        const supportedAlgo = supportedAlgorithms[alg];
-        if (!supportedAlgo) {
+        if (!supportedAlgorithms.includes(alg)) {
           throw new JwtError(`jwt in ${environment} cannot generate ${alg} keys`);
         }
+        const supportedAlgo = algorithms[alg];
 
         // Shallow clone supportedAlgo
         const algo = Object.assign({}, supportedAlgo);
@@ -41,7 +80,12 @@ module.exports = ({environment, crypto, util, supportedAlgorithms}) => {
 
           if (key && key.algorithm && key.algorithm.name === 'HMAC') {
             return crypto.subtle.exportKey('jwk', key)
-            .then(sharedKey => resolve({ sharedKey }));
+            .then(sharedKey => {
+              if (!sharedKey.key_ops) {
+                sharedKey.key_ops = usages;
+              }
+              resolve({ sharedKey })
+            });
           }
 
           return Promise.all([
@@ -93,10 +137,11 @@ module.exports = ({environment, crypto, util, supportedAlgorithms}) => {
         // Create the JSON object(s) containing the desired set of Header
         // Parameters, which together comprise the JOSE Header (the JWS
         // Protected Header and/or the JWS Unprotected Header).
-        const algo = supportedAlgorithms[al];
-        if (!algo) {
-          throw new JwtError(`jwt in ${environment} does not support ${al}`);
+        if (!supportedAlgorithms.includes(al)) {
+          throw new JwtError(`jwt in ${environment} cannot generate ${al} keys`);
         }
+        const algo = algorithms[al];
+
         let importingAlgo = algo;
         if (jwk.kty === 'EC') {
           importingAlgo = Object.assign({}, algo);
@@ -192,10 +237,11 @@ module.exports = ({environment, crypto, util, supportedAlgorithms}) => {
         }
   
         const format = 'jwk';
-        const algo = supportedAlgorithms[header.alg];
-        if (!algo) {
-          throw new JwtError(`jwt in ${environment} does not support ${header.alg}`);
+        if (!supportedAlgorithms.includes(header.alg)) {
+          throw new JwtError(`jwt in ${environment} cannot generate ${header.alg} keys`);
         }
+        const algo = algorithms[header.alg];
+
         let importingAlgo = algo;
         if (jwk.kty === 'EC') {
           importingAlgo = Object.assign({}, algo);

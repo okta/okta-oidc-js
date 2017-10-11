@@ -8,7 +8,7 @@ env.supportedAlgorithms = new Set([
   'HS256',
   'HS384',
   'HS512',
-  'ES256',
+  'ES256', // Edge doesn't support elliptic curve
   'ES384',
   'ES512'
 ]);
