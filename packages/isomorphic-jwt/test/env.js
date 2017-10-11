@@ -3,7 +3,7 @@ const env = {
   name: null,
   supportedAlgorithms: new Set(),
   supports(algo) {
-    if (env.supportedAlgorithms.has(algo)) {
+    if (env.supportedAlgorithms.includes(algo)) {
       return {
         it,
         describe

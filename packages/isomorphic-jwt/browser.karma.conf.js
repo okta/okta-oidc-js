@@ -4,7 +4,8 @@ const UglifyJSPlugin = require('uglifyjs-webpack-plugin');
 module.exports = function(config) {
   config.set({
     basePath: '',
-    frameworks: ['jasmine'],
+    frameworks: ['jasmine', 'polyfill'],
+    polyfill: ['Promise'],
     files: [
       'test/browser.js'
     ],
@@ -37,10 +38,7 @@ module.exports = function(config) {
       },
       plugins: [
         new UglifyJSPlugin(),
-        new webpack.IgnorePlugin(/buffer/),
-        new webpack.ProvidePlugin({
-          Promise: 'es6-promise-promise'
-        })
+        new webpack.IgnorePlugin(/buffer/)
       ]
     },
 

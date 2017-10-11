@@ -5,7 +5,7 @@ const SpecReporter = require('jasmine-spec-reporter').SpecReporter;
 const env = require('./env');
 env.name = 'node';
 env.jwt = require('../src/node');
-env.supportedAlgorithms = new Set([
+env.supportedAlgorithms = [
   'RS256',
   // 'RS384',
   // 'RS512',
@@ -15,7 +15,7 @@ env.supportedAlgorithms = new Set([
   // 'ES256',
   // 'ES384',
   // 'ES512'
-]);
+];
 
 const jasmine = new Jasmine({
   // Jasmine uses the wrong base directory if it's hoisted with lerna
