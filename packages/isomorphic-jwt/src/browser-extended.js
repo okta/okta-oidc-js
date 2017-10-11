@@ -1,5 +1,6 @@
 //require('webcrypto-shim');
 const msrCrypto = require('./msrcrypto.min');
+msrCrypto.subtle.forceSync = true;
 const util = require('./util');
 
 const supportedAlgorithms = [
@@ -9,9 +10,9 @@ const supportedAlgorithms = [
   'HS256',
   'HS384',
   'HS512',
-  'ES256',
-  'ES384',
-  'ES512'
+  // 'ES256',
+  // 'ES384',
+  // 'ES512'
 ];
 
 module.exports = require('./jwt')({

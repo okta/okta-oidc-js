@@ -1,3 +1,6 @@
+const webpack = require('webpack');
+const UglifyJSPlugin = require('uglifyjs-webpack-plugin');
+
 module.exports = function(config) {
   config.set({
     basePath: '',
@@ -10,6 +13,36 @@ module.exports = function(config) {
     // available preprocessors: https://npmjs.org/browse/keyword/karma-preprocessor
     preprocessors: {
       'test/browser-extended.js': ['webpack']
+    },
+
+    webpack: {
+      output: {
+        filename: 'jwt.min.js',
+        library: 'jwt',
+        libraryTarget: 'umd'
+      },
+      module: {
+        rules: [
+          {
+            test: /\.js$/,
+            exclude: /node_modules/,
+            use: {
+              loader: 'babel-loader',
+              options: {
+                forceEnv: 'browser'
+              }
+            }
+          },
+          {
+            test: /msrcrypto.min.js$/,
+            use: 'exports-loader?msrCrypto'
+          }
+        ]
+      },
+      plugins: [
+        //new UglifyJSPlugin(),
+        new webpack.IgnorePlugin(/buffer/)
+      ]
     },
 
     // test results reporter to use

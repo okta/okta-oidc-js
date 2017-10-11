@@ -16,7 +16,8 @@
             "browsers": ["> 1%", "last 2 versions"]
           }
         }]
-      ]
+      ],
+      "plugins": ["transform-object-assign", "array-includes"]
     }
   }
 }
