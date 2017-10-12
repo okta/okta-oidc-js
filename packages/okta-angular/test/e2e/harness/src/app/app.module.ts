@@ -19,8 +19,25 @@ import {
  */
 import { ProtectedComponent } from './protected.component';
 import { AppComponent } from './app.component';
+import { SessionTokenLogin } from './sessionToken-login.component';
+
+export function onNeedsAuthenticationGuard({ oktaAuth, router }) {
+  router.navigate(['/sessionToken-login']);
+};
+
+export function onNeedsGlobalAuthenticationGuard({ oktaAuth, router }) {
+  router.navigate(['/login']);
+};
 
 const appRoutes: Routes = [
+  {
+    path: 'login',
+    component: OktaLoginRedirectComponent
+  },
+  {
+    path: 'sessionToken-login',
+    component: SessionTokenLogin
+  },
   {
     path: 'implicit/callback',
     component: OktaCallbackComponent
@@ -31,15 +48,20 @@ const appRoutes: Routes = [
     canActivate: [ OktaAuthGuard ]
   },
   {
-    path: 'login',
-    component: OktaLoginRedirectComponent
+    path: 'protected-with-data',
+    component: ProtectedComponent,
+    canActivate: [ OktaAuthGuard ],
+    data: {
+      onAuthRequired: onNeedsAuthenticationGuard
+    }
   }
 ];
 
 const config = {
   issuer: environment.ISSUER,
   redirectUri: environment.REDIRECT_URI,
-  clientId: environment.CLIENT_ID
+  clientId: environment.CLIENT_ID,
+  onAuthRequired: onNeedsGlobalAuthenticationGuard
 };
 
 @NgModule({
@@ -50,7 +72,8 @@ const config = {
   ],
   declarations: [
     AppComponent,
-    ProtectedComponent
+    ProtectedComponent,
+    SessionTokenLogin
   ],
   bootstrap: [ AppComponent ]
 })

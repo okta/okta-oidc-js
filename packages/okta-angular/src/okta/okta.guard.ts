@@ -14,7 +14,8 @@ import { Injectable } from '@angular/core';
 import {
   CanActivate,
   ActivatedRouteSnapshot,
-  RouterStateSnapshot
+  RouterStateSnapshot,
+  Router
 } from '@angular/router';
 
 import { OktaAuthService } from './okta.service';
@@ -23,7 +24,7 @@ import { OktaAuthService } from './okta.service';
 export class OktaAuthGuard implements CanActivate {
   private oktaAuth: OktaAuthService;
 
-  constructor(private okta: OktaAuthService) {
+  constructor(private okta: OktaAuthService, private router: Router) {
     this.oktaAuth = okta;
   }
 
@@ -38,15 +39,29 @@ export class OktaAuthGuard implements CanActivate {
       return true;
     }
 
+    /**
+     * Get the operation to perform on failed authentication from
+     * either the global config or route data injection.
+     */
+    const onAuthRequired = route.data['onAuthRequired'] || this.oktaAuth.getOktaConfig().onAuthRequired;
+
+    if (onAuthRequired){
+      onAuthRequired(this.oktaAuth, this.router);
+    }
+
     /** 
      * Store the current path
      */
     this.oktaAuth.setFromUri(state.url);
 
     /**
-     * Redirect to login flow.
+     * Redirect to the given path or
+     * perform the default Okta full-page redirect.
      */
-    this.oktaAuth.loginRedirect();
+    if (!onAuthRequired) {
+      this.oktaAuth.loginRedirect();
+    }
+
     return false;
   }
 }

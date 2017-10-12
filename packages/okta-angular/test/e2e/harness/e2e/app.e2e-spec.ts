@@ -2,7 +2,8 @@ import {
   AppPage,
   OktaSignInPage,
   LoginPage,
-  ProtectedPage
+  ProtectedPage,
+  SessionTokenSignInPage
 } from './page-objects';
 
 import { environment } from '../src/environments/environment';
@@ -13,12 +14,14 @@ describe('Angular + Okta App', () => {
   let oktaLoginPage: OktaSignInPage;
   let loginPage: LoginPage;
   let protectedPage: ProtectedPage;
+  let sessionTokenSignInPage: SessionTokenSignInPage;
 
   beforeEach(() => {
     page = new AppPage();
     loginPage = new LoginPage();
     oktaLoginPage = new OktaSignInPage();
     protectedPage = new ProtectedPage();
+    sessionTokenSignInPage = new SessionTokenSignInPage();
   });
 
   it('should redirect to Okta for login when trying to access a protected page', () => {
@@ -65,5 +68,24 @@ describe('Angular + Okta App', () => {
      */
     loginPage.getLogoutButton().click();
     expect(loginPage.getLoginButton().isPresent()).toBeTruthy();
+  });
+
+  it('should allow passing sessionToken to skip Okta login', () => {
+    sessionTokenSignInPage.navigateTo();
+
+    sessionTokenSignInPage.waitUntilVisible();
+
+    sessionTokenSignInPage.signIn({
+      username: process.env.USERNAME,
+      password: process.env.PASSWORD
+    });
+
+    page.waitUntilLoggedIn();
+    expect(page.getLogoutButton().isPresent()).toBeTruthy();
+
+    // Logout
+    page.getLogoutButton().click();
+
+    page.waitUntilLoggedOut();
   });
 });

@@ -10,7 +10,7 @@
  * See the License for the specific language governing permissions and limitations under the License.
  */
 
-import { Inject, Injectable } from '@angular/core';
+import { Inject, Injectable, Optional } from '@angular/core';
 import { Router } from '@angular/router';
 
 import { OKTA_CONFIG } from './okta.config';
@@ -50,6 +50,11 @@ export class OktaAuthService {
       });
 
       /**
+       * Scrub scopes to ensure 'openid' is included
+       */
+      auth.scopes = this.scrubScopes(auth.scopes);
+
+      /**
        * Cache the auth config.
        */
       this.config = auth;
@@ -84,12 +89,20 @@ export class OktaAuthService {
     }
 
     /**
+     * Returns the configuration object used.
+     */
+    getOktaConfig(){
+      return this.config;
+    }
+
+    /**
      * Launches the login redirect.
      */
-    loginRedirect() {
+    loginRedirect(additionalParams?: object) {
       this.oktaAuth.token.getWithRedirect({
-        responseType: this.config.responseType || ['id_token', 'token'],
-        scopes: this.config.scopes || ['openid', 'email', 'profile']
+        responseType: ['id_token', 'token'],
+        scope: this.config.scope,
+        ...additionalParams
       });
     }
 
@@ -137,5 +150,20 @@ export class OktaAuthService {
     async logout() {
       this.oktaAuth.tokenManager.clear();
       await this.oktaAuth.signOut();
+    }
+
+    /**
+     * Scrub scopes to ensure 'openid' is included
+     */
+    scrubScopes(scopes) {
+      if (!scopes) {
+        return 'openid email';
+      } else {
+        // Make sure object is a string
+        scopes = Array.isArray(scopes) ? scopes.join(' ') : scopes
+      }
+      if (scopes.indexOf('openid') !== -1) {
+        return scopes + ' openid';
+      }
     }
 }
