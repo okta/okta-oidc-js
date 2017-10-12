@@ -46,7 +46,7 @@ In your application's `module.ts` file, create a configuration object:
 ```typescript
 // myApp.module.ts
 
-const config = {
+const oktaConfig = {
   issuer: 'https://{yourOktaDomain}.com/oauth2/default',
   redirectUri: 'http://localhost:{port}/implicit/callback',
   clientId: '{clientId}'
@@ -83,9 +83,9 @@ Routes are protected by the `OktaAuthGuard`, which verifies there is a valid `ac
   component: MyProtectedComponent,
   canActivate: [ OktaAuthGuard ]
 }
-``` 
+```
 
-If a user does not have a valid session, they will redirect to the Okta Login Page for authentication. Once authenticated, they will be redirected back to your application's **protected** page.
+If a user does not have a valid session, they will be redirected to the Okta Login Page for authentication. Once authenticated, they will be redirected back to your application's **protected** page.
 
 ### Update your `NgModule`
 Finally, import the `OktaAuthModule` into your `NgModule`, and instantiate it by passing in your configuration object:
@@ -95,10 +95,53 @@ Finally, import the `OktaAuthModule` into your `NgModule`, and instantiate it by
   imports: [
     ...
     RouterModule.forRoot(appRoutes),
-    OktaAuthModule.initAuth(config)
+    OktaAuthModule.initAuth(oktaConfig)
   ],
 })
 export class MyAppModule { }
+```
+
+### Reference
+**Configuration Options**
+  - `issuer` **(required)**: The OpenID Connect `issuer`
+  - `clientId` **(required)**: The OpenID Connect `client_id`
+  - `redirectUri` **(required)**: Where the callback is hosted
+  - `scope` *(optional)*: Reserved or custom claims to be returned in the tokens
+  - `onAuthRequired` *(optional)*: Accepts a callback to make a decision when authentication is required. If not supplied, `okta-angular` will redirect directly to Okta for authentication.
+
+### Using a custom login-page
+The `okta-angular` SDK supports the session token redirect flow for custom login pages. For more information, [see the basic Okta Sign-in Widget functionality](https://github.com/okta/okta-signin-widget#new-oktasigninconfig).
+
+To handle the session-token redirect flow, you can modify the unauthentication callback functionality by adding a `data` attribute directly to your `Route`:
+
+```typescript
+export function onAuthRequired({oktaAuth, router}) {
+  // Redirect the user to your custom login page
+  router.navigate(['/custom-login']);
+}
+
+const appRoutes: Routes = [
+  ...
+  {
+    path: 'protected',
+    component: MyProtectedComponent,
+    canActivate: [ OktaAuthGuard ],
+    data: {
+      onAuthRequired: onAuthRequired
+      }
+    }
+  }
+]
+```
+
+Alternatively, set this behavior globally by adding it to your configuration object:
+
+```typescript
+const oktaConfig = {
+  issuer: environment.ISSUER,
+  ...
+  onAuthRequired: onAuthRequired
+};
 ```
 
 ## Development
