@@ -115,25 +115,28 @@ The `okta-angular` SDK supports the session token redirect flow for custom login
 To handle the session-token redirect flow, you can modify the unauthentication callback functionality by adding a `data` attribute directly to your `Route`:
 
 ```typescript
-path: 'protected',
-component: MyProtectedComponent,
-canActivate: [ OktaAuthGuard ],
-data: {
-  onAuthRequired: ({oktaAuth, router}) => {
-    // Redirect the user to your custom login page
-    router.navigate(['/custom-login']);
-  }
+export function onAuthRequired({oktaAuth, router}) {
+  // Redirect the user to your custom login page
+  router.navigate(['/custom-login']);
 }
+
+const appRoutes: Routes = [
+  ...
+  {
+    path: 'protected',
+    component: MyProtectedComponent,
+    canActivate: [ OktaAuthGuard ],
+    data: {
+      onAuthRequired: onAuthRequired
+      }
+    }
+  }
+]
 ```
 
 Alternatively, set this behavior globally by adding it to your configuration object:
 
 ```typescript
-const onAuthRequired = ({oktaAuth, router}) => {
-  // Redirect the user to your custom login page
-  router.navigate(['/custom-login']);
-}
-
 const oktaConfig = {
   issuer: environment.ISSUER,
   ...
