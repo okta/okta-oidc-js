@@ -47,7 +47,8 @@ describe('jwt.verify', () => {
     }), new RegExp('Unable to import key:'));
   });
 
-  env.supports('RS256').describe('RS256', () => {
+  env.supports({ RS256: ['verify'] })
+  .describe('RS256', () => {
     it('should return claims set on success', () => {
       return jwt.verify({
         token: tokens.RS256token,
@@ -65,7 +66,8 @@ describe('jwt.verify', () => {
     });
   });
 
-  env.supports('RS384').describe('RS384', () => {
+  env.supports({ RS384: ['verify'] })
+  .describe('RS384', () => {
     it('should return claims set on success', () => {
       return jwt.verify({
         token: tokens.RS384token,
@@ -83,7 +85,8 @@ describe('jwt.verify', () => {
     });
   });
 
-  env.supports('RS512').describe('RS512', () => {
+  env.supports({ RS512: ['verify'] })
+  .describe('RS512', () => {
     it('should return claims set on success', () => {
       return jwt.verify({
         token: tokens.RS512token,
@@ -101,7 +104,8 @@ describe('jwt.verify', () => {
     });
   });
 
-  env.supports('HS256').describe('HS256', () => {
+  env.supports({ HS256: ['verify'] })
+  .describe('HS256', () => {
     it('should return claims set on success', () => {
       return jwt.verify({
         token: tokens.HS256token,
@@ -119,7 +123,8 @@ describe('jwt.verify', () => {
     });
   });
 
-  env.supports('HS384').describe('HS384', () => {
+  env.supports({ HS384: ['verify'] })
+  .describe('HS384', () => {
     it('should return claims set on success', () => {
       return jwt.verify({
         token: tokens.HS384token,
@@ -137,7 +142,8 @@ describe('jwt.verify', () => {
     });
   });
 
-  env.supports('HS512').describe('HS512', () => {
+  env.supports({ HS512: ['verify'] })
+  .describe('HS512', () => {
     it('should return claims set on success', () => {
       return jwt.verify({
         token: tokens.HS512token,
@@ -155,7 +161,8 @@ describe('jwt.verify', () => {
     });
   });
 
-  env.supports('ES256').describe('ES256', () => {
+  env.supports({ ES256: ['verify'] })
+  .describe('ES256', () => {
     it('should return claims set on success', () => {
       return jwt.verify({
         token: tokens.ES256token,
@@ -173,7 +180,8 @@ describe('jwt.verify', () => {
     });
   });
 
-  env.supports('ES384').describe('ES384', () => {
+  env.supports({ ES384: ['verify'] })
+  .describe('ES384', () => {
     it('should return claims set on success', () => {
       return jwt.verify({
         token: tokens.ES384token,
@@ -191,7 +199,8 @@ describe('jwt.verify', () => {
     });
   });
 
-  env.supports('ES512').describe('ES512', () => {
+  env.supports({ ES512: ['verify'] })
+  .describe('ES512', () => {
     it('should return claims set on success', () => {
       return jwt.verify({
         token: tokens.ES512token,

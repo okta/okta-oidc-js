@@ -9,7 +9,8 @@ describe('jwt.generateKey', () => {
       `jwt in ${env.name} cannot generate nonexistant keys`);
   });
 
-  env.supports('RS256').it('should return a RS256 key', () => {
+  env.supports({ RS256: ['generateKey'] })
+  .it('should return a RS256 key', () => {
     return jwt.generateKey({
       alg: 'RS256'
     })
@@ -39,7 +40,8 @@ describe('jwt.generateKey', () => {
     });
   });
 
-  env.supports('RS384').it('should return a RS384 key', () => {
+  env.supports({ RS384: ['generateKey'] })
+  .it('should return a RS384 key', () => {
     return jwt.generateKey({
       alg: 'RS384'
     })
@@ -69,7 +71,8 @@ describe('jwt.generateKey', () => {
     });
   });
 
-  env.supports('RS512').it('should return a RS512 key', () => {
+  env.supports({ RS512: ['generateKey'] })
+  .it('should return a RS512 key', () => {
     return jwt.generateKey({
       alg: 'RS512'
     })
@@ -99,7 +102,8 @@ describe('jwt.generateKey', () => {
     });
   });
 
-  env.supports('HS256').it('should return a HS256 key', () => {
+  env.supports({ HS256: ['generateKey'] })
+  .it('should return a HS256 key', () => {
     return jwt.generateKey({
       alg: 'HS256'
     })
@@ -113,7 +117,8 @@ describe('jwt.generateKey', () => {
     });
   });
 
-  env.supports('HS384').it('should return a HS384 key', () => {
+  env.supports({ HS384: ['generateKey'] })
+  .it('should return a HS384 key', () => {
     return jwt.generateKey({
       alg: 'HS384'
     })
@@ -127,7 +132,8 @@ describe('jwt.generateKey', () => {
     });
   });
 
-  env.supports('HS512').it('should return a HS512 key', () => {
+  env.supports({ HS512: ['generateKey'] })
+  .it('should return a HS512 key', () => {
     return jwt.generateKey({
       alg: 'HS512'
     })
@@ -141,7 +147,8 @@ describe('jwt.generateKey', () => {
     });
   });
 
-  env.supports('ES256').it('should return a ES256 key', () => {
+  env.supports({ ES256: ['generateKey'] })
+  .it('should return a ES256 key', () => {
     return jwt.generateKey({
       alg: 'ES256'
     })
@@ -165,7 +172,8 @@ describe('jwt.generateKey', () => {
     });
   });
 
-  env.supports('ES384').it('should return a ES384 key', () => {
+  env.supports({ ES384: ['generateKey'] })
+  .it('should return a ES384 key', () => {
     return jwt.generateKey({
       alg: 'ES384'
     })
@@ -189,7 +197,8 @@ describe('jwt.generateKey', () => {
     });
   });
 
-  env.supports('ES512').it('should return a ES512 key', () => {
+  env.supports({ ES512: ['generateKey'] })
+  .it('should return a ES512 key', () => {
     return jwt.generateKey({
       alg: 'ES512'
     })

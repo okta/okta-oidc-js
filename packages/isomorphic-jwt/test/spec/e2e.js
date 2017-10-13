@@ -4,7 +4,8 @@ const jwt = env.jwt;
 const util = require('../util');
 //
 describe('using jwt operations end-to-end', () => {
-  env.supports('RS256').it('should allow generating, signing and verifying using RS256', () => {
+  env.supports({ RS256: ['generateKey', 'sign', 'verify']})
+  .it('should allow generating, signing and verifying using RS256', () => {
     return jwt.generateKey({
       alg: 'RS256'
     })
@@ -23,7 +24,8 @@ describe('using jwt operations end-to-end', () => {
     .then(res => expect(res).toEqual(tokens.standardClaimsSet));
   });
 
-  env.supports('RS384').it('should allow generating, signing and verifying using RS384', () => {
+  env.supports({ RS384: ['generateKey', 'sign', 'verify']})
+  .it('should allow generating, signing and verifying using RS384', () => {
     return jwt.generateKey({
       alg: 'RS384'
     })
@@ -42,7 +44,8 @@ describe('using jwt operations end-to-end', () => {
     .then(res => expect(res).toEqual(tokens.standardClaimsSet));
   });
 
-  env.supports('RS512').it('should allow generating, signing and verifying using RS512', () => {
+  env.supports({ RS512: ['generateKey', 'sign', 'verify']})
+  .it('should allow generating, signing and verifying using RS512', () => {
     return jwt.generateKey({
       alg: 'RS512'
     })
@@ -61,7 +64,8 @@ describe('using jwt operations end-to-end', () => {
     .then(res => expect(res).toEqual(tokens.standardClaimsSet));
   });
 
-  env.supports('HS256').it('should allow generating, signing and verifying using HS256', () => {
+  env.supports({ HS256: ['generateKey', 'sign', 'verify']})
+  .it('should allow generating, signing and verifying using HS256', () => {
     return jwt.generateKey({
       alg: 'HS256'
     })
@@ -80,7 +84,8 @@ describe('using jwt operations end-to-end', () => {
     .then(res => expect(res).toEqual(tokens.standardClaimsSet));
   });
 
-  env.supports('HS384').it('should allow generating, signing and verifying using HS384', () => {
+  env.supports({ HS384: ['generateKey', 'sign', 'verify']})
+  .it('should allow generating, signing and verifying using HS384', () => {
     return jwt.generateKey({
       alg: 'HS384'
     })
@@ -99,7 +104,8 @@ describe('using jwt operations end-to-end', () => {
     .then(res => expect(res).toEqual(tokens.standardClaimsSet));
   });
 
-  env.supports('HS512').it('should allow generating, signing and verifying using HS512', () => {
+  env.supports({ HS512: ['generateKey', 'sign', 'verify']})
+  .it('should allow generating, signing and verifying using HS512', () => {
     return jwt.generateKey({
       alg: 'HS512'
     })
@@ -118,7 +124,8 @@ describe('using jwt operations end-to-end', () => {
     .then(res => expect(res).toEqual(tokens.standardClaimsSet));
   });
 
-  env.supports('ES256').it('should allow generating, signing and verifying using ES256', () => {
+  env.supports({ ES256: ['generateKey', 'sign', 'verify']})
+  .it('should allow generating, signing and verifying using ES256', () => {
     return jwt.generateKey({
       alg: 'ES256'
     })
@@ -138,7 +145,8 @@ describe('using jwt operations end-to-end', () => {
     .then(res => expect(res).toEqual(tokens.standardClaimsSet));
   });
 
-  env.supports('ES384').it('should allow generating, signing and verifying using ES384', () => {
+  env.supports({ ES384: ['generateKey', 'sign', 'verify']})
+  .it('should allow generating, signing and verifying using ES384', () => {
     return jwt.generateKey({
       alg: 'ES384'
     })
@@ -158,7 +166,8 @@ describe('using jwt operations end-to-end', () => {
     .then(res => expect(res).toEqual(tokens.standardClaimsSet));
   });
 
-  env.supports('ES512').it('should allow generating, signing and verifying using ES512', () => {
+  env.supports({ ES512: ['generateKey', 'sign', 'verify']})
+  .it('should allow generating, signing and verifying using ES512', () => {
     return jwt.generateKey({
       alg: 'ES512'
     })

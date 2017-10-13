@@ -8,7 +8,8 @@ describe('jwt.sign', () => {
   // Cannot check elliptic curve signatures against existing
   // signatures, because they change every time.
 
-  env.supports('RS256').describe('RS256', () => {
+  env.supports({ RS256: ['sign'] })
+  .describe('RS256', () => {
     it('should allow signing claims', () => {
       return jwt.sign({
         claims: tokens.standardClaimsSet,
@@ -18,7 +19,8 @@ describe('jwt.sign', () => {
     });
   });
 
-  env.supports('RS384').describe('RS384', () => {
+  env.supports({ RS384: ['sign'] })
+  .describe('RS384', () => {
     it('should allow signing claims', () => {
       return jwt.sign({
         claims: tokens.standardClaimsSet,
@@ -28,7 +30,8 @@ describe('jwt.sign', () => {
     });
   });
 
-  env.supports('RS512').describe('RS512', () => {
+  env.supports({ RS512: ['sign'] })
+  .describe('RS512', () => {
     it('should allow signing claims', () => {
       return jwt.sign({
         claims: tokens.standardClaimsSet,
@@ -38,7 +41,8 @@ describe('jwt.sign', () => {
     });
   });
 
-  env.supports('HS256').describe('HS256', () => {
+  env.supports({ HS256: ['sign'] })
+  .describe('HS256', () => {
     it('should allow signing claims', () => {
       return jwt.sign({
         claims: tokens.standardClaimsSet,
@@ -48,7 +52,8 @@ describe('jwt.sign', () => {
     });
   });
 
-  env.supports('HS384').describe('HS384', () => {
+  env.supports({ HS384: ['sign'] })
+  .describe('HS384', () => {
     it('should allow signing claims', () => {
       return jwt.sign({
         claims: tokens.standardClaimsSet,
@@ -58,7 +63,8 @@ describe('jwt.sign', () => {
     });
   });
 
-  env.supports('HS512').describe('HS512', () => {
+  env.supports({ HS512: ['sign'] })
+  .describe('HS512', () => {
     it('should allow signing claims', () => {
       return jwt.sign({
         claims: tokens.standardClaimsSet,

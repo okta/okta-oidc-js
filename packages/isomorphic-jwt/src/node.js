@@ -1,21 +1,16 @@
 const crypto = require('@trust/webcrypto');
 const util = require('./util');
 
-const supportedAlgorithms = [
-  'RS256',
-  // 'RS384',
-  // 'RS512',
-  'HS256',
-  'HS384',
-  'HS512',
-  // 'ES256',
-  // 'ES384',
-  // 'ES512'
-];
+const supported = {
+  RS256: ['generateKey', 'sign', 'verify'],
+  HS256: ['generateKey', 'sign', 'verify'],
+  HS384: ['generateKey', 'sign', 'verify'],
+  HS512: ['generateKey', 'sign', 'verify']
+}
 
 module.exports = require('./jwt')({
   environment: 'node',
   crypto,
   util,
-  supportedAlgorithms
+  supported
 });
