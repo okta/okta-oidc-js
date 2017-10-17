@@ -1,16 +1,16 @@
 # oidc-middleware
 
-This package makes it easy to get your users logged in with Okta using OpenId Connect (OIDC).
+This package makes it easy to get your users logged in with Okta using OpenId Connect (OIDC).  It enables your Express application to participate in the [authorization code flow][auth-code-docs] flow by redirecting the user to Okta for authentication and handling the callback from Okta.  Once this flow is complete, a local session is created and the user context is saved for the duration of the session.
 
 ## Installation
 
 ```sh
-npm install @okta/oidc-middleware
+npm install --save @okta/oidc-middleware
 ```
 
 ## ExpressOIDC API
 
-This module makes it easy to get users logged in to your Express app.
+It is assumed that you have already created an Okta Developer Org and created the necessary OIDC application in your Org.  If you are new to Okta or this flow, we suggest following the [Express.js Quickstart][express-quickstart].
 
 ### Prerequisites
 
@@ -24,7 +24,7 @@ const { ExpressOIDC } = require('@okta/oidc-middleware');
 const app = express();
 app.use(session({ /* options */ })); // ensure this is before ExpressOIDC
 
-const oidc = new ExpressOIDC({ /* options */ });
+const oidc = new ExpressOIDC({ /* options, see below */ });
 app.use(oidc.router);
 oidc.on('ready', () => {
   app.listen(3000, () => console.log('app started'));
@@ -38,7 +38,7 @@ oidc.on('error', err => {
 
 ### new ExpressOIDC(config)
 
-Configures your OIDC integration.
+To configure your OIDC integration, create an instance of `ExpressOIDC` and pass options. Most apps will need this basic configuration:
 
 ```javascript
 const { ExpressOIDC } = require('@okta/oidc-middleware');
@@ -47,22 +47,24 @@ const oidc = new ExpressOIDC({
   issuer: YOUR_ISSUER,
   client_id: YOUR_CLIENT_ID,
   client_secret: YOUR_CLIENT_SECRET,
-  redirect_uri: YOUR_REDIRECT_URI
+  redirect_uri: YOUR_REDIRECT_URI,
+  scope: 'openid profile'
 });
 ```
 
 Required config:
 
 * **issuer** - The OIDC provider (e.g. `https://YOUR_ORG.oktapreview.com/oauth2/default`)
-* **client_id** - An id provided when you create an OIDC app
-* **client_secret** - A secret provided when you create an OIDC app
+* **client_id** - An id provided when you create an OIDC app in your Okta Org
+* **client_secret** - A secret provided when you create an OIDC app in your Okta Org
 * **redirect_uri** - The callback for your app. Locally, this is usually `http://localhost:3000/authorization-code/callback`. When deployed, this should be `https://YOUR_PROD_DOMAIN/authorization-code/callback`.
 
 Optional config:
 
 * **response_type** - Defaults to `code`
-* **scope** - Defaults to `openid`
-* **routes** - Allows customization of the generated routes. See [#customizing-routes](#customizing-routes) for details.
+* **scope** - Defaults to `openid`, which will only return the `sub` claim. To obtain more information about the user, use `openid profile`. For a list of scopes and claims, please see [Scope-dependent claims](https://developer.okta.com/standards/OIDC/index.html#scope-dependent-claims-not-always-returned) for more information.
+
+* **routes** - Allows customization of the generated routes. See [Customizing Routes](#customizing-routes) for details.
 
 ### oidc.router
 
@@ -103,9 +105,9 @@ oidc.on('error', err => {
 });
 ```
 
-### oidc.ensureAuthenticated(redirectTo)
+### oidc.ensureAuthenticated({ redirectTo?: '/uri' })
 
-Use this to protect your routes. If not authenticated, this will redirect to the login route. If not authenticated and the protected route should not return html, this will return a 401 instead.
+Use this to protect your routes. If not authenticated, this will redirect to the login route and trigger the authentication flow. If the request prefers JSON then a 401 error response will be sent.
 
 ```javascript
 app.get('/protected', oidc.ensureAuthenticated(), (req, res) => {
@@ -113,7 +115,7 @@ app.get('/protected', oidc.ensureAuthenticated(), (req, res) => {
 });
 ```
 
-** redirectTo ** - the path to return to after login
+The `redirectTo` option can be used to redirect the user to a specific URI on your site, after a successful authentication callback.
 
 ### req.isAuthenticated()
 
@@ -142,7 +144,7 @@ app.get('/logout', (req, res) => {
 
 ### req.userinfo
 
-This provides information about the authenticated user.
+This provides information about the authenticated user, and is obtained from the [userinfo endpoint of the authorization server](https://developer.okta.com/docs/api/resources/oidc.html#get-user-information) and depends on the scope requested (see scope option above):
 
 ```javascript
 app.get('/', (req, res) => {
@@ -154,15 +156,13 @@ app.get('/', (req, res) => {
 });
 ```
 
-Note: The default scope of `openid` will only return the `sub` claim.  To obtain more information about the user, set the `scope` option to `openid profile` when creating the middleware.  For a list of scopes and claims, please see [Scope-dependent claims](https://developer.okta.com/standards/OIDC/index.html#scope-dependent-claims-not-always-returned) for more information.
-
-### Customizing routes
+### Customizing Routes
 
 If you need to modify the default login and callback routes, the `routes` config option is available.
 
 ```javascript
 const oidc = new ExpressOIDC({
-  { /* options */ }
+  // ...
   routes: {
     login: {
       path: '/different/login'
@@ -170,18 +170,18 @@ const oidc = new ExpressOIDC({
     callback: {
       path: '/different/callback',
       handler: (req, res, next) => {
-        // my customer async handler
+        // Perform custom logic before final redirect, then call next()
       },
-      // this is where we'll redirect if we don't have a route to return to
       defaultRedirect: '/home'
     }
   }
 });
 ```
 
-* **path** - where our middleware attaches
-* **handler** - additional middleware for after we validate the OpenId Connect response
-* **defaultRedirect** - where we redirect to after login when there's no protected route to return to
+* **`callback.defaultRedirect`** - Where the user is redirected to after a successful authentication callback, if no `returnTo` value was specified by `oidc.ensureAuthenticated()`. Defaults to `/`.
+* **`callback.handler`** - A function that is called after a successful authentication callback, but before the final redirect within your application.  Useful for requirements such as conditional post-authentication redirects, or sending data to logging systems.
+* **`callback.path`** - The URI that this library will host the callback handler on.  Defaults to `/authorization-code/callback`
+* **`login.path`** - The URL that redirects the user to the authorize endpoint.  Defaults to `/login`.
 
 ### Using a Custom Login Page
 
@@ -240,3 +240,6 @@ app.use(addUserContext);
 oidc.on('ready', () => app.listen(3000));
 oidc.on('error', err => console.log('could not start', err));
 ```
+
+[auth-code-docs]: https://developer.okta.com/standards/OAuth/#basic-flows
+[express-quickstart]: https://developer.okta.com/quickstart/#/okta-sign-in-page/nodejs/express
