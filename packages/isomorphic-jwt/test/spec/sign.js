@@ -9,68 +9,56 @@ describe('jwt.sign', () => {
   // signatures, because they change every time.
 
   env.supports({ RS256: ['sign'] })
-  .describe('RS256', () => {
-    it('should allow signing claims', () => {
-      return jwt.sign({
-        claims: tokens.standardClaimsSet,
-        jwk: tokens.RS256privateKey
-      })
-      .then(res => expect(res).toEqual(tokens.RS256token));
-    });
+  .it('should allow signing claims for RS256', () => {
+    return jwt.sign({
+      claims: tokens.standardClaimsSet,
+      jwk: tokens.RS256privateKey
+    })
+    .then(res => expect(res).toEqual(tokens.RS256token));
   });
 
   env.supports({ RS384: ['sign'] })
-  .describe('RS384', () => {
-    it('should allow signing claims', () => {
-      return jwt.sign({
-        claims: tokens.standardClaimsSet,
-        jwk: tokens.RS384privateKey
-      })
-      .then(res => expect(res).toEqual(tokens.RS384token));
-    });
+  .it('should allow signing claims for RS384', () => {
+    return jwt.sign({
+      claims: tokens.standardClaimsSet,
+      jwk: tokens.RS384privateKey
+    })
+    .then(res => expect(res).toEqual(tokens.RS384token));
   });
 
   env.supports({ RS512: ['sign'] })
-  .describe('RS512', () => {
-    it('should allow signing claims', () => {
-      return jwt.sign({
-        claims: tokens.standardClaimsSet,
-        jwk: tokens.RS512privateKey
-      })
-      .then(res => expect(res).toEqual(tokens.RS512token));
-    });
+  .it('should allow signing claims for RS512', () => {
+    return jwt.sign({
+      claims: tokens.standardClaimsSet,
+      jwk: tokens.RS512privateKey
+    })
+    .then(res => expect(res).toEqual(tokens.RS512token));
   });
 
   env.supports({ HS256: ['sign'] })
-  .describe('HS256', () => {
-    it('should allow signing claims', () => {
-      return jwt.sign({
-        claims: tokens.standardClaimsSet,
-        jwk: tokens.HS256sharedKey
-      })
-      .then(res => expect(res).toEqual(tokens.HS256token));
-    });
+  .it('should allow signing claims for HS256', () => {
+    return jwt.sign({
+      claims: tokens.standardClaimsSet,
+      jwk: tokens.HS256sharedKey
+    })
+    .then(res => expect(res).toEqual(tokens.HS256token));
   });
 
   env.supports({ HS384: ['sign'] })
-  .describe('HS384', () => {
-    it('should allow signing claims', () => {
-      return jwt.sign({
-        claims: tokens.standardClaimsSet,
-        jwk: tokens.HS384sharedKey
-      })
-      .then(res => expect(res).toEqual(tokens.HS384token));
-    });
+  .it('should allow signing claims for HS384', () => {
+    return jwt.sign({
+      claims: tokens.standardClaimsSet,
+      jwk: tokens.HS384sharedKey
+    })
+    .then(res => expect(res).toEqual(tokens.HS384token));
   });
 
   env.supports({ HS512: ['sign'] })
-  .describe('HS512', () => {
-    it('should allow signing claims', () => {
-      return jwt.sign({
-        claims: tokens.standardClaimsSet,
-        jwk: tokens.HS512sharedKey
-      })
-      .then(res => expect(res).toEqual(tokens.HS512token));
-    });
+  .it('should allow signing claims for HS512', () => {
+    return jwt.sign({
+      claims: tokens.standardClaimsSet,
+      jwk: tokens.HS512sharedKey
+    })
+    .then(res => expect(res).toEqual(tokens.HS512token));
   });
 });

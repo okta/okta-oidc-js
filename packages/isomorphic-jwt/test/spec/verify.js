@@ -48,173 +48,164 @@ describe('jwt.verify', () => {
   });
 
   env.supports({ RS256: ['verify'] })
-  .describe('RS256', () => {
-    it('should return claims set on success', () => {
-      return jwt.verify({
-        token: tokens.RS256token,
-        jwk: tokens.RS256publicKey
-      })
-      .then(res => expect(res).toEqual(tokens.standardClaimsSet));
-    });
+  .it('should return claims set on success for RS256', () => {
+    return jwt.verify({
+      token: tokens.RS256token,
+      jwk: tokens.RS256publicKey
+    })
+    .then(res => expect(res).toEqual(tokens.standardClaimsSet));
+  });
 
-    it('should return false on failure', () => {
-      return jwt.verify({
-        token: tokens.RS256invalidToken,
-        jwk: tokens.RS256publicKey
-      })
-      .then(res => expect(res).toBe(false));
-    });
+  env.supports({ RS256: ['verify'] })
+  .it('should return false on failure for RS256', () => {
+    return jwt.verify({
+      token: tokens.RS256invalidToken,
+      jwk: tokens.RS256publicKey
+    })
+    .then(res => expect(res).toBe(false));
   });
 
   env.supports({ RS384: ['verify'] })
-  .describe('RS384', () => {
-    it('should return claims set on success', () => {
-      return jwt.verify({
-        token: tokens.RS384token,
-        jwk: tokens.RS384publicKey
-      })
-      .then(res => expect(res).toEqual(tokens.standardClaimsSet));
-    });
+  .it('should return claims set on success for RS384', () => {
+    return jwt.verify({
+      token: tokens.RS384token,
+      jwk: tokens.RS384publicKey
+    })
+    .then(res => expect(res).toEqual(tokens.standardClaimsSet));
+  });
 
-    it('should return false on failure', () => {
-      return jwt.verify({
-        token: tokens.RS384invalidToken,
-        jwk: tokens.RS384publicKey
-      })
-      .then(res => expect(res).toBe(false));
-    });
+  env.supports({ RS384: ['verify'] })
+  .it('should return false on failure for RS384', () => {
+    return jwt.verify({
+      token: tokens.RS384invalidToken,
+      jwk: tokens.RS384publicKey
+    })
+    .then(res => expect(res).toBe(false));
   });
 
   env.supports({ RS512: ['verify'] })
-  .describe('RS512', () => {
-    it('should return claims set on success', () => {
-      return jwt.verify({
-        token: tokens.RS512token,
-        jwk: tokens.RS512publicKey
-      })
-      .then(res => expect(res).toEqual(tokens.standardClaimsSet));
-    });
+  .it('should return claims set on success for RS512', () => {
+    return jwt.verify({
+      token: tokens.RS512token,
+      jwk: tokens.RS512publicKey
+    })
+    .then(res => expect(res).toEqual(tokens.standardClaimsSet));
+  });
 
-    it('should return false on failure', () => {
-      return jwt.verify({
-        token: tokens.RS512invalidToken,
-        jwk: tokens.RS512publicKey
-      })
-      .then(res => expect(res).toBe(false));
-    });
+  env.supports({ RS512: ['verify'] })
+  .it('should return false on failure for RS512', () => {
+    return jwt.verify({
+      token: tokens.RS512invalidToken,
+      jwk: tokens.RS512publicKey
+    })
+    .then(res => expect(res).toBe(false));
   });
 
   env.supports({ HS256: ['verify'] })
-  .describe('HS256', () => {
-    it('should return claims set on success', () => {
-      return jwt.verify({
-        token: tokens.HS256token,
-        jwk: tokens.HS256sharedKey
-      })
-      .then(res => expect(res).toEqual(tokens.standardClaimsSet));
-    });
+  .it('should return claims set on success for HS256', () => {
+    return jwt.verify({
+      token: tokens.HS256token,
+      jwk: tokens.HS256sharedKey
+    })
+    .then(res => expect(res).toEqual(tokens.standardClaimsSet));
+  });
 
-    it('should return false on failure', () => {
-      return jwt.verify({
-        token: tokens.HS256invalidToken,
-        jwk: tokens.HS256sharedKey
-      })
-      .then(res => expect(res).toBe(false));
-    });
+  env.supports({ HS256: ['verify'] })
+  .it('should return false on failure for HS256', () => {
+    return jwt.verify({
+      token: tokens.HS256invalidToken,
+      jwk: tokens.HS256sharedKey
+    })
+    .then(res => expect(res).toBe(false));
   });
 
   env.supports({ HS384: ['verify'] })
-  .describe('HS384', () => {
-    it('should return claims set on success', () => {
-      return jwt.verify({
-        token: tokens.HS384token,
-        jwk: tokens.HS384sharedKey
-      })
-      .then(res => expect(res).toEqual(tokens.standardClaimsSet));
-    });
-
-    it('should return false on failure', () => {
-      return jwt.verify({
-        token: tokens.HS384invalidToken,
-        jwk: tokens.HS384sharedKey
-      })
-      .then(res => expect(res).toBe(false));
-    });
+  .it('should return claims set on success for HS384', () => {
+    return jwt.verify({
+      token: tokens.HS384token,
+      jwk: tokens.HS384sharedKey
+    })
+    .then(res => expect(res).toEqual(tokens.standardClaimsSet));
   });
 
-  env.supports({ HS512: ['verify'] })
-  .describe('HS512', () => {
-    it('should return claims set on success', () => {
-      return jwt.verify({
-        token: tokens.HS512token,
-        jwk: tokens.HS512sharedKey
-      })
-      .then(res => expect(res).toEqual(tokens.standardClaimsSet));
-    });
+  env.supports({ HS384: ['verify'] })
+  .it('should return false on failure for HS384', () => {
+    return jwt.verify({
+      token: tokens.HS384invalidToken,
+      jwk: tokens.HS384sharedKey
+    })
+    .then(res => expect(res).toBe(false));
+  });
 
-    it('should return false on failure', () => {
-      return jwt.verify({
-        token: tokens.HS512invalidToken,
-        jwk: tokens.HS512sharedKey
-      })
-      .then(res => expect(res).toBe(false));
-    });
+  env.supports({ HS384: ['verify'] })
+  .it('should return claims set on success for HS384', () => {
+    return jwt.verify({
+      token: tokens.HS384token,
+      jwk: tokens.HS384sharedKey
+    })
+    .then(res => expect(res).toEqual(tokens.standardClaimsSet));
+  });
+
+  env.supports({ HS384: ['verify'] })
+  .it('should return false on failure for HS384', () => {
+    return jwt.verify({
+      token: tokens.HS384invalidToken,
+      jwk: tokens.HS384sharedKey
+    })
+    .then(res => expect(res).toBe(false));
   });
 
   env.supports({ ES256: ['verify'] })
-  .describe('ES256', () => {
-    it('should return claims set on success', () => {
-      return jwt.verify({
-        token: tokens.ES256token,
-        jwk: tokens.ES256publicKey
-      })
-      .then(res => expect(res).toEqual(tokens.standardClaimsSet));
-    });
+  .it('should return claims set on success for ES256', () => {
+    return jwt.verify({
+      token: tokens.ES256token,
+      jwk: tokens.ES256publicKey
+    })
+    .then(res => expect(res).toEqual(tokens.standardClaimsSet));
+  });
 
-    it('should return false on failure', () => {
-      return jwt.verify({
-        token: tokens.ES256invalidToken,
-        jwk: tokens.ES256publicKey
-      })
-      .then(res => expect(res).toBe(false));
-    });
+  env.supports({ ES256: ['verify'] })
+  .it('should return false on failure for ES256', () => {
+    return jwt.verify({
+      token: tokens.ES256invalidToken,
+      jwk: tokens.ES256publicKey
+    })
+    .then(res => expect(res).toBe(false));
   });
 
   env.supports({ ES384: ['verify'] })
-  .describe('ES384', () => {
-    it('should return claims set on success', () => {
-      return jwt.verify({
-        token: tokens.ES384token,
-        jwk: tokens.ES384publicKey
-      })
-      .then(res => expect(res).toEqual(tokens.standardClaimsSet));
-    });
+  .it('should return claims set on success for ES384', () => {
+    return jwt.verify({
+      token: tokens.ES384token,
+      jwk: tokens.ES384publicKey
+    })
+    .then(res => expect(res).toEqual(tokens.standardClaimsSet));
+  });
 
-    it('should return false on failure', () => {
-      return jwt.verify({
-        token: tokens.ES384invalidToken,
-        jwk: tokens.ES384publicKey
-      })
-      .then(res => expect(res).toBe(false));
-    });
+  env.supports({ ES384: ['verify'] })
+  .it('should return false on failure for ES384', () => {
+    return jwt.verify({
+      token: tokens.ES384invalidToken,
+      jwk: tokens.ES384publicKey
+    })
+    .then(res => expect(res).toBe(false));
   });
 
   env.supports({ ES512: ['verify'] })
-  .describe('ES512', () => {
-    it('should return claims set on success', () => {
-      return jwt.verify({
-        token: tokens.ES512token,
-        jwk: tokens.ES512publicKey
-      })
-      .then(res => expect(res).toEqual(tokens.standardClaimsSet));
-    });
+  .it('should return claims set on success for ES512', () => {
+    return jwt.verify({
+      token: tokens.ES512token,
+      jwk: tokens.ES512publicKey
+    })
+    .then(res => expect(res).toEqual(tokens.standardClaimsSet));
+  });
 
-    it('should return false on failure', () => {
-      return jwt.verify({
-        token: tokens.ES512invalidToken,
-        jwk: tokens.ES512publicKey
-      })
-      .then(res => expect(res).toBe(false));
-    });
+  env.supports({ ES512: ['verify'] })
+  .it('should return false on failure for ES512', () => {
+    return jwt.verify({
+      token: tokens.ES512invalidToken,
+      jwk: tokens.ES512publicKey
+    })
+    .then(res => expect(res).toBe(false));
   });
 });

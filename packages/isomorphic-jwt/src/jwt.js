@@ -54,7 +54,11 @@ module.exports = ({environment, crypto, util, supported}) => {
           const values = query[key];
           if (!supportedMap[key]) return false;
           const supportedMethods = supportedMap[key];
-          for (let method of values) {
+
+          // Avoid the Symbol polyfill for IE11
+          let vl = values.length;
+          while (vl--) {
+            const method = values[vl];
             if (!supportedMethods.includes(method)) return false;
           }
           return true;
@@ -117,8 +121,12 @@ module.exports = ({environment, crypto, util, supported}) => {
               crypto.subtle.exportKey('jwk', key.publicKey),
               crypto.subtle.exportKey('jwk', key.privateKey)
             ])
-            .then(([publicKey, privateKey] = []) => {
-              return { publicKey, privateKey };
+            .then((keys = []) => {
+              // Manually expand array to avoid Symbol polyfill for IE11
+              return {
+                publicKey: keys[0],
+                privateKey: keys[1]
+              };
             });
           }
 
