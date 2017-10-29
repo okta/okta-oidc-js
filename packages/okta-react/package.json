@@ -17,13 +17,8 @@
     "type": "git",
     "url": "git+https://github.com/okta/okta-oidc-js.git"
   },
-  "keywords": [
-    "oauth2"
-  ],
-  "files": [
-    "dist",
-    "src"
-  ],
+  "keywords": ["oauth2"],
+  "files": ["dist", "src"],
   "author": "",
   "license": "Apache-2.0",
   "bugs": {
@@ -44,8 +39,7 @@
     "babel-eslint": "^8.0.0",
     "babel-plugin-transform-class-properties": "^6.24.1",
     "babel-plugin-transform-object-rest-spread": "^6.26.0",
-    "babel-preset-env": "^1.6.0",
-    "babel-preset-es2015": "^6.24.1",
+    "babel-preset-env": "^1.6.1",
     "babel-preset-react-app": "^3.0.2",
     "eslint": "^4.7.1",
     "eslint-plugin-import": "^2.7.0",
