@@ -163,8 +163,9 @@ export class OktaAuthService {
         // Make sure object is a string
         scopes = Array.isArray(scopes) ? scopes.join(' ') : scopes
       }
-      if (scopes.indexOf('openid') !== -1) {
+      if (scopes.indexOf('openid') === -1) {
         return scopes + ' openid';
       }
+      return scopes;
     }
 }
