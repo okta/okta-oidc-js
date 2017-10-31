@@ -61,6 +61,7 @@ const config = {
   issuer: environment.ISSUER,
   redirectUri: environment.REDIRECT_URI,
   clientId: environment.CLIENT_ID,
+  scope: 'email',
   onAuthRequired: onNeedsGlobalAuthenticationGuard
 };
 

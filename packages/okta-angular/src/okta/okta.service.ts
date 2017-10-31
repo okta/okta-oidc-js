@@ -52,7 +52,7 @@ export class OktaAuthService {
       /**
        * Scrub scopes to ensure 'openid' is included
        */
-      auth.scopes = this.scrubScopes(auth.scopes);
+      auth.scope = this.scrubScopes(auth.scope);
 
       /**
        * Cache the auth config.
@@ -101,7 +101,8 @@ export class OktaAuthService {
     loginRedirect(additionalParams?: object) {
       this.oktaAuth.token.getWithRedirect({
         responseType: ['id_token', 'token'],
-        scope: this.config.scope,
+        // Convert scopes to list of strings
+        scopes: this.config.scope.split(' '),
         ...additionalParams
       });
     }
@@ -162,8 +163,9 @@ export class OktaAuthService {
         // Make sure object is a string
         scopes = Array.isArray(scopes) ? scopes.join(' ') : scopes
       }
-      if (scopes.indexOf('openid') !== -1) {
+      if (scopes.indexOf('openid') === -1) {
         return scopes + ' openid';
       }
+      return scopes;
     }
 }
