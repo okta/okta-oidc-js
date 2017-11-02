@@ -24,16 +24,26 @@ tokens.malformedClaimsSet = 'eyJhbGciOiJub25lIn0.BAD.WACuDR_AlXngagNOa90c92xbWXY
 tokens.noAlgInHeader = 'e30=.eyJhIjoiYiJ9.DRwcShm-M7fOQcRhdmtqzzuiNPsv2tAnkV2gfnDMmM0';
 tokens.unsecuredJWT = 'eyJhbGciOiJub25lIn0.eyJhIjoiYiJ9.';
 
-tokens.RS256token = oneLineTrim`eyJhbGciOiJSUzI1NiJ9.eyJhIjoiYiJ9.Txm8oSmYNECxC9WjyRe-4gf17ozZ6uOyr03IAETpTBzr7PF8M1IMBnCjvqK5wIZ-C71JJavkcwXSpaEMF6HzIaYHFJ5KKkpy9v1LW8hoWoB7kAc0cNrMW0ZKRcWNBhH_SS40u2jikBxGKNA7n12D9ywTinjyjXh9q_jmSz_s5yn_XWDIXegVAJLtXDBkrxNxHSVc0_itLW0B4cWwAandO33h1pzwq5h2s1wdTrlCzqzwHy3F0zxgsvWWKLWXQeJDCjqQ6CQO6MFATPfXIrVTe-j2QYQylPFOPWyrSRtEpsVGF4hKLmMF0NTVm1zp8W3DrRWK2bJBSV2lFlJvMFjigQ`;
+tokens.algos = {
+  RS256: {},
+  RS384: {},
+  RS512: {},
+  HS256: {},
+  HS384: {},
+  HS512: {},
+  ES256: {},
+  ES384: {},
+  ES512: {},
+};
 
-tokens.RS256invalidToken = oneLineTrim`
+tokens.algos.RS256.token = oneLineTrim`eyJhbGciOiJSUzI1NiJ9.eyJhIjoiYiJ9.Txm8oSmYNECxC9WjyRe-4gf17ozZ6uOyr03IAETpTBzr7PF8M1IMBnCjvqK5wIZ-C71JJavkcwXSpaEMF6HzIaYHFJ5KKkpy9v1LW8hoWoB7kAc0cNrMW0ZKRcWNBhH_SS40u2jikBxGKNA7n12D9ywTinjyjXh9q_jmSz_s5yn_XWDIXegVAJLtXDBkrxNxHSVc0_itLW0B4cWwAandO33h1pzwq5h2s1wdTrlCzqzwHy3F0zxgsvWWKLWXQeJDCjqQ6CQO6MFATPfXIrVTe-j2QYQylPFOPWyrSRtEpsVGF4hKLmMF0NTVm1zp8W3DrRWK2bJBSV2lFlJvMFjigQ`;
+tokens.algos.RS256.invalidToken = oneLineTrim`
   eyJhbGciOiJSUzI1NiJ9.eyJhIjoiYyJ9.Txm8oSmYNECxC9WjyRe-4gf17ozZ6uOyr03IAETpTBz
   r7PF8M1IMBnCjvqK5wIZ-C71JJavkcwXSpaEMF6HzIaYHFJ5KKkpy9v1LW8hoWoB7kAc0cNrMW0ZK
   RcWNBhH_SS40u2jikBxGKNA7n12D9ywTinjyjXh9q_jmSz_s5yn_XWDIXegVAJLtXDBkrxNxHSVc0
   _itLW0B4cWwAandO33h1pzwq5h2s1wdTrlCzqzwHy3F0zxgsvWWKLWXQeJDCjqQ6CQO6MFATPfXIr
   VTe-j2QYQylPFOPWyrSRtEpsVGF4hKLmMF0NTVm1zp8W3DrRWK2bJBSV2lFlJvMFjigQ`;
-
-tokens.RS256publicKey = {
+tokens.algos.RS256.publicKey = {
   "kty": "RSA",
   "alg": "RS256",
   "n": "9_9EQfTF4WaHOud7sR4xDp5yXWqwfRtEYovFWfwS-cgL9GDw7F9Pbq4KO-PHOHkVUS6OrfIH52IZ6ydPpJWDypK0it3y8stdsqMtEqSpRihJ5DHZp6keY3nATYPwTzjVb1B70pbs4UW-3efYjp_Xw5ssdkh_sl-bgf9q7ykuSSJH4X3lXVWcwUphgtqemgTYRoHNd2KLukEWxzkKbW92nu_PbNsS87l094fvGH8cQxCmXjtQZD791hfel2MlZdxzRLnWfmFhQJOYAavBW1HuAOz7F8yLOW4nPXybZJ2dhugBkCmUfFIhcVvtf-QnPt8bNtmp5LuW1IhUp6lJfnpYEw",
@@ -43,8 +53,7 @@ tokens.RS256publicKey = {
   ],
   "ext": true
 };
-
-tokens.RS256privateKey = {
+tokens.algos.RS256.privateKey = {
   "kty": "RSA",
   "alg": "RS256",
   "n": "9_9EQfTF4WaHOud7sR4xDp5yXWqwfRtEYovFWfwS-cgL9GDw7F9Pbq4KO-PHOHkVUS6OrfIH52IZ6ydPpJWDypK0it3y8stdsqMtEqSpRihJ5DHZp6keY3nATYPwTzjVb1B70pbs4UW-3efYjp_Xw5ssdkh_sl-bgf9q7ykuSSJH4X3lXVWcwUphgtqemgTYRoHNd2KLukEWxzkKbW92nu_PbNsS87l094fvGH8cQxCmXjtQZD791hfel2MlZdxzRLnWfmFhQJOYAavBW1HuAOz7F8yLOW4nPXybZJ2dhugBkCmUfFIhcVvtf-QnPt8bNtmp5LuW1IhUp6lJfnpYEw",
@@ -61,11 +70,9 @@ tokens.RS256privateKey = {
   "ext": true
 };
 
-tokens.RS384token = 'eyJhbGciOiJSUzM4NCJ9.eyJhIjoiYiJ9.FmLc4ukvcTrctczh3DPot3c-D4DZqSRrjlSFnDL92m9lAigjQocS7AhLp3xKK5dAEjqEBNB75aNRQH1fYOc4N5My0YXamu8A7JNyfe2X8JKj4PnysPR7txavA40lO4OdpfPOSxI-Dnkhqip9Rm5KaCKn8EmmHO7TR4Da69ZogmLmRZGlmYtRht-wo6Sz0V-um2upVfxAbiZf6hqNVh09lC1Pe4hputYfANbVE0cACClevfT6RAcUALbpZq9FjaTx5MoStm0vTEQyjQAXRS8McHuxF-St-J0JPx_oMsgYNXgSZf2nnDFMYAr74wGpj6cIdf_QCcGhDnqkuyCPX9uGVg';
-
-tokens.RS384invalidToken = oneLineTrim`eyJhbGciOiJSUzM4NCJ9.eyJhIjoiYyJ9.FmLc4ukvcTrctczh3DPot3c-D4DZqSRrjlSFnDL92m9lAigjQocS7AhLp3xKK5dAEjqEBNB75aNRQH1fYOc4N5My0YXamu8A7JNyfe2X8JKj4PnysPR7txavA40lO4OdpfPOSxI-Dnkhqip9Rm5KaCKn8EmmHO7TR4Da69ZogmLmRZGlmYtRht-wo6Sz0V-um2upVfxAbiZf6hqNVh09lC1Pe4hputYfANbVE0cACClevfT6RAcUALbpZq9FjaTx5MoStm0vTEQyjQAXRS8McHuxF-St-J0JPx_oMsgYNXgSZf2nnDFMYAr74wGpj6cIdf_QCcGhDnqkuyCPX9uGVg`;
-
-tokens.RS384publicKey = {
+tokens.algos.RS384.token = 'eyJhbGciOiJSUzM4NCJ9.eyJhIjoiYiJ9.FmLc4ukvcTrctczh3DPot3c-D4DZqSRrjlSFnDL92m9lAigjQocS7AhLp3xKK5dAEjqEBNB75aNRQH1fYOc4N5My0YXamu8A7JNyfe2X8JKj4PnysPR7txavA40lO4OdpfPOSxI-Dnkhqip9Rm5KaCKn8EmmHO7TR4Da69ZogmLmRZGlmYtRht-wo6Sz0V-um2upVfxAbiZf6hqNVh09lC1Pe4hputYfANbVE0cACClevfT6RAcUALbpZq9FjaTx5MoStm0vTEQyjQAXRS8McHuxF-St-J0JPx_oMsgYNXgSZf2nnDFMYAr74wGpj6cIdf_QCcGhDnqkuyCPX9uGVg';
+tokens.algos.RS384.invalidToken = oneLineTrim`eyJhbGciOiJSUzM4NCJ9.eyJhIjoiYyJ9.FmLc4ukvcTrctczh3DPot3c-D4DZqSRrjlSFnDL92m9lAigjQocS7AhLp3xKK5dAEjqEBNB75aNRQH1fYOc4N5My0YXamu8A7JNyfe2X8JKj4PnysPR7txavA40lO4OdpfPOSxI-Dnkhqip9Rm5KaCKn8EmmHO7TR4Da69ZogmLmRZGlmYtRht-wo6Sz0V-um2upVfxAbiZf6hqNVh09lC1Pe4hputYfANbVE0cACClevfT6RAcUALbpZq9FjaTx5MoStm0vTEQyjQAXRS8McHuxF-St-J0JPx_oMsgYNXgSZf2nnDFMYAr74wGpj6cIdf_QCcGhDnqkuyCPX9uGVg`;
+tokens.algos.RS384.publicKey = {
   "alg": "RS384",
   "e": "AQAB",
   "ext": true,
@@ -75,8 +82,7 @@ tokens.RS384publicKey = {
   "kty": "RSA",
   "n": "w9FVI553fiJnuhTgGSv534ZLwzGLmhBQ6wC2CphSSwu82Wi-FS05yWoGsGTZN3fA8SAZ_G7_iJDwhrEkEU5Gl3aiOvczSNLYlEzifN6YRGCdeguX07p6nRjdRREVX6EexJEn-12O-KYUIsVEDO47r9FTSBLQFaHNfZU0-RA-MLErMFof0yxMc-BMfiWVx4FeFsK0yFiwHeFxICPDu_-XlBVbx7mo2gi9PYOLfMvojSQtDpDww2Mq-v0ZAXG-27Ls2tht4FsC5JQlYp7BieeoiyP2aJv_DNDCsMuCWJaGQP8U64J3P96MO1tnO7AMHwOY-y0-0oUH2Pa4-kgUfGNJiw"
 };
-
-tokens.RS384privateKey = {
+tokens.algos.RS384.privateKey = {
   "alg": "RS384",
   "d": "VSQ-SCP9Yc802bB89gTsexep9n-i6wSAIoYnIPk1AuNiJAfKamvFLgHXUbgvyFHeBxnFosBihC89HduEyq-FuxK-nDPizR28RNMfQVsJyuVVY30J8WoqKQdoIkE40WE9fwt8XmvCH_QaWjn6ikLFmf9CnlprtpQpRJrtMwQwfjuvg77RgldRfw0D7DkcGSBT6_Ajn-VKdMjg6Oua0Njfl4Bvv_mX0MRdJlQIRQd1T3Q5AGgk8Wel6l0pm-gLqAmHAWG3hC-9qqAwVgqS0KB4e7s-tQcSKhmugeP_OsI7kbmQehl3ogYPRlkuH0--8EWWcTbhFLbhBfE-oZr5_Y5-KQ",
   "dp": "YCoH-RW2PUSmSv2Tz8G6NSpTi1mahmLoN15TSD7R06cexu-v6KzNG9w-aczirZ3EpcngghxXC_5AmYH5GZTesdJRoCIx6a2_HK1KbjUzCbL0y0RgP2B5rM0zX5OQqWcp6k9vl2XhtoNa1b4Egdj9VwSHcuNC0IvaFBVKLhhuIlk",
@@ -93,11 +99,9 @@ tokens.RS384privateKey = {
   "qi": "Mv1cdjNZslQRD17bwRx9vZbmdKThsOsP9GrCtT9u5FHSN1l3PTMfPi-xNleF2aVrqbaSKFRceAl_WjncAd7geg-zUYMPYGinUeDT6aLI7ZY9qYmykqtEN2x7zgamPsr38dugWprzLvn7KZLVWXej8DoqnTNA88maoks-FJkJlY0"
 };
 
-tokens.RS512token = 'eyJhbGciOiJSUzUxMiJ9.eyJhIjoiYiJ9.0SFnAk08HFPopkWPeWLB_FeQ9CYb8rLxL3OGbxsoiPxnLdSnMXnf594dc27Cy1SHvWSrjtW5czTHizxmfNFJllPpTryvaJ0DtmaN4yw8-wXIm5rcSWJ0PBpw3XgkkLHvxjt-UPx8pL0D4V-CJKZw60hqR8eTaTYiZb64QK-yra1TreJn7esj4_zdh4W7Km3DFC6VYsDa9q71N5IHPPcH7FEwt9fQ1_E1_s1Rvs0PgkF-B1IUa0DhQDyWCoIfjfqN4chV2nxSQWJGCUk-tP9NutntQjt_Lz0TKWDbJbsyLX_5CKzaWajwe9FrXAyTfhzSEAPNGiwtvTGORt6Yt58_og';
-
-tokens.RS512invalidToken = oneLineTrim`eyJhbGciOiJSUzUxMiJ9.eyJhIjoiYyJ9.0SFnAk08HFPopkWPeWLB_FeQ9CYb8rLxL3OGbxsoiPxnLdSnMXnf594dc27Cy1SHvWSrjtW5czTHizxmfNFJllPpTryvaJ0DtmaN4yw8-wXIm5rcSWJ0PBpw3XgkkLHvxjt-UPx8pL0D4V-CJKZw60hqR8eTaTYiZb64QK-yra1TreJn7esj4_zdh4W7Km3DFC6VYsDa9q71N5IHPPcH7FEwt9fQ1_E1_s1Rvs0PgkF-B1IUa0DhQDyWCoIfjfqN4chV2nxSQWJGCUk-tP9NutntQjt_Lz0TKWDbJbsyLX_5CKzaWajwe9FrXAyTfhzSEAPNGiwtvTGORt6Yt58_og`;
-
-tokens.RS512publicKey = {
+tokens.algos.RS512.token = 'eyJhbGciOiJSUzUxMiJ9.eyJhIjoiYiJ9.0SFnAk08HFPopkWPeWLB_FeQ9CYb8rLxL3OGbxsoiPxnLdSnMXnf594dc27Cy1SHvWSrjtW5czTHizxmfNFJllPpTryvaJ0DtmaN4yw8-wXIm5rcSWJ0PBpw3XgkkLHvxjt-UPx8pL0D4V-CJKZw60hqR8eTaTYiZb64QK-yra1TreJn7esj4_zdh4W7Km3DFC6VYsDa9q71N5IHPPcH7FEwt9fQ1_E1_s1Rvs0PgkF-B1IUa0DhQDyWCoIfjfqN4chV2nxSQWJGCUk-tP9NutntQjt_Lz0TKWDbJbsyLX_5CKzaWajwe9FrXAyTfhzSEAPNGiwtvTGORt6Yt58_og';
+tokens.algos.RS512.invalidToken = oneLineTrim`eyJhbGciOiJSUzUxMiJ9.eyJhIjoiYyJ9.0SFnAk08HFPopkWPeWLB_FeQ9CYb8rLxL3OGbxsoiPxnLdSnMXnf594dc27Cy1SHvWSrjtW5czTHizxmfNFJllPpTryvaJ0DtmaN4yw8-wXIm5rcSWJ0PBpw3XgkkLHvxjt-UPx8pL0D4V-CJKZw60hqR8eTaTYiZb64QK-yra1TreJn7esj4_zdh4W7Km3DFC6VYsDa9q71N5IHPPcH7FEwt9fQ1_E1_s1Rvs0PgkF-B1IUa0DhQDyWCoIfjfqN4chV2nxSQWJGCUk-tP9NutntQjt_Lz0TKWDbJbsyLX_5CKzaWajwe9FrXAyTfhzSEAPNGiwtvTGORt6Yt58_og`;
+tokens.algos.RS512.publicKey = {
   "alg": "RS512",
   "e": "AQAB",
   "ext": true,
@@ -107,8 +111,7 @@ tokens.RS512publicKey = {
   "kty": "RSA",
   "n": "8JqTVUuAPBHduqnzybUJauc3AJCEyhbwrCy118uJ3B-k48Zoxj0cM3WCZFoX2_Xyl_Nwzg8Ct-eN1RikqlWsYKxZUQDwUM5stuFLuPuI2fif4CRjQg8VApQKdSjIXpusHmUfrNxUDKZ8EEys8HPi5aQPkZUfvNwVzn6cYDY-1NBWmxU4U8yKXTiEbK61hgnKtuRni91IC651KcWy3hjPuX4WpSlNI5kXlCR7A8BuKxCseDDrthGYEfVYBdGHM5mC63drRhabxRnN_f7zMAdX-6ARnfKWPtAVNTgXSeLOYcDF8HpdK-TjAYDPlCRxGUzjkeuyiOEancfdNyqJ5h9uiw"
 };
-
-tokens.RS512privateKey = {
+tokens.algos.RS512.privateKey = {
   "alg": "RS512",
   "d": "Iylb1a-6dkzgG_rhSz1_OlW-5oC4PzZaBrdj_bzbkUU4mibxQeNFX0nRe-vkp7sKMGWduydbbNfUlOtMiS4LCne1d86M0CpSnelP4SE1TzFz39RBgzJkDiPnYVbL7XOPlEOP_PmX-N9Nqy4haeRtqMSwl8R0xmtdbnd3T-ItjXj6XJAiodHWhIRpi1t2GayYBziWJe5shzEU7SN3OsQ9ioTlX1ac-fu_q-cIfX2UnV6u535PLWEC5_qDEDaHMdMUn3DMJJJQqOpRQUDK0RmvteDUnR57-S6s7Oz34b33hk4J2dKQ6zQ0xpNtIvHRDICkGljGimvox0wJKVphwEGo5Q",
   "dp": "BWTjwA20sDeqjwF_HjrHkkt7ceztzVgGw1Jmd8AoNjDx5pZFY_JujJpOuIEINNHFd2LyrT4dkrm0gt2XXxHaD51fQaJBI7BB8uS-jEjeQ87zWLR2xaz0VPbej0rlX02MK_8Z-eLcxOVzoUz1WBjaMDdjRRUsH9_dqb45--YqDbk",
@@ -125,11 +128,9 @@ tokens.RS512privateKey = {
   "qi": "K9-Cq6MPltnC7h9yq9PM8RcP8fNuL8pc_u2Xz46azTWST_j7HAQRW4IsEm8OV2-hsvNcHklj0BNUxWukBRCf-T9AoGXnzdgUNAU6GoMlHhN3oxrHYS80mUiPpGvOy1GbvKH6zUjW7dpBntPiK79UegOwjS7AWlAKFN5Fos0xqTg"
 };
 
-tokens.HS256token = oneLineTrim`eyJhbGciOiJIUzI1NiJ9.eyJhIjoiYiJ9.AuPyDcttfqiDCUGeZzN2Zi5Y14QiEEf5YusaDXGMHVk`;
-
-tokens.HS256invalidToken = oneLineTrim`eyJhbGciOiJIUzI1NiJ9.eyJhIjoiYyJ9.AuPyDcttfqiDCUGeZzN2Zi5Y14QiEEf5YusaDXGMHVk`;
-
-tokens.HS256sharedKey = {
+tokens.algos.HS256.token = oneLineTrim`eyJhbGciOiJIUzI1NiJ9.eyJhIjoiYiJ9.AuPyDcttfqiDCUGeZzN2Zi5Y14QiEEf5YusaDXGMHVk`;
+tokens.algos.HS256.invalidToken = oneLineTrim`eyJhbGciOiJIUzI1NiJ9.eyJhIjoiYyJ9.AuPyDcttfqiDCUGeZzN2Zi5Y14QiEEf5YusaDXGMHVk`;
+tokens.algos.HS256.sharedKey = {
   "alg": "HS256",
   "ext": true,
   "k": "YYqgcZK9g_FTeOR66yAiU86VV-kTN_c5iMODBK8tXuYKui5khc_iYUrvXQqSmyZ-wljrMR-ez2mKsnWfCzRROA",
@@ -140,11 +141,9 @@ tokens.HS256sharedKey = {
   "kty": "oct"
 };
 
-tokens.HS384token = oneLineTrim`eyJhbGciOiJIUzM4NCJ9.eyJhIjoiYiJ9.gXNnRzvVAzFuazMNaAlYQV6WV5rVzNgeyM2nZQ-409JDeeHTRtBz5u_pFc0MjL-p`;
-
-tokens.HS384invalidToken = oneLineTrim`eyJhbGciOiJIUzM4NCJ9.eyJhIjoiYyJ9.gXNnRzvVAzFuazMNaAlYQV6WV5rVzNgeyM2nZQ-409JDeeHTRtBz5u_pFc0MjL-p`;
-
-tokens.HS384sharedKey = {
+tokens.algos.HS384.token = oneLineTrim`eyJhbGciOiJIUzM4NCJ9.eyJhIjoiYiJ9.gXNnRzvVAzFuazMNaAlYQV6WV5rVzNgeyM2nZQ-409JDeeHTRtBz5u_pFc0MjL-p`;
+tokens.algos.HS384.invalidToken = oneLineTrim`eyJhbGciOiJIUzM4NCJ9.eyJhIjoiYyJ9.gXNnRzvVAzFuazMNaAlYQV6WV5rVzNgeyM2nZQ-409JDeeHTRtBz5u_pFc0MjL-p`;
+tokens.algos.HS384.sharedKey = {
   "alg": "HS384",
   "ext": true,
   "k": "RsjOkcfWhvsID1EYlZ1bW2ijVCdTsRE7a8I53aEmnawod-souXwK-l3br6_obMJu_HRvi3TW6riLSaND5KzjTDlju0EwZvG5k0U4XGnSB2hd7shV_AfkbxCtMfXDJq1hORtn09hfLzxKQ9tl0xVS2IyLyfXkjHRLmk9DfnS6vLM",
@@ -155,11 +154,9 @@ tokens.HS384sharedKey = {
   "kty": "oct"
 };
 
-tokens.HS512token = oneLineTrim`eyJhbGciOiJIUzUxMiJ9.eyJhIjoiYiJ9.dli60766qQ7ksSOPQTzL--R-FnfTcCMR5s7_h57tkEPNZITEXndPP88YJQ60mZr8PcbFI6XvjwC9gKucA3eIzg`;
-
-tokens.HS512invalidToken = oneLineTrim`eyJhbGciOiJIUzUxMiJ9.eyJhIjoiYyJ9.dli60766qQ7ksSOPQTzL--R-FnfTcCMR5s7_h57tkEPNZITEXndPP88YJQ60mZr8PcbFI6XvjwC9gKucA3eIzg`;
-
-tokens.HS512sharedKey = {
+tokens.algos.HS512.token = oneLineTrim`eyJhbGciOiJIUzUxMiJ9.eyJhIjoiYiJ9.dli60766qQ7ksSOPQTzL--R-FnfTcCMR5s7_h57tkEPNZITEXndPP88YJQ60mZr8PcbFI6XvjwC9gKucA3eIzg`;
+tokens.algos.HS512.invalidToken = oneLineTrim`eyJhbGciOiJIUzUxMiJ9.eyJhIjoiYyJ9.dli60766qQ7ksSOPQTzL--R-FnfTcCMR5s7_h57tkEPNZITEXndPP88YJQ60mZr8PcbFI6XvjwC9gKucA3eIzg`;
+tokens.algos.HS512.sharedKey = {
   "alg": "HS512",
   "ext": true,
   "k": "ugRLYsPNGICtatMOJs-UJhVbRpG83XlqwNtgz4N89j_Go3_-b3kstlM0KuUZbr9IP9IJRQCf6ElvG2c_bYH9YHrEXBCmrSMp9-s5Byw-AYerIQhVBvW4ZOE1L3ku6eqta8CVxj0ciydk_bhK1qCNdX2534UPMq4z52FE5pcI5OM",
@@ -170,11 +167,9 @@ tokens.HS512sharedKey = {
   "kty": "oct"
 };
 
-tokens.ES256token = oneLineTrim`eyJhbGciOiJFUzI1NiJ9.eyJhIjoiYiJ9.zr5BgAjLO3sAep1JJjcsx-tHB5Uygv0MfG_X3izb0B3PufP1vC8aCIFumjHvtDTa55GhgZSVL75RHZAPY_wRIQ`;
-
-tokens.ES256invalidToken = oneLineTrim`eyJhbGciOiJFUzI1NiJ9.eyJhIjoiYyJ9.zr5BgAjLO3sAep1JJjcsx-tHB5Uygv0MfG_X3izb0B3PufP1vC8aCIFumjHvtDTa55GhgZSVL75RHZAPY_wRIQ`;
-
-tokens.ES256publicKey = {
+tokens.algos.ES256.token = oneLineTrim`eyJhbGciOiJFUzI1NiJ9.eyJhIjoiYiJ9.zr5BgAjLO3sAep1JJjcsx-tHB5Uygv0MfG_X3izb0B3PufP1vC8aCIFumjHvtDTa55GhgZSVL75RHZAPY_wRIQ`;
+tokens.algos.ES256.invalidToken = oneLineTrim`eyJhbGciOiJFUzI1NiJ9.eyJhIjoiYyJ9.zr5BgAjLO3sAep1JJjcsx-tHB5Uygv0MfG_X3izb0B3PufP1vC8aCIFumjHvtDTa55GhgZSVL75RHZAPY_wRIQ`;
+tokens.algos.ES256.publicKey = {
   "crv": "P-256",
   "ext": true,
   "key_ops": [
@@ -184,8 +179,7 @@ tokens.ES256publicKey = {
   "x": "upJTeLFy6-jvF_HEbgTfwl35j7vHrbsrC16VlGkDK4A",
   "y": "GFb5rSTBMg0nr-5eoDNPMzpWLEsBAz1YbTuKyD06fMI"
 };
-
-tokens.ES256privateKey = {
+tokens.algos.ES256.privateKey = {
   "crv": "P-256",
   "d": "IAJNZyy00-LaC8zZk-3885Zg1KeM_1DhbHiyB5EF3n0",
   "ext": true,
@@ -197,11 +191,9 @@ tokens.ES256privateKey = {
   "y": "GFb5rSTBMg0nr-5eoDNPMzpWLEsBAz1YbTuKyD06fMI"
 };
 
-tokens.ES384token = 'eyJhbGciOiJFUzM4NCJ9.eyJhIjoiYiJ9.iJUG1bvnwKq710CM2NaTfZJzVa4xeR32UZoz4QhT_DPWnvCwcKbQFkTLNbxfPrf3-D7vC0GQw2iZ4fGT89iYtw';
-
-tokens.ES384invalidToken = oneLineTrim`eyJhbGciOiJFUzM4NCJ9.eyJhIjoiYyJ9.iJUG1bvnwKq710CM2NaTfZJzVa4xeR32UZoz4QhT_DPWnvCwcKbQFkTLNbxfPrf3-D7vC0GQw2iZ4fGT89iYtw`;
-
-tokens.ES384publicKey = {
+tokens.algos.ES384.token = 'eyJhbGciOiJFUzM4NCJ9.eyJhIjoiYiJ9.iJUG1bvnwKq710CM2NaTfZJzVa4xeR32UZoz4QhT_DPWnvCwcKbQFkTLNbxfPrf3-D7vC0GQw2iZ4fGT89iYtw';
+tokens.algos.ES384.invalidToken = oneLineTrim`eyJhbGciOiJFUzM4NCJ9.eyJhIjoiYyJ9.iJUG1bvnwKq710CM2NaTfZJzVa4xeR32UZoz4QhT_DPWnvCwcKbQFkTLNbxfPrf3-D7vC0GQw2iZ4fGT89iYtw`;
+tokens.algos.ES384.publicKey = {
   "crv": "P-256",
   "ext": true,
   "key_ops": [
@@ -211,8 +203,7 @@ tokens.ES384publicKey = {
   "x": "QMXgOCzOgRtRoIZP3AMB5iggIOGMwiQq_BzJ0H8aKkA",
   "y": "Kc9lBFa7S1ctstWdIMmgBOeNYEg8HXIkClM9oRriGWY"
 };
-
-tokens.ES384privateKey = {
+tokens.algos.ES384.privateKey = {
   "crv": "P-256",
   "d": "QHwXFY5oC7Pd1s39Ya7BBka2EMS8b1W-M38EERgXHis",
   "ext": true,
@@ -224,11 +215,9 @@ tokens.ES384privateKey = {
   "y": "Kc9lBFa7S1ctstWdIMmgBOeNYEg8HXIkClM9oRriGWY"
 };
 
-tokens.ES512token = 'eyJhbGciOiJFUzUxMiJ9.eyJhIjoiYiJ9.YFneZzWXSIuYmVXLg8nY5EajBAOsIiAkbTOOyhwW_zKRSC3q2-bGg590tq3wA6lkSOOg9X208VPH40hXfTFP5Q';
-
-tokens.ES512invalidToken = oneLineTrim`eyJhbGciOiJFUzUxMiJ9.eyJhIjoiYyJ9.YFneZzWXSIuYmVXLg8nY5EajBAOsIiAkbTOOyhwW_zKRSC3q2-bGg590tq3wA6lkSOOg9X208VPH40hXfTFP5Q`;
-
-tokens.ES512publicKey = {
+tokens.algos.ES512.token = 'eyJhbGciOiJFUzUxMiJ9.eyJhIjoiYiJ9.YFneZzWXSIuYmVXLg8nY5EajBAOsIiAkbTOOyhwW_zKRSC3q2-bGg590tq3wA6lkSOOg9X208VPH40hXfTFP5Q';
+tokens.algos.ES512.invalidToken = oneLineTrim`eyJhbGciOiJFUzUxMiJ9.eyJhIjoiYyJ9.YFneZzWXSIuYmVXLg8nY5EajBAOsIiAkbTOOyhwW_zKRSC3q2-bGg590tq3wA6lkSOOg9X208VPH40hXfTFP5Q`;
+tokens.algos.ES512.publicKey = {
   "crv": "P-256",
   "ext": true,
   "key_ops": [
@@ -238,8 +227,7 @@ tokens.ES512publicKey = {
   "x": "qv8z81rn8ZlKgtbXrqOmPFt9BuABKii5wO0paJfmofY",
   "y": "GKd0TjFVkL8UDrTE2x5FOaUCw18gHjMi5V-IKVRfFC4"
 };
-
-tokens.ES512privateKey = {
+tokens.algos.ES512.privateKey = {
   "crv": "P-256",
   "d": "X77fxmOisFiWLmTDFgf0dxHOea0ryFqzBg0BqKO6Ovg",
   "ext": true,
@@ -251,8 +239,8 @@ tokens.ES512privateKey = {
   "y": "GKd0TjFVkL8UDrTE2x5FOaUCw18gHjMi5V-IKVRfFC4"
 };
 
-tokens.standardToken = tokens.RS256token;
-tokens.standardKey = tokens.RS256publicKey;
+tokens.standardToken = tokens.algos.RS256.token;
+tokens.standardKey = tokens.algos.RS256.publicKey;
 tokens.standardClaimsSet = {
   a: 'b'
 };
