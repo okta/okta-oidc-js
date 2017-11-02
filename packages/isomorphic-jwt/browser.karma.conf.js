@@ -16,31 +16,7 @@ module.exports = function(config) {
       'test/browser.js': ['webpack']
     },
 
-    webpack: {
-      output: {
-        filename: 'jwt.min.js',
-        library: 'jwt',
-        libraryTarget: 'umd'
-      },
-      module: {
-        rules: [
-          {
-            test: /\.js$/,
-            exclude: /node_modules/,
-            use: {
-              loader: 'babel-loader',
-              options: {
-                forceEnv: 'browser'
-              }
-            }
-          }
-        ]
-      },
-      plugins: [
-        new UglifyJSPlugin(),
-        new webpack.IgnorePlugin(/buffer/)
-      ]
-    },
+    webpack: require('./webpack.browser.config'),
 
     // test results reporter to use
     // possible values: 'dots', 'progress'

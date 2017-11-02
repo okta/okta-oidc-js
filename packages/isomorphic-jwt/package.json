@@ -8,9 +8,7 @@
     "test": "npm run test:node && npm run test:browser",
     "test:node": "npm run build:node && node test/node.js",
     "test:browser": "karma start browser.karma.conf.js --single-run",
-    "test:browser-extended": "karma start browser-extended.karma.conf.js --single-run",
     "start:browser": "karma start browser.karma.conf.js",
-    "start:browser-extended": "karma start browser-extended.karma.conf.js",
     "build": "rm -rf dist && npm run build:node && npm run build:browser",
     "build:node": "BABEL_ENV=node babel src --out-dir dist",
     "build:browser": "BABEL_ENV=browser webpack --config webpack.browser.config.js --display-modules"
