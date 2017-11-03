@@ -29,6 +29,11 @@ describe('jwt.decode', () => {
       .toThrowError('The jwt must have a header, claims set and signature');
   });
 
+  it('should throw an error if the header is base64', () => {
+    expect(() => jwt.decode(tokens.base64Header))
+      .toThrowError('The jwt header could not be decoded: Error: e30= is not base64url encoded');
+  });
+
   it('should throw an error if the header is malformed', () => {
     expect(() => jwt.decode(tokens.malformedHeader))
       .toThrowError('The jwt header is malformed');

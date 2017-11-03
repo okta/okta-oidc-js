@@ -19,9 +19,15 @@ module.exports = {
     const b64uClaimsSet = parts[1];
     const b64uSignature = parts[2];
     
-    let header;
+    let header, decoded;
     try {
-      header = JSON.parse(base64url.decode(b64uHeader));
+      decoded = base64url.decode(b64uHeader);
+    } catch (e) {
+      throw new JwtError(`The jwt header could not be decoded: ${e}`);
+    }
+
+    try {
+      header = JSON.parse(decoded);
     } catch (e) {
       throw new JwtError('The jwt header is malformed');
     }

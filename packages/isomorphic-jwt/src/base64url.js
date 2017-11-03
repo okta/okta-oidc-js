@@ -23,7 +23,11 @@ const base64url = {
     return toBase64URL(Base64.btoa(strUtil.fromBuffer(stringOrBuffer)));
   },
   decode(string) {
-    // TODO: add check for base64url
+    // the js-base64 lib decodes base64url and base64
+    // we want to enforce base64url
+    if (/=|\+|\//.test(string)) {
+      throw new Error(`${string} is not base64url encoded`);
+    }
     return Base64.decode(string);
   },
   toBuffer(b64uStr) {
