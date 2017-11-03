@@ -6,6 +6,8 @@ This library verifies Okta access tokens (issued by Okta authorization servers) 
 * Access token is not expired (requires local system time to be in sync with Okta, checks the `exp` claim of the access token).
 * Any custom claim assertions that have been configured.
 
+To learn more about verification cases and Okta's tokens please read [Working With OAuth 2.0 Tokens](https://developer.okta.com/authentication-guide/tokens/)
+
 ## How to use
 
 Install this library from npm:
