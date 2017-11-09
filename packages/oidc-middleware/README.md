@@ -60,8 +60,6 @@ oidc.on('error', err => {
 });
 ```
 
->
-
 ## ExpressOIDC API
 
 
