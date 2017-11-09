@@ -18,6 +18,8 @@
     "lint": "npm run --prefix test/e2e/harness/ lint",
     "build:dependencies": "npm run ngc && npm pack && cd test/e2e/harness && npm install ../../../okta-okta-angular-$npm_package_version.tgz && npm install"
   },
+  "repository": "https://github.com/okta/okta-oidc-js",
+  "homepage": "https://github.com/okta/okta-oidc-js/tree/master/packages/okta-angular",
   "keywords": [
     "okta",
     "oidc",
