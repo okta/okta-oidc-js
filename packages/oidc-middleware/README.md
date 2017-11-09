@@ -8,13 +8,15 @@ This package makes it easy to get your users logged in with Okta using OpenId Co
 npm install --save @okta/oidc-middleware
 ```
 
-## ExpressOIDC API
+## Prerequisites
 
-It is assumed that you have already created an Okta Developer Org and created the necessary OIDC application in your Org.  If you are new to Okta or this flow, we suggest following the [Express.js Quickstart][express-quickstart].
+* You will need an Okta Developer Org, you can sign up for an account at https://developer.okta.com/signup/..
+* An OIDC application in your Org, configured for Web mode.  If you are new to Okta or this flow, we suggest following the [Express.js Quickstart][express-quickstart].
+* This integration depends on sessions to store user information. Ensure the [express-session middleware](https://github.com/expressjs/session) is added before you add `ExpressOIDC`.  By default, the session middleware uses a MemoryStore, which is not designed for production use. Use [another session store](https://github.com/expressjs/session#compatible-session-stores) for production.
 
-### Prerequisites
+## Usage Example
 
-This integration depends on sessions to store user information. Ensure the [express-session middleware](https://github.com/expressjs/session) is added before you add `ExpressOIDC`.
+Below is a terse Express application that examples the basic usage of this library.  If you'd like to clone a complete example, please see the [Okta Express Samples Repository](https://github.com/okta/samples-nodejs-express-4).
 
 ```javascript
 const express = require('express');
@@ -22,19 +24,46 @@ const session = require('express-session');
 const { ExpressOIDC } = require('@okta/oidc-middleware');
 
 const app = express();
-app.use(session({ /* options */ })); // ensure this is before ExpressOIDC
+const oidc = new ExpressOIDC({
+  issuer: 'https://{yourOktaDomain}.com/oauth2/default',
+  client_id: 'XXXXX',
+  client_secret: 'XXXXX',
+  redirect_uri: 'http://localhost:3000/authorization-code/callback',
+  scope: 'openid profile'
+});
 
-const oidc = new ExpressOIDC({ /* options, see below */ });
+app.use(session({
+  secret: 'this-should-be-very-random',
+  resave: true,
+  saveUninitialized: false
+}));
 app.use(oidc.router);
+app.get('/', (req, res) => {
+  if (req.userinfo) {
+    res.send(`Hello ${req.userinfo.name}! <a href="logout">Logout</a>`);
+  } else {
+    res.send('Please <a href="/login">login</a>');
+  }
+});
+app.get('/protected', oidc.ensureAuthenticated(), (req, res) => {
+  res.send('Top Secret');
+});
+app.get('/logout', (req, res) => {
+  req.logout();
+  res.redirect('/');
+});
 oidc.on('ready', () => {
   app.listen(3000, () => console.log('app started'));
 });
 oidc.on('error', err => {
   // An error occurred while setting up OIDC
-})
+});
 ```
 
-> By default, the session middleware uses a MemoryStore, which is not designed for production use. Use [another session store](https://github.com/expressjs/session#compatible-session-stores) for production.
+>
+
+## ExpressOIDC API
+
 
 ### new ExpressOIDC(config)
 
