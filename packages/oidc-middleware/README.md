@@ -63,7 +63,6 @@ Optional config:
 
 * **response_type** - Defaults to `code`
 * **scope** - Defaults to `openid`, which will only return the `sub` claim. To obtain more information about the user, use `openid profile`. For a list of scopes and claims, please see [Scope-dependent claims](https://developer.okta.com/standards/OIDC/index.html#scope-dependent-claims-not-always-returned) for more information.
-
 * **routes** - Allows customization of the generated routes. See [Customizing Routes](#customizing-routes) for details.
 
 ### oidc.router
@@ -179,9 +178,9 @@ const oidc = new ExpressOIDC({
 ```
 
 * **`callback.defaultRedirect`** - Where the user is redirected to after a successful authentication callback, if no `returnTo` value was specified by `oidc.ensureAuthenticated()`. Defaults to `/`.
-* **`callback.handler`** - A function that is called after a successful authentication callback, but before the final redirect within your application.  Useful for requirements such as conditional post-authentication redirects, or sending data to logging systems.
-* **`callback.path`** - The URI that this library will host the callback handler on.  Defaults to `/authorization-code/callback`
-* **`login.path`** - The URL that redirects the user to the authorize endpoint.  Defaults to `/login`.
+* **`callback.handler`** - A function that is called after a successful authentication callback, but before the final redirect within your application. Useful for requirements such as conditional post-authentication redirects, or sending data to logging systems.
+* **`callback.path`** - The URI that this library will host the callback handler on. Defaults to `/authorization-code/callback`
+* **`login.path`** - The URI that redirects the user to the authorize endpoint. Defaults to `/login`.
 
 ### Using a Custom Login Page
 
