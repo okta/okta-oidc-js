@@ -2,6 +2,12 @@
 
 This package makes it easy to get your users logged in with Okta using OpenId Connect (OIDC).  It enables your Express application to participate in the [authorization code flow][auth-code-docs] flow by redirecting the user to Okta for authentication and handling the callback from Okta.  Once this flow is complete, a local session is created and the user context is saved for the duration of the session.
 
+## :warning: :construction: Alpha Preview :construction: :warning:
+
+This library is under development and is currently in 0.x version series.  Breaking changes may be introduced at minor versions in the 0.x range.  Please lock your dependency to a specific version until this library reaches 1.x.
+
+Need help? Contact [developers@okta.com](mailto:developers@okta.com) or use the [Okta Developer Forum].
+
 ## Installation
 
 ```sh
@@ -269,3 +275,4 @@ oidc.on('error', err => console.log('could not start', err));
 
 [auth-code-docs]: https://developer.okta.com/standards/OAuth/#basic-flows
 [express-quickstart]: https://developer.okta.com/quickstart/#/okta-sign-in-page/nodejs/express
+[Okta Developer Forum]: https://devforum.okta.com/

@@ -3,3 +3,5 @@ npm-debug.log
 .DS_STORE
 .vscode
 package-lock.json
+.envrc
+*.code-workspace
