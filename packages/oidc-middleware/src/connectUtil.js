@@ -35,7 +35,7 @@ connectUtil.createOIDCRouter = context => {
   } = context.options.routes;
   oidcRouter.use(loginPath, bodyParser.urlencoded({ extended: false}), connectUtil.createLoginHandler(context));
   oidcRouter.use(callbackPath, connectUtil.createCallbackHandler(context));
-  oidcRouter.use(function(err, res, res, next){
+  oidcRouter.use((err, req, res, next) => {
     // Cast all errors from the passport strategy as 401 (rather than 500, which would happen if we just call through to next())
     res.status(401);
     next(err);
