@@ -1,6 +1,6 @@
 {
   "name": "@okta/oidc-middleware",
-  "version": "0.0.9",
+  "version": "0.0.13",
   "description": "OpenId Connect middleware for authorization code flows",
   "repository": "https://github.com/okta/okta-oidc-js",
   "homepage": "https://github.com/okta/okta-oidc-js/tree/master/packages/oidc-middleware",
@@ -19,7 +19,7 @@
   },
   "scripts": {
     "test": "webdriver-manager update && protractor test/e2e/conf.js",
-    "tck-test": "(ls ./okta-oidc-tck-0.2.0-SNAPSHOT-shaded.jar || curl $npm_package_config_tck -L -o okta-oidc-tck-0.2.0-SNAPSHOT-shaded.jar) && $npm_package_config_setup_env && mkdir -p target && $npm_package_config_command"
+    "tck-test": "(ls ./okta-oidc-tck-0.2.0-SNAPSHOT-shaded.jar || curl $npm_package_config_tck -L -o okta-oidc-tck-0.2.0-SNAPSHOT-shaded.jar) && $npm_package_config_setup_env && mkdir -p target && $npm_package_config_command || echo done"
   },
   "engines": {
     "node": ">=6"

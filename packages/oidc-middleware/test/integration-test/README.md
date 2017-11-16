@@ -1,6 +1,6 @@
 
 ## Prerequisite
-You will need to java installed on your machine
+You will need java installed on your machine
 We have tested using java version "1.8.0_131"
 
 ## Run integration Tests
