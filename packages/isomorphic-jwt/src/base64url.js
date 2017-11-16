@@ -1,4 +1,4 @@
-const Base64 = require('./browser-base64').Base64;
+const Base64 = require('js-base64').Base64;
 const strUtil = require('./strUtil');
 
 function toBase64(b64u) {

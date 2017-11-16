@@ -27,7 +27,9 @@ module.exports = {
   },
   plugins: [
     new UglifyJSPlugin(),
-    new webpack.IgnorePlugin(/buffer/),
-    new webpack.IgnorePlugin(/os/)
+    new webpack.NormalModuleReplacementPlugin(
+      /js-base64/,
+      './browser-base64'
+    )
   ]
 };

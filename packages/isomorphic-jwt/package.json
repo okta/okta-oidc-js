@@ -17,7 +17,7 @@
   "author": "",
   "license": "Apache-2.0",
   "dependencies": {
-    "@trust/webcrypto": "^0.6.0",
+    "@trust/webcrypto": "^0.8.2",
     "js-base64": "^2.3.2",
     "webcrypto-shim": "^0.1.2"
   },

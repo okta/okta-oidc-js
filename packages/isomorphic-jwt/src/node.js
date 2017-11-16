@@ -3,6 +3,8 @@ const util = require('./util');
 
 const supported = {
   RS256: ['generateKey', 'sign', 'verify'],
+  RS384: ['generateKey', 'sign', 'verify'],
+  RS512: ['generateKey', 'sign', 'verify'],
   HS256: ['generateKey', 'sign', 'verify'],
   HS384: ['generateKey', 'sign', 'verify'],
   HS512: ['generateKey', 'sign', 'verify']
