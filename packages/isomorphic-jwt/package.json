@@ -1,5 +1,5 @@
 {
-  "name": "@okta/isomorphic-jwt",
+  "name": "isomorphic-jwt",
   "version": "1.0.0",
   "description": "",
   "main": "node.js",
@@ -11,14 +11,13 @@
     "start:browser": "karma start browser.karma.conf.js",
     "build": "rm -rf dist && npm run build:node && npm run build:browser",
     "build:node": "BABEL_ENV=node babel src --out-dir dist",
-    "build:browser": "BABEL_ENV=browser webpack --config webpack.browser.config.js --display-modules"
+    "build:browser": "BABEL_ENV=browser webpack --config webpack.browser.config.js --display-modules --display-reasons"
   },
   "keywords": [],
   "author": "",
   "license": "Apache-2.0",
   "dependencies": {
     "@trust/webcrypto": "^0.6.0",
-    "detect-browser": "^2.0.0",
     "js-base64": "^2.3.2",
     "webcrypto-shim": "^0.1.2"
   },

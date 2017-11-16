@@ -1,5 +1,4 @@
 require('webcrypto-shim');
-const browser = require('detect-browser').detect();
 const util = require('./util');
 
 const supported = {
@@ -14,13 +13,16 @@ const supported = {
   ES512: ['generateKey', 'sign', 'verify']
 }
 
-if (browser && ['ie', 'edge'].includes(browser.name)) {
+const isEdge = navigator.userAgent.includes('Edge/');
+const isIE = msCrypto && !isEdge;
+
+if (isIE || isEdge) {
   supported.ES256 = [];
   supported.ES384 = [];
   supported.ES512 = [];
 }
 
-if (browser && browser.name === 'ie') {
+if (isIE) {
   supported.RS512 = [];
   supported.HS512 = [];
 }
