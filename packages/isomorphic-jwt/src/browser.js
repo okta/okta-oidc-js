@@ -14,7 +14,7 @@ const supported = {
 }
 
 const isEdge = navigator.userAgent.includes('Edge/');
-const isIE = msCrypto && !isEdge;
+const isIE = window.msCrypto && !isEdge;
 
 if (isIE || isEdge) {
   supported.ES256 = [];
