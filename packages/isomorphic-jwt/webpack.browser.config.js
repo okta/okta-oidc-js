@@ -27,9 +27,6 @@ module.exports = {
   },
   plugins: [
     new UglifyJSPlugin(),
-    new webpack.NormalModuleReplacementPlugin(
-      /js-base64/,
-      './browser-base64'
-    )
+    new webpack.optimize.OccurrenceOrderPlugin()
   ]
 };

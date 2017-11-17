@@ -1,6 +1,5 @@
 const { JwtError } = require('./errors');
 const strUtil = require('./strUtil');
-const base64url = require('./base64url');
 
 const algorithms = {
   HS256: {
@@ -41,7 +40,7 @@ const algorithms = {
   }
 };
 
-module.exports = ({environment, crypto, util, supported}) => {
+module.exports = ({environment, crypto, util, supported, base64url}) => {
   const jwt = {
     getSupported() {
       // TODO: Use feature detection
@@ -92,13 +91,10 @@ module.exports = ({environment, crypto, util, supported}) => {
           delete algo.hash;
         }
 
-        const extractable = true;
-        const usages = ['sign', 'verify'];
-
         return crypto.subtle.generateKey(
           algo,
-          extractable,
-          usages
+          true, // extractable
+          ['sign', 'verify'] // usages
         )
         .catch(err => {
           throw new JwtError(`Unable to generate key: ${err.message}`)
@@ -199,9 +195,6 @@ module.exports = ({environment, crypto, util, supported}) => {
         // ASCII(BASE64URL(UTF8(JWS Protected Header)) || '.' ||
         // BASE64URL(JWS Payload)).
         const claimsSetBuffer = strUtil.toBuffer(b64uHeader + '.' + b64uPayload);
-        const format = 'jwk';
-        const extractable = false;
-        const usages = ['sign'];
 
         const algo = algorithms[alg];
         
@@ -213,11 +206,11 @@ module.exports = ({environment, crypto, util, supported}) => {
         }
 
         return crypto.subtle.importKey(
-          format,
+          'jwk', // format
           jwk,
           importingAlgo,
-          extractable,
-          usages
+          false, // extractable
+          ['sign'] // usages
         )
         .catch(err => {
           throw new JwtError(`Unable to import key: ${err.message}`)
@@ -279,7 +272,6 @@ module.exports = ({environment, crypto, util, supported}) => {
           throw new JwtError(`jwt in ${environment} cannot verify ${alg} keys`);
         }
 
-        const format = 'jwk';
         const algo = algorithms[alg];
 
         let importingAlgo = algo;
@@ -294,9 +286,6 @@ module.exports = ({environment, crypto, util, supported}) => {
         if (jwk.alg && jwk.alg !== alg) {
           throw new JwtError(`The jwt has an alg of ${alg}, but the key is for ${jwk.alg}`);
         }
-  
-        const extractable = true;
-        const usages = ['verify'];
       
         // https://connect.microsoft.com/IE/feedback/details/2242108/webcryptoapi-importing-jwk-with-use-field-fails
         // This is a metadata tag that specifies the intent of how the key should be used.
@@ -305,11 +294,11 @@ module.exports = ({environment, crypto, util, supported}) => {
         delete jwk.use;
 
         return crypto.subtle.importKey(
-          format,
+          'jwk', // format
           jwk,
           importingAlgo,
-          extractable,
-          usages
+          true, // extractable
+          ['verify'] // usages
         )
         .catch(err => {
           throw new JwtError(`Unable to import key: ${err.message}`);

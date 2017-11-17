@@ -1,5 +1,7 @@
 const crypto = require('@trust/webcrypto');
-const util = require('./util');
+const Base64 = require('js-base64').Base64;
+const base64url = require('./base64url')(Base64);
+const util = require('./util')(base64url);
 
 const supported = {
   RS256: ['generateKey', 'sign', 'verify'],
@@ -14,5 +16,6 @@ module.exports = require('./jwt')({
   environment: 'node',
   crypto,
   util,
-  supported
+  supported,
+  base64url
 });

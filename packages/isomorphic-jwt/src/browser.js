@@ -1,17 +1,20 @@
 require('webcrypto-shim');
-const util = require('./util');
+const Base64 = require('./browser-base64');
+const base64url = require('./base64url')(Base64);
+const util = require('./util')(base64url);
 
+const all = ['generateKey', 'sign', 'verify'];
 const supported = {
-  RS256: ['generateKey', 'sign', 'verify'],
-  RS384: ['generateKey', 'sign', 'verify'],
-  RS512: ['generateKey', 'sign', 'verify'],
-  HS256: ['generateKey', 'sign', 'verify'],
-  HS384: ['generateKey', 'sign', 'verify'],
-  HS512: ['generateKey', 'sign', 'verify'],
-  ES256: ['generateKey', 'sign', 'verify'],
-  ES384: ['generateKey', 'sign', 'verify'],
-  ES512: ['generateKey', 'sign', 'verify']
-}
+  RS256: all,
+  RS384: all,
+  RS512: all,
+  HS256: all,
+  HS384: all,
+  HS512: all,
+  ES256: all,
+  ES384: all,
+  ES512: all
+};
 
 const isEdge = navigator.userAgent.includes('Edge/');
 const isIE = window.msCrypto && !isEdge;
@@ -31,5 +34,6 @@ module.exports = require('./jwt')({
   environment: 'browser',
   crypto,
   util,
-  supported
+  supported,
+  base64url
 });
