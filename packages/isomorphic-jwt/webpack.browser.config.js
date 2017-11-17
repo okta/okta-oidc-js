@@ -26,7 +26,6 @@ module.exports = {
     ]
   },
   plugins: [
-    new UglifyJSPlugin(),
-    new webpack.optimize.OccurrenceOrderPlugin()
+    new UglifyJSPlugin()
   ]
 };

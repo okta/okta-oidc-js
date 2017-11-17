@@ -12,10 +12,7 @@ describe('jwt.sign', () => {
     ['RS256', 'RS384', 'RS512'].map(algo => {
       env.supports({ [algo]: ['generateKey'] })
       .it(`should allow signing claims for ${algo}`, () => {
-        return jwt.sign({
-          claims: tokens.standardClaimsSet,
-          jwk: tokens.algos[algo].privateKey
-        })
+        return jwt.sign(tokens.standardClaimsSet, tokens.algos[algo].privateKey)
         .then(res => expect(res).toEqual(tokens.algos[algo].token));
       });
     });
@@ -25,10 +22,7 @@ describe('jwt.sign', () => {
     ['HS256', 'HS384', 'HS512'].map(algo => {
       env.supports({ [algo]: ['generateKey'] })
       .it(`should allow signing claims for ${algo}`, () => {
-        return jwt.sign({
-          claims: tokens.standardClaimsSet,
-          jwk: tokens.algos[algo].sharedKey
-        })
+        return jwt.sign(tokens.standardClaimsSet, tokens.algos[algo].sharedKey)
         .then(res => expect(res).toEqual(tokens.algos[algo].token));
       });
     });

@@ -133,7 +133,7 @@ module.exports = ({environment, crypto, util, supported, base64url}) => {
         });
       });
     },
-    sign({claims, jwk, alg}) {
+    sign(claims, jwk, { alg } = {}) {
       alg = alg || jwk.alg;
       if (!alg) {
         return Promise.reject(new JwtError('An alg is required to sign using a jwk'));
@@ -240,7 +240,7 @@ module.exports = ({environment, crypto, util, supported, base64url}) => {
         });
       });
     },
-    verify({token, jwk} = {}) {
+    verify(token, jwk) {
       if (!token || !jwk) {
         return Promise.reject(new JwtError('jwt.verify requires a token and jwk'));
       }

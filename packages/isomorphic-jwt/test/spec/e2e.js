@@ -14,16 +14,8 @@ describe('using jwt operations end-to-end', () => {
           alg: algo
         })
         .then(res => {
-          return jwt.sign({
-            claims: tokens.standardClaimsSet,
-            jwk: res.privateKey
-          })
-          .then(signedJwt => {
-            return jwt.verify({
-              token: signedJwt,
-              jwk: res.publicKey
-            })
-          });
+          return jwt.sign(tokens.standardClaimsSet, res.privateKey)
+          .then(signedJwt => jwt.verify(signedJwt, res.publicKey));
         })
         .then(res => expect(res).toEqual(tokens.standardClaimsSet));
       });
@@ -40,16 +32,8 @@ describe('using jwt operations end-to-end', () => {
           alg: algo
         })
         .then(res => {
-          return jwt.sign({
-            claims: tokens.standardClaimsSet,
-            jwk: res.sharedKey
-          })
-          .then(signedJwt => {
-            return jwt.verify({
-              token: signedJwt,
-              jwk: res.sharedKey
-            })
-          });
+          return jwt.sign(tokens.standardClaimsSet, res.sharedKey)
+          .then(signedJwt => jwt.verify(signedJwt, res.sharedKey));
         })
         .then(res => expect(res).toEqual(tokens.standardClaimsSet));
       });
@@ -66,17 +50,8 @@ describe('using jwt operations end-to-end', () => {
           alg: algo
         })
         .then(res => {
-          return jwt.sign({
-            claims: tokens.standardClaimsSet,
-            jwk: res.privateKey,
-            alg: algo
-          })
-          .then(signedJwt => {
-            return jwt.verify({
-              token: signedJwt,
-              jwk: res.publicKey
-            })
-          });
+          return jwt.sign(tokens.standardClaimsSet, res.privateKey, { alg: algo })
+          .then(signedJwt => jwt.verify(signedJwt, res.publicKey));
         })
         .then(res => expect(res).toEqual(tokens.standardClaimsSet));
       });
