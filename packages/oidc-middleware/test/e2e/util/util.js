@@ -9,7 +9,8 @@ const environmentConfig = {
   issuer: constants.ISSUER,
   client_id: constants.CLIENT_ID,
   client_secret: constants.CLIENT_SECRET,
-  redirect_uri: constants.REDIRECT_URI
+  redirect_uri: constants.REDIRECT_URI,
+  scope: 'profile email openid'
 };
 
 util.createDemoServer = (options) => {

@@ -1,4 +1,4 @@
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 8080;
 const BASE_URI = process.env.BASE_URI || `http://localhost:${PORT}`;
 
 module.exports = {

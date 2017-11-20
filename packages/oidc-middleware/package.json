@@ -12,8 +12,16 @@
     "auth"
   ],
   "main": "index.js",
+  "config" : { 
+    "tck": {
+      "jar": "https://oss.sonatype.org/service/local/artifact/maven/redirect?r=snapshots&g=com.okta.tests&a=okta-oidc-tck&v=0.2.0-SNAPSHOT&e=jar&c=shaded",   
+      "setup_env": "export ISSUER=http://localhost:9090/oauth2/default export CLIENT_ID=OOICU812 export CLIENT_SECRET=VERY_SECRET",
+      "command": "java -cp ./test/integration-test/resources/:./okta-oidc-tck-0.2.0-SNAPSHOT-shaded.jar org.testng.TestNG -d target/cli-test-output ./test/integration-test/resources/testng.xml"
+    }
+  },
   "scripts": {
-    "test": "webdriver-manager update && protractor test/e2e/conf.js"
+    "test": "webdriver-manager update && protractor test/e2e/conf.js",
+    "tck-test": "(ls ./okta-oidc-tck-0.2.0-SNAPSHOT-shaded.jar || curl $npm_package_config_tck_jar -L -o okta-oidc-tck-0.2.0-SNAPSHOT-shaded.jar) && $npm_package_config_tck_setup_env && mkdir -p target && $npm_package_config_tck_command || echo done"
   },
   "engines": {
     "node": ">=6"
