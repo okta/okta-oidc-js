@@ -4,7 +4,7 @@
   "description": "React support for Okta",
   "main": "./dist/index.js",
   "scripts": {
-    "build": "rimraf dist/ && NODE_ENV=development babel src -d dist",
+    "build": "rimraf dist/ && babel src -d dist",
     "lint": "eslint src/**; exit 0",
     "lint:watch": "esw -w lib/**",
     "prepublish": "npm run build",
@@ -17,8 +17,13 @@
     "type": "git",
     "url": "git+https://github.com/okta/okta-oidc-js.git"
   },
-  "keywords": ["oauth2"],
-  "files": ["dist", "src"],
+  "keywords": [
+    "oauth2"
+  ],
+  "files": [
+    "dist",
+    "src"
+  ],
   "author": "",
   "license": "Apache-2.0",
   "bugs": {
@@ -27,6 +32,7 @@
   "homepage": "https://github.com/okta/okta-oidc-js#readme",
   "dependencies": {
     "@okta/okta-auth-js": "^1.8.0",
+    "babel-runtime": "^6.26.0",
     "prop-types": "^15.5.10"
   },
   "peerDependencies": {
@@ -39,6 +45,7 @@
     "babel-eslint": "^8.0.0",
     "babel-plugin-transform-class-properties": "^6.24.1",
     "babel-plugin-transform-object-rest-spread": "^6.26.0",
+    "babel-plugin-transform-runtime": "^6.23.0",
     "babel-preset-env": "^1.6.1",
     "babel-preset-react-app": "^3.0.2",
     "eslint": "^4.7.1",
