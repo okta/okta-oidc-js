@@ -1,11 +1,17 @@
 {
-  "presets": ["es2015", "react"],
-  "plugins": ["transform-object-rest-spread", "transform-class-properties"],
-  "env": {
-    "development": {
-      "plugins": [
-        "babel-plugin-dynamic-import-node"
+  "presets": [["env", {
+    "targets": {
+      "browsers": [
+        "> 0.1%",
+        "not ie < 11"
       ]
-    }
-  }
+    },
+    "debug": true
+  }], "react"],
+  "plugins": [
+    "transform-object-rest-spread",
+    "transform-class-properties",
+    "transform-runtime",
+    "dynamic-import-node"
+  ]
 }
