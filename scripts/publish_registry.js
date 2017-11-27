@@ -16,6 +16,8 @@ if (!registry) {
 
 console.log(`Using this registry: ${registry}`);
 
+let hasPublishedAPackage = false;
+
 dirs.forEach(name => {
   const moduleDir = `${packagesDir}/${name}`;
   const pkg = require(`${moduleDir}/package`);
@@ -30,7 +32,12 @@ dirs.forEach(name => {
     execSync(`npm publish --registry ${registry}`, {
       cwd: moduleDir
     });
+    hasPublishedAPackage = true;
   }
 });
+
+if (hasPublishedAPackage) {
+  execSync('git tag -f last-published && git push origin last-published');
+}
 
 console.log('Finished syncing latest packages to public npm');
