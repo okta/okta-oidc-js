@@ -5,12 +5,13 @@
   "main": "./dist/index.js",
   "scripts": {
     "build": "rimraf dist/ && babel src -d dist",
+    "build:harness": "npm --prefix test/e2e/harness install",
     "lint": "eslint src/**; exit 0",
     "lint:watch": "esw -w lib/**",
     "prepublish": "npm run build",
-    "prestart": "npm run build",
+    "prestart": "npm run build && npm run build:harness",
     "start": "npm run --prefix test/e2e/harness start",
-    "pretest": "npm run build",
+    "pretest": "npm run build && npm run build:harness",
     "test": "npm run --prefix test/e2e/harness test"
   },
   "repository": {

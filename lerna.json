@@ -1,9 +1,8 @@
 {
   "lerna": "2.1.0",
   "packages": [
-    "packages/*",
-    "packages/okta-react/test/e2e/harness"
+    "packages/*"
   ],
-  "version": "0.0.13",
+  "version": "independent",
   "hoist": true
 }

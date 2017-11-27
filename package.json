@@ -4,6 +4,7 @@
 		"lerna": "^2.1.0"
 	},
 	"scripts": {
-		"banners": "util/maintain-banners.js"
+		"banners": "util/maintain-banners.js",
+		"publish": "lerna publish --skip-npm"
 	}
 }
