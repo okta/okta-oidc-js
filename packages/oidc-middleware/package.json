@@ -1,6 +1,6 @@
 {
   "name": "@okta/oidc-middleware",
-  "version": "0.0.13",
+  "version": "0.0.14",
   "description": "OpenId Connect middleware for authorization code flows",
   "repository": "https://github.com/okta/okta-oidc-js",
   "homepage": "https://github.com/okta/okta-oidc-js/tree/master/packages/oidc-middleware",
@@ -12,9 +12,9 @@
     "auth"
   ],
   "main": "index.js",
-  "config" : { 
+  "config": {
     "tck": {
-      "jar": "https://oss.sonatype.org/service/local/artifact/maven/redirect?r=snapshots&g=com.okta.tests&a=okta-oidc-tck&v=0.2.0-SNAPSHOT&e=jar&c=shaded",   
+      "jar": "https://oss.sonatype.org/service/local/artifact/maven/redirect?r=snapshots&g=com.okta.tests&a=okta-oidc-tck&v=0.2.0-SNAPSHOT&e=jar&c=shaded",
       "setup_env": "export ISSUER=http://localhost:9090/oauth2/default export CLIENT_ID=OOICU812 export CLIENT_SECRET=VERY_SECRET",
       "command": "java -cp ./test/integration-test/resources/:./okta-oidc-tck-0.2.0-SNAPSHOT-shaded.jar org.testng.TestNG -d target/cli-test-output ./test/integration-test/resources/testng.xml"
     }
