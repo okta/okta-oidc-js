@@ -39,7 +39,7 @@ dirs.forEach(name => {
 });
 
 if (hasPublishedAPackage) {
-  execSync('git tag -f last-published && git push origin last-published');
+  execSync('git tag -f last-published && git push -f origin last-published');
 }
 
 console.log('Finished syncing latest packages to public npm');
