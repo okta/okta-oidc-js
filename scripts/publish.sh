@@ -8,7 +8,7 @@ if [ "$BRANCH" == "master" ];
 then
   echo "attempting npm publish"
 
-  REGISTRY="${ARTIFACTORY_URL}/api/npm/npm-okta"
+  export REGISTRY="${ARTIFACTORY_URL}/api/npm/npm-okta"
   node $OKTA_HOME/$REPO/scripts/publish_registry.js
 fi
 
