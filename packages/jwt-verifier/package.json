@@ -5,8 +5,16 @@
   "repository": "https://github.com/okta/okta-oidc-js",
   "homepage": "https://github.com/okta/okta-oidc-js/tree/master/packages/jwt-verifier",
   "main": "lib.js",
+  "config": {
+    "tck": {
+      "jar": "https://oss.sonatype.org/service/local/artifact/maven/redirect?r=snapshots&g=com.okta.oidc.tck&a=okta-oidc-tck&v=0.2.1-SNAPSHOT&e=jar&c=shaded",
+      "setup_env": "cross-env ISSUER=http://localhost:9090/oauth2/default cross-env CLIENT_ID=OOICU812 cross-env CLIENT_SECRET=VERY_SECRET",
+      "command": "java -Dconfig=./test/integration-test/resources/testRunner.yml -cp ./okta-oidc-tck-0.2.1-SNAPSHOT-shaded.jar org.testng.TestNG -d target/cli-test-output ./test/integration-test/resources/testng.xml"
+    }
+  },
   "scripts": {
-    "test": "mocha --timeout 10000 test/spec"
+    "test": "mocha --timeout 10000 test/spec",
+    "tck-test": "(ls ./okta-oidc-tck-0.2.1-SNAPSHOT-shaded.jar || curl $npm_package_config_tck_jar -L -o okta-oidc-tck-0.2.1-SNAPSHOT-shaded.jar) && $npm_package_config_tck_setup_env && mkdir -p target && $npm_package_config_tck_command || echo done"
   },
   "keywords": [
     "okta",
@@ -25,6 +33,9 @@
     "njwt": "^0.4.0"
   },
   "devDependencies": {
+    "cors": "^2.8.4",
+    "cross-env": "^5.1.1",
+    "express": "^4.15.4",
     "mocha": "^3.5.0",
     "nock": "^9.0.14",
     "request": "^2.81.0",
