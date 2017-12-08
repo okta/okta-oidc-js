@@ -35,6 +35,7 @@ module.exports = class ExpressOIDC extends EventEmitter {
    * @param {string} options.redirect_uri The location of the authorization callback
    * @param {string} [options.scope=openid] The scopes that will determine the claims on the tokens
    * @param {string} [options.response_type=code] The OpenId Connect response type
+   * @param {number} [options.maxClockSkew=120] The maximum discrepancy allowed between server clocks in seconds
    * @param {Object} [options.routes]
    * @param {Object} [options.routes.login]
    * @param {string} [options.routes.login.path=/login] Path where the login middleware is hosted
@@ -76,7 +77,8 @@ module.exports = class ExpressOIDC extends EventEmitter {
           defaultRedirect: '/'
         }
       },
-      sessionKey: sessionKey || `oidc:${options.issuer}`
+      sessionKey: sessionKey || `oidc:${options.issuer}`,
+      maxClockSkew: 120
     }, options)
 
     const context = {
