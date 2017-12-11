@@ -23,18 +23,23 @@ oidcUtil.createClient = context => {
     issuer,
     client_id,
     client_secret,
-    redirect_uri
+    redirect_uri,
+    maxClockSkew
   } = context.options;
 
   return Issuer.discover(issuer)
   .then(iss => {
-    return new iss.Client({
+    const client = new iss.Client({
       client_id,
       client_secret,
       redirect_uris: [
         redirect_uri
       ]
     });
+
+    client.CLOCK_TOLERANCE = maxClockSkew;
+
+    return client;
   });
 }
 
