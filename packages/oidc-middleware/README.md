@@ -97,6 +97,7 @@ Optional config:
 * **response_type** - Defaults to `code`
 * **scope** - Defaults to `openid`, which will only return the `sub` claim. To obtain more information about the user, use `openid profile`. For a list of scopes and claims, please see [Scope-dependent claims](https://developer.okta.com/standards/OIDC/index.html#scope-dependent-claims-not-always-returned) for more information.
 * **routes** - Allows customization of the generated routes. See [Customizing Routes](#customizing-routes) for details.
+* **maxClockSkew** - Defaults to 120. This is the maximum difference allowed between your server's clock and Okta's in seconds. Setting this to 0 is not recommended, because it increases the likelihood that valid jwts will fail verification due to `nbf` and `exp` issues.
 
 ### oidc.router
 
