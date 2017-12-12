@@ -1,5 +1,5 @@
 <template>
-  <div class="hello">
+  <div class="protected">
     {{ message }}
     <pre>{{ user }}</pre>
   </div>

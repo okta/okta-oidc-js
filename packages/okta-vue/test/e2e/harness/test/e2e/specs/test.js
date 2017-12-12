@@ -2,18 +2,56 @@
 // http://nightwatchjs.org/guide#usage
 
 module.exports = {
-  'default e2e tests': function (browser) {
-    // automatically uses dev Server port from /config.index.js
-    // default: http://localhost:8080
-    // see nightwatch.conf.js
-    const devServer = browser.globals.devServerURL
+  beforeEach: function (browser) {
+    this.devServer = browser.globals.devServerURL
+  },
 
+  'redirects to Okta for login when trying to access a protected page': function (browser) {
     browser
-      .url(devServer)
+      .url(this.devServer + '/protected')
+      .waitForElementVisible('body', 5000)
+      .waitForElementVisible('#okta-signin-username', 1000)
+      .waitForElementVisible('#okta-signin-password', 1000)
+      .waitForElementVisible('#okta-signin-submit', 1000)
+      .setValue('#okta-signin-username', process.env.USERNAME)
+      .setValue('#okta-signin-password', process.env.PASSWORD)
+      .click('#okta-signin-submit')
       .waitForElementVisible('#app', 5000)
-      .assert.elementPresent('.hello')
-      .assert.containsText('h1', 'Welcome to Your Vue.js App')
-      .assert.elementCount('img', 1)
+      .assert.elementPresent('#logout-button')
+      .assert.containsText('.protected', 'Protected!')
+      .click('#logout-button')
+      .end()
+  },
+
+  'redirects to Okta for login': function (browser) {
+    browser
+      .url(this.devServer)
+      .waitForElementVisible('#app', 5000)
+      .click('#login-button')
+      .waitForElementVisible('#okta-signin-username', 1000)
+      .waitForElementVisible('#okta-signin-password', 1000)
+      .waitForElementVisible('#okta-signin-submit', 1000)
+      .setValue('#okta-signin-username', process.env.USERNAME)
+      .setValue('#okta-signin-password', process.env.PASSWORD)
+      .click('#okta-signin-submit')
+      .waitForElementVisible('#app', 5000)
+      .assert.elementPresent('#logout-button')
+      .click('#logout-button')
+      .end()
+  },
+
+  'allows passing sessionToken to skip Okta login': function (browser) {
+    browser
+      .url(this.devServer + '/sessionToken')
+      .waitForElementVisible('#app', 5000)
+      .waitForElementVisible('#username', 1000)
+      .waitForElementVisible('#password', 1000)
+      .setValue('#username', process.env.USERNAME)
+      .setValue('#password', process.env.PASSWORD)
+      .click('#submit')
+      .waitForElementVisible('#logout-button', 5000)
+      .assert.elementPresent('#logout-button')
+      .click('#logout-button')
       .end()
   }
 }
