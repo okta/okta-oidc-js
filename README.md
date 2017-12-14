@@ -7,3 +7,4 @@ This is a monorepo that contains Okta's OpenID Connect JavaScript resources.
 * [**oidc-middleware**](/packages/oidc-middleware) - Middleware to easily add OpenID Connect to the Node.js framework of your choice
 * [**okta-angular**](/packages/okta-angular) - Angular support for Okta
 * [**okta-react**](/packages/okta-react) - React support for Okta
+* [**okta-vue**](/packages/okta-vue) - Vue.js support for Okta
