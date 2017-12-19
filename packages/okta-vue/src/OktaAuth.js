@@ -62,8 +62,4 @@ function install (Vue, options) {
 
 function handleCallback () { return ImplicitCallback }
 
-if (typeof window !== 'undefined' && window.Vue) {
-  install(window.Vue)
-}
-
 export default { install, handleCallback }
