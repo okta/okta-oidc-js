@@ -6,7 +6,7 @@ This library currently supports:
 
 ## Getting Started
 * If you do not already have a **Developer Edition Account**, you can create one at [https://developer.okta.com/signup/](https://developer.okta.com/signup/).
-* If you don't have a Vue app, or are new to Vue, please start with the [Vue Quickstart](https://vuejs.org/v2/guide/#Getting-Started) guide. It will walk you through the creation of a Vue app, creating routes, and other application development essentials.
+* If you don't have a Vue app, or are new to Vue, please start with the [Vue CLI](https://github.com/vuejs/vue-cli) guide. It will walk you through the creation of a Vue app, creating [routers](https://router.vuejs.org/en/essentials/getting-started.html), and other application development essentials.
 
 ### Add an OpenID Connect Client in Okta
 In Okta, applications are OpenID Connect clients that can use Okta Authorization servers to authenticate users.  Your Okta Org already has a default authorization server, so you just need to create an OIDC client that will use it.
@@ -97,6 +97,87 @@ router.beforeEach(Vue.prototype.$auth.authRedirectGuard())
 ```
 
 If a user does not have a valid session, they will be redirected to the Okta Login Page for authentication. Once authenticated, they will be redirected back to your application's **protected** page.
+
+### Show Login and Logout Buttons
+In the relevant location in your application, you will want to provide `Login` and `Logout` buttons for the user. You can show/hide the correct button by using the `$auth.isAuthenticated()` method. For example:
+
+```typescript
+// src/App.vue
+
+<template>
+  <div id="app">
+    <router-link to="/" tag="button" id='home-button'> Home </router-link>
+    <button v-if='authenticated' v-on:click='logout' id='logout-button'> Logout </button>
+    <button v-else v-on:click='$auth.loginRedirect' id='login-button'> Login </button>
+    <router-view/>
+  </div>
+</template>
+
+<script>
+
+export default {
+  name: 'app',
+  data: function () {
+    return { authenticated: false }
+  },
+  created () { this.isAuthenticated() },
+  watch: {
+    // Everytime the route changes, check for auth status
+    '$route': 'isAuthenticated'
+  },
+  methods: {
+    async isAuthenticated () {
+      this.authenticated = await this.$auth.isAuthenticated()
+    },
+    async logout () {
+      await this.$auth.logout()
+
+      // Stay on current page and make sure it is refreshed
+      this.$router.push({ path: '/' })
+    }
+  }
+}
+</script>
+```
+
+### Use the Access Token
+When your users are authenticated, your React application has an access token that was issued by your Okta Authorization server. You can use this token to authenticate requests for resources on your server or API. As a hypothetical example, let's say you have an API that provides messages for a user. You could create a `MessageList` component that gets the access token and uses it to make an authenticated request to your server.
+
+Here is what the Vue component could look like for this hypothentical example using [axios](https://github.com/axios/axios):
+
+```typescript
+// src/components/MessageList.vue
+
+<template>
+  <ul v-if="posts && posts.length">
+    <li v-for="post in posts" :key='post.title'>
+      <p><strong>{{post.title}}</strong></p>
+      <p>{{post.body}}</p>
+    </li>
+  </ul>
+</template>
+
+<script>
+import axios from 'axios'
+
+export default {
+  data () {
+    return {
+      posts: []
+    }
+  },
+  async created () {
+    axios.defaults.headers.common['Authorization'] = `Bearer ${await this.$auth.getAccessToken()}`
+    try {
+      const response = await axios.get(`http://localhost:{serverPort}/api/messages`)
+      this.posts = response.data
+    } catch (e) {
+      console.error(`Errors! ${e}`)
+    }
+  }
+}
+</script>
+```
 
 ### Reference
 **Configuration Options**
