@@ -1,9 +1,8 @@
 import * as AuthJS from '@okta/okta-auth-js'
-import { Utils } from './utils/Utils'
 import ImplicitCallback from './components/ImplicitCallback'
 
 function install (Vue, options) {
-  const authConfig = Utils.initConfig(options)
+  const authConfig = initConfig(options)
   const oktaAuth = new AuthJS({
     clientId: authConfig.client_id,
     issuer: authConfig.issuer,
@@ -32,8 +31,11 @@ function install (Vue, options) {
         if (token.accessToken) oktaAuth.tokenManager.add('accessToken', token)
         if (token.idToken) oktaAuth.tokenManager.add('idToken', token)
       })
-      // Navigate back to path
-      return Utils.getFromUri()
+    },
+    getFromUri () {
+      const path = localStorage.getItem('referrerPath') || '/'
+      localStorage.removeItem('referrerPath')
+      return path
     },
     async getIdToken () {
       const idToken = oktaAuth.tokenManager.get('idToken')
@@ -61,5 +63,15 @@ function install (Vue, options) {
 }
 
 function handleCallback () { return ImplicitCallback }
+
+const initConfig = auth => {
+  const missing = []
+  if (!auth.issuer) missing.push('issuer')
+  if (!auth.client_id) missing.push('client_id')
+  if (!auth.redirect_uri) missing.push('redirect_uri')
+  if (!auth.scopes) auth.scopes = ['openid']
+  if (missing.length) throw new Error(`${missing.join(', ')} must be defined`)
+  return auth
+}
 
 export default { install, handleCallback }

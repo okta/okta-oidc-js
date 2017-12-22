@@ -118,9 +118,13 @@ In the relevant location in your application, you will want to provide `Login` a
 export default {
   name: 'app',
   data: function () {
-    return { authenticated: false }
+    return {
+      authenticated: false
+    }
   },
-  created () { this.isAuthenticated() },
+  created () {
+    this.isAuthenticated()
+  },
   watch: {
     // Everytime the route changes, check for auth status
     '$route': 'isAuthenticated'
@@ -131,8 +135,9 @@ export default {
     },
     async logout () {
       await this.$auth.logout()
+      await this.isAuthenticated()
 
-      // Stay on current page and make sure it is refreshed
+      // Navigate back to home
       this.$router.push({ path: '/' })
     }
   }
@@ -179,13 +184,6 @@ export default {
 </script>
 ```
 
-### Reference
-**Configuration Options**
-  - `issuer` **(required)**: The OpenID Connect `issuer`
-  - `client_id` **(required)**: The OpenID Connect `client_id`
-  - `redirect_uri` **(required)**: Where the callback is hosted
-  - `scopes` *(optional)*: Reserved or custom claims to be returned in the tokens
-
 ### Using a custom login-page
 The `okta-vue` SDK supports the session token redirect flow for custom login pages. For more information, [see the basic Okta Sign-in Widget functionality](https://github.com/okta/okta-signin-widget#new-oktasigninconfig).
 
@@ -203,6 +201,43 @@ router.beforeEach((from, to, next) {
   }
 })
 ```
+
+## Reference
+### `$auth`
+
+`$auth` is the top-most component of okta-vue. This is where most of the configuration is provided.
+
+#### Configuration Options
+  - `issuer` **(required)**: The OpenID Connect `issuer`
+  - `client_id` **(required)**: The OpenID Connect `client_id`
+  - `redirect_uri` **(required)**: Where the callback is hosted
+  - `scopes` *(optional)*: Reserved or custom claims to be returned in the tokens
+
+#### `$auth.loginRedirect`
+Performs a full page redirect to Okta based on the initial configuration.  If you have an Okta `sessionToken`, you can bypass the full-page redirect by passing in this token. This is recommended when using the[Okta Sign-In Widget](https://github.com/okta/okta-signin-widget). Simply pass in a `sessionToken` into the `loginRedirect` method follows:
+
+```typescript
+this.$auth.loginRedirect({
+  sessionToken: /* sessionToken */
+})
+```
+
+> Note: For information on obtaining a `sessionToken` using the [Okta Sign-In Widget](https://github.com/okta/okta-signin-widget), please see the [`renderEl()` example](https://github.com/okta/okta-signin-widget#rendereloptions-success-error).
+
+#### `$auth.isAuthenticated`
+Returns `true` if there is a valid access token or ID token.
+
+#### `$auth.getAccessToken`
+Returns the access token from storage (if it exists).
+
+#### `$auth.getIdToken`
+Returns the ID token from storage (if it exists).
+
+#### `$auth.getUser`
+Returns the result of the OpenID Connect `/userinfo` endpoint if an access token exists.
+
+#### `$auth.handleAuthentication`
+Parses the tokens returned as hash fragments in the OAuth 2.0 Redirect URI.
 
 ## Development
 1. Clone the repo:

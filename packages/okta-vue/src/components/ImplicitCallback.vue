@@ -1,10 +1,12 @@
-<template></template>
-
 <script>
 export default {
   name: 'ImplicitCallback',
   async beforeMount () {
-    this.$router.push({ path: await this.$auth.handleAuthentication() })
-  }
+    await this.$auth.handleAuthentication()
+    this.$router.push({
+      path: this.$auth.getFromUri()
+    })
+  },
+  render () {},
 }
 </script>

@@ -26,7 +26,9 @@ export default {
     },
     async logout () {
       await this.$auth.logout()
-      // Stay on current page and make sure it is refreshed
+      await this.isAuthenticated()
+
+      // Navigate back to home
       this.$router.push({ path: '/' })
     }
   }
