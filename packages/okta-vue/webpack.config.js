@@ -2,7 +2,7 @@ var path = require('path')
 var webpack = require('webpack')
 
 module.exports = {
-  entry: './src/OktaAuth.js',
+  entry: './src/Auth.js',
   output: {
     path: path.resolve(__dirname, './dist'),
     publicPath: '/dist/',
@@ -14,7 +14,7 @@ module.exports = {
         test: /\.css$/,
         use: [
           'vue-style-loader'
-    ],
+        ]
       },
       {
         test: /\.vue$/,
