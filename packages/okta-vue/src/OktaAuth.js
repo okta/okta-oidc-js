@@ -14,7 +14,7 @@ function install (Vue, options) {
     loginRedirect (additionalParams) {
       return oktaAuth.token.getWithRedirect({
         responseType: ['id_token', 'token'],
-        scopes: authConfig.scopes,
+        scopes: authConfig.scope,
         ...additionalParams
       })
     },
@@ -69,7 +69,7 @@ const initConfig = auth => {
   if (!auth.issuer) missing.push('issuer')
   if (!auth.client_id) missing.push('client_id')
   if (!auth.redirect_uri) missing.push('redirect_uri')
-  if (!auth.scopes) auth.scopes = ['openid']
+  if (!auth.scope) auth.scope = ['openid']
   if (missing.length) throw new Error(`${missing.join(', ')} must be defined`)
   return auth
 }

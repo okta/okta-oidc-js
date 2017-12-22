@@ -7,6 +7,6 @@ export default {
       path: this.$auth.getFromUri()
     })
   },
-  render () {},
+  render () {}
 }
 </script>

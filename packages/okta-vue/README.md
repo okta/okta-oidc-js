@@ -52,7 +52,7 @@ Vue.use(Auth, {
   issuer: 'https://{yourOktaDomain}.com/oauth2/default',
   client_id: '{client_id}',
   redirect_uri: 'http://localhost:{port}/implicit/callback',
-  scopes: ['openid', 'profile', 'email']
+  scope: ['openid', 'profile', 'email']
 })
 
 ```
@@ -211,7 +211,7 @@ router.beforeEach((from, to, next) {
   - `issuer` **(required)**: The OpenID Connect `issuer`
   - `client_id` **(required)**: The OpenID Connect `client_id`
   - `redirect_uri` **(required)**: Where the callback is hosted
-  - `scopes` *(optional)*: Reserved or custom claims to be returned in the tokens
+  - `scope` *(optional)*: Reserved or custom claims to be returned in the tokens
 
 #### `$auth.loginRedirect`
 Performs a full page redirect to Okta based on the initial configuration.  If you have an Okta `sessionToken`, you can bypass the full-page redirect by passing in this token. This is recommended when using the[Okta Sign-In Widget](https://github.com/okta/okta-signin-widget). Simply pass in a `sessionToken` into the `loginRedirect` method follows:
