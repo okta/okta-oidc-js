@@ -6,6 +6,7 @@
   "scripts": {
     "prestart": "npm run build",
     "pretest": "npm run build",
+    "prepublish": "npm run build",
     "test": "npm run --prefix test/e2e/harness/ e2e",
     "start": "npm run --prefix test/e2e/harness/ start",
     "build": "rimraf dist/ && cross-env NODE_ENV=production webpack --config webpack.config.js --output-library-target=umd -p",
