@@ -16,7 +16,7 @@ export interface OktaConfig {
   issuer?: string;
   redirectUri?: string;
   clientId?: string;
-  scope?: string;
+  scope?: string | string[];
   onAuthRequired?: Function;
 }
 
