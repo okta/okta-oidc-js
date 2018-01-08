@@ -26,7 +26,13 @@ dirs.forEach(name => {
   const moduleWithVersion = `${pkg.name}@${pkg.version}`;
 
   console.log(`Checking if ${moduleWithVersion} exists`);
-  const isInPublicNpm = !!execSync(`npm view ${moduleWithVersion} --registry ${registry}`).toString();
+
+  try {
+    const isInPublicNpm = !!execSync(`npm view ${moduleWithVersion} --registry ${registry}`).toString();
+  } catch (err) {
+    // We expect packages that do not exist to throw a 404 error
+  }
+
   if (isInPublicNpm) {
     console.log(`${moduleWithVersion} exists`);
   } else {
