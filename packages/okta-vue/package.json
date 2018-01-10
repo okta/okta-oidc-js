@@ -3,6 +3,10 @@
   "version": "0.0.2",
   "description": "Vue support for Okta",
   "main": "dist/okta-vue.js",
+  "files": [
+    "dist",
+    "src"
+  ],
   "scripts": {
     "prestart": "npm run build",
     "pretest": "npm run build",
