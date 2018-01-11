@@ -48,9 +48,9 @@ export default withAuth(class SecureRoute extends Component {
       this.props.auth.login();
       return null;
     }
-    
+
     const C = this.props.component;
-    return <C {...renderProps} />;
+    return this.props.render ? this.props.render(renderProps) : <C {...renderProps} />;
   }
 
   render() {
