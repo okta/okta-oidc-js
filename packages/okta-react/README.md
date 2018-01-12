@@ -159,7 +159,7 @@ export default withAuth(class MessageList extends Component {
     );
     return <ul>{items}</ul>;
   }
-}));
+});
 ```
 
 ## Reference
