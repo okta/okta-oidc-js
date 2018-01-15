@@ -20,7 +20,8 @@ export default class Auth {
       url: config.issuer.split('/oauth2/')[0],
       clientId: config.client_id,
       issuer: config.issuer,
-      redirectUri: config.redirect_uri
+      redirectUri: config.redirect_uri,
+      tokenManager: config.token_manager || 'localStorage'
     });
     this._config = config;
     this._history = config.history;
