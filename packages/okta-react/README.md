@@ -179,10 +179,13 @@ Security is the top-most component of okta-react. This is where most of the conf
     2. SecureRoute is accessed without authentication
 
 * **tokenManager** (optional)
-  Specify where the Okta token will be stored. Default is `localStorage`.
-  * `localStorage`
-  * `sessionStorage`
-  * `cookie`
+  Specify token config object. Supported properties are `storage` and `autoRefresh`.
+```javascript
+{
+  storage: 'localStorage' || 'sessionStorage' || 'cookie', // default: 'localStorage'
+  autoRefresh: true || false // default: true
+}
+```
 
 #### Example
 
