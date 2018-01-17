@@ -21,7 +21,7 @@ export default class Auth {
       clientId: config.client_id,
       issuer: config.issuer,
       redirectUri: config.redirect_uri,
-      tokenManager: config.token_manager || 'localStorage'
+      tokenManager: config.token_manager || { storage: 'localStorage' }
     });
     this._config = config;
     this._history = config.history;
