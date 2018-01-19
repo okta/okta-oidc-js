@@ -173,7 +173,7 @@ Security is the top-most component of okta-react. This is where most of the conf
 * **client_id** (required) - The OpenId Connect `client_id`
 * **redirect_uri** (required) - Where the callback handler is hosted
 * **onAuthRequired** (optional)
-* **auth** (optional) - Provide an Auth object instead of the options above
+* **auth** (optional) - Provide an Auth object instead of the options above. This is helpful when integrating `okta-react` with external libraries that need access to the tokens.
 
   Accepts a callback to make a decision when authentication is required. If this is not supplied, `okta-react` redirects to Okta. This callback will receive `auth` and `history` parameters. This is triggered when:
     1. `auth.login` is called
