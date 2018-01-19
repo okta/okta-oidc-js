@@ -12,11 +12,15 @@
 
 import React, { Component } from 'react';
 import { BrowserRouter as Router, Route } from 'react-router-dom';
-import { Security, SecureRoute, ImplicitCallback } from '@okta/okta-react';
+import { Security, SecureRoute, ImplicitCallback, Auth } from '@okta/okta-react';
 import Home from './Home';
 import Protected from './Protected';
 import CustomLogin from './CustomLogin';
 import SessionTokenLogin from './SessionTokenLogin';
+
+if (!Auth) {
+  throw new Error('Auth should be defined');
+}
 
 class App extends Component {
   render() {

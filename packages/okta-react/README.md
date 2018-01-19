@@ -173,6 +173,7 @@ Security is the top-most component of okta-react. This is where most of the conf
 * **client_id** (required) - The OpenId Connect `client_id`
 * **redirect_uri** (required) - Where the callback handler is hosted
 * **onAuthRequired** (optional)
+* **auth** (optional) - Provide an Auth object instead of the options above. This is helpful when integrating `okta-react` with external libraries that need access to the tokens.
 
   Accepts a callback to make a decision when authentication is required. If this is not supplied, `okta-react` redirects to Okta. This callback will receive `auth` and `history` parameters. This is triggered when:
     1. `auth.login` is called
@@ -201,6 +202,45 @@ class App extends Component {
     );
   }
 }
+```
+
+#### Example with Auth object
+
+```typescript
+// src/App.js
+
+import React, { Component } from 'react';
+import { Router, Route } from 'react-router-dom';
+import { Security, SecureRoute, ImplicitCallback, Auth } from '@okta/okta-react';
+import Home from './Home';
+import Protected from './Protected';
+import { createBrowserHistory } from 'history'
+
+const history = createBrowserHistory();
+
+const auth = new Auth({
+  history,
+  issuer: 'https://{yourOktaDomain}.com/oauth2/default',
+  client_id: '{clientId}',
+  redirect_uri: window.location.origin + '/implicit/callback',
+  onAuthRequired: ({history}) => history.push('/login')
+});
+
+class App extends Component {
+  render() {
+    return (
+      <Router history={history}>
+        <Security auth={auth} >
+          <Route path='/' exact={true} component={Home}/>
+          <SecureRoute path='/protected' component={Protected}/>
+          <Route path='/implicit/callback' component={ImplicitCallback} />
+        </Security>
+      </Router>
+    );
+  }
+}
+
+export default App;
 ```
 
 ### `SecureRoute`

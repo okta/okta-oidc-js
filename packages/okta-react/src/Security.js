@@ -18,7 +18,7 @@ import Auth from './Auth';
 export default withRouter(class Security extends Component {
   constructor(props) {
     super(props);
-    this.auth = new Auth(props);
+    this.auth = props.auth || new Auth(props);
   }
 
   getChildContext() {
