@@ -1,5 +1,5 @@
 # Okta Vue SDK
-The Okta Vue SDK is a wrapper around [Okta Auth JS](https://github.com/okta/okta-auth-js), that builds on top of Okta's [OpenID Connect API](https://developer.okta.com/docs/api/resources/oidc.html).
+The Okta Vue SDK is a wrapper around the [Okta Auth SDK](https://github.com/okta/okta-auth-js), which builds on top of Okta's [OpenID Connect API](https://developer.okta.com/docs/api/resources/oidc.html).
 
 This library currently supports:
   - [OAuth 2.0 Implicit Flow](https://tools.ietf.org/html/rfc6749#section-1.3.2)
@@ -114,7 +114,6 @@ In the relevant location in your application, you will want to provide `Login` a
 </template>
 
 <script>
-
 export default {
   name: 'app',
   data: function () {
@@ -214,7 +213,7 @@ router.beforeEach((from, to, next) {
   - `scope` *(optional)*: Reserved or custom claims to be returned in the tokens
 
 #### `$auth.loginRedirect`
-Performs a full page redirect to Okta based on the initial configuration.  If you have an Okta `sessionToken`, you can bypass the full-page redirect by passing in this token. This is recommended when using the[Okta Sign-In Widget](https://github.com/okta/okta-signin-widget). Simply pass in a `sessionToken` into the `loginRedirect` method follows:
+Performs a full page redirect to Okta based on the initial configuration.  If you have an Okta `sessionToken`, you can bypass the full-page redirect by passing in this token. This is recommended when using the [Okta Sign-In Widget](https://github.com/okta/okta-signin-widget). Simply pass in a `sessionToken` into the `loginRedirect` method follows:
 
 ```typescript
 this.$auth.loginRedirect({
