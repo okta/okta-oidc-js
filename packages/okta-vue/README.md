@@ -238,6 +238,9 @@ Returns the result of the OpenID Connect `/userinfo` endpoint if an access token
 #### `$auth.handleAuthentication`
 Parses the tokens returned as hash fragments in the OAuth 2.0 Redirect URI.
 
+#### `$auth.setFromUri`
+Stores the intended path to redirect to after successful login.
+
 ## Development
 1. Clone the repo:
     - `git clone git@github.com:okta/okta-oidc-js.git`

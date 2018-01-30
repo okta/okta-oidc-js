@@ -89,6 +89,14 @@ export class OktaAuthService {
     }
 
     /**
+     * Returns the user context from the userinfo endpoint.
+     */
+    async getUser() {
+      const accessToken = this.oktaAuth.tokenManager.get('accessToken');
+      return accessToken ? this.oktaAuth.token.getUserInfo(accessToken) : undefined;
+    }
+
+    /**
      * Returns the configuration object used.
      */
     getOktaConfig(){
