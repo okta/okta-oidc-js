@@ -37,8 +37,8 @@ function install (Vue, options) {
       localStorage.removeItem('referrerPath')
       return path
     },
-    setFromUri (uri) {
-      localStorage.setItem('referrerPath', uri)
+    setFromUri (path) {
+      localStorage.setItem('referrerPath', path)
     },
     async getIdToken () {
       const idToken = oktaAuth.tokenManager.get('idToken')

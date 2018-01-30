@@ -117,10 +117,10 @@ export class OktaAuthService {
 
     /**
      * Stores the intended path to redirect after successful login.
-     * @param uri 
+     * @param path 
      */
-    setFromUri(uri) {
-      localStorage.setItem('referrerPath', uri);
+    setFromUri(path) {
+      localStorage.setItem('referrerPath', path);
     }
 
     /**

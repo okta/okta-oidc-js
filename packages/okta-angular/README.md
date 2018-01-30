@@ -102,7 +102,7 @@ export class MyAppModule { }
 ```
 
 ## Use the Access Token
-When your users are authenticated, your Vue application has an access token that was issued by your Okta Authorization server. You can use this token to authenticate requests for resources on your server or API. As a hypothetical example, let's say you have an API that provides messages for a user. You could create a `MessageList` component that gets the access token and uses it to make an authenticated request to your server.
+When your users are authenticated, your Angular application has an access token that was issued by your Okta Authorization server. You can use this token to authenticate requests for resources on your server or API. As a hypothetical example, let's say you have an API that provides messages for a user. You could create a `MessageList` component that gets the access token and uses it to make an authenticated request to your server.
 
 Here is what the Angular component could look like for this hypothetical example:
 
@@ -193,25 +193,25 @@ this.oktaAuth.loginRedirect({
 
 > Note: For information on obtaining a `sessionToken` using the [Okta Sign-In Widget](https://github.com/okta/okta-signin-widget), please see the [`renderEl()` example](https://github.com/okta/okta-signin-widget#rendereloptions-success-error).
 
-#### `oktaAuth.isAuthenticated`
+#### `oktaAuth.isAuthenticated()`
 Returns `true` if there is a valid access token or ID token.
 
-#### `oktaAuth.getAccessToken`
+#### `oktaAuth.getAccessToken()`
 Returns the access token from storage (if it exists).
 
-#### `oktaAuth.getIdToken`
+#### `oktaAuth.getIdToken()`
 Returns the ID token from storage (if it exists).
 
-#### `oktaAuth.getUser`
+#### `oktaAuth.getUser()`
 Returns the result of the OpenID Connect `/userinfo` endpoint if an access token exists.
 
-#### `oktaAuth.handleAuthentication`
+#### `oktaAuth.handleAuthentication()`
 Parses the tokens returned as hash fragments in the OAuth 2.0 Redirect URI.
 
-#### `oktaAuth.setFromUri`
+#### `oktaAuth.setFromUri(path)`
 Stores the intended path to redirect to after successful login.
 
-#### `oktaAuth.getOktaAuth`
+#### `oktaAuth.getOktaAuth()`
 Returns the instance of [Okta Auth JS](https://github.com/okta/okta-auth-js) to handle flows not currently covered by this library.
 
 ## Development

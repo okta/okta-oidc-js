@@ -68,8 +68,8 @@ export default class Auth {
     return accessToken ? accessToken.accessToken : undefined;
   }
 
-  setFromUri(uri) {
-    localStorage.setItem('referrerPath', uri);
+  setFromUri(path) {
+    localStorage.setItem('referrerPath', path);
   }
 
   async login() {

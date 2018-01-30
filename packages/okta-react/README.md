@@ -298,7 +298,7 @@ export default App;
 
   Parses tokens from the url and stores them.
 
-* `auth.setFromUri`
+* `auth.setFromUri(path)`
   Stores the intended path to redirect to after successful login.
 
 ## Development
