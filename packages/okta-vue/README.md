@@ -204,7 +204,7 @@ router.beforeEach((from, to, next) {
 ## Reference
 ### `$auth`
 
-`$auth` is the top-most component of okta-vue. This is where most of the configuration is provided.
+`$auth` is the top-most component of `okta-vue`. This is where most of the configuration is provided.
 
 #### Configuration Options
   - `issuer` **(required)**: The OpenID Connect `issuer`
@@ -212,7 +212,7 @@ router.beforeEach((from, to, next) {
   - `redirect_uri` **(required)**: Where the callback is hosted
   - `scope` *(optional)*: Reserved or custom claims to be returned in the tokens
 
-#### `$auth.loginRedirect`
+#### `$auth.loginRedirect()`
 Performs a full page redirect to Okta based on the initial configuration.  If you have an Okta `sessionToken`, you can bypass the full-page redirect by passing in this token. This is recommended when using the [Okta Sign-In Widget](https://github.com/okta/okta-signin-widget). Simply pass in a `sessionToken` into the `loginRedirect` method follows:
 
 ```typescript
@@ -223,20 +223,23 @@ this.$auth.loginRedirect({
 
 > Note: For information on obtaining a `sessionToken` using the [Okta Sign-In Widget](https://github.com/okta/okta-signin-widget), please see the [`renderEl()` example](https://github.com/okta/okta-signin-widget#rendereloptions-success-error).
 
-#### `$auth.isAuthenticated`
+#### `$auth.isAuthenticated()`
 Returns `true` if there is a valid access token or ID token.
 
-#### `$auth.getAccessToken`
+#### `$auth.getAccessToken()`
 Returns the access token from storage (if it exists).
 
-#### `$auth.getIdToken`
+#### `$auth.getIdToken()`
 Returns the ID token from storage (if it exists).
 
-#### `$auth.getUser`
+#### `$auth.getUser()`
 Returns the result of the OpenID Connect `/userinfo` endpoint if an access token exists.
 
-#### `$auth.handleAuthentication`
+#### `$auth.handleAuthentication()`
 Parses the tokens returned as hash fragments in the OAuth 2.0 Redirect URI.
+
+#### `$auth.setFromUri(path)`
+Stores the intended path to redirect to after successful login.
 
 ## Development
 1. Clone the repo:

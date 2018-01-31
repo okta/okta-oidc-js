@@ -35,7 +35,7 @@ export default withAuth(class ImplicitCallback extends Component {
       return null;
     }
 
-    const referrerKey = 'secureRouterReferrerPath';
+    const referrerKey = 'referrerPath';
     const pathname = localStorage.getItem(referrerKey) || '/';
     localStorage.removeItem(referrerKey);
 

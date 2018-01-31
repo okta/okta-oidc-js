@@ -37,6 +37,9 @@ function install (Vue, options) {
       localStorage.removeItem('referrerPath')
       return path
     },
+    setFromUri (path) {
+      localStorage.setItem('referrerPath', path)
+    },
     async getIdToken () {
       const idToken = oktaAuth.tokenManager.get('idToken')
       return idToken ? idToken.idToken : undefined
@@ -52,7 +55,7 @@ function install (Vue, options) {
     authRedirectGuard () {
       return async (from, to, next) => {
         if (from.matched.some(record => record.meta.requiresAuth) && !(await this.isAuthenticated())) {
-          localStorage.setItem('referrerPath', from.path || '/')
+          this.setFromUri(from.path || '/')
           this.loginRedirect()
         } else {
           next()

@@ -69,7 +69,7 @@ export default class Auth {
   }
 
   async login() {
-    localStorage.setItem('secureRouterReferrerPath', this._history.location.pathname);
+    localStorage.setItem('referrerPath', this._history.location.pathname);
     if (this._config.onAuthRequired) {
       const auth = this;
       const history = this._history;

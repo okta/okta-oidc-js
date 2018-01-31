@@ -89,6 +89,14 @@ export class OktaAuthService {
     }
 
     /**
+     * Returns the user context from the userinfo endpoint.
+     */
+    async getUser() {
+      const accessToken = this.oktaAuth.tokenManager.get('accessToken');
+      return accessToken ? this.oktaAuth.token.getUserInfo(accessToken) : undefined;
+    }
+
+    /**
      * Returns the configuration object used.
      */
     getOktaConfig(){
@@ -109,10 +117,10 @@ export class OktaAuthService {
 
     /**
      * Stores the intended path to redirect after successful login.
-     * @param uri 
+     * @param path 
      */
-    setFromUri(uri) {
-      localStorage.setItem('referrerPath', uri);
+    setFromUri(path) {
+      localStorage.setItem('referrerPath', path);
     }
 
     /**
