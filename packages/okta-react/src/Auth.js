@@ -68,12 +68,8 @@ export default class Auth {
     return accessToken ? accessToken.accessToken : undefined;
   }
 
-  setFromUri(path) {
-    localStorage.setItem('referrerPath', path);
-  }
-
   async login() {
-    this.setFromUri(this._history.location.pathname);
+    localStorage.setItem('referrerPath', this._history.location.pathname);
     if (this._config.onAuthRequired) {
       const auth = this;
       const history = this._history;

@@ -298,9 +298,6 @@ export default App;
 
   Parses tokens from the url and stores them.
 
-* `auth.setFromUri(path)`
-  Stores the intended path to redirect to after successful login.
-
 ## Development
 1. Clone the repo:
   - `git clone git@github.com:okta/okta-oidc-js.git`
