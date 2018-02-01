@@ -77,15 +77,17 @@ export class OktaAuthService {
     /**
      * Returns the current accessToken in the tokenManager.
      */
-    getAccessToken() {
-      return this.oktaAuth.tokenManager.get('accessToken');
+    getAccessToken(): string | undefined {
+      const accessToken = this.oktaAuth.tokenManager.get('accessToken');
+      return accessToken ? accessToken.accessToken : undefined;
     }
 
     /**
      * Returns the current idToken in the tokenManager.
      */
-    getIdToken() {
-      return this.oktaAuth.tokenManager.get('idToken');
+    getIdToken(): string | undefined {
+      const idToken = this.oktaAuth.tokenManager.get('idToken');
+      return idToken ? idToken.idToken : undefined;
     }
 
     /**
