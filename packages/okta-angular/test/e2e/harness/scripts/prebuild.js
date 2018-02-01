@@ -10,15 +10,14 @@
  * See the License for the specific language governing permissions and limitations under the License.
  */
 
-#!/usr/bin/env node
-
-/** Angular CLI does not support environment variables the same
+/**
+ * Angular CLI does not support environment variables the same
  * way Node apps do. See:
  * https://github.com/angular/angular-cli/issues/4318
  */
+
 const fs = require('fs');
 const path = require('path');
-
 const ejs = require('ejs');
 
 const environmentFilesDirectory = path.join(__dirname, '../src/environments');

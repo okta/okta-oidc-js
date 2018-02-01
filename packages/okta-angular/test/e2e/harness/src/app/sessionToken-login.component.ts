@@ -19,7 +19,7 @@ import OktaAuth from '@okta/okta-auth-js';
   selector: 'app-sessionLogin',
   template: `
   <router-outlet></router-outlet>
-  
+
   <div>
   <br/>
     <label>
@@ -46,8 +46,8 @@ export class SessionTokenLogin {
       username: username,
       password: password
     })
-    .then(res => this.okta.loginRedirect({
-        sessionToken: res.sessionToken
+    .then(res => this.okta.loginRedirect('/', {
+      sessionToken: res.sessionToken
     }))
     .catch(err => console.log('Found an error', err));
   }

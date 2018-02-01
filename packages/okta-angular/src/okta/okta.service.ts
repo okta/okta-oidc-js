@@ -97,8 +97,13 @@ export class OktaAuthService {
 
     /**
      * Launches the login redirect.
+     * @param fromUri
+     * @param additionalParams
      */
-    loginRedirect(additionalParams?: object) {
+    loginRedirect(fromUri?: string, additionalParams?: object) {
+      // Set the from URI
+      this.setFromUri(fromUri || '/');
+
       this.oktaAuth.token.getWithRedirect({
         responseType: ['id_token', 'token'],
         // Convert scopes to list of strings
@@ -147,10 +152,12 @@ export class OktaAuthService {
     /**
      * Clears the user session in Okta and removes
      * tokens stored in the tokenManager.
+     * @param uri 
      */
-    async logout() {
+    async logout(uri?: string) {
       this.oktaAuth.tokenManager.clear();
       await this.oktaAuth.signOut();
+      this.router.navigate([uri || '/']);
     }
 
     /**
