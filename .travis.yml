@@ -6,17 +6,10 @@ node_js:
 addons:
   chrome: stable
 
-env:
-  - WORKING_DIR=jwt-verifier
-  - WORKING_DIR=oidc-middleware
-  - WORKING_DIR=okta-angular
-  - WORKING_DIR=okta-react
-  - WORKING_DIR=okta-vue
-
-script: cd $WORKING_DIR && npm install
+script: ./scripts/travis.sh
 
 install:
 - npm install
 
 before_install:
-  - "npm install -g npm@5.6.0"
+- "npm install -g npm@5.6.0"
