@@ -45,21 +45,15 @@ export class OktaAuthGuard implements CanActivate {
      */
     const onAuthRequired = route.data['onAuthRequired'] || this.oktaAuth.getOktaConfig().onAuthRequired;
 
-    if (onAuthRequired){
-      onAuthRequired(this.oktaAuth, this.router);
-    }
-
     /** 
      * Store the current path
      */
     const path = state.url.split(/[?#]/)[0];
     this.oktaAuth.setFromUri(path, route.queryParams);
 
-    /**
-     * Redirect to the given path or
-     * perform the default Okta full-page redirect.
-     */
-    if (!onAuthRequired) {
+    if (onAuthRequired) {
+      onAuthRequired(this.oktaAuth, this.router);
+    } else {
       this.oktaAuth.loginRedirect();
     }
 
