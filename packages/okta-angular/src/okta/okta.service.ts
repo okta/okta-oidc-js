@@ -100,11 +100,7 @@ export class OktaAuthService {
      * @param fromUri
      * @param additionalParams
      */
-<<<<<<< HEAD
     loginRedirect(fromUri?: string, additionalParams?: object) {
-=======
-    loginRedirect(fromUri: String, additionalParams?: object) {
->>>>>>> :bug: Fixes fromUri path + updates legal headers
       // Set the from URI
       this.setFromUri(fromUri || '/');
 
