@@ -57,6 +57,26 @@ Vue.use(Auth, {
 
 ```
 
+#### Example with AuthJS object
+
+Provide an AuthJS object instead of the options above. This is helpful when integrating `okta-vue` with external libraries that need access to the tokens.
+
+```typescript
+// router/index.js
+
+import Auth from '@okta/okta-vue'
+
+const auth = new Auth.AuthJS({
+  issuer: 'https://{yourOktaDomain}.com/oauth2/default',
+  client_id: '{client_id}',
+  redirect_uri: 'http://localhost:{port}/implicit/callback',
+  scope: 'openid profile email'
+})
+
+Vue.use(Auth, auth)
+
+```
+
 ### Use the Callback Handler
 In order to handle the redirect back from Okta, you need to capture the token values from the URL. You'll use `/implicit/callback` as the callback URL, and use the default `Auth.handleCallback()` component included.
 
