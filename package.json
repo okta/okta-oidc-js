@@ -5,6 +5,9 @@
 	},
 	"scripts": {
 		"banners": "util/maintain-banners.js",
-		"publish": "lerna publish --skip-npm"
+		"publish": "lerna publish --skip-npm",
+		"bootstrap": "lerna bootstrap --hoist",
+		"install:packages": "lerna run install:package",
+		"test": "lerna run test"
 	}
 }

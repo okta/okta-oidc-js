@@ -79,9 +79,18 @@ app.get('/secure', authenticationRequired, (req, res) => {
  * print some messages for the user if they are authenticated
  */
 app.get('/api/messages', authenticationRequired, (req, res) => {
-  res.json([{
-    message: 'Hello, word!'
-  }]);
+  res.json({
+    messages: [
+      {
+        date:  new Date(),
+        text: 'I am a robot.'
+      },
+      {
+        date:  new Date(new Date().getTime() - 1000 * 60 * 60),
+        text: 'Hello, word!'
+      }
+    ]
+  });
 });
 
 app.listen(8080, () => {
