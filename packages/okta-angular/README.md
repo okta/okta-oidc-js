@@ -101,13 +101,40 @@ Finally, import the `OktaAuthModule` into your `NgModule`, and instantiate it by
 export class MyAppModule { }
 ```
 
-### Reference
-**Configuration Options**
-  - `issuer` **(required)**: The OpenID Connect `issuer`
-  - `clientId` **(required)**: The OpenID Connect `client_id`
-  - `redirectUri` **(required)**: Where the callback is hosted
-  - `scope` *(optional)*: Reserved or custom claims to be returned in the tokens
-  - `onAuthRequired` *(optional)*: Accepts a callback to make a decision when authentication is required. If not supplied, `okta-angular` will redirect directly to Okta for authentication.
+## Use the Access Token
+When your users are authenticated, your Angular application has an access token that was issued by your Okta Authorization server. You can use this token to authenticate requests for resources on your server or API. As a hypothetical example, let's say you have an API that provides messages for a user. You could create a `MessageList` component that gets the access token and uses it to make an authenticated request to your server.
+
+Here is what the Angular component could look like for this hypothetical example:
+
+```typescript
+// messagelist.component.ts
+
+import { Component } from '@angular/core';
+import { Http, Headers, RequestOptions } from '@angular/http';
+import { OktaAuthService } from '@okta/okta-angular';
+import 'rxjs/Rx';
+
+@Component({
+  template: `
+    <div *ngIf="messages.length">
+      <li *ngFor="let message of messages">{{message.message}}</li>
+    </div>
+  `
+})
+export class MessageListComponent {
+  messages = [];
+  constructor(private oktaAuth: OktaAuthService, private http: Http) {
+    const headers = new Headers({ Authorization: 'Bearer ' + oktaAuth.getAccessToken().accessToken });
+    // Make request
+    this.http.get(
+      'http://localhost:{serverPort}/api/messages',
+      new RequestOptions({ headers: headers })
+    )
+    .map(res => res.json())
+    .subscribe((messages: Array<Object>) => messages.forEach(message => this.messages.push(message)));
+  }
+}
+```
 
 ### Using a custom login-page
 The `okta-angular` SDK supports the session token redirect flow for custom login pages. For more information, [see the basic Okta Sign-in Widget functionality](https://github.com/okta/okta-signin-widget#new-oktasigninconfig).
@@ -143,6 +170,52 @@ const oktaConfig = {
   onAuthRequired: onAuthRequired
 };
 ```
+
+## Reference
+### `oktaAuth`
+`oktaAuth` is the top-most component of `okta-angular`. This is where most of the configuration is provided.
+
+#### Configuration Options
+  - `issuer` **(required)**: The OpenID Connect `issuer`
+  - `clientId` **(required)**: The OpenID Connect `client_id`
+  - `redirectUri` **(required)**: Where the callback is hosted
+  - `scope` *(optional)*: Reserved or custom claims to be returned in the tokens
+  - `onAuthRequired` *(optional)*: Accepts a callback to make a decision when authentication is required. If not supplied, `okta-angular` will redirect directly to Okta for authentication.
+
+#### `oktaAuth.loginRedirect(uri, additionalParams?)`
+Performs a full page redirect to Okta based on the initial configuration.  On successful authentication, the router will navigate to the path specified with the `uri` parameter. 
+
+If you have an Okta `sessionToken`, you can bypass the full-page redirect by passing in this token. This is recommended when using the [Okta Sign-In Widget](https://github.com/okta/okta-signin-widget). Simply pass in a `sessionToken` into the `loginRedirect` method follows:
+
+```typescript
+// Navigate to "/profile" on login success
+this.oktaAuth.loginRedirect('/profile', {
+  sessionToken: /* sessionToken */
+})
+```
+
+> Note: For information on obtaining a `sessionToken` using the [Okta Sign-In Widget](https://github.com/okta/okta-signin-widget), please see the [`renderEl()` example](https://github.com/okta/okta-signin-widget#rendereloptions-success-error).
+
+#### `oktaAuth.isAuthenticated()`
+Returns `true` if there is a valid access token or ID token.
+
+#### `oktaAuth.getAccessToken()`
+Returns the access token from storage (if it exists).
+
+#### `oktaAuth.getIdToken()`
+Returns the ID token from storage (if it exists).
+
+#### `oktaAuth.getUser()`
+Returns the result of the OpenID Connect `/userinfo` endpoint if an access token exists.
+
+#### `oktaAuth.handleAuthentication()`
+Parses the tokens returned as hash fragments in the OAuth 2.0 Redirect URI.
+
+### `oktaAuth.logout(uri?)`
+Terminates the user's session in Okta and clears all stored tokens.  Takes an optional `uri` parameter (defaults to `/`) for navigation once complete.
+
+#### `oktaAuth.getOktaAuth()`
+Returns the instance of [Okta Auth JS](https://github.com/okta/okta-auth-js) to handle flows not currently covered by this library.
 
 ## Development
 1. Clone the repo:
