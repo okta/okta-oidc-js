@@ -13,9 +13,9 @@
 import { NgModule, InjectionToken } from '@angular/core';
 
 import { OktaCallbackComponent, OktaLoginRedirectComponent } from './components/';
-import { OktaAuthService } from './okta.service';
+import { OktaAuthService } from './services/okta.service';
 import { OktaAuthGuard } from './okta.guard';
-import { OktaConfig, OKTA_CONFIG } from './okta.config';
+import { OktaConfig, OKTA_CONFIG } from './models/okta.config';
 
 @NgModule({
   declarations: [

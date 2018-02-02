@@ -18,21 +18,18 @@ import {
   Router
 } from '@angular/router';
 
-import { OktaAuthService } from './okta.service';
+import { OktaAuthService } from './services/okta.service';
+import { AuthRequiredFunction } from './models/auth-required-function';
 
 @Injectable()
 export class OktaAuthGuard implements CanActivate {
-  private oktaAuth: OktaAuthService;
-
-  constructor(private okta: OktaAuthService, private router: Router) {
-    this.oktaAuth = okta;
-  }
+  constructor(private oktaAuth: OktaAuthService, private router: Router) { }
 
   /**
    * Gateway for protected route. Returns true if there is a valid accessToken,
    * otherwise it will cache the route and start the login flow.
-   * @param route 
-   * @param state 
+   * @param route
+   * @param state
    */
   async canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot) {
     if (this.oktaAuth.isAuthenticated()) {
@@ -43,7 +40,7 @@ export class OktaAuthGuard implements CanActivate {
      * Get the operation to perform on failed authentication from
      * either the global config or route data injection.
      */
-    const onAuthRequired = route.data['onAuthRequired'] || this.oktaAuth.getOktaConfig().onAuthRequired;
+    const onAuthRequired: AuthRequiredFunction = route.data['onAuthRequired'] || this.oktaAuth.getOktaConfig().onAuthRequired;
 
     if (onAuthRequired){
       onAuthRequired(this.oktaAuth, this.router);

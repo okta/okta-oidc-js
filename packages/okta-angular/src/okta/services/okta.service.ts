@@ -13,7 +13,7 @@
 import { Inject, Injectable, Optional } from '@angular/core';
 import { Router, NavigationExtras } from '@angular/router';
 
-import { OKTA_CONFIG } from './okta.config';
+import { OKTA_CONFIG, OktaConfig } from '../models/okta.config';
 
 import packageInfo from './packageInfo';
 
@@ -24,11 +24,11 @@ import * as OktaAuth from '@okta/okta-auth-js';
 
 @Injectable()
 export class OktaAuthService {
-    private oktaAuth;
-    private config;
+    private oktaAuth: OktaAuth;
+    private config: OktaConfig;
 
-    constructor(@Inject(OKTA_CONFIG) private auth, private router: Router) {
-      const missing: any[] = [];
+    constructor(@Inject(OKTA_CONFIG) private auth: OktaConfig, private router: Router) {
+      const missing: string[] = [];
 
       if (!auth.issuer) {
         missing.push('issuer');
@@ -67,14 +67,14 @@ export class OktaAuthService {
     /**
      * Returns the OktaAuth object to handle flows outside of this lib.
      */
-    getOktaAuth() {
+    getOktaAuth(): OktaAuth {
       return this.oktaAuth;
     }
 
     /**
      * Checks if there is a current accessToken in the TokenManager.
      */
-    isAuthenticated() {
+    isAuthenticated(): boolean {
       return !!this.oktaAuth.tokenManager.get('accessToken');
     }
 
@@ -115,7 +115,7 @@ export class OktaAuthService {
     /**
      * Returns the configuration object used.
      */
-    getOktaConfig(){
+    getOktaConfig(): OktaConfig {
       return this.config;
     }
 
