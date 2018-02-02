@@ -14,6 +14,7 @@ import { Inject, Injectable, Optional } from '@angular/core';
 import { Router } from '@angular/router';
 
 import { OKTA_CONFIG } from './okta.config';
+import { UserInfo } from './models/user-info';
 
 /**
  * Import the okta-auth-js library
@@ -109,7 +110,7 @@ export class OktaAuthService {
 
     /**
      * Stores the intended path to redirect after successful login.
-     * @param uri 
+     * @param uri
      */
     setFromUri(uri) {
       localStorage.setItem('referrerPath', uri);
@@ -122,6 +123,11 @@ export class OktaAuthService {
       const path = localStorage.getItem('referrerPath') || '/';
       localStorage.removeItem('referrerPath');
       return path;
+    }
+
+    async getUser(): Promise<UserInfo> {
+      const accessToken = this.oktaAuth.tokenManager.get('accessToken');
+      return accessToken ? this.oktaAuth.token.getUserInfo(accessToken) : undefined;
     }
 
     /**
