@@ -21,7 +21,7 @@ describe.only('new ExpressOIDC()', () => {
       return kidName.includes('openid');
     }, function (er, data) {
       const openIdPkg = data.children[0].package;
-      const scope = nock('http://foo')
+      nock('http://foo')
       .get('/.well-known/openid-configuration')
       .reply(200, function cb() {
         const userAgent = this.req.headers['user-agent'];
@@ -35,7 +35,7 @@ describe.only('new ExpressOIDC()', () => {
         redirect_uri: 'foo',
         issuer: 'http://foo'
       }).on('error', () => {
-        // Because we mocking and not fulfilling the real response, the client will error
+        // Because we're mocking and not fulfilling the real response, the client will error
         // Ignore this because we're only asserting what we see on the request
       });
     });
