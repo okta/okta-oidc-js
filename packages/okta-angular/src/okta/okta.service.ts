@@ -155,13 +155,11 @@ export class OktaAuthService {
 
     /**
      * Scrub scopes to ensure 'openid' is included
+     * @param scopes
      */
-    scrubScopes(scopes) {
+    scrubScopes(scopes: string) {
       if (!scopes) {
         return 'openid email';
-      } else {
-        // Make sure object is a string
-        scopes = Array.isArray(scopes) ? scopes.join(' ') : scopes
       }
       if (scopes.indexOf('openid') === -1) {
         return scopes + ' openid';
