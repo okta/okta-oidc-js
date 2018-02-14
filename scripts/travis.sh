@@ -51,5 +51,8 @@ fi
 #     echo "okta-react tests successful."
 # fi
 
+export CLIENT_ID=0oad5a19u0IVnKU1g0h7
+export REDIRECT_URI=http://localhost:8080/implicit/callback
+
 cd ../okta-vue
 npm run test
