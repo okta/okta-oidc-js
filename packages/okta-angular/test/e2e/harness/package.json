@@ -4,12 +4,12 @@
   "license": "MIT",
   "scripts": {
     "ng": "ng",
-    "start": "npm run env && ng serve --port=3000",
+    "start": "npm run env && ng serve --port=8080",
     "env": "node ./scripts/prebuild.js",
     "build": "ng build",
     "test": "ng test",
     "lint": "ng lint",
-    "e2e": "npm run env && ng e2e -port 3000"
+    "e2e": "npm run env && ng e2e -port 8080"
   },
   "private": true,
   "dependencies": {
