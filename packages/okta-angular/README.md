@@ -7,6 +7,7 @@ This library currently supports:
 ## Getting Started
 * If you do not already have a **Developer Edition Account**, you can create one at [https://developer.okta.com/signup/](https://developer.okta.com/signup/).
 * If you don't have an Angular app, or are new to Angular, please start with the [Angular Quickstart](https://angular.io/guide/quickstart) guide. It will walk you through the creation of an Angular app, creating routes, and other application development essentials.
+* For a fully functioning sample application, see the [Angular Sample Application](https://github.com/okta/samples-js-angular).
 
 ### Add an OpenID Connect Client in Okta
 In Okta, applications are OpenID Connect clients that can use Okta Authorization servers to authenticate users.  Your Okta Org already has a default authorization server, so you just need to create an OIDC client that will use it.
@@ -101,14 +102,6 @@ Finally, import the `OktaAuthModule` into your `NgModule`, and instantiate it by
 export class MyAppModule { }
 ```
 
-### Reference
-**Configuration Options**
-  - `issuer` **(required)**: The OpenID Connect `issuer`
-  - `clientId` **(required)**: The OpenID Connect `client_id`
-  - `redirectUri` **(required)**: Where the callback is hosted
-  - `scope` *(optional)*: Reserved or custom claims to be returned in the tokens
-  - `onAuthRequired` *(optional)*: Accepts a callback to make a decision when authentication is required. If not supplied, `okta-angular` will redirect directly to Okta for authentication.
-
 ### Using a custom login-page
 The `okta-angular` SDK supports the session token redirect flow for custom login pages. For more information, [see the basic Okta Sign-in Widget functionality](https://github.com/okta/okta-signin-widget#new-oktasigninconfig).
 
@@ -143,6 +136,83 @@ const oktaConfig = {
   onAuthRequired: onAuthRequired
 };
 ```
+
+## Reference
+### Service Module
+In your main `NgModule`, your can take advantage of all of `okta-angular`'s features by importing the following:
+
+```typescript
+import {
+  OktaAuthGuard,
+  OktaAuthModule,
+  OktaCallbackComponent,
+  OktaLoginRedirectComponent
+} from '@okta/okta-angular';
+```
+
+#### Configuration Options
+  - `issuer` **(required)**: The OpenID Connect `issuer`
+  - `clientId` **(required)**: The OpenID Connect `client_id`
+  - `redirectUri` **(required)**: Where the callback is hosted
+  - `scope` *(optional)*: Reserved or custom claims to be returned in the tokens
+  - `onAuthRequired` *(optional)*: Accepts a callback to make a decision when authentication is required. If not supplied, `okta-angular` will redirect directly to Okta for authentication.
+
+> An example of this configuration can be seen [above](#configuration).
+
+### Component Usage
+All the methods mentioned below are available in your components. Simply import them in as shown:
+
+```typescript
+import { OktaAuthService } from '@okta/okta-angular';
+
+@Component({
+  selector: 'app-component',
+  template: `
+  <button *ngIf="!oktaAuth.isAuthenticated()" (click)="oktaAuth.loginRedirect('/profile')> Login </button>
+  <button *ngIf="oktaAuth.isAuthenticated()" (click)="oktaAuth.logout('/')"> Logout </button>
+
+  <router-outlet></router-outlet>
+  `,
+})
+export class MyComponent {
+
+  constructor(public oktaAuth: OktaAuthService) {
+    // ...
+  }
+}
+```
+
+#### `oktaAuth.loginRedirect(uri?, additionalParams?)`
+Performs a full page redirect to Okta based on the initial configuration.  On successful authentication, the router will navigate to the path specified with the `uri` parameter. 
+
+The optional parameter `additionalParams` is mapped to the [AuthJS OpenID Connect Options](https://github.com/okta/okta-auth-js#openid-connect-options). This will override any existing [configuration](#configuration). As an example, if you have an Okta `sessionToken`, you can bypass the full-page redirect by passing in this token. This is recommended when using the [Okta Sign-In Widget](https://github.com/okta/okta-signin-widget). Simply pass in a `sessionToken` into the `loginRedirect` method follows:
+
+```typescript
+// Navigate to "/profile" on login success
+this.oktaAuth.loginRedirect('/profile', {
+  sessionToken: /* sessionToken */
+})
+```
+
+> Note: For information on obtaining a `sessionToken` using the [Okta Sign-In Widget](https://github.com/okta/okta-signin-widget), please see the [`renderEl()` example](https://github.com/okta/okta-signin-widget#rendereloptions-success-error).
+
+#### `oktaAuth.isAuthenticated()`
+Returns `true` if there is a valid access token or ID token.
+
+#### `oktaAuth.getAccessToken()`
+Returns the access token from storage (if it exists).
+
+#### `oktaAuth.getIdToken()`
+Returns the ID token from storage (if it exists).
+
+#### `oktaAuth.getUser()`
+Returns the result of the OpenID Connect `/userinfo` endpoint if an access token exists.
+
+#### `oktaAuth.handleAuthentication()`
+Parses the tokens returned as hash fragments in the OAuth 2.0 Redirect URI, then redirects to the URL specified when calling `loginRedirect`.
+
+#### `oktaAuth.logout(uri?)`
+Terminates the user's session in Okta and clears all stored tokens.  Takes an optional `uri` parameter (defaults to `/`) for navigation once complete.
 
 ## Development
 1. Clone the repo:
