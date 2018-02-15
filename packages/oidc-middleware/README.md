@@ -213,6 +213,7 @@ const oidc = new ExpressOIDC({
 ```
 
 * **`callback.defaultRedirect`** - Where the user is redirected to after a successful authentication callback, if no `returnTo` value was specified by `oidc.ensureAuthenticated()`. Defaults to `/`.
+* **`callback.failureRedirect`** - Where the user is redirected to after authentication failure, defaults to a page which just shows error message. 
 * **`callback.handler`** - A function that is called after a successful authentication callback, but before the final redirect within your application. Useful for requirements such as conditional post-authentication redirects, or sending data to logging systems.
 * **`callback.path`** - The URI that this library will host the callback handler on. Defaults to `/authorization-code/callback`
 * **`login.path`** - The URI that redirects the user to the authorize endpoint. Defaults to `/login`.
