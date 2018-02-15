@@ -10,3 +10,4 @@ packages/jwt-verifier/okta-oidc-tck-0.2.2-SNAPSHOT-shaded.jar
 packages/jwt-verifier/target/
 packages/oidc-middleware/okta-oidc-tck-0.2.2-SNAPSHOT-shaded.jar
 packages/oidc-middleware/target/
+packages/okta-vue/test/e2e/harness/config/dev.env.js

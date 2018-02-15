@@ -1,3 +1,9 @@
+dist: trusty
+
+cache:
+  directories:
+    - node_modules
+
 language: node_js
 
 node_js:
@@ -5,6 +11,9 @@ node_js:
 
 addons:
   chrome: stable
+  apt:
+    packages:
+      - oracle-java8-set-default
 
 script: ./scripts/travis.sh
 
@@ -13,3 +22,8 @@ install:
 
 before_install:
 - "npm install -g npm@5.6.0"
+
+before_script:
+  - "export DISPLAY=:99.0"
+  - "sh -e /etc/init.d/xvfb start" # the starting the virtual X frame buffer: Xvfb process
+  - sleep 3 #wait a while before xvfb to start

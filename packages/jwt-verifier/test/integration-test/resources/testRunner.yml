@@ -17,7 +17,6 @@ scenarios:
   implicit-flow-local-validation:
     disabledTests:
       - wrongScopeAccessTokenTest
-      - scopeAccessTokenTest
     ports:
       applicationPort: 8080
       mockPort: 9090

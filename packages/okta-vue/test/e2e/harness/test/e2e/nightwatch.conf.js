@@ -9,12 +9,17 @@ module.exports = {
 
   selenium: {
     start_process: true,
-    server_path: require('selenium-server').path,
+    server_path: './selenium-server-standalone.jar',
     host: '127.0.0.1',
     port: 4444,
     cli_args: {
       'webdriver.chrome.driver': require('chromedriver').path
     }
+  },
+
+  request_timeout_options: {
+    "timeout": 300000, //5 mins
+    "retry_attempts": 5  // 5 attempts after each timeout of the request
   },
 
   test_settings: {

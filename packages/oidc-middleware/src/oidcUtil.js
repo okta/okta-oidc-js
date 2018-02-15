@@ -15,6 +15,27 @@ const OpenIdClientStrategy = require('openid-client').Strategy;
 const Issuer = require('openid-client').Issuer;
 const ensureLoggedIn = require('connect-ensure-login').ensureLoggedIn;
 const Negotiator = require('negotiator');
+const os = require('os');
+
+const pkg = require('../package.json');
+
+/**
+ * Parse out the default user agent for the openid-client library, which currently looks like:
+ *
+ * openid-client/1.15.0 (https://github.com/panva/node-openid-client)
+ *
+ * We strip off the github link because it's not necessary.
+ */
+let clientUserAgent = Issuer.defaultHttpOptions.headers['User-Agent'];
+if (typeof clientUserAgent === 'string' && clientUserAgent) {
+  clientUserAgent = ' ' + clientUserAgent.split(' ')[0]
+} else {
+  clientUserAgent = '';
+}
+
+const userAgent = `${pkg.name}/${pkg.version}${clientUserAgent} node/${process.versions.node} ${os.platform()}/${os.release()}`;
+
+Issuer.defaultHttpOptions.headers['User-Agent'] = userAgent;
 
 const oidcUtil = module.exports;
 
