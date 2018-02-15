@@ -11,6 +11,9 @@
     "authentication",
     "auth"
   ],
+  "files" : [
+    "src"
+  ],
   "main": "index.js",
   "config": {
     "tck": {
