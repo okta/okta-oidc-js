@@ -1,4 +1,5 @@
 const expect = require('chai').expect;
+const Issuer = require('openid-client').Issuer;
 const nock = require('nock');
 const os = require('os');
 const path = require('path');
@@ -8,12 +9,55 @@ const { ExpressOIDC } = require('../../index.js');
 const pkg = require('../../package.json');
 const packageRoot = path.join(__dirname, '..', '..');
 
-describe.only('new ExpressOIDC()', () => {
+describe('new ExpressOIDC()', () => {
   it('should throw if no issuer is provided', () => {
     function createInstance() {
       new ExpressOIDC();
     }
     expect(createInstance).to.throw();
+  });
+
+  it('should set the HTTP timeout to 10 seconds', () => {
+    new ExpressOIDC({
+      client_id: 'foo',
+      client_secret: 'foo',
+      redirect_uri: 'foo',
+      issuer: 'http://foo'
+    }).on('error', () => {
+      // Ignore errors caused by mock configuration data
+    });
+    expect(Issuer.defaultHttpOptions.timeout).to.equal(10000);
+  });
+
+  it('should allow me to change the HTTP timeout', () => {
+    new ExpressOIDC({
+      client_id: 'foo',
+      client_secret: 'foo',
+      redirect_uri: 'foo',
+      issuer: 'http://foo',
+      timeout: 1
+    }).on('error', () => {
+      // Ignore errors caused by mock configuration data
+    });
+    expect(Issuer.defaultHttpOptions.timeout).to.equal(1);
+  });
+
+  it('should throw ETIMEOUT if the timeout is reached', (done) => {
+    nock('http://foo')
+    .get('/.well-known/openid-configuration')
+    .reply(200, function cb() {
+      // dont reply, we want to timeout
+    });
+    new ExpressOIDC({
+      client_id: 'foo',
+      client_secret: 'foo',
+      redirect_uri: 'foo',
+      issuer: 'http://foo',
+      timeout: 1
+    }).on('error', (e) => {
+      expect(e.code).to.equal('ETIMEDOUT');
+      done();
+    });
   });
 
   it('should set the correct User-Agent string', (done) => {
