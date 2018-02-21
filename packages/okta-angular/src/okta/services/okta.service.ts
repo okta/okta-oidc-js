@@ -15,7 +15,7 @@ import { Router, NavigationExtras } from '@angular/router';
 
 import { OKTA_CONFIG, OktaConfig } from '../models/okta.config';
 
-import packageInfo from './packageInfo';
+import packageInfo from '../packageInfo';
 
 /**
  * Import the okta-auth-js library
@@ -156,7 +156,7 @@ export class OktaAuthService {
     /**
      * Parses the tokens from the callback URL.
      */
-    async handleAuthentication() {
+    async handleAuthentication(): Promise<void> {
       const tokens = await this.oktaAuth.token.parseFromUrl();
       tokens.forEach(token => {
         if (token.idToken) {
@@ -181,7 +181,7 @@ export class OktaAuthService {
      * Clears the user session in Okta and removes
      * tokens stored in the tokenManager.
      */
-    async logout() {
+    async logout(): Promise<void> {
       this.oktaAuth.tokenManager.clear();
       await this.oktaAuth.signOut();
     }
@@ -190,7 +190,7 @@ export class OktaAuthService {
      * Scrub scopes to ensure 'openid' is included
      * @param scopes
      */
-    scrubScopes(scopes: string) {
+    scrubScopes(scopes: string): string {
       if (!scopes) {
         return 'openid email';
       }
