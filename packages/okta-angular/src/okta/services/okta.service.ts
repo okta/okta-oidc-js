@@ -10,7 +10,7 @@
  * See the License for the specific language governing permissions and limitations under the License.
  */
 
-import { Inject, Injectable, Optional } from '@angular/core';
+import { Inject, Injectable } from '@angular/core';
 import { Router, NavigationExtras } from '@angular/router';
 
 import { OKTA_CONFIG, OktaConfig } from '../models/okta.config';
