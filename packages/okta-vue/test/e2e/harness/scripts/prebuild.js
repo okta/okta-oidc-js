@@ -10,9 +10,7 @@
  * See the License for the specific language governing permissions and limitations under the License.
  */
 
-/** Angular CLI does not support environment variables the same
- * way Node apps do. See:
- * https://github.com/angular/angular-cli/issues/4318
+/** Vue apps does not support environment variables the same way Node apps do.
  */
 const fs = require('fs');
 const path = require('path');

@@ -6,8 +6,9 @@ package-lock.json
 .envrc
 *.code-workspace
 lerna-debug.log
-packages/jwt-verifier/okta-oidc-tck-0.2.2-SNAPSHOT-shaded.jar
+packages/jwt-verifier/okta-oidc-tck-*
 packages/jwt-verifier/target/
-packages/oidc-middleware/okta-oidc-tck-0.2.2-SNAPSHOT-shaded.jar
+packages/oidc-middleware/okta-oidc-*
 packages/oidc-middleware/target/
 packages/okta-vue/test/e2e/harness/config/dev.env.js
+packages/okta-oidc-tck-*

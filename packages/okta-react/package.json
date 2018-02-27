@@ -12,8 +12,7 @@
     "prestart": "npm run build && npm run build:harness",
     "start": "npm run --prefix test/e2e/harness start",
     "pretest": "npm run build && npm run build:harness",
-    "test": "npm run --prefix test/e2e/harness test",
-    "install:package": "npm install"
+    "test": "npm run --prefix test/e2e/harness test"
   },
   "repository": {
     "type": "git",

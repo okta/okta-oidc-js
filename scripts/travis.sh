@@ -1,6 +1,7 @@
 #!/bin/bash
 
-npm run install:packages
+npm install
+npm run bootstrap
 
 export CLIENT_ID=0oad5a19u0IVnKU1g0h7
 export REDIRECT_URI=http://localhost:8080/implicit/callback
