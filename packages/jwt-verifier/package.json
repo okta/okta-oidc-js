@@ -8,7 +8,7 @@
   "scripts": {
     "test": "npm run test:e2e && npm run test:integration",
     "test:e2e": "mocha --timeout 10000 test/spec",
-    "test:integration": "sh tools/runIntegrationTests.sh || echo  done"
+    "test:integration": "sh tools/runIntegrationTests.sh"
   },
   "keywords": [
     "okta",

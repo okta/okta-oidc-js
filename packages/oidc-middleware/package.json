@@ -15,7 +15,7 @@
   "scripts": {
     "test": "npm run test:unit && npm run test:e2e && npm run test:integration",
     "test:e2e": "webdriver-manager update --gecko false && protractor test/e2e/conf.js",
-    "test:integration": "sh tools/runIntegrationTests.sh || echo  done",
+    "test:integration": "sh tools/runIntegrationTests.sh",
     "test:unit": "mocha test/unit/*.js"
   },
   "engines": {
