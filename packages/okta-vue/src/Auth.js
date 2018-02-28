@@ -51,8 +51,8 @@ function install (Vue, options) {
     },
     authRedirectGuard () {
       return async (to, from, next) => {
-        if (from.matched.some(record => record.meta.requiresAuth) && !(await this.isAuthenticated())) {
-          localStorage.setItem('referrerPath', from.path || '/')
+        if (to.matched.some(record => record.meta.requiresAuth) && !(await this.isAuthenticated())) {
+          localStorage.setItem('referrerPath', to.path || '/')
           this.loginRedirect()
         } else {
           next()
