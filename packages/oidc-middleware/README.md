@@ -98,6 +98,7 @@ Optional config:
 * **scope** - Defaults to `openid`, which will only return the `sub` claim. To obtain more information about the user, use `openid profile`. For a list of scopes and claims, please see [Scope-dependent claims](https://developer.okta.com/standards/OIDC/index.html#scope-dependent-claims-not-always-returned) for more information.
 * **routes** - Allows customization of the generated routes. See [Customizing Routes](#customizing-routes) for details.
 * **maxClockSkew** - Defaults to 120. This is the maximum difference allowed between your server's clock and Okta's in seconds. Setting this to 0 is not recommended, because it increases the likelihood that valid jwts will fail verification due to `nbf` and `exp` issues.
+* **timeout** - Defaults to 10000 milliseconds. The HTTP max timeout for any requests to the issuer.  If a timeout exception occurs you can catch it with the `oidc.on('error', fn)` handler.
 
 ### oidc.router
 
@@ -212,6 +213,7 @@ const oidc = new ExpressOIDC({
 ```
 
 * **`callback.defaultRedirect`** - Where the user is redirected to after a successful authentication callback, if no `returnTo` value was specified by `oidc.ensureAuthenticated()`. Defaults to `/`.
+* **`callback.failureRedirect`** - Where the user is redirected to after authentication failure, defaults to a page which just shows error message. 
 * **`callback.handler`** - A function that is called after a successful authentication callback, but before the final redirect within your application. Useful for requirements such as conditional post-authentication redirects, or sending data to logging systems.
 * **`callback.path`** - The URI that this library will host the callback handler on. Defaults to `/authorization-code/callback`
 * **`login.path`** - The URI that redirects the user to the authorize endpoint. Defaults to `/login`.

@@ -44,7 +44,7 @@ npm install --save @okta/okta-react
 
 * **Security** - (required) Allows you to supply your OpenID Connect client configuration.
 * **SecureRoute** - (required) A normal `Route` except authentication is needed to render the component.
-* **Callback** - (required) Handles the implicit flow callback. This will parse the tokens and store them automatically.
+* **ImplicitCallback** - (required) Handles the implicit flow callback. This will parse the tokens and store them automatically.
 
 ## Create Routes
 
