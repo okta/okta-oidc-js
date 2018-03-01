@@ -28,8 +28,7 @@ const defaultEnvValues = {
   BASE_URI: 'http://localhost:3000',
   REDIRECT_URI: 'http://localhost:3000/implicit/callback',
   ISSUER: 'https://{yourOktaDomain}.com/oauth2/default',
-  CLIENT_ID: '{clientId}',
-  CLIENT_SECRET: '{clientSecret}',
+  CLIENT_ID: process.env.SPA_CLIENT_ID || '{clientId}',
   USERNAME: '{userName}',
   PASSWORD: '{password}',
 };

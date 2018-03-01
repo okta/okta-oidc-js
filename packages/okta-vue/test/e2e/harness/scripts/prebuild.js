@@ -22,12 +22,11 @@ const targetEnvironmentTemplateFileName = 'dev.env.js.template';
 const targetEnvironmentFileName = 'dev.env.js';
 
 const defaultEnvValues = {
-  PORT: 3000,
-  BASE_URI: 'http://localhost:3000',
-  REDIRECT_URI: 'http://localhost:3000/implicit/callback',
+  PORT: 8080,
+  BASE_URI: 'http://localhost:8080',
+  REDIRECT_URI: 'http://localhost:8080/implicit/callback',
   ISSUER: 'https://{yourOktaDomain}.com/oauth2/default',
-  CLIENT_ID: '{clientId}',
-  CLIENT_SECRET: '{clientSecret}',
+  CLIENT_ID: process.env.SPA_CLIENT_ID || '{clientId}',
   USERNAME: '{userName}',
   PASSWORD: '{password}',
 };

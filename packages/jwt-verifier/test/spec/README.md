@@ -3,11 +3,11 @@
 Export the following environment variables according to your environment
 
 ```
-export ISSUER=https://example.oktapreview.com/oauth2/default
-export CLIENT_ID={yourAppClientId}
-export USERNAME={yourOrgUserName}
-export PASSWORD={yourOrgPassword}
-export REDIRECT_URI=http://localhost:8080/implicit/callback
+export ISSUER=[your okta domain]/oauth2/default
+export CLIENT_ID=[your client id]
+export USERNAME=[created user]
+export PASSWORD=[password from activation]
+export REDIRECT_URI=[redirect uri to your SPA]
 ```
 
 ## Run e2e Tests

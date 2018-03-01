@@ -7,6 +7,6 @@
 		"banners": "util/maintain-banners.js",
 		"publish": "lerna publish --skip-npm",
 		"bootstrap": "lerna bootstrap",
-		"test": "lerna run test"
+		"test": "sh scripts/travis.sh"
 	}
 }

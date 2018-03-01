@@ -16,18 +16,17 @@ const nJwt = require('njwt');
 const nock = require('nock');
 const path = require('path');
 const tk = require('timekeeper');
+const constants = require('../constants')
 
 const OktaJwtVerifier = require('../../lib');
 const getAccessToken = require('../util').getAccessToken;
 
 // These need to be exported in the environment, from a working Okta org
-const {
-  ISSUER,
-  CLIENT_ID,
-  USERNAME,
-  PASSWORD,
-  REDIRECT_URI
-} = process.env;
+const ISSUER = constants.ISSUER;
+const CLIENT_ID = constants.CLIENT_ID;
+const USERNAME = constants.USERNAME;
+const PASSWORD = constants.PASSWORD;
+const REDIRECT_URI = constants.REDIRECT_URI
 
 // Used to get an access token from the AS
 const issuer1AccessTokenParams = {
@@ -107,7 +106,7 @@ describe('Jwt Verifier', () => {
 
   it('should fail if the token is expired (exp)', () => {
     return getAccessToken(issuer1AccessTokenParams)
-    .then(accessToken => 
+    .then(accessToken =>
       verifier.verifyAccessToken(accessToken)
       .then(jwt => {
         // Now advance time past the exp claim
@@ -134,7 +133,7 @@ describe('Jwt Verifier', () => {
       }
     });
     return getAccessToken(issuer1AccessTokenParams)
-    .then(accessToken => 
+    .then(accessToken =>
       verifier.verifyAccessToken(accessToken)
       .catch(err => assert.equal(err.message,
         `claim 'cid' value '${CLIENT_ID}' does not match expected value 'baz', claim 'foo' value 'undefined' does not match expected value 'bar'`

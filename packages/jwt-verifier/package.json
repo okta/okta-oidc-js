@@ -6,8 +6,8 @@
   "homepage": "https://github.com/okta/okta-oidc-js/tree/master/packages/jwt-verifier",
   "main": "lib.js",
   "scripts": {
-    "test": "npm run test:e2e && npm run test:integration",
-    "test:e2e": "mocha --timeout 10000 test/spec",
+    "test": "npm run test:sanity && npm run test:integration",
+    "test:sanity": "mocha --timeout 10000 test/spec",
     "test:integration": "sh tools/runIntegrationTests.sh"
   },
   "keywords": [
