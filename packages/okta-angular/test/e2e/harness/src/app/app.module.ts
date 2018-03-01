@@ -12,7 +12,7 @@
 
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
-import { Routes, RouterModule } from '@angular/router';
+import { Routes, RouterModule, Router } from '@angular/router';
 
 import { environment } from './../environments/environment';
 
@@ -22,6 +22,7 @@ import { environment } from './../environments/environment';
 import {
   OktaAuthGuard,
   OktaAuthModule,
+  OktaAuthService,
   OktaCallbackComponent,
   OktaLoginRedirectComponent
 } from '@okta/okta-angular';
@@ -33,11 +34,11 @@ import { ProtectedComponent } from './protected.component';
 import { AppComponent } from './app.component';
 import { SessionTokenLogin } from './sessionToken-login.component';
 
-export function onNeedsAuthenticationGuard({ oktaAuth, router }) {
+export function onNeedsAuthenticationGuard(oktaAuth: OktaAuthService, router: Router) {
   router.navigate(['/sessionToken-login']);
 };
 
-export function onNeedsGlobalAuthenticationGuard({ oktaAuth, router }) {
+export function onNeedsGlobalAuthenticationGuard(oktaAuth: OktaAuthService, router: Router) {
   router.navigate(['/login']);
 };
 

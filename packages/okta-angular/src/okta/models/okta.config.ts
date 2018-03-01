@@ -12,12 +12,14 @@
 
 import { InjectionToken } from '@angular/core';
 
+import { AuthRequiredFunction } from './auth-required-function';
+
 export interface OktaConfig {
   issuer?: string;
   redirectUri?: string;
   clientId?: string;
   scope?: string;
-  onAuthRequired?: Function;
+  onAuthRequired?: AuthRequiredFunction;
 }
 
 export const OKTA_CONFIG = new InjectionToken<OktaConfig>('okta.config.angular');

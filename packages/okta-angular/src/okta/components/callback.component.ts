@@ -12,7 +12,7 @@
 
 import { Component } from '@angular/core';
 
-import { OktaAuthService } from '../okta.service';
+import { OktaAuthService } from '../services/okta.service';
 
 @Component({template: `` })
 export class OktaCallbackComponent {
