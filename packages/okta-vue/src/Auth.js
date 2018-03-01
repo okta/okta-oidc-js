@@ -50,9 +50,9 @@ function install (Vue, options) {
       return accessToken ? oktaAuth.token.getUserInfo(accessToken) : undefined
     },
     authRedirectGuard () {
-      return async (from, to, next) => {
-        if (from.matched.some(record => record.meta.requiresAuth) && !(await this.isAuthenticated())) {
-          localStorage.setItem('referrerPath', from.path || '/')
+      return async (to, from, next) => {
+        if (to.matched.some(record => record.meta.requiresAuth) && !(await this.isAuthenticated())) {
+          localStorage.setItem('referrerPath', to.path || '/')
           this.loginRedirect()
         } else {
           next()
