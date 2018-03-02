@@ -10,6 +10,8 @@ addons:
       - oracle-java8-set-default
 
 script:
+- npm install
+- npm run bootstrap
 - npm test
 
 install:
