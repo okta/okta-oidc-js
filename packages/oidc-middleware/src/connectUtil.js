@@ -84,7 +84,8 @@ connectUtil.createCallbackHandler = context => {
   const customHandler = context.options.routes.callback.handler;
   if (!customHandler) {
     return passport.authenticate('oidc', {
-      successReturnToOrRedirect: context.options.routes.callback.defaultRedirect
+      successReturnToOrRedirect: context.options.routes.callback.defaultRedirect,
+      failureRedirect: context.options.routes.callback.failureRedirect
     });
   }
   const customHandlerArity = customHandler.length;

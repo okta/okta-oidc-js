@@ -45,8 +45,11 @@ oidcUtil.createClient = context => {
     client_id,
     client_secret,
     redirect_uri,
-    maxClockSkew
+    maxClockSkew,
+    timeout
   } = context.options;
+
+  Issuer.defaultHttpOptions.timeout = timeout || 10000;
 
   return Issuer.discover(issuer)
   .then(iss => {
