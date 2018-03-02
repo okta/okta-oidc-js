@@ -20,7 +20,7 @@ In Okta, applications are OpenID Connect clients that can use Okta Authorization
 | ------------------- | -------------------------------------------- |
 | App Name            | My Native App                                |
 | Base URIs           | http://localhost:{port}                      |
-| Login redirect URIs | com.oktapreview.{yourOrg}:/callback          |
+| Login redirect URIs | com.oktapreview.{yourOrg}:/+expo-auth-session|
 |                     | exp://localhost:19000/+expo-auth-session     |
 | Grant Types Allowed | Authorization Code, Refresh Token            |
 
@@ -62,4 +62,53 @@ Assuming you're using an app created with `create-react-native-app`, you should 
 
 `okta-react-native` exposes methods to enable authentication in your React Native app.
 
+### Creating a Client
 
+There are some configuration options:
+* `authorization_endpoint` - override the authorization endpoint from the well-known endpoint
+
+```javascript
+import TokenClient from '@okta/okta-react-native';
+
+const tokenClient = new TokenClient({
+  issuer: 'https://{yourOktaDomain}.com/oauth2/default',
+  client_id: '{clientId}',
+  redirect_uri: __DEV__ ?
+    'exp://localhost:19000/+expo-auth-session' :
+    'com.oktapreview.{yourOrg}:/+expo-auth-session'
+});
+```
+
+### `signInWithRedirect`
+
+This method will automatically use the industry
+
+```javascript
+await tokenClient.signInWithRedirect();
+```
+
+### `getAccessToken`
+
+This method returns the access token as a string. It ensures the access token is up-to-date and will automatically refresh expired tokens if a refresh token is available. To ensure your app receives a refresh token, request `offline_access`.
+
+```javascript
+await tokenClient.getAccessToken();
+```
+
+### `getIdToken`
+
+```javascript
+await tokenClient.getIdToken();
+```
+
+### `getUser`
+
+```javascript
+await tokenClient.getUser();
+```
+
+### `signOut`
+
+```javascript
+await tokenClient.signOut();
+```
