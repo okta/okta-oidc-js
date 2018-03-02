@@ -38,7 +38,9 @@ export async function performPkceCodeFlow(client, options, getAuthCode) {
     code_challenge,
     state: util.createRandomString(12),
     nonce: util.createRandomString(12)
-  }, client.config, options);
+  }, client.config, options, {
+    response_type: 'code'
+  });
 
   // Perform the OIDC redirect (or otherwise)
   const authorizeUri = `${authorization_endpoint}?${util.urlFormEncode(params)}`;

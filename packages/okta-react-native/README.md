@@ -21,6 +21,7 @@ In Okta, applications are OpenID Connect clients that can use Okta Authorization
 | App Name            | My Native App                                |
 | Base URIs           | http://localhost:{port}                      |
 | Login redirect URIs | com.oktapreview.{yourOrg}:/callback          |
+|                     | exp://localhost:19000/+expo-auth-session     |
 | Grant Types Allowed | Authorization Code, Refresh Token            |
 
 After you have created the application there are two more values you will need to gather:
@@ -35,3 +36,30 @@ After you have created the application there are two more values you will need t
 > If using the [Resource Owner Password Grant](https://tools.ietf.org/html/rfc6749#section-1.3.3), make sure to select it in the **Allowed Grant Types** and select **Client authentication**.
 
 These values will be used in your React application to setup the OpenID Connect flow with Okta.
+
+## Installation
+
+This library is available through [npm](https://www.npmjs.com/package/@okta/okta-react-native). To install it, simply add it to your project:
+
+```bash
+npm install --save @okta/okta-react-native
+```
+
+## Configuration
+
+Assuming you're using an app created with `create-react-native-app`, you should modify your `app.json` to add a `scheme`:
+
+```javascript
+{
+  "expo": {
+    "sdkVersion": "25.0.0",
+    "scheme": "com.oktapreview.{yourOrg}"
+  }
+}
+```
+
+## Usage
+
+`okta-react-native` exposes methods to enable authentication in your React Native app.
+
+

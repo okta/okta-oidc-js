@@ -11,7 +11,7 @@ export function urlFormEncode(object) {
   return pairs.join('&');
 }
 
-export function urlFormDecode(form) {
+export function urlFormDecode(form = '') {
   const pairs = form.split('&');
   const object = {};
   for (let pair of pairs) {
