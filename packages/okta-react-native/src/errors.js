@@ -1,6 +1,7 @@
 export class ApiError extends Error {
   constructor(options) {
-    super(options.errorSummary);
+    const message = options.errorSummary;
+    super(message);
     this.name = 'ApiError';
     /* istanbul ignore next */
     if (Error.captureStackTrace) {
@@ -15,7 +16,8 @@ export class ApiError extends Error {
 
 export class OidcError extends Error {
   constructor(options) {
-    super(options.error_description);
+    const message = options.error_description;
+    super(message);
     this.name = 'OidcError';
     /* istanbul ignore next */
     if (Error.captureStackTrace) {
