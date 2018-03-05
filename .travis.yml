@@ -9,12 +9,7 @@ addons:
     packages:
       - oracle-java8-set-default
 
-script:
-- npm install
-- npm run bootstrap
-- npm test
-- ps aux
-- killall -9 java
+script: ./scripts/travis.sh
 
 install:
 - npm install
