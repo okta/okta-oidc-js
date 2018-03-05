@@ -14,6 +14,7 @@ script:
 - npm run bootstrap
 - npm test
 - ps aux
+- killall -9 java
 
 install:
 - npm install
