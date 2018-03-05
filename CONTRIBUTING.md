@@ -45,9 +45,19 @@ If you do not see an exact emoji match, use the best matching emoji.
 
 ## Running Tests locally
 
-You can run all the tests inside each of the packages from the project root.
+You can run tests is each individual package by navigating to the package and running `npm test`.
+E.g:
 
-You will also need to install the dependencies of each package. This can be performed via the following commands:
+```bash
+# At project root
+cd packages/oidc-middleware
+npm install
+npm test
+```
+
+You can also run all the tests inside each of the packages from the project root.
+
+For that, you will need to install the dependencies of each package. This can be performed via the following commands:
 
 ```bash
 # At project root
@@ -56,9 +66,9 @@ npm run bootstrap
 ```
 
 > **Note:** Since the packages contain libraries for both Single-Page applications and Web Applications, you will need to create an SPA and Web App in your okta org.
-
+>
 > For the SPA, set the following login redirect URIs - `http://localhost:8080/implicit/callback` & `http://localhost:3000/implicit/callback`
-
+>
 > For the Web App, set the following login redirect URI - `http://localhost:8080/authorization-code/callback`
 
 Next, setup the following environment variables:

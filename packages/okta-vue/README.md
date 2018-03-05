@@ -248,8 +248,7 @@ Parses the tokens returned as hash fragments in the OAuth 2.0 Redirect URI.
     - `cd test/e2e/harness && npm install`
 4. Make your changes to `okta-vue/src/`
 5. Update environment variables
-    - Set the `ISSUER` and `CLIENT_ID` variables in the `test/e2e/harness/config/dev.env.js` file.
-    - Manually set the `USERNAME` and `PASSWORD` environment variables via the command line. For example: `export USERNAME={username}`
+    - Manually set the `ISSUER`, `CLIENT_ID`, `USERNAME` and `PASSWORD` environment variables via the command line. For example: `export USERNAME={username}`
 
 ## Commands
 
