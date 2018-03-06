@@ -1,4 +1,4 @@
-import { TokenClient } from './token-client';
+import TokenClient from './token-client';
 import { ApiError, OidcError } from './errors';
 
 export default TokenClient;

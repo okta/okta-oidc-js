@@ -6,3 +6,4 @@ package-lock.json
 .envrc
 *.code-workspace
 coverage
+*.tgz
