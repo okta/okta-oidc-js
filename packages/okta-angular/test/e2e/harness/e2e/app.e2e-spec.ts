@@ -55,6 +55,25 @@ describe('Angular + Okta App', () => {
     expect(protectedPage.getLoginButton().isPresent()).toBeTruthy();
   });
 
+  it('should redirect to Okta for login when trying to access a protected page with query params', () => {
+    protectedPage.navigateToWithQuery();
+
+    oktaLoginPage.waitUntilVisible();
+    oktaLoginPage.signIn({
+      username: environment.USERNAME,
+      password: environment.PASSWORD
+    });
+
+    protectedPage.waitUntilQueryVisible();
+    expect(protectedPage.getLogoutButton().isPresent()).toBeTruthy();
+
+    /**
+     * Logout
+     */
+    protectedPage.getLogoutButton().click();
+    expect(protectedPage.getLoginButton().isPresent()).toBeTruthy();
+  });
+
   /**
    * Hack to slowdown the tests due to the Okta session
    * not being removed in time for the second login call.

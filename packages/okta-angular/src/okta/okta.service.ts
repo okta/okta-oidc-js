@@ -11,7 +11,7 @@
  */
 
 import { Inject, Injectable, Optional } from '@angular/core';
-import { Router } from '@angular/router';
+import { Router, NavigationExtras } from '@angular/router';
 
 import { OKTA_CONFIG } from './okta.config';
 
@@ -111,10 +111,15 @@ export class OktaAuthService {
 
     /**
      * Stores the intended path to redirect after successful login.
-     * @param uri 
+     * @param uri
+     * @param queryParams
      */
-    setFromUri(uri) {
-      localStorage.setItem('referrerPath', uri);
+    setFromUri(uri, queryParams) {
+      const json = JSON.stringify({
+        uri: uri,
+        params: queryParams
+      });
+      localStorage.setItem('referrerPath', json);
     }
 
     /**
@@ -143,7 +148,11 @@ export class OktaAuthService {
       /**
        * Navigate back to the initial view or root of application.
        */
-      this.router.navigate([this.getFromUri()]);
+      const path = JSON.parse(this.getFromUri());
+      const navigationExtras: NavigationExtras = {
+        queryParams: path.params
+      };
+      this.router.navigate([path.uri], navigationExtras);
     }
 
     /**

@@ -18,8 +18,16 @@ export class ProtectedPage {
     return browser.get('/protected');
   }
 
+  navigateToWithQuery() {
+    return browser.get('/protected?state=foo');
+  }
+
   waitUntilVisible() {
     browser.wait(ExpectedConditions.urlContains('/protected'), 5000);
+  }
+
+  waitUntilQueryVisible() {
+    browser.wait(ExpectedConditions.urlContains('/protected?state=foo'), 5000);
   }
 
   getLogoutButton() {

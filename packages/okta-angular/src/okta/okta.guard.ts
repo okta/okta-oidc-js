@@ -52,7 +52,7 @@ export class OktaAuthGuard implements CanActivate {
     /** 
      * Store the current path
      */
-    this.oktaAuth.setFromUri(state.url);
+    this.oktaAuth.setFromUri(route.url[0].path, route.queryParams);
 
     /**
      * Redirect to the given path or
