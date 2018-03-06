@@ -10,19 +10,19 @@
  * See the License for the specific language governing permissions and limitations under the License.
  */
 
-exports.config = {
-  framework: 'jasmine',
-  directConnect: true,
-  specs: ['specs/*.js'],
-  capabilities: {
-    browserName: 'chrome',
-    chromeOptions: {
-      args: [
-        '--headless',
-        '--disable-gpu',
-        '--window-size=800,600',
-        '--no-sandbox'
-      ]
-     }
-  }
+const PORT = process.env.PORT || 8080;
+const BASE_URI = process.env.BASE_URI || `http://localhost:${PORT}`;
+
+module.exports = {
+  REDIRECT_URI: `${BASE_URI}/implicit/callback`,
+  LOGIN_PATH: `${BASE_URI}/login`,
+  LOGOUT_PATH: `${BASE_URI}/logout`,
+  PROTECTED_PATH: `${BASE_URI}/protected`,
+  ISSUER: process.env.ISSUER,
+  CLIENT_ID: process.env.SPA_CLIENT_ID || process.env.CLIENT_ID,
+  CLIENT_SECRET: process.env.CLIENT_SECRET,
+  USERNAME: process.env.USERNAME,
+  PASSWORD: process.env.PASSWORD,
+  PORT,
+  BASE_URI
 }

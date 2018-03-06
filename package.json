@@ -5,6 +5,8 @@
 	},
 	"scripts": {
 		"banners": "util/maintain-banners.js",
-		"publish": "lerna publish --skip-npm"
+		"publish": "lerna publish --skip-npm",
+		"bootstrap": "lerna bootstrap",
+		"test": "sh ./scripts/runTests.sh"
 	}
 }

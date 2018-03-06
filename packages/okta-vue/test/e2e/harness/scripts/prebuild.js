@@ -10,23 +10,21 @@
  * See the License for the specific language governing permissions and limitations under the License.
  */
 
-/** Angular CLI does not support environment variables the same
- * way Node apps do. See:
- * https://github.com/angular/angular-cli/issues/4318
+/** Vue apps does not support environment variables the same way Node apps do.
  */
 const fs = require('fs');
 const path = require('path');
 
 const ejs = require('ejs');
 
-const environmentFilesDirectory = path.join(__dirname, '../src/environments');
-const targetEnvironmentTemplateFileName = 'environment.ts.template';
-const targetEnvironmentFileName = 'environment.ts';
+const environmentFilesDirectory = path.join(__dirname, '../config');
+const targetEnvironmentTemplateFileName = 'dev.env.js.template';
+const targetEnvironmentFileName = 'dev.env.js';
 
 const defaultEnvValues = {
-  PORT: 3000,
-  BASE_URI: 'http://localhost:3000',
-  REDIRECT_URI: 'http://localhost:3000/implicit/callback',
+  PORT: 8080,
+  BASE_URI: 'http://localhost:8080',
+  REDIRECT_URI: 'http://localhost:8080/implicit/callback',
   ISSUER: 'https://{yourOktaDomain}.com/oauth2/default',
   CLIENT_ID: process.env.SPA_CLIENT_ID || '{clientId}',
   USERNAME: '{userName}',

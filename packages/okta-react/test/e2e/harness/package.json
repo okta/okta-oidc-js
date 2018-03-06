@@ -22,11 +22,11 @@
     "wait-on": "^2.0.1"
   },
   "scripts": {
-    "start": "REACT_APP_ISSUER=$ISSUER REACT_APP_CLIENT_ID=$CLIENT_ID react-scripts start",
-    "build": "REACT_APP_ISSUER=$ISSUER REACT_APP_CLIENT_ID=$CLIENT_ID react-scripts build",
+    "start": "CLIENT_ID=${SPA_CLIENT_ID:=$CLIENT_ID} && REACT_APP_ISSUER=$ISSUER REACT_APP_CLIENT_ID=$CLIENT_ID react-scripts start",
+    "build": "CLIENT_ID=${SPA_CLIENT_ID:=$CLIENT_ID} && REACT_APP_ISSUER=$ISSUER REACT_APP_CLIENT_ID=$CLIENT_ID react-scripts build",
     "build:test": "rimraf e2e/dist && babel e2e/ -d e2e/dist",
     "kill:port": "kill -9 $(lsof -t -i:3000 -sTCP:LISTEN) || true",
-    "pretest": "npm run kill:port && ./node_modules/.bin/webdriver-manager update && npm run build:test",
+    "pretest": "npm run kill:port && ./node_modules/.bin/webdriver-manager update --gecko false && npm run build:test",
     "wait:server": "npm run start & ./node_modules/.bin/wait-on http://localhost:3000",
     "test": "npm run build && npm run wait:server && npm run protractor",
     "eject": "react-scripts eject",

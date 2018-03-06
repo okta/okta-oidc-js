@@ -21,15 +21,3 @@ scenarios:
     command: node
     args:
     - test/integration-test/start-server.js
-
-  code-flow-local-validation:
-    enabled: false
-
-  code-flow-remote-validation:
-    enabled: false
-
-  implicit-flow-local-validation:
-    enabled: false
-
-  implicit-flow-remote-validation:
-    enabled: false

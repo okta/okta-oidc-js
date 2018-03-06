@@ -15,16 +15,11 @@
     "src"
   ],
   "main": "index.js",
-  "config": {
-    "tck": {
-      "jar": "https://oss.sonatype.org/service/local/artifact/maven/redirect?r=snapshots&g=com.okta.oidc.tck&a=okta-oidc-tck&v=0.2.1-SNAPSHOT&e=jar&c=shaded",
-      "setup_env": "cross-env ISSUER=http://localhost:9090/oauth2/default cross-env CLIENT_ID=OOICU812 cross-env CLIENT_SECRET=VERY_SECRET",
-      "command": "java -cp ./test/integration-test/resources/:./okta-oidc-tck-0.2.1-SNAPSHOT-shaded.jar org.testng.TestNG -d target/cli-test-output ./test/integration-test/resources/testng.xml"
-    }
-  },
   "scripts": {
-    "test": "mocha test/unit/*.js && webdriver-manager update && protractor test/e2e/conf.js",
-    "tck-test": "(ls ./okta-oidc-tck-0.2.1-SNAPSHOT-shaded.jar || curl $npm_package_config_tck_jar -L -o okta-oidc-tck-0.2.1-SNAPSHOT-shaded.jar) && $npm_package_config_tck_setup_env && mkdir -p target && $npm_package_config_tck_command || echo done"
+    "test": "npm run test:unit && npm run test:e2e && npm run test:integration",
+    "test:e2e": "webdriver-manager update --gecko false && protractor test/e2e/conf.js",
+    "test:integration": "sh tools/runIntegrationTests.sh",
+    "test:unit": "mocha test/unit/*.js"
   },
   "engines": {
     "node": ">=6"

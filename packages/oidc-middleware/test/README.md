@@ -17,3 +17,12 @@ export CLIENT_SECRET=[your client secret]
 export USERNAME=[created user]
 export PASSWORD=[password from activation]
 ```
+
+## Running tests
+
+```bash
+# At project root
+cd packages/oidc-middleware/
+npm install
+npm test
+```

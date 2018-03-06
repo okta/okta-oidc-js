@@ -8,5 +8,5 @@ Run the following command to run all the integration tests.
 Ensure you're in the `jwt-verifier` base directory
 
 ```
-npm run tck-test
+npm run test:integration
 ```

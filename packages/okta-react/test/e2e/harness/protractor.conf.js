@@ -18,7 +18,10 @@ exports.config = {
     './e2e/dist/*.test.js'
   ],
   capabilities: {
-    'browserName': 'chrome'
+    'browserName': 'chrome',
+    chromeOptions: {
+      args: ['--headless','--disable-gpu','--window-size=1600x1200', '--no-sandbox']
+    }
   },
   directConnect: true,
   baseUrl: 'http://localhost:3000/',
@@ -30,6 +33,6 @@ exports.config = {
   },
   onPrepare() {
     browser.ignoreSynchronization = true;
-    jasmine.getEnv().addReporter(new SpecReporter({ spec: { displayStacktrace: true } }));    
+    jasmine.getEnv().addReporter(new SpecReporter({ spec: { displayStacktrace: true } }));
   }
 };

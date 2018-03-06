@@ -17,8 +17,8 @@
 
 <suite name="Okta-OAuth-Mock" verbose="2" parallel="tests" thread-count="1" configfailurepolicy="continue">
     <test name="Regression1">
-        <packages>
-            <package name="com.okta.test.mock.tests" />
-        </packages>
+        <classes>
+            <class name="com.okta.test.mock.tests.OIDCCodeFlowLocalValidationIT" />
+        </classes>
     </test>
 </suite>

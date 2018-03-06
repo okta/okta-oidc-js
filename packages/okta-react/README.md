@@ -309,6 +309,8 @@ export default App;
 5. Set the following environment variables:
   - `ISSUER` - your authorization server
   - `CLIENT_ID` - the client id of your app
+  - `USERNAME` - username of org user, needed if you want to run tests
+  - `PASSWORD` - password of org user, needed if you want to run tests
 6. Start a sample server:
   - `npm start`
 

@@ -19,7 +19,7 @@ module.exports = {
   LOGOUT_PATH: `${BASE_URI}/logout`,
   PROTECTED_PATH: `${BASE_URI}/protected`,
   ISSUER: process.env.ISSUER,
-  CLIENT_ID: process.env.CLIENT_ID,
+  CLIENT_ID: process.env.WEB_CLIENT_ID || process.env.CLIENT_ID,
   CLIENT_SECRET: process.env.CLIENT_SECRET,
   USERNAME: process.env.USERNAME,
   PASSWORD: process.env.PASSWORD,

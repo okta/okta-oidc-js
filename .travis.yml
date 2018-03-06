@@ -1,1 +1,21 @@
-script: exit 0
+language: node_js
+
+node_js:
+- '8.4.0'
+
+addons:
+  chrome: stable
+  apt:
+    packages:
+      - oracle-java8-set-default
+
+script:
+- npm install
+- npm run bootstrap
+- sh ./scripts/runTests.sh
+
+install:
+- npm install
+
+before_install:
+- "npm install -g npm@5.6.0"
