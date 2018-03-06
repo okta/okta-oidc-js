@@ -6,12 +6,15 @@ This library currently supports:
 
 ## Getting Started
 * If you do not already have a **Developer Edition Account**, you can create one at [https://developer.okta.com/signup/](https://developer.okta.com/signup/).
+* An Okta Application, configured for Singe-Page App (SPA) mode. This is done from the Okta Developer Console and you can find instructions [here](https://developer.okta.com/authentication-guide/implementing-authentication/implicit#1-setting-up-your-application). When following the wizard, use the default properties. They are are designed to work with our sample applications.
 
-| Helpful Links | Description |
-| ----------------------------------------------------------------------------------- | :------------------------------------------ |
-| [Angular Quickstart](https://angular.io/guide/quickstart) |  If you don't have an Angular app, or are new to Angular, please start with this guide. It will walk you through the creation of an Angular app, creating routes, and other application development essentials.|
-| [Okta Sample Application](https://github.com/okta/samples-js-angular)| A fully functional sample application. |
-| [Okta Angular Quickstart](https://okta.github.io/quickstart/#/angular/nodejs/generic) | Helpful resource for integrating an existing Angular application into Okta. |
+### Helpful Links
+- [Angular Quickstart](https://angular.io/guide/quickstart)
+  - If you don't have an Angular app, or are new to Angular, please start with this guide. It will walk you through the creation of an Angular app, creating routes, and other application development essentials.
+- [Okta Sample Application](https://github.com/okta/samples-js-angular)
+  - A fully functional sample application.
+- [Okta Angular Quickstart](https://okta.github.io/quickstart/#/angular/nodejs/generic)
+  - Helpful resource for integrating an existing Angular application into Okta.
 
 ## Installation
 This library is available through [npm](https://www.npmjs.com/package/@okta/okta-angular). To install it, simply add it to your project:
@@ -33,7 +36,7 @@ The `OktaAuthModule` is the initializer for your OpenID Connect client configura
   - `issuer` **(required)**: The OpenID Connect `issuer`
   - `clientId` **(required)**: The OpenID Connect `client_id`
   - `redirectUri` **(required)**: Where the callback is hosted
-  - `scope` *(optional)*: Reserved or custom claims to be returned in the tokens
+  - `scope` *(optional)*: Reserved for custom claims to be returned in the tokens
   - `onAuthRequired` *(optional)*: Accepts a callback to make a decision when authentication is required. If not supplied, `okta-angular` will redirect directly to Okta for authentication.
 
 ```typescript
@@ -137,6 +140,8 @@ The `okta-angular` SDK supports the session token redirect flow for custom login
 To handle the session-token redirect flow, you can modify the unauthentication callback functionality by adding a `data` attribute directly to your `Route`:
 
 ```typescript
+// myApp.module.ts
+
 import {
   OktaAuthGuard,
   ...
@@ -175,6 +180,8 @@ const oktaConfig = {
 In your components, your can take advantage of all of `okta-angular`'s features by importing the `OktaAuthService`. The example below shows connecting two buttons to handle **login** and **logout**:
 
 ```typescript
+// sample.component.ts
+
 import { OktaAuthService } from '@okta/okta-angular';
 
 @Component({
