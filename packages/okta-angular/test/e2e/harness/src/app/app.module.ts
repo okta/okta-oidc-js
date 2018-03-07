@@ -57,7 +57,14 @@ const appRoutes: Routes = [
   {
     path: 'protected',
     component: ProtectedComponent,
-    canActivate: [ OktaAuthGuard ]
+    canActivate: [ OktaAuthGuard ],
+    children: [
+      {
+        path: 'foo',
+        component: ProtectedComponent,
+        canActivate: [ OktaAuthGuard ]
+      }
+    ]
   },
   {
     path: 'protected-with-data',

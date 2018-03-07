@@ -55,7 +55,7 @@ describe('Angular + Okta App', () => {
     expect(protectedPage.getLoginButton().isPresent()).toBeTruthy();
   });
 
-  it('should redirect to Okta for login when trying to access a protected page with query params', () => {
+  it('should preserve query paramaters after redirecting to Okta', () => {
     protectedPage.navigateToWithQuery();
 
     oktaLoginPage.waitUntilVisible();

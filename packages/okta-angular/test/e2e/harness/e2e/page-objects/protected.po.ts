@@ -19,7 +19,7 @@ export class ProtectedPage {
   }
 
   navigateToWithQuery() {
-    return browser.get('/protected?state=foo');
+    return browser.get('/protected/foo?state=bar');
   }
 
   waitUntilVisible() {
@@ -27,7 +27,7 @@ export class ProtectedPage {
   }
 
   waitUntilQueryVisible() {
-    browser.wait(ExpectedConditions.urlContains('/protected?state=foo'), 5000);
+    browser.wait(ExpectedConditions.urlContains('/protected/foo?state=bar'), 5000);
   }
 
   getLogoutButton() {
