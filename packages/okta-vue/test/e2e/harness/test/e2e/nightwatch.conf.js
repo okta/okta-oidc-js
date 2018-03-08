@@ -17,11 +17,6 @@ module.exports = {
     }
   },
 
-  request_timeout_options: {
-    "timeout": 300000, //5 mins
-    "retry_attempts": 5  // 5 attempts after each timeout of the request
-  },
-
   test_settings: {
     default: {
       selenium_port: 4444,
@@ -36,7 +31,10 @@ module.exports = {
       desiredCapabilities: {
         browserName: 'chrome',
         javascriptEnabled: true,
-        acceptSslCerts: true
+        acceptSslCerts: true,
+        chromeOptions: {
+          args : ['--no-sandbox']
+        }
       }
     },
 
