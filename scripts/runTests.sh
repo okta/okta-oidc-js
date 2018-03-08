@@ -1,6 +1,7 @@
 #!/bin/bash
 
 cd packages/okta-vue
+npm i chromedriver --save
 npm test
 
 # for package in `ls $PWD/packages`;
