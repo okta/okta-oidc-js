@@ -14,7 +14,6 @@ import React, { Component } from 'react';
 import { Route } from 'react-router';
 import withAuth from './withAuth';
 
-
 class RenderWrapper extends Component {
   checkAuthentication() {
     if (this.props.authenticated === false) {
