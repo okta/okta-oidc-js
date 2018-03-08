@@ -12,3 +12,4 @@ okta-oidc-tck*
 target
 packages/okta-vue/test/e2e/harness/config/dev.env.js
 coverage
+*.tgz
