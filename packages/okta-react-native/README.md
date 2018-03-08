@@ -33,12 +33,9 @@ After you have created the application there are two more values you will need t
 
 **Note:** *As with any Okta application, make sure you assign Users or Groups to the OpenID Connect Client. Otherwise, no one can use it.*
 
-> If using the [Resource Owner Password Grant](https://tools.ietf.org/html/rfc6749#section-1.3.3), make sure to select it in the **Allowed Grant Types** and select **Client authentication**.
-
 These values will be used in your React application to setup the OpenID Connect flow with Okta.
 
 ## Installation
-
 This library is available through [npm](https://www.npmjs.com/package/@okta/okta-react-native). To install it, simply add it to your project:
 
 ```bash
@@ -46,8 +43,7 @@ npm install --save @okta/okta-react-native
 ```
 
 ## Configuration
-
-Assuming you're using an app created with `create-react-native-app`, you should modify your `app.json` to add a `scheme`:
+Assuming you're using an app created with `create-react-native-app`, modify your `app.json` to add a `scheme`:
 
 ```javascript
 {
@@ -60,12 +56,9 @@ Assuming you're using an app created with `create-react-native-app`, you should 
 
 ## Usage
 
-`okta-react-native` exposes methods to enable authentication in your React Native app.
+You will need the values from the OIDC client that you created in the previous step to instantiate the client. You will also need to know your Okta Org URL, which you can see on the home page of the Okta Developer console.
 
-### Creating a Client
-
-There are some configuration options:
-* `authorization_endpoint` - override the authorization endpoint from the well-known endpoint
+In your application's controller, create a configuration object:
 
 ```javascript
 import TokenClient from '@okta/okta-react-native';
@@ -79,16 +72,20 @@ const tokenClient = new TokenClient({
 });
 ```
 
-### `signInWithRedirect`
+There are additional configuration options you can provide for specialized use cases:
+* `authorization_endpoint` - override the authorization endpoint from the well-known endpoint
+* `storageKey` - Unique key used to store/retrieve secure data
+* `keychainService` - See [Expo - keychainService](https://docs.expo.io/versions/latest/sdk/securestore.html#keychainservice-string-)
+* `keychainAccessible` - (iOS only) Specify when the stored item is accessible. See [Expo - keychainAccessible](https://docs.expo.io/versions/latest/sdk/securestore.html#keychainaccessible-enum-)
 
-This method will automatically use the industry
+### `signInWithRedirect`
+This method will automatically redirect users to your Okta organziation for authentication.
 
 ```javascript
 await tokenClient.signInWithRedirect();
 ```
 
 ### `getAccessToken`
-
 This method returns the access token as a string. It ensures the access token is up-to-date and will automatically refresh expired tokens if a refresh token is available. To ensure your app receives a refresh token, request `offline_access`.
 
 ```javascript
@@ -96,18 +93,21 @@ await tokenClient.getAccessToken();
 ```
 
 ### `getIdToken`
+This method returns the identity token as a string.
 
 ```javascript
 await tokenClient.getIdToken();
 ```
 
 ### `getUser`
+Fetches the most up-to-date user claims from the [OpenID Connect `/userinfo`](https://developer.okta.com/docs/api/resources/oidc#userinfo) endpoint or parses the identity token claims if an access token isn't provided.
 
 ```javascript
 await tokenClient.getUser();
 ```
 
 ### `signOut`
+Terminates the tokens stored inside of [`SecureStore`](https://docs.expo.io/versions/latest/sdk/securestore.html) to clear the user session.
 
 ```javascript
 await tokenClient.signOut();

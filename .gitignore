@@ -15,3 +15,4 @@ packages/okta-vue/test/e2e/harness/config/dev.env.js
 packageInfo.js
 packageInfo.ts
 coverage
+*.tgz
