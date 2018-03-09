@@ -56,7 +56,7 @@ describe('Jwt Verifier', () => {
     .then(accessToken => verifier.verifyAccessToken(accessToken))
     .then(jwt => {
       assert.equal(jwt.claims.iss, ISSUER);
-      assert.equal(jwt.claims.cid, CLIENT_ID);
+      assert.equal(jwt.claims.cid, ISSUER);
     });
   });
 
