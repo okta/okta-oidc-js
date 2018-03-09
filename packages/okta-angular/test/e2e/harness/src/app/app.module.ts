@@ -74,6 +74,7 @@ const config = {
   redirectUri: environment.REDIRECT_URI,
   clientId: environment.CLIENT_ID,
   scope: 'email',
+  responseType: 'id_token token',
   onAuthRequired: onNeedsGlobalAuthenticationGuard
 };
 
