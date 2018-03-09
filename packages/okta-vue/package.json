@@ -11,7 +11,7 @@
     "prestart": "npm run build",
     "pretest": "npm run build && npm run build:harness",
     "prepublish": "npm run build",
-    "test": "if [ -z $TRAVIS ]; then npm run --prefix test/e2e/harness/ test; else exit 0; fi",
+    "test": "npm run --prefix test/e2e/harness/ test",
     "start": "npm run --prefix test/e2e/harness/ start",
     "build": "rimraf dist/ && cross-env NODE_ENV=production webpack --config webpack.config.js --output-library-target=umd -p",
     "build:harness": "npm --prefix test/e2e/harness install",
