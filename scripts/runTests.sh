@@ -14,7 +14,7 @@ do
 done
 
 if [ ! -z $FAILED_PACKAGE ]; then
-    echo "------- [ERROR] Test failures in $FAILED_PACKAGE -------"
+    echo $FAILED_PACKAGE
 fi
 
 exit $STATUS
