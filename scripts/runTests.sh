@@ -1,20 +1,12 @@
 #!/bin/bash
 
-STATUS=0
-
 for package in `ls $PWD/packages`;
 do
     cd $PWD/packages/$package
     npm test
     if [ $? -ne 0 ]; then
-        STATUS=1
-        FAILED_PACKAGE=$package
+        echo "------- [ERROR] Test failures in $package -------"
+        exit 1
     fi
     cd ../..
 done
-
-if [ ! -z $FAILED_PACKAGE ]; then
-    echo $FAILED_PACKAGE
-fi
-
-exit $STATUS
