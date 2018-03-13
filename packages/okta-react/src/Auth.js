@@ -12,6 +12,8 @@
 
 import OktaAuth from '@okta/okta-auth-js';
 
+import packageInfo from './packageInfo';
+
 const containsAuthTokens = /id_token|access_token|code/;
 
 export default class Auth {
@@ -22,6 +24,7 @@ export default class Auth {
       issuer: config.issuer,
       redirectUri: config.redirect_uri
     });
+    this._oktaAuth.userAgent = `${packageInfo.name}/${packageInfo.version} ${this._oktaAuth.userAgent}`;
     this._config = config;
     this._history = config.history;
 

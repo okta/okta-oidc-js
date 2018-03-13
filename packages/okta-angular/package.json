@@ -8,9 +8,11 @@
     "dist"
   ],
   "scripts": {
+    "build:package-info": "node ../../util/write-package-info.js . src/okta/packageInfo.ts",
     "pretest": "npm run build:dependencies",
     "prestart": "npm run build:dependencies",
     "prepublish": "npm run ngc",
+    "prengc": "npm run build:package-info",
     "ngc": "./node_modules/.bin/ngc -p tsconfig.json",
     "test": "npm run --prefix test/e2e/harness/ e2e",
     "start": "npm run --prefix test/e2e/harness/ start",
