@@ -6,7 +6,12 @@ package-lock.json
 .envrc
 *.code-workspace
 lerna-debug.log
+
 # Ignore TCK-related files in all folders
 okta-oidc-tck*
 target
 packages/okta-vue/test/e2e/harness/config/dev.env.js
+
+# package info files are generated during build and included in final artifacts
+packageInfo.js
+packageInfo.ts

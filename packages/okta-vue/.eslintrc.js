@@ -8,12 +8,14 @@ module.exports = {
   },
   env: {
     browser: true,
+    "jest/globals": true
   },
   // https://github.com/standard/standard/blob/master/docs/RULES-en.md
   extends: 'standard',
   // required to lint *.vue files
   plugins: [
-    'html'
+    'html',
+    'jest'
   ],
   // add your custom rules here
   rules: {
