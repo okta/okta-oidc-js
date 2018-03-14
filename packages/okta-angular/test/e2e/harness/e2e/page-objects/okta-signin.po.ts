@@ -20,8 +20,8 @@ export class OktaSignInPage {
 
     waitUntilVisible(issuer: string) {
       // Check for a redirect to the Okta Hosted Login Page
-      const authorizeUrl = issuer.split('/oauth2')[0];
-      browser.wait(ExpectedConditions.urlContains(authorizeUrl), 5000);
+      const baseUrl = issuer.split('/oauth2')[0];
+      browser.wait(ExpectedConditions.urlContains(baseUrl), 5000);
     }
 
     getUsernameField() {
