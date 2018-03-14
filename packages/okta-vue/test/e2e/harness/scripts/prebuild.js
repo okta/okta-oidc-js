@@ -12,14 +12,14 @@
 
 /** Vue apps does not support environment variables the same way Node apps do.
  */
-const fs = require('fs');
-const path = require('path');
+const fs = require('fs')
+const path = require('path')
 
-const ejs = require('ejs');
+const ejs = require('ejs')
 
-const environmentFilesDirectory = path.join(__dirname, '../config');
-const targetEnvironmentTemplateFileName = 'dev.env.js.template';
-const targetEnvironmentFileName = 'dev.env.js';
+const environmentFilesDirectory = path.join(__dirname, '../config')
+const targetEnvironmentTemplateFileName = 'dev.env.js.template'
+const targetEnvironmentFileName = 'dev.env.js'
 
 const defaultEnvValues = {
   PORT: 8080,
@@ -28,18 +28,18 @@ const defaultEnvValues = {
   ISSUER: 'https://{yourOktaDomain}.com/oauth2/default',
   CLIENT_ID: process.env.SPA_CLIENT_ID || '{clientId}',
   USERNAME: '{userName}',
-  PASSWORD: '{password}',
-};
+  PASSWORD: '{password}'
+}
 
 // Load template file
 const environmentTemplate = fs.readFileSync(
   path.join(environmentFilesDirectory, targetEnvironmentTemplateFileName),
   {encoding: 'utf-8'}
-);
+)
 
 // Generate output data
-const output = ejs.render(environmentTemplate, Object.assign({}, defaultEnvValues, process.env));
+const output = ejs.render(environmentTemplate, Object.assign({}, defaultEnvValues, process.env))
 // Write environment file
-fs.writeFileSync(path.join(environmentFilesDirectory, targetEnvironmentFileName), output);
+fs.writeFileSync(path.join(environmentFilesDirectory, targetEnvironmentFileName), output)
 
-process.exit(0);
+process.exit(0)
