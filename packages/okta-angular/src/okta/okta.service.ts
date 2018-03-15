@@ -102,7 +102,7 @@ export class OktaAuthService {
      */
     loginRedirect(additionalParams?: object) {
       this.oktaAuth.token.getWithRedirect({
-        responseType: ['id_token', 'token'],
+        responseType: (this.config.responseType || 'id_token token').split(' '),
         // Convert scopes to list of strings
         scopes: this.config.scope.split(' '),
         ...additionalParams

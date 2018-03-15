@@ -18,6 +18,7 @@ export interface OktaConfig {
   clientId?: string;
   scope?: string;
   onAuthRequired?: Function;
+  responseType?: string;
 }
 
 export const OKTA_CONFIG = new InjectionToken<OktaConfig>('okta.config.angular');

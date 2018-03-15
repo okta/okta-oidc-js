@@ -31,15 +31,15 @@ import {
  */
 import { ProtectedComponent } from './protected.component';
 import { AppComponent } from './app.component';
-import { SessionTokenLogin } from './sessionToken-login.component';
+import { SessionTokenLoginComponent } from './sessionToken-login.component';
 
 export function onNeedsAuthenticationGuard({ oktaAuth, router }) {
   router.navigate(['/sessionToken-login']);
-};
+}
 
 export function onNeedsGlobalAuthenticationGuard({ oktaAuth, router }) {
   router.navigate(['/login']);
-};
+}
 
 const appRoutes: Routes = [
   {
@@ -48,7 +48,7 @@ const appRoutes: Routes = [
   },
   {
     path: 'sessionToken-login',
-    component: SessionTokenLogin
+    component: SessionTokenLoginComponent
   },
   {
     path: 'implicit/callback',
@@ -74,6 +74,7 @@ const config = {
   redirectUri: environment.REDIRECT_URI,
   clientId: environment.CLIENT_ID,
   scope: 'email',
+  responseType: 'id_token token',
   onAuthRequired: onNeedsGlobalAuthenticationGuard
 };
 
@@ -86,7 +87,7 @@ const config = {
   declarations: [
     AppComponent,
     ProtectedComponent,
-    SessionTokenLogin
+    SessionTokenLoginComponent
   ],
   bootstrap: [ AppComponent ]
 })
