@@ -39,7 +39,7 @@ describe('Angular + Okta App', () => {
   it('should redirect to Okta for login when trying to access a protected page', () => {
     protectedPage.navigateTo();
 
-    oktaLoginPage.waitUntilVisible();
+    oktaLoginPage.waitUntilVisible(environment.ISSUER);
     oktaLoginPage.signIn({
       username: environment.USERNAME,
       password: environment.PASSWORD
@@ -48,9 +48,7 @@ describe('Angular + Okta App', () => {
     protectedPage.waitUntilVisible();
     expect(protectedPage.getLogoutButton().isPresent()).toBeTruthy();
 
-    /**
-     * Logout
-     */
+    // Logout
     protectedPage.getLogoutButton().click();
     expect(protectedPage.getLoginButton().isPresent()).toBeTruthy();
   });
@@ -65,8 +63,7 @@ describe('Angular + Okta App', () => {
   it('should redirect to Okta for login', () => {
     loginPage.navigateTo();
 
-    oktaLoginPage.waitUntilVisible();
-
+    oktaLoginPage.waitUntilVisible(environment.ISSUER);
     oktaLoginPage.signIn({
       username: environment.USERNAME,
       password: environment.PASSWORD
@@ -75,9 +72,7 @@ describe('Angular + Okta App', () => {
     loginPage.waitUntilVisible();
     expect(loginPage.getLogoutButton().isPresent()).toBeTruthy();
 
-    /**
-     * Logout
-     */
+    // Logout
     loginPage.getLogoutButton().click();
     expect(loginPage.getLoginButton().isPresent()).toBeTruthy();
   });
@@ -86,7 +81,6 @@ describe('Angular + Okta App', () => {
     sessionTokenSignInPage.navigateTo();
 
     sessionTokenSignInPage.waitUntilVisible();
-
     sessionTokenSignInPage.signIn({
       username: process.env.USERNAME,
       password: process.env.PASSWORD
@@ -97,7 +91,6 @@ describe('Angular + Okta App', () => {
 
     // Logout
     page.getLogoutButton().click();
-
-    page.waitUntilLoggedOut();
+    expect(page.getLoginButton().isPresent()).toBeTruthy();
   });
 });
