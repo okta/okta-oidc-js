@@ -37,6 +37,7 @@ The `OktaAuthModule` is the initializer for your OpenID Connect client configura
   - `clientId` **(required)**: The OpenID Connect `client_id`
   - `redirectUri` **(required)**: Where the callback is hosted
   - `scope` *(optional)*: Reserved for custom claims to be returned in the tokens
+  - `responseType` *(optional)*: Desired token grant types
   - `onAuthRequired` *(optional)*: Accepts a callback to make a decision when authentication is required. If not supplied, `okta-angular` will redirect directly to Okta for authentication.
 
 ```typescript
@@ -48,8 +49,8 @@ import {
 
 const oktaConfig = {
   issuer: 'https://{yourOktaDomain}.com/oauth2/default',
-  redirectUri: 'http://localhost:{port}/implicit/callback',
-  clientId: '{clientId}'
+  clientId: '{clientId}',
+  redirectUri: 'http://localhost:{port}/implicit/callback'
 }
 
 const appRoutes: Routes = [
