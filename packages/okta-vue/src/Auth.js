@@ -47,7 +47,16 @@ function install (Vue, options) {
     },
     async getUser () {
       const accessToken = oktaAuth.tokenManager.get('accessToken')
-      return accessToken ? oktaAuth.token.getUserInfo(accessToken) : undefined
+      const idToken = oktaAuth.tokenManager.get('idToken')
+      if (accessToken && idToken) {
+        const userinfo = await oktaAuth.token.getUserInfo(accessToken)
+        if (userinfo.sub === idToken.claims.sub) {
+          // Only return the userinfo response if subjects match to
+          // mitigate token substitution attacks
+          return userinfo
+        }
+      }
+      return idToken ? idToken.claims : undefined
     },
     authRedirectGuard () {
       return async (to, from, next) => {

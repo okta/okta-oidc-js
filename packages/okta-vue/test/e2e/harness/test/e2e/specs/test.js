@@ -10,8 +10,8 @@ module.exports = {
     browser
       .url(this.devServer + '/protected')
       .waitForElementVisible('body', 5000)
-      .waitForElementVisible('#okta-signin-username', 1000)
-      .waitForElementVisible('#okta-signin-password', 1000)
+      .waitForElementVisible('#okta-signin-username', 5000)
+      .waitForElementVisible('#okta-signin-password', 5000)
       .waitForElementVisible('#okta-signin-submit', 1000)
       .setValue('#okta-signin-username', process.env.USERNAME)
       .setValue('#okta-signin-password', process.env.PASSWORD)
@@ -19,6 +19,8 @@ module.exports = {
       .waitForElementVisible('#app', 5000)
       .assert.elementPresent('#logout-button')
       .assert.containsText('.protected', 'Protected!')
+      .pause(2000) // Wait for async function to finish
+      .assert.containsText('.protected .userinfo', 'email')
       .click('#logout-button')
       .end()
   },
@@ -28,8 +30,8 @@ module.exports = {
       .url(this.devServer)
       .waitForElementVisible('#app', 5000)
       .click('#login-button')
-      .waitForElementVisible('#okta-signin-username', 1000)
-      .waitForElementVisible('#okta-signin-password', 1000)
+      .waitForElementVisible('#okta-signin-username', 5000)
+      .waitForElementVisible('#okta-signin-password', 5000)
       .waitForElementVisible('#okta-signin-submit', 1000)
       .setValue('#okta-signin-username', process.env.USERNAME)
       .setValue('#okta-signin-password', process.env.PASSWORD)

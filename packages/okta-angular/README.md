@@ -217,6 +217,9 @@ this.oktaAuth.loginRedirect({
 #### `oktaAuth.isAuthenticated()`
 Returns `true` if there is a valid access token or ID token.
 
+#### `oktaAuth.getUser()`
+Returns the result of the OpenID Connect `/userinfo` endpoint if an access token is provided or parses the available idToken.
+
 #### `oktaAuth.getAccessToken()`
 Returns the access token from storage (if it exists).
 

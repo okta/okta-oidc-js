@@ -11,15 +11,25 @@
  */
 
 import { Component } from '@angular/core';
+import { OktaAuthService } from '@okta/okta-angular';
 
 @Component({
   selector: 'app-secure',
-  template: `{{message}}`
+  template: `
+  {{ message }}
+  <pre id="userinfo-container">{{ user }}</pre>
+  `
 })
 export class ProtectedComponent {
   message;
+  user;
 
-  constructor() {
-    this.message = 'Protected endpont!';
+  constructor(public oktaAuth: OktaAuthService) {
+    this.message = 'Protected!';
+  }
+
+  async ngOnInit() {
+    const user = await this.oktaAuth.getUser();
+    this.user = JSON.stringify(user, null, 4);
   }
 }

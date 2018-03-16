@@ -48,6 +48,12 @@ describe('Angular + Okta App', () => {
     protectedPage.waitUntilVisible();
     expect(protectedPage.getLogoutButton().isPresent()).toBeTruthy();
 
+    // Verify the user object was returned
+    protectedPage.getUserInfo().getText()
+    .then(userInfo => {
+      expect(userInfo).toContain("email");
+    })
+
     // Logout
     protectedPage.getLogoutButton().click();
     expect(protectedPage.getLoginButton().isPresent()).toBeTruthy();
