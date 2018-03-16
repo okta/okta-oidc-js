@@ -8,6 +8,7 @@
     "src"
   ],
   "scripts": {
+    "prebuild": "npm run build:package-info",
     "prestart": "npm run build",
     "pretest": "npm run build && npm run build:harness",
     "prepublish": "npm run build",
@@ -15,6 +16,7 @@
     "start": "npm run --prefix test/e2e/harness/ start",
     "build": "rimraf dist/ && cross-env NODE_ENV=production webpack --config webpack.config.js --output-library-target=umd -p",
     "build:harness": "npm --prefix test/e2e/harness install",
+    "build:package-info": "node ../../util/write-package-info.js . src/packageInfo.js",
     "lint": "eslint --ext .js,.vue src"
   },
   "repository": {
