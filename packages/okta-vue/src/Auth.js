@@ -2,13 +2,7 @@ import * as AuthJS from '@okta/okta-auth-js'
 import ImplicitCallback from './components/ImplicitCallback'
 
 function install (Vue, options) {
-  const authConfig = initConfig(options)
-  const oktaAuth = new AuthJS({
-    clientId: authConfig.client_id,
-    issuer: authConfig.issuer,
-    redirectUri: authConfig.redirect_uri,
-    url: authConfig.issuer.split('/oauth2/')[0]
-  })
+  const oktaAuth = getOktaAuthInstance(options)
 
   Vue.prototype.$auth = {
     loginRedirect (additionalParams) {
@@ -73,6 +67,19 @@ function install (Vue, options) {
 
 function handleCallback () { return ImplicitCallback }
 
+function getOktaAuthInstance(options) {
+  if (options instanceof AuthJS) { return options }
+
+  const authConfig = initConfig(options)
+
+  return new AuthJS({
+    clientId: authConfig.client_id,
+    issuer: authConfig.issuer,
+    redirectUri: authConfig.redirect_uri,
+    url: authConfig.issuer.split('/oauth2/')[0]
+  })
+}
+
 const initConfig = auth => {
   const missing = []
   if (!auth.issuer) missing.push('issuer')
@@ -83,4 +90,8 @@ const initConfig = auth => {
   return auth
 }
 
-export default { install, handleCallback }
+export default {
+  install,
+  handleCallback,
+  AuthJS
+}
