@@ -89,6 +89,24 @@ export class OktaAuthService {
     }
 
     /**
+     * Returns user claims from the /userinfo endpoint if an
+     * accessToken is provided or parses the available idToken.
+     */
+    async getUser() {
+      const accessToken = this.oktaAuth.tokenManager.get('accessToken');
+      const idToken = this.oktaAuth.tokenManager.get('idToken');
+      if (accessToken && idToken) {
+        const userinfo = await this.oktaAuth.token.getUserInfo(accessToken);
+        if (userinfo.sub === idToken.claims.sub) {
+          // Only return the userinfo response if subjects match to
+          // mitigate token substitution attacks
+          return userinfo;
+        }
+      }
+      return idToken ? idToken.claims : undefined;
+    }
+
+    /**
      * Returns the configuration object used.
      */
     getOktaConfig(){

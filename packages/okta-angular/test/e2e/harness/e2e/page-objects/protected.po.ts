@@ -29,4 +29,8 @@ export class ProtectedPage {
   getLoginButton() {
     return element(by.id('login-button'));
   }
+
+  getUserInfo() {
+    return element(by.id('userinfo-container'));
+  }
 }
