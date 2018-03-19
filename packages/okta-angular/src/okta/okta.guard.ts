@@ -45,7 +45,7 @@ export class OktaAuthGuard implements CanActivate {
      */
     const onAuthRequired = route.data['onAuthRequired'] || this.oktaAuth.getOktaConfig().onAuthRequired;
 
-    /** 
+    /**
      * Store the current path
      */
     const path = state.url.split(/[?#]/)[0];
