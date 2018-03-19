@@ -15,6 +15,8 @@ import { Router } from '@angular/router';
 
 import { OKTA_CONFIG } from './okta.config';
 
+import packageInfo from './packageInfo';
+
 /**
  * Import the okta-auth-js library
  */
@@ -48,6 +50,8 @@ export class OktaAuthService {
         issuer: auth.issuer,
         redirectUri: auth.redirectUri
       });
+
+      this.oktaAuth.userAgent = `${packageInfo.name}/${packageInfo.version} ${this.oktaAuth.userAgent}`;
 
       /**
        * Scrub scopes to ensure 'openid' is included
@@ -127,7 +131,7 @@ export class OktaAuthService {
 
     /**
      * Stores the intended path to redirect after successful login.
-     * @param uri 
+     * @param uri
      */
     setFromUri(uri) {
       localStorage.setItem('referrerPath', uri);

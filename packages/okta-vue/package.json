@@ -8,14 +8,32 @@
     "src"
   ],
   "scripts": {
+    "prebuild": "npm run build:package-info",
     "prestart": "npm run build",
     "pretest": "npm run build && npm run build:harness",
     "prepublish": "npm run build",
-    "test": "npm run --prefix test/e2e/harness/ test",
+    "jest": "jest src/",
+    "test": "npm run lint && npm run jest && npm run --prefix test/e2e/harness/ test",
     "start": "npm run --prefix test/e2e/harness/ start",
     "build": "rimraf dist/ && cross-env NODE_ENV=production webpack --config webpack.config.js --output-library-target=umd -p",
     "build:harness": "npm --prefix test/e2e/harness install",
+    "build:package-info": "node ../../util/write-package-info.js . src/packageInfo.js",
     "lint": "eslint --ext .js,.vue src"
+  },
+  "jest": {
+    "moduleFileExtensions": [
+      "js",
+      "json",
+      "vue"
+    ],
+    "transform": {
+      "^.+\\.js$": "<rootDir>/node_modules/babel-jest",
+      ".*\\.(vue)$": "<rootDir>/node_modules/vue-jest"
+    },
+    "moduleNameMapper": {
+      "^@/(.*)$": "<rootDir>/src/$1"
+    },
+    "mapCoverage": true
   },
   "repository": {
     "type": "git",
@@ -31,15 +49,17 @@
   },
   "homepage": "https://github.com/okta/okta-oidc-js#readme",
   "dependencies": {
-    "@okta/okta-auth-js": "^1.11.0",
+    "@okta/okta-auth-js": "^1.14.0",
     "cross-env": "^5.1.1",
     "vue": "^2.5.9",
     "vue-router": "^3.0.1"
   },
   "devDependencies": {
+    "@vue/test-utils": "^1.0.0-beta.12",
     "autoprefixer": "^7.1.2",
     "babel-core": "^6.22.1",
     "babel-eslint": "^7.1.1",
+    "babel-jest": "^23.0.0-alpha.0",
     "babel-loader": "^7.1.1",
     "babel-plugin-transform-runtime": "^6.22.0",
     "babel-preset-env": "^1.3.2",
@@ -52,13 +72,16 @@
     "eslint-loader": "^1.7.1",
     "eslint-plugin-html": "^3.0.0",
     "eslint-plugin-import": "^2.7.0",
+    "eslint-plugin-jest": "^21.15.0",
     "eslint-plugin-node": "^5.2.0",
     "eslint-plugin-promise": "^3.4.0",
     "eslint-plugin-standard": "^3.0.1",
+    "jest": "^22.4.2",
     "nightwatch": "^0.9.12",
     "rimraf": "^2.6.2",
     "uglifyjs-webpack-plugin": "^1.1.1",
     "url-loader": "^0.5.8",
+    "vue-jest": "^2.1.1",
     "vue-loader": "13.0.2",
     "vue-style-loader": "^3.0.1",
     "vue-template-compiler": "^2.5.2",
