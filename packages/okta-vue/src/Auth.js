@@ -1,4 +1,5 @@
-import * as AuthJS from '@okta/okta-auth-js'
+import AuthJS from '@okta/okta-auth-js'
+import packageInfo from './packageInfo'
 import ImplicitCallback from './components/ImplicitCallback'
 
 function install (Vue, options) {
@@ -9,6 +10,7 @@ function install (Vue, options) {
     redirectUri: authConfig.redirect_uri,
     url: authConfig.issuer.split('/oauth2/')[0]
   })
+  oktaAuth.userAgent = `${packageInfo.name}/${packageInfo.version} ${oktaAuth.userAgent}`
 
   Vue.prototype.$auth = {
     loginRedirect (additionalParams) {

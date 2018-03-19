@@ -6,7 +6,9 @@
   "plugins": ["transform-runtime"],
   "env": {
     "test": {
-      "presets": ["env", "stage-2", "es2015"]
+      "presets": [
+        ["env", { "targets": { "node": "current" }}]
+      ]
     }
   }
 }

@@ -8,9 +8,11 @@
     "dist"
   ],
   "scripts": {
+    "build:package-info": "node ../../util/write-package-info.js . src/okta/packageInfo.ts",
     "pretest": "npm run build:dependencies",
     "prestart": "npm run build:dependencies",
     "prepublish": "npm run ngc",
+    "prengc": "npm run build:package-info",
     "ngc": "./node_modules/.bin/ngc -p tsconfig.json",
     "test": "npm run --prefix test/e2e/harness/ e2e",
     "start": "npm run --prefix test/e2e/harness/ start",
@@ -30,7 +32,7 @@
   ],
   "license": "Apache-2.0",
   "dependencies": {
-    "@okta/okta-auth-js": "^1.8.0"
+    "@okta/okta-auth-js": "^1.14.0"
   },
   "devDependencies": {
     "@angular/common": "^4.4.3",
