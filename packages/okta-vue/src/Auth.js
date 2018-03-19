@@ -15,7 +15,7 @@ function install (Vue, options) {
   Vue.prototype.$auth = {
     loginRedirect (additionalParams) {
       return oktaAuth.token.getWithRedirect({
-        responseType: ['id_token', 'token'],
+        responseType: authConfig.response_type,
         scopes: authConfig.scope.split(' '),
         ...additionalParams
       })
@@ -82,6 +82,9 @@ const initConfig = auth => {
   if (!auth.redirect_uri) missing.push('redirect_uri')
   if (!auth.scope) auth.scope = 'openid'
   if (missing.length) throw new Error(`${missing.join(', ')} must be defined`)
+
+  // Use space separated response_type or default value
+  auth.response_type = (auth.response_type || 'id_token token').split(' ')
   return auth
 }
 
