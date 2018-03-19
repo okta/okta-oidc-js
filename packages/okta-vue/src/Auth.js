@@ -1,4 +1,4 @@
-import * as AuthJS from '@okta/okta-auth-js'
+import AuthJS from '@okta/okta-auth-js'
 import packageInfo from './packageInfo'
 import ImplicitCallback from './components/ImplicitCallback'
 
