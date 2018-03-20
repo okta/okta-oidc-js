@@ -10,10 +10,17 @@
  * See the License for the specific language governing permissions and limitations under the License.
  */
 
-export { OktaAuthModule }  from './okta/okta.module';
-export { OktaAuthGuard }   from './okta/okta.guard';
-export { OktaAuthService } from './okta/services/okta.service';
-export { OKTA_CONFIG }     from './okta/models/okta.config';
+import { InjectionToken } from '@angular/core';
 
-// Okta View Components
-export { OktaCallbackComponent, OktaLoginRedirectComponent } from './okta/components';
+import { AuthRequiredFunction } from './auth-required-function';
+
+export interface OktaConfig {
+  issuer?: string;
+  redirectUri?: string;
+  clientId?: string;
+  scope?: string;
+  responseType?: string;
+  onAuthRequired?: AuthRequiredFunction;
+}
+
+export const OKTA_CONFIG = new InjectionToken<OktaConfig>('okta.config.angular');
