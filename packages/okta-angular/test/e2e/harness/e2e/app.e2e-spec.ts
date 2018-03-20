@@ -51,8 +51,8 @@ describe('Angular + Okta App', () => {
     // Verify the user object was returned
     protectedPage.getUserInfo().getText()
     .then(userInfo => {
-      expect(userInfo).toContain("email");
-    })
+      expect(userInfo).toContain('email');
+    });
 
     // Logout
     protectedPage.getLogoutButton().click();
@@ -62,7 +62,7 @@ describe('Angular + Okta App', () => {
   it('should preserve query paramaters after redirecting to Okta', () => {
     protectedPage.navigateToWithQuery();
 
-    oktaLoginPage.waitUntilVisible();
+    oktaLoginPage.waitUntilVisible(environment.ISSUER);
     oktaLoginPage.signIn({
       username: environment.USERNAME,
       password: environment.PASSWORD
