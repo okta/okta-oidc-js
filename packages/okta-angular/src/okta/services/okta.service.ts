@@ -98,7 +98,7 @@ export class OktaAuthService {
      * Returns user claims from the /userinfo endpoint if an
      * accessToken is provided or parses the available idToken.
      */
-    async getUser() {
+    async getUser(): Promise<object> {
       const accessToken = this.oktaAuth.tokenManager.get('accessToken');
       const idToken = this.oktaAuth.tokenManager.get('idToken');
       if (accessToken && idToken) {
