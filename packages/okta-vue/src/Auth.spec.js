@@ -2,16 +2,19 @@ import AuthJS from '@okta/okta-auth-js'
 import { createLocalVue } from '@vue/test-utils'
 import { default as Auth } from './Auth'
 
-const mockAuthJsInstance = {userAgent: 'foo'}
 const pkg = require('../package.json')
-
 jest.mock('@okta/okta-auth-js')
+
+const mockAuthJsInstance = {
+  userAgent: 'foo',
+  token: {
+    getWithRedirect: jest.fn()
+  }
+}
 
 AuthJS.mockImplementation(() => {
   return mockAuthJsInstance
 })
-
-const localVue = createLocalVue()
 
 describe('Auth', () => {
   test('is a Vue plugin', () => {
@@ -19,6 +22,7 @@ describe('Auth', () => {
   })
   test('sets the right user agent on AuthJS', () => {
     const expectedUserAgent = `${pkg.name}/${pkg.version} foo`
+    const localVue = createLocalVue()
     localVue.use(Auth, {
       issuer: '1',
       client_id: '2',
@@ -26,13 +30,18 @@ describe('Auth', () => {
     })
     expect(mockAuthJsInstance.userAgent).toMatch(expectedUserAgent)
   })
-  test('sets the context for the $auth plugin', () => {
+  test('sets the right scope and response_type when redirecting to Okta', () => {
+    const localVue = createLocalVue()
     localVue.use(Auth, {
       issuer: '1',
       client_id: '2',
       redirect_uri: '3',
-      response_type: 'a b'
+      scope: 'foo bar',
+      response_type: 'token'
     })
-    expect(localVue.prototype.$auth).toBeDefined()
+    localVue.prototype.$auth.loginRedirect()
+    const mockCallValues = mockAuthJsInstance.token.getWithRedirect.mock.calls[0][0]
+    expect(mockCallValues.responseType).toEqual(expect.arrayContaining(['token']))
+    expect(mockCallValues.scopes).toEqual(expect.arrayContaining(['foo', 'bar']))
   })
 })
