@@ -35,12 +35,24 @@ describe('Auth', () => {
     localVue.use(Auth, {
       issuer: '1',
       client_id: '2',
+      redirect_uri: '3'
+    })
+    localVue.prototype.$auth.loginRedirect()
+    const mockCallValues = mockAuthJsInstance.token.getWithRedirect.mock.calls[0][0]
+    expect(mockCallValues.responseType).toEqual(expect.arrayContaining(['id_token', 'token']))
+    expect(mockCallValues.scopes).toEqual(expect.arrayContaining(['openid']))
+  })
+  test('sets the right scope and response_type overrides when redirecting to Okta', () => {
+    const localVue = createLocalVue()
+    localVue.use(Auth, {
+      issuer: '1',
+      client_id: '2',
       redirect_uri: '3',
       scope: 'foo bar',
       response_type: 'token'
     })
     localVue.prototype.$auth.loginRedirect()
-    const mockCallValues = mockAuthJsInstance.token.getWithRedirect.mock.calls[0][0]
+    const mockCallValues = mockAuthJsInstance.token.getWithRedirect.mock.calls[1][0]
     expect(mockCallValues.responseType).toEqual(expect.arrayContaining(['token']))
     expect(mockCallValues.scopes).toEqual(expect.arrayContaining(['foo', 'bar']))
   })
