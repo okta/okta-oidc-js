@@ -46,8 +46,8 @@ export class SessionTokenLoginComponent {
       username: username,
       password: password
     })
-    .then(res => this.okta.loginRedirect({
-        sessionToken: res.sessionToken
+    .then(res => this.okta.loginRedirect('/', {
+      sessionToken: res.sessionToken
     }))
     .catch(err => console.log('Found an error', err));
   }

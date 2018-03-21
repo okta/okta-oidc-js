@@ -121,8 +121,14 @@ export class OktaAuthService {
 
     /**
      * Launches the login redirect.
+     * @param fromUri
+     * @param additionalParams
      */
-    loginRedirect(additionalParams?: object) {
+    loginRedirect(fromUri?: string, additionalParams?: object) {
+      if (fromUri) {
+        this.setFromUri(fromUri);
+      }
+
       this.oktaAuth.token.getWithRedirect({
         responseType: (this.config.responseType || 'id_token token').split(' '),
         // Convert scopes to list of strings
@@ -136,7 +142,7 @@ export class OktaAuthService {
      * @param uri
      * @param queryParams
      */
-    setFromUri(uri, queryParams) {
+    setFromUri(uri: string, queryParams?: object) {
       const json = JSON.stringify({
         uri: uri,
         params: queryParams
@@ -147,10 +153,19 @@ export class OktaAuthService {
     /**
      * Returns the referrer path from localStorage or app root.
      */
-    getFromUri() {
-      const path = localStorage.getItem('referrerPath') || '/';
+    getFromUri(): { uri: string, extras: NavigationExtras } {
+      const referrerPath = localStorage.getItem('referrerPath');
       localStorage.removeItem('referrerPath');
-      return path;
+
+      const path = JSON.parse(referrerPath) || { uri: '/', params: {} };
+      const navigationExtras: NavigationExtras = {
+        queryParams: path.params
+      };
+
+      return {
+        uri: path.uri,
+        extras: navigationExtras
+      }
     }
 
     /**
@@ -170,20 +185,19 @@ export class OktaAuthService {
       /**
        * Navigate back to the initial view or root of application.
        */
-      const path = JSON.parse(this.getFromUri());
-      const navigationExtras: NavigationExtras = {
-        queryParams: path.params
-      };
-      this.router.navigate([path.uri], navigationExtras);
+      const fromUri = this.getFromUri();
+      this.router.navigate([fromUri.uri], fromUri.extras);
     }
 
     /**
      * Clears the user session in Okta and removes
      * tokens stored in the tokenManager.
+     * @param uri 
      */
-    async logout(): Promise<void> {
+    async logout(uri?: string): Promise<void> {
       this.oktaAuth.tokenManager.clear();
       await this.oktaAuth.signOut();
+      this.router.navigate([uri || '/']);
     }
 
     /**

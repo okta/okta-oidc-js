@@ -59,6 +59,13 @@ describe('Angular + Okta App', () => {
     expect(protectedPage.getLoginButton().isPresent()).toBeTruthy();
   });
 
+  /**
+   * Hack to slowdown the tests due to the Okta session
+   * not being removed in time for the second login call.
+   */
+  const util = new Utils();
+  util.slowDown(100);
+
   it('should preserve query paramaters after redirecting to Okta', () => {
     protectedPage.navigateToWithQuery();
 
@@ -71,19 +78,10 @@ describe('Angular + Okta App', () => {
     protectedPage.waitUntilQueryVisible();
     expect(protectedPage.getLogoutButton().isPresent()).toBeTruthy();
 
-    /**
-     * Logout
-     */
+    // Logout
     protectedPage.getLogoutButton().click();
     expect(protectedPage.getLoginButton().isPresent()).toBeTruthy();
   });
-
-  /**
-   * Hack to slowdown the tests due to the Okta session
-   * not being removed in time for the second login call.
-   */
-  const util = new Utils();
-  util.slowDown(100);
 
   it('should redirect to Okta for login', () => {
     loginPage.navigateTo();
