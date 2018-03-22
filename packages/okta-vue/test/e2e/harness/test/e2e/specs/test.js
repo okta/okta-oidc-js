@@ -17,6 +17,7 @@ module.exports = {
       .setValue('#okta-signin-password', process.env.PASSWORD)
       .click('#okta-signin-submit')
       .waitForElementVisible('#app', 5000)
+      .assert.urlContains('/protected')
       .assert.elementPresent('#logout-button')
       .assert.containsText('.protected', 'Protected!')
       .pause(2000) // Wait for async function to finish
@@ -52,6 +53,7 @@ module.exports = {
       .setValue('#password', process.env.PASSWORD)
       .click('#submit')
       .waitForElementVisible('#logout-button', 5000)
+      .assert.urlContains('/protected')
       .assert.elementPresent('#logout-button')
       .click('#logout-button')
       .end()
