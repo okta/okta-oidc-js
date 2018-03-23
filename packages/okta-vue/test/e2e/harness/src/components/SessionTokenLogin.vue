@@ -28,7 +28,7 @@ export default {
         password: this.password
       })
       .then(res =>
-        this.$auth.loginRedirect({
+        this.$auth.loginRedirect('/protected', {
           sessionToken: res.sessionToken
         })
       )

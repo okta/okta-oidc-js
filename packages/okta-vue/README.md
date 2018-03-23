@@ -225,12 +225,14 @@ router.beforeEach((from, to, next) {
 - `scope` *(optional)*: Reserved or custom claims to be returned in the tokens
 - `response_type` *(optional)*: Desired token grant types
 
-#### `$auth.loginRedirect`
+#### `$auth.loginRedirect(fromUri, additionalParams)`
 
-Performs a full page redirect to Okta based on the initial configuration.  If you have an Okta `sessionToken`, you can bypass the full-page redirect by passing in this token. This is recommended when using the [Okta Sign-In Widget](https://github.com/okta/okta-signin-widget). Simply pass in a `sessionToken` into the `loginRedirect` method follows:
+Performs a full page redirect to Okta based on the initial configuration. This method accepts a `fromUri` parameter to push the user to after successful authentication.
+
+The parameter `additionalParams` is mapped to the [AuthJS OpenID Connect Options](https://github.com/okta/okta-auth-js#openid-connect-options). This will override any existing [configuration](#configuration). As an example, if you have an Okta `sessionToken`, you can bypass the full-page redirect by passing in this token. This is recommended when using the [Okta Sign-In Widget](https://github.com/okta/okta-signin-widget). Simply pass in a `sessionToken` into the `loginRedirect` method follows:
 
 ```typescript
-this.$auth.loginRedirect({
+this.$auth.loginRedirect('/profile', {
   sessionToken: /* sessionToken */
 })
 ```

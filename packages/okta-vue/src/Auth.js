@@ -13,7 +13,10 @@ function install (Vue, options) {
   oktaAuth.userAgent = `${packageInfo.name}/${packageInfo.version} ${oktaAuth.userAgent}`
 
   Vue.prototype.$auth = {
-    loginRedirect (additionalParams) {
+    loginRedirect (fromUri, additionalParams) {
+      if (fromUri) {
+        localStorage.setItem('referrerPath', fromUri)
+      }
       return oktaAuth.token.getWithRedirect({
         responseType: authConfig.response_type,
         scopes: authConfig.scope.split(' '),
@@ -63,8 +66,7 @@ function install (Vue, options) {
     authRedirectGuard () {
       return async (to, from, next) => {
         if (to.matched.some(record => record.meta.requiresAuth) && !(await this.isAuthenticated())) {
-          localStorage.setItem('referrerPath', to.path || '/')
-          this.loginRedirect()
+          this.loginRedirect(to.path)
         } else {
           next()
         }
