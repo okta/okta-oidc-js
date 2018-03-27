@@ -18,24 +18,21 @@ import {
   Router
 } from '@angular/router';
 
-import { OktaAuthService } from './okta.service';
+import { OktaAuthService } from './services/okta.service';
+import { AuthRequiredFunction } from './models/auth-required-function';
 
 @Injectable()
 export class OktaAuthGuard implements CanActivate {
-  private oktaAuth: OktaAuthService;
-
-  constructor(private okta: OktaAuthService, private router: Router) {
-    this.oktaAuth = okta;
-  }
+  constructor(private oktaAuth: OktaAuthService, private router: Router) { }
 
   /**
    * Gateway for protected route. Returns true if there is a valid accessToken,
    * otherwise it will cache the route and start the login flow.
-   * @param route 
-   * @param state 
+   * @param route
+   * @param state
    */
   async canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot) {
-    if (this.oktaAuth.isAuthenticated()) {
+    if (await this.oktaAuth.isAuthenticated()) {
       return true;
     }
 
@@ -43,22 +40,17 @@ export class OktaAuthGuard implements CanActivate {
      * Get the operation to perform on failed authentication from
      * either the global config or route data injection.
      */
-    const onAuthRequired = route.data['onAuthRequired'] || this.oktaAuth.getOktaConfig().onAuthRequired;
-
-    if (onAuthRequired){
-      onAuthRequired(this.oktaAuth, this.router);
-    }
-
-    /** 
-     * Store the current path
-     */
-    this.oktaAuth.setFromUri(state.url);
+    const onAuthRequired: AuthRequiredFunction = route.data['onAuthRequired'] || this.oktaAuth.getOktaConfig().onAuthRequired;
 
     /**
-     * Redirect to the given path or
-     * perform the default Okta full-page redirect.
+     * Store the current path
      */
-    if (!onAuthRequired) {
+    const path = state.url.split(/[?#]/)[0];
+    this.oktaAuth.setFromUri(path, route.queryParams);
+
+    if (onAuthRequired) {
+      onAuthRequired(this.oktaAuth, this.router);
+    } else {
       this.oktaAuth.loginRedirect();
     }
 

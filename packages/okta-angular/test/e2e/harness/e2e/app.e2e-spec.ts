@@ -51,11 +51,12 @@ describe('Angular + Okta App', () => {
     // Verify the user object was returned
     protectedPage.getUserInfo().getText()
     .then(userInfo => {
-      expect(userInfo).toContain("email");
-    })
+      expect(userInfo).toContain('email');
+    });
 
     // Logout
     protectedPage.getLogoutButton().click();
+    protectedPage.waitForElement('login-button');
     expect(protectedPage.getLoginButton().isPresent()).toBeTruthy();
   });
 
@@ -65,6 +66,24 @@ describe('Angular + Okta App', () => {
    */
   const util = new Utils();
   util.slowDown(100);
+
+  it('should preserve query paramaters after redirecting to Okta', () => {
+    protectedPage.navigateToWithQuery();
+
+    oktaLoginPage.waitUntilVisible(environment.ISSUER);
+    oktaLoginPage.signIn({
+      username: environment.USERNAME,
+      password: environment.PASSWORD
+    });
+
+    protectedPage.waitUntilQueryVisible();
+    expect(protectedPage.getLogoutButton().isPresent()).toBeTruthy();
+
+    // Logout
+    protectedPage.getLogoutButton().click();
+    protectedPage.waitForElement('login-button');
+    expect(protectedPage.getLoginButton().isPresent()).toBeTruthy();
+  });
 
   it('should redirect to Okta for login', () => {
     loginPage.navigateTo();
@@ -80,6 +99,7 @@ describe('Angular + Okta App', () => {
 
     // Logout
     loginPage.getLogoutButton().click();
+    loginPage.waitForElement('login-button');
     expect(loginPage.getLoginButton().isPresent()).toBeTruthy();
   });
 
@@ -97,6 +117,7 @@ describe('Angular + Okta App', () => {
 
     // Logout
     page.getLogoutButton().click();
+    page.waitForElement('login-button');
     expect(page.getLoginButton().isPresent()).toBeTruthy();
   });
 });

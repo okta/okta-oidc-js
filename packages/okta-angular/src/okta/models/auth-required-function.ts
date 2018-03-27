@@ -10,14 +10,8 @@
  * See the License for the specific language governing permissions and limitations under the License.
  */
 
-import { InjectionToken } from '@angular/core';
+import { Router } from '@angular/router';
 
-export interface OktaConfig {
-  issuer?: string;
-  redirectUri?: string;
-  clientId?: string;
-  scope?: string;
-  onAuthRequired?: Function;
-}
+import { OktaAuthService } from '../services/okta.service';
 
-export const OKTA_CONFIG = new InjectionToken<OktaConfig>('okta.config.angular');
+export type AuthRequiredFunction = (oktaAuth: OktaAuthService, router: Router) => void;

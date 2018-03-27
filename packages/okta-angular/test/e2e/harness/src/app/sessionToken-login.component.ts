@@ -13,13 +13,15 @@
 import { Component } from '@angular/core';
 import { OktaAuthService } from '@okta/okta-angular';
 
+import { environment } from './../environments/environment';
+
 import OktaAuth from '@okta/okta-auth-js';
 
 @Component({
-  selector: 'app-sessionLogin',
+  selector: 'app-session-login',
   template: `
   <router-outlet></router-outlet>
-  
+
   <div>
   <br/>
     <label>
@@ -32,12 +34,13 @@ import OktaAuth from '@okta/okta-auth-js';
   </div>
   `
 })
-export class SessionTokenLogin {
+export class SessionTokenLoginComponent {
   oktaAuth: OktaAuth;
 
   constructor(private okta: OktaAuthService) {
+    const baseUrl = environment.ISSUER.split('/oauth2')[0];
     this.oktaAuth = new OktaAuth({
-      url: this.okta.getOktaAuth().options.url
+      url: baseUrl
     });
   }
 
@@ -46,8 +49,8 @@ export class SessionTokenLogin {
       username: username,
       password: password
     })
-    .then(res => this.okta.loginRedirect({
-        sessionToken: res.sessionToken
+    .then(res => this.okta.loginRedirect('/', {
+      sessionToken: res.sessionToken
     }))
     .catch(err => console.log('Found an error', err));
   }
