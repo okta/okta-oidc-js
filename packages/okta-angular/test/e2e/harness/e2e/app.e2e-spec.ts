@@ -56,6 +56,7 @@ describe('Angular + Okta App', () => {
 
     // Logout
     protectedPage.getLogoutButton().click();
+    protectedPage.waitForElement('login-button');
     expect(protectedPage.getLoginButton().isPresent()).toBeTruthy();
   });
 
@@ -80,6 +81,7 @@ describe('Angular + Okta App', () => {
 
     // Logout
     protectedPage.getLogoutButton().click();
+    protectedPage.waitForElement('login-button');
     expect(protectedPage.getLoginButton().isPresent()).toBeTruthy();
   });
 
@@ -97,6 +99,7 @@ describe('Angular + Okta App', () => {
 
     // Logout
     loginPage.getLogoutButton().click();
+    loginPage.waitForElement('login-button');
     expect(loginPage.getLoginButton().isPresent()).toBeTruthy();
   });
 
@@ -114,6 +117,7 @@ describe('Angular + Okta App', () => {
 
     // Logout
     page.getLogoutButton().click();
+    page.waitForElement('login-button');
     expect(page.getLoginButton().isPresent()).toBeTruthy();
   });
 });

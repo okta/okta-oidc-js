@@ -3,7 +3,8 @@
 An Angular (4+) wrapper around [Okta Auth JS](https://github.com/okta/okta-auth-js), that builds on top of Okta's [OpenID Connect API](https://developer.okta.com/docs/api/resources/oidc.html).
 
 This library currently supports:
-  - [OAuth 2.0 Implicit Flow](https://tools.ietf.org/html/rfc6749#section-1.3.2)
+
+- [OAuth 2.0 Implicit Flow](https://tools.ietf.org/html/rfc6749#section-1.3.2)
 
 ## Getting Started
 
@@ -210,18 +211,18 @@ export class MyComponent {
   isAuthenticated: boolean;
   constructor(public oktaAuth: OktaAuthService) {
     // get authentication state for immediate use
-    await this.isAuthenticated = this.oktaAuth.isAuthenticated()
+    await this.isAuthenticated = this.oktaAuth.isAuthenticated();
 
     // subscribe to authentication state changes
     this.oktaAuth.$authenticatedState.subscribe(
       (isAuthenticated: boolean)  => this.isAuthenticated = isAuthenticated
-    )
+    );
   }
   login() {
-    this.oktaAuth.loginRedirect('/profile')
+    this.oktaAuth.loginRedirect('/profile');
   }
   logout() {
-    this.oktaAuth.logout('/')
+    this.oktaAuth.logout('/');
   }
 }
 ```
@@ -249,6 +250,7 @@ Returns a promise that resolves `true` if there is a valid access token or ID to
 An observable that returns true/false when the authenticate state changes.  This will happen after a successful login via `oktaAuth.handleAuthentication()` or logout via `oktaAuth.logout()`.
 
 #### `oktaAuth.getUser()`
+
 Returns a promise that will resolve with the result of the OpenID Connect `/userinfo` endpoint if an access token is provided, or returns the claims of the ID token if no access token is available.  The returned claims depend on the requested response type, requested scope, and authorization server policies.  For more information see documentation for the [UserInfo endpoint][], [ID Token Claims][], and [Customizing Your Authorization Server][].
 
 #### `oktaAuth.getAccessToken() Promise<string>`
