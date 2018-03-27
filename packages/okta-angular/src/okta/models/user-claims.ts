@@ -22,8 +22,8 @@ export interface UserClaims {
   nonce?: string;
   preferred_username?: string;
   sub: string;
-  updated_at: Number;
-  ver: Number;
-  zoneinfo: string;
+  updated_at?: Number;
+  ver?: Number;
+  zoneinfo?: string;
   [propName: string]: any;  // For custom claims that may be configured by the org admin
 }
