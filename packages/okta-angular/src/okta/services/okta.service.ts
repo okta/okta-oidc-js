@@ -74,13 +74,6 @@ export class OktaAuthService {
     }
 
     /**
-     * Returns the OktaAuth object to handle flows outside of this lib.
-     */
-    getOktaAuth(): OktaAuth {
-      return this.oktaAuth;
-    }
-
-    /**
      * Checks if there is an access token and id token
      */
     async isAuthenticated(): Promise<boolean> {
