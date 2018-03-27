@@ -9,7 +9,7 @@
   ],
   "scripts": {
     "prebuild": "npm run build:package-info",
-    "prestart": "npm run build",
+    "prestart": "npm run build && npm run build:harness",
     "pretest": "npm run build && npm run build:harness",
     "prepublish": "npm run build",
     "jest": "jest src/",

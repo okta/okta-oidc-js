@@ -3,7 +3,7 @@ export default {
   name: 'ImplicitCallback',
   async beforeMount () {
     await this.$auth.handleAuthentication()
-    this.$router.push({
+    this.$router.replace({
       path: this.$auth.getFromUri()
     })
   },
