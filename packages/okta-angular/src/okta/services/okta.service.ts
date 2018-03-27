@@ -14,6 +14,7 @@ import { Inject, Injectable } from '@angular/core';
 import { Router, NavigationExtras } from '@angular/router';
 
 import { OKTA_CONFIG, OktaConfig } from '../models/okta.config';
+import { UserClaims } from '../models/user-claims';
 
 import packageInfo from '../packageInfo';
 
@@ -21,11 +22,15 @@ import packageInfo from '../packageInfo';
  * Import the okta-auth-js library
  */
 import * as OktaAuth from '@okta/okta-auth-js';
+import { Observable } from 'rxjs/Observable';
+import { Observer } from 'rxjs/Observer';
 
 @Injectable()
 export class OktaAuthService {
     private oktaAuth: OktaAuth;
     private config: OktaConfig;
+    private observers: Observer<boolean>[];
+    $authenticationState: Observable<boolean>;
 
     constructor(@Inject(OKTA_CONFIG) private auth: OktaConfig, private router: Router) {
       const missing: string[] = [];
@@ -43,6 +48,8 @@ export class OktaAuthService {
       if (missing.length) {
         throw new Error(`${missing.join(', ')} must be defined`);
       }
+
+      this.observers = [];
 
       this.oktaAuth = new OktaAuth({
         url: auth.issuer.split('/oauth2/')[0],
@@ -62,6 +69,8 @@ export class OktaAuthService {
        * Cache the auth config.
        */
       this.config = auth;
+
+      this.$authenticationState = new Observable((observer: Observer<boolean>) => {this.observers.push(observer)})
     }
 
     /**
@@ -72,10 +81,16 @@ export class OktaAuthService {
     }
 
     /**
-     * Checks if there is a current accessToken in the TokenManager.
+     * Checks if there is an access token and id token
      */
-    isAuthenticated(): boolean {
-      return !!this.oktaAuth.tokenManager.get('accessToken');
+    async isAuthenticated(): Promise<boolean> {
+      const accessToken = await this.getAccessToken()
+      const idToken = await this.getIdToken()
+      return !!(accessToken || idToken);
+    }
+
+    private async emitAuthenticationState(state: boolean) {
+      this.observers.forEach(observer => observer.next(state));
     }
 
     /**
@@ -98,7 +113,7 @@ export class OktaAuthService {
      * Returns user claims from the /userinfo endpoint if an
      * accessToken is provided or parses the available idToken.
      */
-    async getUser(): Promise<object> {
+    async getUser(): Promise<UserClaims|undefined> {
       const accessToken = this.oktaAuth.tokenManager.get('accessToken');
       const idToken = this.oktaAuth.tokenManager.get('idToken');
       if (accessToken && idToken) {
@@ -181,7 +196,9 @@ export class OktaAuthService {
           this.oktaAuth.tokenManager.add('accessToken', token);
         }
       });
-
+      if(await this.isAuthenticated()) {
+        this.emitAuthenticationState(true)
+      }
       /**
        * Navigate back to the initial view or root of application.
        */
@@ -192,11 +209,12 @@ export class OktaAuthService {
     /**
      * Clears the user session in Okta and removes
      * tokens stored in the tokenManager.
-     * @param uri 
+     * @param uri
      */
     async logout(uri?: string): Promise<void> {
       this.oktaAuth.tokenManager.clear();
       await this.oktaAuth.signOut();
+      this.emitAuthenticationState(false)
       this.router.navigate([uri || '/']);
     }
 

@@ -32,7 +32,7 @@ export class OktaAuthGuard implements CanActivate {
    * @param state
    */
   async canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot) {
-    if (this.oktaAuth.isAuthenticated()) {
+    if (await this.oktaAuth.isAuthenticated()) {
       return true;
     }
 

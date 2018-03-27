@@ -30,6 +30,11 @@ export class ProtectedPage {
     browser.wait(ExpectedConditions.urlContains('/protected/foo?state=bar'), 5000);
   }
 
+  waitForElement(id: string) {
+    const el = element(by.id(id));
+    browser.wait(ExpectedConditions.presenceOf(el), 5000);
+  }
+
   getLogoutButton() {
     return element(by.id('logout-button'));
   }

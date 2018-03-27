@@ -3,7 +3,8 @@
 An Angular (4+) wrapper around [Okta Auth JS](https://github.com/okta/okta-auth-js), that builds on top of Okta's [OpenID Connect API](https://developer.okta.com/docs/api/resources/oidc.html).
 
 This library currently supports:
-  - [OAuth 2.0 Implicit Flow](https://tools.ietf.org/html/rfc6749#section-1.3.2)
+
+- [OAuth 2.0 Implicit Flow](https://tools.ietf.org/html/rfc6749#section-1.3.2)
 
 ## Getting Started
 
@@ -173,7 +174,6 @@ const appRoutes: Routes = [
     canActivate: [ OktaAuthGuard ],
     data: {
       onAuthRequired: onAuthRequired
-      }
     }
   }
 ]
@@ -201,16 +201,28 @@ import { OktaAuthService } from '@okta/okta-angular';
 @Component({
   selector: 'app-component',
   template: `
-  <button *ngIf="!oktaAuth.isAuthenticated()" (click)="oktaAuth.loginRedirect('/profile')> Login </button>
-  <button *ngIf="oktaAuth.isAuthenticated()" (click)="oktaAuth.logout('/')"> Logout </button>
+    <button *ngIf="!isAuthenticated" (click)="login()">Login</button>
+    <button *ngIf="isAuthenticated" (click)="logout()">Logout</button>
 
-  <router-outlet></router-outlet>
+    <router-outlet></router-outlet>
   `,
 })
 export class MyComponent {
-
+  isAuthenticated: boolean;
   constructor(public oktaAuth: OktaAuthService) {
-    // ...
+    // get authentication state for immediate use
+    await this.isAuthenticated = this.oktaAuth.isAuthenticated();
+
+    // subscribe to authentication state changes
+    this.oktaAuth.$authenticatedState.subscribe(
+      (isAuthenticated: boolean)  => this.isAuthenticated = isAuthenticated
+    );
+  }
+  login() {
+    this.oktaAuth.loginRedirect('/profile');
+  }
+  logout() {
+    this.oktaAuth.logout('/');
   }
 }
 ```
@@ -231,26 +243,27 @@ this.oktaAuth.loginRedirect('/profile', {
 
 #### `oktaAuth.isAuthenticated()`
 
-Returns `true` if there is a valid access token or ID token.
+Returns a promise that resolves `true` if there is a valid access token or ID token.
 
-#### `oktaAuth.getUser()`
-Returns the result of the OpenID Connect `/userinfo` endpoint if an access token is provided or parses the available idToken.
+#### `oktaAuth.$authenticationState`
 
-#### `oktaAuth.getAccessToken()`
-
-Returns the access token from storage (if it exists).
-
-#### `oktaAuth.getIdToken()`
-
-Returns the ID token from storage (if it exists).
+An observable that returns true/false when the authenticate state changes.  This will happen after a successful login via `oktaAuth.handleAuthentication()` or logout via `oktaAuth.logout()`.
 
 #### `oktaAuth.getUser()`
 
-Returns the result of the OpenID Connect `/userinfo` endpoint if an access token exists.
+Returns a promise that will resolve with the result of the OpenID Connect `/userinfo` endpoint if an access token is provided, or returns the claims of the ID token if no access token is available.  The returned claims depend on the requested response type, requested scope, and authorization server policies.  For more information see documentation for the [UserInfo endpoint][], [ID Token Claims][], and [Customizing Your Authorization Server][].
+
+#### `oktaAuth.getAccessToken() Promise<string>`
+
+Returns a promise that returns the access token string from storage (if it exists).
+
+#### `oktaAuth.getIdToken() Promise<string>`
+
+Returns a promise that returns the ID token string from storage (if it exists).
 
 #### `oktaAuth.handleAuthentication()`
 
-Parses the tokens returned as hash fragments in the OAuth 2.0 Redirect URI, then redirects to the URL specified when calling `loginRedirect`.
+Parses the tokens returned as hash fragments in the OAuth 2.0 Redirect URI, then redirects to the URL specified when calling `loginRedirect`.  Returns a promise that will be resolved when complete.
 
 #### `oktaAuth.logout(uri?)`
 
@@ -283,3 +296,7 @@ Returns the stored URI and query parameters stored when the `OktaAuthGuard` and/
 | `npm test`     | Run integration tests              |
 | `npm run lint` | Run eslint linting tests           |
 | `npm run docs` | Generate typedocs                  |
+
+[ID Token Claims]: https://developer.okta.com/docs/api/resources/oidc#id-token-claims
+[UserInfo endpoint]: https://developer.okta.com/docs/api/resources/oidc#userinfo
+[Customizing Your Authorization Server]: https://developer.okta.com/authentication-guide/implementing-authentication/set-up-authz-server
