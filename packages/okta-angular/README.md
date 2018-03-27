@@ -242,7 +242,7 @@ this.oktaAuth.loginRedirect('/profile', {
 
 #### `oktaAuth.isAuthenticated()`
 
-Returns a promise that returns `true` if there is a valid access token and ID token.
+Returns a promise that resolves `true` if there is a valid access token or ID token.
 
 #### `oktaAuth.$authenticationState`
 

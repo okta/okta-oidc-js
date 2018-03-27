@@ -86,7 +86,7 @@ export class OktaAuthService {
     async isAuthenticated(): Promise<boolean> {
       const accessToken = await this.getAccessToken()
       const idToken = await this.getIdToken()
-      return !!(accessToken && idToken);
+      return !!(accessToken || idToken);
     }
 
     private async emitAuthenticationState(state: boolean) {
