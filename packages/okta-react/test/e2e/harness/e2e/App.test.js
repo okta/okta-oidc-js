@@ -68,11 +68,11 @@ describe('React + Okta App', () => {
       password: process.env.PASSWORD
     });
 
-    appPage.waitUntilVisible();
-    expect(appPage.getLogoutButton().isPresent()).toBeTruthy();
+    protectedPage.waitUntilVisible();
+    expect(protectedPage.getLogoutButton().isPresent()).toBeTruthy();
 
     // Logout
-    appPage.getLogoutButton().click();
+    protectedPage.getLogoutButton().click();
 
     appPage.waitUntilLoggedOut();
   });
