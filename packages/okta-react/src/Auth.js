@@ -58,7 +58,16 @@ export default class Auth {
 
   async getUser() {
     const accessToken = this._oktaAuth.tokenManager.get('accessToken');
-    return accessToken ? this._oktaAuth.token.getUserInfo(accessToken) : undefined;
+    const idToken = this._oktaAuth.tokenManager.get('idToken');
+    if (accessToken && idToken) {
+      const userinfo = await this._oktaAuth.token.getUserInfo(accessToken);
+      if (userinfo.sub === idToken.claims.sub) {
+        // Only return the userinfo response if subjects match to
+        // mitigate token substitution attacks
+        return userinfo
+      }
+    }
+    return idToken ? idToken.claims : undefined;
   }
 
   async getIdToken() {
