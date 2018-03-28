@@ -275,13 +275,13 @@ export default App;
 
   Retrieves the access token from storage if it exists.
 
-* `auth.login()`
+* `auth.login(fromUri)`
 
-  Calls `onAuthRequired` or redirects to Okta if `onAuthRequired` is undefined.
+  Calls `onAuthRequired` or redirects to Okta if `onAuthRequired` is undefined. This method accepts a `fromUri` parameter to push the user to after successful authentication.
 
 * `auth.logout()`
 
-  Removes all the tokens and redirects to `/`.
+  Terminates the user's session in Okta and clears all stored tokens. Accepts an optional `uri` parameter to push the user to after logout.
 
 * `auth.redirect({sessionToken})`
 

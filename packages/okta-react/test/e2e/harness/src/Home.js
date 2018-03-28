@@ -24,6 +24,9 @@ export default withAuth(class Home extends Component {
 
     this.checkAuthentication = this.checkAuthentication.bind(this);
     this.checkAuthentication();
+
+    this.login = this.login.bind(this);
+    this.logout = this.logout.bind(this);
   }
 
   async checkAuthentication() {
@@ -31,6 +34,14 @@ export default withAuth(class Home extends Component {
     if (authenticated !== this.state.authenticated) {
       this.setState({ authenticated });
     }
+  }
+
+  async login() {
+    this.props.auth.login('/protected');
+  }
+
+  async logout() {
+    this.props.auth.logout('/');
   }
 
   componentDidUpdate() {
@@ -43,8 +54,8 @@ export default withAuth(class Home extends Component {
     }
 
     const button = this.state.authenticated ?
-      <button id="logout-button" onClick={this.props.auth.logout}>Logout</button> :
-      <button id="login-button" onClick={this.props.auth.login}>Login</button>;
+      <button id="logout-button" onClick={this.logout}>Logout</button> :
+      <button id="login-button" onClick={this.login}>Login</button>;
 
     return (
       <div>
