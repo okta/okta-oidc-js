@@ -42,6 +42,12 @@ describe('React + Okta App', () => {
     protectedPage.waitUntilVisible();
     expect(protectedPage.getLogoutButton().isPresent()).toBeTruthy();
 
+    protectedPage.waitForElement('userinfo-container');
+    protectedPage.getUserInfo().getText()
+    .then(userInfo => {
+      expect(userInfo).toContain('email');
+    });
+
     // Logout
     protectedPage.getLogoutButton().click();
 

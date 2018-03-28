@@ -265,7 +265,7 @@ export default App;
 
 * `auth.getUser()`
 
-  Returns the result of the userinfo endpoint if an access token exists.
+  Returns the result of the OpenID Connect `/userinfo` endpoint if an access token exists.
 
 * `auth.getIdToken()`
 

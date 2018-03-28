@@ -18,11 +18,12 @@ export class ProtectedPage {
   }
 
   waitUntilVisible() {
-    browser.wait(ExpectedConditions.presenceOf(this.getHeader()), 5000);
+    browser.wait(ExpectedConditions.urlContains('/protected'), 5000);
   }
-  
-  getHeader() {
-    return element(by.tagName('h3'));
+
+  waitForElement(id) {
+    const el = element(by.id(id));
+    browser.wait(ExpectedConditions.presenceOf(el), 5000);
   }
 
   getLogoutButton() {
@@ -31,5 +32,9 @@ export class ProtectedPage {
 
   getLoginButton() {
     return element(by.id('login-button'));
+  }
+
+  getUserInfo() {
+    return element(by.id('userinfo-container'));
   }
 }
