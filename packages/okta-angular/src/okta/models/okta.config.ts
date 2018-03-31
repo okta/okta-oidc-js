@@ -13,6 +13,7 @@
 import { InjectionToken } from '@angular/core';
 
 import { AuthRequiredFunction } from './auth-required-function';
+import { OktaTokenManagerConfig } from './okta-token-manager.config';
 
 export interface OktaConfig {
   issuer?: string;
@@ -21,6 +22,7 @@ export interface OktaConfig {
   scope?: string;
   responseType?: string;
   onAuthRequired?: AuthRequiredFunction;
+  tokenManager?: OktaTokenManagerConfig;
 }
 
 export const OKTA_CONFIG = new InjectionToken<OktaConfig>('okta.config.angular');
