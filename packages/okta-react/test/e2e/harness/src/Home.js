@@ -37,7 +37,7 @@ export default withAuth(class Home extends Component {
   }
 
   async login() {
-    this.props.auth.login('/protected');
+    this.props.auth.login('/protected?foo=bar');
   }
 
   async logout() {
