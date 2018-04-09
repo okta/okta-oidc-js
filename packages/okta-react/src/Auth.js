@@ -39,8 +39,12 @@ export default class Auth {
   }
 
   async handleAuthentication() {
-    let tokens = await this._oktaAuth.token.parseFromUrl();
-    tokens = Array.isArray(tokens) ? tokens : [tokens];
+    const tokenOrTokens = await this._oktaAuth.token.parseFromUrl();
+    this.addTokensToManager(tokenOrTokens);
+  }
+
+  addTokensToManager(tokenOrTokens) {
+    const tokens = Array.isArray(tokenOrTokens) ? tokenOrTokens : [tokenOrTokens];
     for (let token of tokens) {
       if (token.idToken) {
         this._oktaAuth.tokenManager.add('idToken', token);
@@ -97,14 +101,26 @@ export default class Auth {
   }
 
   async redirect({sessionToken} = {}) {
-    this._oktaAuth.token.getWithRedirect({
-      responseType: this._config.response_type || ['id_token', 'token'],
-      scopes: this._config.scope || ['openid', 'email', 'profile'],
-      sessionToken
-    });
+    const oauthOptions = this.getOauthOptions(sessionToken);
+    this._oktaAuth.token.getWithRedirect(oauthOptions);
 
     // return a promise that doesn't terminate so nothing
     // happens after setting window.location
     return new Promise((resolve, reject) => {});
+  }
+
+  async refreshTokens({sessionToken} = {}) {
+    const oauthOptions = this.getOauthOptions(sessionToken);
+    const tokenOrTokens = await this._oktaAuth.token.getWithoutPrompt(oauthOptions);
+    this.addTokensToManager(tokenOrTokens);
+    return tokenOrTokens;
+  }
+
+  getOauthOptions(sessionToken) {
+    return ({
+      responseType: this._config.response_type || ['id_token', 'token'],
+      scopes: this._config.scope || ['openid', 'email', 'profile'],
+      sessionToken
+    })
   }
 };
