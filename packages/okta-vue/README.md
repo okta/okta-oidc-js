@@ -1,5 +1,8 @@
 # Okta Vue SDK
 
+[![npm version](https://img.shields.io/npm/v/@okta/okta-vue.svg?style=flat-square)](https://www.npmjs.com/package/@okta/okta-vue)
+[![build status](https://img.shields.io/travis/okta/okta-oidc-js/master.svg?style=flat-square)](https://travis-ci.org/okta/okta-oidc-js)
+
 The Okta Vue SDK is a wrapper around the [Okta Auth SDK](https://github.com/okta/okta-auth-js), which builds on top of Okta's [OpenID Connect API](https://developer.okta.com/docs/api/resources/oidc.html).
 
 This library currently supports:
