@@ -1,5 +1,8 @@
 # Okta JWT Verifier
 
+[![npm version](https://img.shields.io/npm/v/@okta/jwt-verifier.svg?style=flat-square)](https://www.npmjs.com/package/@okta/jwt-verifier)
+[![build status](https://img.shields.io/travis/okta/okta-oidc-js/master.svg?style=flat-square)](https://travis-ci.org/okta/okta-oidc-js)
+
 This library verifies Okta access tokens (issued by Okta authorization servers) by fetching the public keys from the JWKS endpoint of the authorization server. If the access token is valid it will be converted to a JSON object and returned to your code. For an access token to be valid, the following are asserted:
 
 * Signature is valid (the token was signed by a private key which has a corresponding public key in the JWKS response from the authorization server).

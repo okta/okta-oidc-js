@@ -1,5 +1,8 @@
 # oidc-middleware
 
+[![npm version](https://img.shields.io/npm/v/@okta/oidc-middleware.svg?style=flat-square)](https://www.npmjs.com/package/@okta/oidc-middleware)
+[![build status](https://img.shields.io/travis/okta/okta-oidc-js/master.svg?style=flat-square)](https://travis-ci.org/okta/okta-oidc-js)
+
 This package makes it easy to get your users logged in with Okta using OpenId Connect (OIDC).  It enables your Express application to participate in the [authorization code flow][auth-code-docs] flow by redirecting the user to Okta for authentication and handling the callback from Okta.  Once this flow is complete, a local session is created and the user context is saved for the duration of the session.
 
 ## :warning: :construction: Alpha Preview :construction: :warning:
@@ -213,7 +216,7 @@ const oidc = new ExpressOIDC({
 ```
 
 * **`callback.defaultRedirect`** - Where the user is redirected to after a successful authentication callback, if no `returnTo` value was specified by `oidc.ensureAuthenticated()`. Defaults to `/`.
-* **`callback.failureRedirect`** - Where the user is redirected to after authentication failure, defaults to a page which just shows error message. 
+* **`callback.failureRedirect`** - Where the user is redirected to after authentication failure, defaults to a page which just shows error message.
 * **`callback.handler`** - A function that is called after a successful authentication callback, but before the final redirect within your application. Useful for requirements such as conditional post-authentication redirects, or sending data to logging systems.
 * **`callback.path`** - The URI that this library will host the callback handler on. Defaults to `/authorization-code/callback`
 * **`login.path`** - The URI that redirects the user to the authorize endpoint. Defaults to `/login`.
