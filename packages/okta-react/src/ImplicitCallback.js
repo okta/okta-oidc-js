@@ -22,11 +22,11 @@ export default withAuth(class ImplicitCallback extends Component {
       authenticated: null,
       error: null
     };
+  }
 
-    props.auth.handleAuthentication()
-    .then(() => {
-      this.setState({ authenticated: true });
-    })
+  componentDidMount() {
+    this.props.auth.handleAuthentication()
+    .then(() => this.setState({ authenticated: true }))
     .catch(err => this.setState({ authenticated: false, error: err.toString() }));
   }
 
@@ -39,7 +39,7 @@ export default withAuth(class ImplicitCallback extends Component {
     const pathname = localStorage.getItem(referrerKey) || '/';
     localStorage.removeItem(referrerKey);
 
-    return this.state.authenticated ? 
+    return this.state.authenticated ?
       <Redirect to={{ pathname }}/> :
       <p>{this.state.error}</p>;
   }
