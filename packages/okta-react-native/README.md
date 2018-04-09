@@ -8,11 +8,14 @@ This library currently supports:
 * [Proof Key for Code Exchange (PKCE)](https://tools.ietf.org/html/rfc7636)
 
 ## Prerequisites
+
 * If you do not already have a **Developer Edition Account**, you can create one at [https://developer.okta.com/signup/](https://developer.okta.com/signup/).
 * If you don't have a React Native app, or are new to React Native, please continue with the [React Native Quickstart](https://github.com/react-community/create-react-native-app#getting-started) guide. It will walk you through the creation of a React Native app and other application development essentials.
 
 ## Add an OpenID Connect Client in Okta
+
 In Okta, applications are OpenID Connect clients that can use Okta Authorization servers to authenticate users.  Your Okta Org already has a default authorization server, so you just need to create an OIDC client that will use it.
+
 * Log into the Okta Developer Dashboard, click **Applications** then **Add Application**.
 * Choose **Native** as the platform, then submit the form the default values, which should look like this:
 
@@ -36,6 +39,7 @@ After you have created the application there are two more values you will need t
 These values will be used in your React application to setup the OpenID Connect flow with Okta.
 
 ## Installation
+
 This library is available through [npm](https://www.npmjs.com/package/@okta/okta-react-native). To install it, simply add it to your project:
 
 ```bash
@@ -43,6 +47,7 @@ npm install --save @okta/okta-react-native
 ```
 
 ## Configuration
+
 Assuming you're using an app created with `create-react-native-app`, modify your `app.json` to add a `scheme`:
 
 ```javascript
@@ -73,40 +78,54 @@ const tokenClient = new TokenClient({
 ```
 
 There are additional configuration options you can provide for specialized use cases:
+
 * `authorization_endpoint` - override the authorization endpoint from the well-known endpoint
 * `storageKey` - Unique key used to store/retrieve secure data
 * `keychainService` - See [Expo - keychainService](https://docs.expo.io/versions/latest/sdk/securestore.html#keychainservice-string-)
 * `keychainAccessible` - (iOS only) Specify when the stored item is accessible. See [Expo - keychainAccessible](https://docs.expo.io/versions/latest/sdk/securestore.html#keychainaccessible-enum-)
 
 ### `signInWithRedirect`
+
 This method will automatically redirect users to your Okta organziation for authentication.
 
 ```javascript
 await tokenClient.signInWithRedirect();
 ```
 
+### `isAuthenticated`
+
+Returns a promise that resolves `true` if there is a valid access token or ID token.
+
+```javascript
+await tokenClient.isAuthenticated();
+```
+
 ### `getAccessToken`
-This method returns the access token as a string. It ensures the access token is up-to-date and will automatically refresh expired tokens if a refresh token is available. To ensure your app receives a refresh token, request `offline_access`.
+
+This method returns a promise that will return the access token as a string. It ensures the access token is up-to-date and will automatically refresh expired tokens if a refresh token is available. To ensure your app receives a refresh token, request `offline_access`.
 
 ```javascript
 await tokenClient.getAccessToken();
 ```
 
 ### `getIdToken`
-This method returns the identity token as a string.
+
+This method returns a promise that will return the identity token as a string.
 
 ```javascript
 await tokenClient.getIdToken();
 ```
 
 ### `getUser`
-Fetches the most up-to-date user claims from the [OpenID Connect `/userinfo`](https://developer.okta.com/docs/api/resources/oidc#userinfo) endpoint or parses the identity token claims if an access token isn't provided.
+
+Returns a promise that will fetch the most up-to-date user claims from the [OpenID Connect `/userinfo`](https://developer.okta.com/docs/api/resources/oidc#userinfo) endpoint or parses the identity token claims if an access token isn't provided.
 
 ```javascript
 await tokenClient.getUser();
 ```
 
 ### `signOut`
+
 Terminates the tokens stored inside of [`SecureStore`](https://docs.expo.io/versions/latest/sdk/securestore.html) to clear the user session.
 
 ```javascript
