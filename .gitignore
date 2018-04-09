@@ -2,7 +2,6 @@ node_modules
 npm-debug.log
 .DS_STORE
 .vscode
-package-lock.json
 .envrc
 *.code-workspace
 lerna-debug.log
