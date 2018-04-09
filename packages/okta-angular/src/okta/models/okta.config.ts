@@ -1,4 +1,4 @@
-/*!
+/*
  * Copyright (c) 2017, Okta, Inc. and/or its affiliates. All rights reserved.
  * The Okta software accompanied by this notice is provided pursuant to the Apache License, Version 2.0 (the "License.")
  *
@@ -10,26 +10,17 @@
  * See the License for the specific language governing permissions and limitations under the License.
  */
 
-import { Component, OnInit } from '@angular/core';
-import { OktaAuthService } from '@okta/okta-angular';
+import { InjectionToken } from '@angular/core';
 
-@Component({
-  selector: 'app-secure',
-  template: `
-  {{ message }}
-  <pre id="userinfo-container">{{ user }}</pre>
-  `
-})
-export class ProtectedComponent implements OnInit {
-  message;
-  user;
+import { AuthRequiredFunction } from './auth-required-function';
 
-  constructor(public oktaAuth: OktaAuthService) {
-    this.message = 'Protected!';
-  }
-
-  async ngOnInit() {
-    const user = await this.oktaAuth.getUser();
-    this.user = JSON.stringify(user, null, 4);
-  }
+export interface OktaConfig {
+  issuer?: string;
+  redirectUri?: string;
+  clientId?: string;
+  scope?: string;
+  responseType?: string;
+  onAuthRequired?: AuthRequiredFunction;
 }
+
+export const OKTA_CONFIG = new InjectionToken<OktaConfig>('okta.config.angular');

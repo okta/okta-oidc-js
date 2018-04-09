@@ -31,6 +31,11 @@ export class AppPage {
     browser.wait(ExpectedConditions.presenceOf(this.getLogoutButton()), 5000);
   }
 
+  waitForElement(id: string) {
+    const el = element(by.id(id));
+    browser.wait(ExpectedConditions.presenceOf(el), 5000);
+  }
+
   getLoginButton() {
     return element(by.id('login-button'));
   }

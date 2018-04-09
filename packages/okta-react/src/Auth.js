@@ -12,6 +12,8 @@
 
 import OktaAuth from '@okta/okta-auth-js';
 
+import packageInfo from './packageInfo';
+
 const containsAuthTokens = /id_token|access_token|code/;
 
 export default class Auth {
@@ -22,6 +24,7 @@ export default class Auth {
       issuer: config.issuer,
       redirectUri: config.redirect_uri
     });
+    this._oktaAuth.userAgent = `${packageInfo.name}/${packageInfo.version} ${this._oktaAuth.userAgent}`;
     this._config = config;
     this._history = config.history;
 
@@ -55,7 +58,16 @@ export default class Auth {
 
   async getUser() {
     const accessToken = this._oktaAuth.tokenManager.get('accessToken');
-    return accessToken ? this._oktaAuth.token.getUserInfo(accessToken) : undefined;
+    const idToken = this._oktaAuth.tokenManager.get('idToken');
+    if (accessToken && idToken) {
+      const userinfo = await this._oktaAuth.token.getUserInfo(accessToken);
+      if (userinfo.sub === idToken.claims.sub) {
+        // Only return the userinfo response if subjects match to
+        // mitigate token substitution attacks
+        return userinfo
+      }
+    }
+    return idToken ? idToken.claims : undefined;
   }
 
   async getIdToken() {
@@ -68,8 +80,8 @@ export default class Auth {
     return accessToken ? accessToken.accessToken : undefined;
   }
 
-  async login() {
-    localStorage.setItem('secureRouterReferrerPath', this._history.location.pathname);
+  async login(fromUri) {
+    localStorage.setItem('secureRouterReferrerPath', fromUri || this._history.location.pathname);
     if (this._config.onAuthRequired) {
       const auth = this;
       const history = this._history;
@@ -78,10 +90,10 @@ export default class Auth {
     await this.redirect();
   }
 
-  async logout() {
+  async logout(path) {
     this._oktaAuth.tokenManager.clear();
     await this._oktaAuth.signOut();
-    this._history.push('/');
+    this._history.push(path || '/');
   }
 
   async redirect({sessionToken} = {}) {

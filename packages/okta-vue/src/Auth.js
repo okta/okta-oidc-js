@@ -1,4 +1,5 @@
-import * as AuthJS from '@okta/okta-auth-js'
+import AuthJS from '@okta/okta-auth-js'
+import packageInfo from './packageInfo'
 import ImplicitCallback from './components/ImplicitCallback'
 
 function install (Vue, options) {
@@ -9,11 +10,15 @@ function install (Vue, options) {
     redirectUri: authConfig.redirect_uri,
     url: authConfig.issuer.split('/oauth2/')[0]
   })
+  oktaAuth.userAgent = `${packageInfo.name}/${packageInfo.version} ${oktaAuth.userAgent}`
 
   Vue.prototype.$auth = {
-    loginRedirect (additionalParams) {
+    loginRedirect (fromUri, additionalParams) {
+      if (fromUri) {
+        localStorage.setItem('referrerPath', fromUri)
+      }
       return oktaAuth.token.getWithRedirect({
-        responseType: ['id_token', 'token'],
+        responseType: authConfig.response_type,
         scopes: authConfig.scope.split(' '),
         ...additionalParams
       })
@@ -47,13 +52,21 @@ function install (Vue, options) {
     },
     async getUser () {
       const accessToken = oktaAuth.tokenManager.get('accessToken')
-      return accessToken ? oktaAuth.token.getUserInfo(accessToken) : undefined
+      const idToken = oktaAuth.tokenManager.get('idToken')
+      if (accessToken && idToken) {
+        const userinfo = await oktaAuth.token.getUserInfo(accessToken)
+        if (userinfo.sub === idToken.claims.sub) {
+          // Only return the userinfo response if subjects match to
+          // mitigate token substitution attacks
+          return userinfo
+        }
+      }
+      return idToken ? idToken.claims : undefined
     },
     authRedirectGuard () {
       return async (to, from, next) => {
         if (to.matched.some(record => record.meta.requiresAuth) && !(await this.isAuthenticated())) {
-          localStorage.setItem('referrerPath', to.path || '/')
-          this.loginRedirect()
+          this.loginRedirect(to.path)
         } else {
           next()
         }
@@ -71,6 +84,9 @@ const initConfig = auth => {
   if (!auth.redirect_uri) missing.push('redirect_uri')
   if (!auth.scope) auth.scope = 'openid'
   if (missing.length) throw new Error(`${missing.join(', ')} must be defined`)
+
+  // Use space separated response_type or default value
+  auth.response_type = (auth.response_type || 'id_token token').split(' ')
   return auth
 }
 

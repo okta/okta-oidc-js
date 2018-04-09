@@ -169,11 +169,14 @@ export default withAuth(class MessageList extends Component {
 Security is the top-most component of okta-react. This is where most of the configuration is provided.
 
 #### Configuration options
-* **issuer** (required) - The OpenId Connect `issuer`
-* **client_id** (required) - The OpenId Connect `client_id`
-* **redirect_uri** (required) - Where the callback handler is hosted
-* **onAuthRequired** (optional)
-* **auth** (optional) - Provide an Auth object instead of the options above. This is helpful when integrating `okta-react` with external libraries that need access to the tokens.
+
+- **issuer** (required) - The OpenId Connect `issuer`
+- **client_id** (required) - The OpenId Connect `client_id`
+- **redirect_uri** (required) - Where the callback handler is hosted
+- **scope** *(optional)*: Reserved or custom claims to be returned in the tokens
+- **response_type** *(optional)*: Desired token grant types
+- **onAuthRequired** (optional)
+- **auth** (optional) - Provide an Auth object instead of the options above. This is helpful when integrating `okta-react` with external libraries that need access to the tokens.
 
   Accepts a callback to make a decision when authentication is required. If this is not supplied, `okta-react` redirects to Okta. This callback will receive `auth` and `history` parameters. This is triggered when:
     1. `auth.login` is called
@@ -259,60 +262,60 @@ export default App;
 
 `auth` provides methods that allow managing tokens and auth state. All of the methods return Promises.
 
-* `auth.isAuthenticated()`
+#### `auth.isAuthenticated()`
 
-  Returns `true` or `false`, depending on whether the user has an active access or id token.
+Returns `true` or `false`, depending on whether the user has an active access or id token.
 
-* `auth.getUser()`
+#### `auth.getUser()`
 
-  Returns the result of the userinfo endpoint if an access token exists.
+Returns the result of the OpenID Connect `/userinfo` endpoint if an access token exists.
 
-* `auth.getIdToken()`
+#### `auth.getIdToken()`
 
-  Retrieves the id token from storage if it exists.
+Retrieves the id token from storage if it exists.
 
-* `auth.getAccessToken()`
+#### `auth.getAccessToken()`
 
-  Retrieves the access token from storage if it exists.
+Retrieves the access token from storage if it exists.
 
-* `auth.login()`
+#### `auth.login(fromUri)`
 
-  Calls `onAuthRequired` or redirects to Okta if `onAuthRequired` is undefined.
+Calls `onAuthRequired` or redirects to Okta if `onAuthRequired` is undefined. This method accepts a `fromUri` parameter to push the user to after successful authentication.
 
-* `auth.logout()`
+#### `auth.logout(uri)`
 
-  Removes all the tokens and redirects to `/`.
+Terminates the user's session in Okta and clears all stored tokens. Accepts an optional `uri` parameter to push the user to after logout.
 
-* `auth.redirect({sessionToken})`
+#### `auth.redirect({sessionToken})`
 
-  Performs a redirect to Okta with an optional `sessionToken`.
+Performs a redirect to Okta with an optional `sessionToken`.
 
-  Example:
-  ```typescript
-  auth.redirect({
-    sessionToken: '{sampleSessionToken}'
-  });
-  ```
+```typescript
+auth.redirect({
+  sessionToken: '{sampleSessionToken}'
+});
+```
 
-* `auth.handleAuthentication()`
+#### `auth.handleAuthentication()`
 
-  Parses tokens from the url and stores them.
+Parses tokens from the url and stores them.
 
 ## Development
+
 1. Clone the repo:
-  - `git clone git@github.com:okta/okta-oidc-js.git`
+   - `git clone git@github.com:okta/okta-oidc-js.git`
 2. Install the dependencies with lerna (install with `npm i lerna -g`):
-  - `lerna bootstrap`
+   - `lerna bootstrap`
 3. Navigate into the `okta-react` package:
-  - `cd packages/okta-react`
+   - `cd packages/okta-react`
 4. Make your changes to `okta-react/src/`
 5. Set the following environment variables:
-  - `ISSUER` - your authorization server
-  - `CLIENT_ID` - the client id of your app
-  - `USERNAME` - username of org user, needed if you want to run tests
-  - `PASSWORD` - password of org user, needed if you want to run tests
+   - `ISSUER` - your authorization server
+   - `CLIENT_ID` - the client id of your app
+   - `USERNAME` - username of org user, needed if you want to run tests
+   - `PASSWORD` - password of org user, needed if you want to run tests
 6. Start a sample server:
-  - `npm start`
+   - `npm start`
 
 ## Commands
 

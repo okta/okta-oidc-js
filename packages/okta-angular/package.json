@@ -1,6 +1,6 @@
 {
   "name": "@okta/okta-angular",
-  "version": "0.0.13",
+  "version": "1.0.0",
   "description": "Angular support for Okta",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
@@ -8,11 +8,15 @@
     "dist"
   ],
   "scripts": {
+    "build:package-info": "node ../../util/write-package-info.js . src/okta/packageInfo.ts",
     "pretest": "npm run build:dependencies",
     "prestart": "npm run build:dependencies",
     "prepublish": "npm run ngc",
+    "prengc": "npm run build:package-info",
     "ngc": "./node_modules/.bin/ngc -p tsconfig.json",
-    "test": "npm run --prefix test/e2e/harness/ e2e",
+    "test": "npm run lint && npm run test:e2e && npm run test:unit",
+    "test:unit": "npm run --prefix test/e2e/harness/ test",
+    "test:e2e": "npm run --prefix test/e2e/harness/ e2e",
     "start": "npm run --prefix test/e2e/harness/ start",
     "docs": "typedoc --options typedoc.json --exclude '{**/*.spec.ts,**/test/**}' ./src/",
     "lint": "npm run --prefix test/e2e/harness/ lint",
@@ -30,7 +34,7 @@
   ],
   "license": "Apache-2.0",
   "dependencies": {
-    "@okta/okta-auth-js": "^1.8.0"
+    "@okta/okta-auth-js": "^1.14.0"
   },
   "devDependencies": {
     "@angular/common": "^4.4.3",

@@ -7,7 +7,7 @@
     "start": "npm run env && ng serve --port=3000",
     "env": "node ./scripts/prebuild.js",
     "build": "ng build",
-    "test": "ng test",
+    "test": "ng test -watch=false",
     "lint": "ng lint",
     "e2e": "npm run env && ng e2e -port 3000"
   },
@@ -22,7 +22,7 @@
     "@angular/platform-browser": "^4.2.4",
     "@angular/platform-browser-dynamic": "^4.2.4",
     "@angular/router": "^4.2.4",
-    "@okta/okta-angular": "file:../../../okta-okta-angular-0.0.13.tgz",
+    "@okta/okta-angular": "file:../../../okta-okta-angular-0.1.0.tgz",
     "core-js": "^2.4.1",
     "ejs": "^2.5.6",
     "rxjs": "^5.4.2",

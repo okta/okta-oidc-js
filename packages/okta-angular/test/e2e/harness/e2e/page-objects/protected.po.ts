@@ -18,8 +18,21 @@ export class ProtectedPage {
     return browser.get('/protected');
   }
 
+  navigateToWithQuery() {
+    return browser.get('/protected/foo?state=bar');
+  }
+
   waitUntilVisible() {
     browser.wait(ExpectedConditions.urlContains('/protected'), 5000);
+  }
+
+  waitUntilQueryVisible() {
+    browser.wait(ExpectedConditions.urlContains('/protected/foo?state=bar'), 5000);
+  }
+
+  waitForElement(id: string) {
+    const el = element(by.id(id));
+    browser.wait(ExpectedConditions.presenceOf(el), 5000);
   }
 
   getLogoutButton() {
@@ -28,5 +41,9 @@ export class ProtectedPage {
 
   getLoginButton() {
     return element(by.id('login-button'));
+  }
+
+  getUserInfo() {
+    return element(by.id('userinfo-container'));
   }
 }
