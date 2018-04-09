@@ -10,7 +10,7 @@
  * See the License for the specific language governing permissions and limitations under the License.
  */
 
- import crypto from 'isomorphic-webcrypto';
+import crypto from 'isomorphic-webcrypto';
 
 export function urlFormEncode(object) {
   const pairs = [];
@@ -23,7 +23,7 @@ export function urlFormEncode(object) {
   return pairs.join('&');
 }
 
-export function urlFormDecode(form = '') {
+export function urlFormDecode(form) {
   const pairs = form.split('&');
   const object = {};
   for (let pair of pairs) {

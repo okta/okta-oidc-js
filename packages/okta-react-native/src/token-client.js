@@ -41,6 +41,10 @@ export default class TokenClient {
     this.config = config;
   }
 
+  async isAuthenticated() {
+    return !!(await this.getAccessToken()) || !!(await this.getIdToken());
+  }
+
   async signInWithRedirect(options = {}) {
     return oidc.performPkceCodeFlow(this, options, async function redirect(authorizeUri, redirectUri) {
       const result = await WebBrowser.openAuthSessionAsync(authorizeUri, redirectUri);
