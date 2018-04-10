@@ -10,7 +10,8 @@
   "scripts": {
     "prebuild": "npm run build:package-info",
     "prestart": "npm run build && npm run build:harness",
-    "pretest": "npm run build && npm run build:harness",
+    "kill:port": "kill -9 $(lsof -t -i:8080 -sTCP:LISTEN) || true",
+    "pretest": "npm run kill:port && npm run build && npm run build:harness",
     "prepublish": "npm run build",
     "jest": "jest src/",
     "test": "npm run lint && npm run jest && npm run --prefix test/e2e/harness/ test",
