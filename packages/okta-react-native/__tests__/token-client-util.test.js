@@ -51,7 +51,7 @@ describe('TokenClientUtil', () => {
             headers: {
               'Accept': 'application/json',
               'Content-Type': 'application/json',
-              'X-Okta-User-Agent-Extended': `okta-react-native/${packageJson.version} ios/test-version ios-platform`,
+              'X-Okta-User-Agent-Extended': `@okta/okta-react-native/${packageJson.version} ios/test-version ios-platform`,
             }
           }
         }
@@ -69,7 +69,7 @@ describe('TokenClientUtil', () => {
             headers: {
               'Accept': 'application/json',
               'Content-Type': 'application/json',
-              'X-Okta-User-Agent-Extended': `okta-react-native/${packageJson.version} android/test-version android-platform`,
+              'X-Okta-User-Agent-Extended': `@okta/okta-react-native/${packageJson.version} android/test-version android-platform`,
             }
           }
         }

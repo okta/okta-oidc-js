@@ -31,7 +31,7 @@ export async function request(url, options) {
   options.headers = Object.assign({
     'Accept': 'application/json',
     'Content-Type': 'application/json',
-    'X-Okta-User-Agent-Extended': `okta-react-native/${packageJson.version} ${Platform.OS}/${Platform.Version} ${deviceName || ''}`.trim()
+    'X-Okta-User-Agent-Extended': `${packageJson.name}/${packageJson.version} ${Platform.OS}/${Platform.Version} ${deviceName || ''}`.trim()
   }, options.headers);
   const resp = await fetch(url, options);
   let json;
