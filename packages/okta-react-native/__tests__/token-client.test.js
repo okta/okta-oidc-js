@@ -82,6 +82,34 @@ describe('TokenClient', () => {
     });
   });
 
+  describe('isAuthenticated', () => {
+    it('returns false if there is no token in secure storage', async () => {
+      expect(await ctx.tokenClient.isAuthenticated()).toEqual(false);
+    });
+
+    it('returns true if there is a valid id token in secure storage', async () => {
+      mockAuthContext({
+        idToken: {
+          expiresAt: 1510000001,
+          string: 'dummy_id_token'
+        }
+      });
+      expect(await ctx.tokenClient.getIdToken()).toEqual('dummy_id_token');
+      expect(await ctx.tokenClient.isAuthenticated()).toEqual(true);
+    });
+
+    it('returns true if there is a valid access token in secure storage', async () => {
+      mockAuthContext({
+        accessToken: {
+          expiresAt: 1510000001,
+          string: 'dummy_access_token'
+        }
+      });
+      expect(await ctx.tokenClient.getAccessToken()).toEqual('dummy_access_token');
+      expect(await ctx.tokenClient.isAuthenticated()).toEqual(true);
+    });
+  });
+
   describe('getAccessToken', () => {
     it('returns undefined if no token in secure storage', async () => {
       expect(await ctx.tokenClient.getIdToken()).toBeUndefined();
