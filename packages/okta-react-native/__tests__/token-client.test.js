@@ -244,7 +244,7 @@ describe('TokenClient', () => {
               'Accept': 'application/json',
               'Authorization': 'Bearer dummy_access_token',
               'Content-Type': 'application/json',
-              'X-Okta-User-Agent-Extended': `okta-react-native/${packageJson.version} ios/test-version ios-platform`,
+              'X-Okta-User-Agent-Extended': `@okta/okta-react-native/${packageJson.version} ios/test-version ios-platform`,
             }
           },
           res: {
