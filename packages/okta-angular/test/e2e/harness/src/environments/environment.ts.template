@@ -5,7 +5,7 @@ export const environment = {
   BASE_URI: '<%= BASE_URI %>',
   REDIRECT_URI: '<%= REDIRECT_URI %>',
   ISSUER: '<%= ISSUER %>',
-  CLIENT_ID: '<%= CLIENT_ID %>',
+  CLIENT_ID: '<%= SPA_CLIENT_ID %>',
   USERNAME: '<%= USERNAME %>',
   PASSWORD: '<%= PASSWORD %>',
 };
