@@ -1,5 +1,8 @@
 # Okta React Native
 
+[![npm version](https://img.shields.io/npm/v/@okta/okta-react-native.svg?style=flat-square)](https://www.npmjs.com/package/@okta/okta-react-native)
+[![build status](https://img.shields.io/travis/okta/okta-oidc-js/master.svg?style=flat-square)](https://travis-ci.org/okta/okta-oidc-js)
+
 The Okta React Native client makes it easy to add authentication to your React Native app with Okta's [OpenID Connect API](https://developer.okta.com/docs/api/resources/oidc.html).
 
 This library currently supports:
@@ -11,6 +14,13 @@ This library currently supports:
 
 * If you do not already have a **Developer Edition Account**, you can create one at [https://developer.okta.com/signup/](https://developer.okta.com/signup/).
 * If you don't have a React Native app, or are new to React Native, please continue with the [React Native Quickstart](https://github.com/react-community/create-react-native-app#getting-started) guide. It will walk you through the creation of a React Native app and other application development essentials.
+* If you are developing with an Android device emulator, make sure to check out the [React Native - Android Development](https://facebook.github.io/react-native/docs/getting-started.html#android-development-environment) setup instructions.
+
+## :warning: :construction: Alpha Preview :construction: :warning:
+
+This library is under development and is currently in 0.x version series.  Breaking changes may be introduced at minor versions in the 0.x range.  Please lock your dependency to a specific version until this library reaches 1.x.
+
+Need help? Contact [developers@okta.com](mailto:developers@okta.com) or use the [Okta Developer Forum](https://devforum.okta.com).
 
 ## Add an OpenID Connect Client in Okta
 
@@ -58,6 +68,12 @@ Assuming you're using an app created with `create-react-native-app`, modify your
   }
 }
 ```
+
+### Testing on Android Devices
+
+There is a [known issue](https://github.com/okta/okta-sdk-appauth-android/issues/8) when redirecting back to a URI scheme from the browser via Chrome Custom Tabs. This is due to Chrome **not supporting** JavaScript initiated redirects back to native applications.
+
+To handle this, please refer to the workaround recorded in [this issue](https://github.com/okta/okta-sdk-appauth-android/issues/8).
 
 ## Usage
 
