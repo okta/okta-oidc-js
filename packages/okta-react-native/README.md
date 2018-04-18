@@ -32,7 +32,6 @@ In Okta, applications are OpenID Connect clients that can use Okta Authorization
 | Setting             | Value                                        |
 | ------------------- | -------------------------------------------- |
 | App Name            | My Native App                                |
-| Base URIs           | http://localhost:{port}                      |
 | Login redirect URIs | com.oktapreview.{yourOrg}:/+expo-auth-session|
 |                     | exp://localhost:19000/+expo-auth-session     |
 | Grant Types Allowed | Authorization Code, Refresh Token            |
@@ -79,7 +78,7 @@ To handle this, please refer to the workaround recorded in [this issue](https://
 
 You will need the values from the OIDC client that you created in the previous step to instantiate the client. You will also need to know your Okta Org URL, which you can see on the home page of the Okta Developer console.
 
-In your application's controller, create a configuration object:
+In your application's controller, create a new instance of the `TokenClient`:
 
 ```javascript
 import TokenClient from '@okta/okta-react-native';
