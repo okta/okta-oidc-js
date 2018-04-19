@@ -14,3 +14,5 @@ packages/okta-vue/test/e2e/harness/config/dev.env.js
 # package info files are generated during build and included in final artifacts
 packageInfo.js
 packageInfo.ts
+coverage
+*.tgz
