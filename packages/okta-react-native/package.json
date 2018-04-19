@@ -1,6 +1,6 @@
 {
   "name": "@okta/okta-react-native",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "description": "React Native support for OpenID Connect",
   "main": "src/token-client.js",
   "scripts": {
