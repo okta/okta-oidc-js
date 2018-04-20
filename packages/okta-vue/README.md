@@ -204,8 +204,8 @@ To handle the session-token redirect flow, you can create your own navigation gu
 ```typescript
 // router/index.js
 
-router.beforeEach((from, to, next) {
-  if (from.matched.some(record => record.meta.requiresAuth) && !(await Vue.prototype.$auth.isAuthenticated())) {
+router.beforeEach((to, from, next) {
+  if (to.matched.some(record => record.meta.requiresAuth) && !(await Vue.prototype.$auth.isAuthenticated())) {
     // Navigate to custom login page
     next({ path: '/login' })
   } else {
