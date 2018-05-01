@@ -14,11 +14,11 @@ import { browser, element, by, ExpectedConditions } from 'protractor';
 
 export class ProtectedPage {
   navigateTo() {
-    return browser.get('/protected');
+    return browser.get('/protected?foo=bar#baz');
   }
 
   waitUntilVisible() {
-    browser.wait(ExpectedConditions.urlContains('/protected'), 5000);
+    browser.wait(ExpectedConditions.urlContains('/protected?foo=bar#baz'), 5000);
   }
 
   waitForElement(id) {
