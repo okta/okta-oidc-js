@@ -36,11 +36,11 @@ export default withAuth(class ImplicitCallback extends Component {
     }
 
     const referrerKey = 'secureRouterReferrerPath';
-    const pathname = localStorage.getItem(referrerKey) || '/';
+    const location = JSON.parse(localStorage.getItem(referrerKey) || '{ "pathname": "/" }');
     localStorage.removeItem(referrerKey);
 
     return this.state.authenticated ? 
-      <Redirect to={{ pathname }}/> :
+      <Redirect to={location}/> :
       <p>{this.state.error}</p>;
   }
 });
