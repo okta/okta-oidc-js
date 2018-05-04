@@ -4,8 +4,8 @@
   "private": true,
   "dependencies": {
     "@okta/okta-react": "../../../",
-    "react": "^15.6.1",
-    "react-dom": "^15.6.1",
+    "react": "^16.3.2",
+    "react-dom": "^16.3.2",
     "react-scripts": "1.0.13"
   },
   "devDependencies": {

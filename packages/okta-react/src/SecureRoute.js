@@ -14,6 +14,32 @@ import React, { Component } from 'react';
 import { Route } from 'react-router';
 import withAuth from './withAuth';
 
+
+class RenderWrapper extends Component {
+  checkAuthentication() {
+    if (this.props.authenticated === false) {
+      this.props.login();
+    }
+  }
+
+  componentWillMount() {
+    this.checkAuthentication();
+  }
+
+  componentDidUpdate() {
+    this.checkAuthentication();
+  }
+
+  render() {
+    if (!this.props.authenticated) {
+      return null;
+    }
+
+    const C = this.props.component;
+    return this.props.render ? this.props.render(this.props.renderProps) : <C {...this.props.renderProps} />;
+  }
+}
+
 export default withAuth(class SecureRoute extends Component {
   constructor(props) {
     super(props);
@@ -23,7 +49,7 @@ export default withAuth(class SecureRoute extends Component {
     };
 
     this.checkAuthentication = this.checkAuthentication.bind(this);
-    this.renderWrapper = this.renderWrapper.bind(this);
+    this.createRenderWrapper = this.createRenderWrapper.bind(this);
 
     this.checkAuthentication();
   }
@@ -39,21 +65,19 @@ export default withAuth(class SecureRoute extends Component {
     this.checkAuthentication();
   }
 
-  renderWrapper(renderProps) {
-    if (this.state.authenticated === null) {
-      return null;
-    }
-
-    if (!this.state.authenticated) {
-      this.props.auth.login();
-      return null;
-    }
-
-    const C = this.props.component;
-    return this.props.render ? this.props.render(renderProps) : <C {...renderProps} />;
+  createRenderWrapper(renderProps) {
+    return (
+      <RenderWrapper
+        authenticated={this.state.authenticated}
+        login={this.props.auth.login}
+        component={this.props.component}
+        render={this.props.render}
+        renderProps={renderProps}
+      />
+    );
   }
 
   render() {
-    return <Route path={this.props.path} render={this.renderWrapper} />;
+    return <Route path={this.props.path} render={this.createRenderWrapper} />;
   }
 });
