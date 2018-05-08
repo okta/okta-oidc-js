@@ -37,20 +37,21 @@
     "@okta/okta-auth-js": "^1.14.0"
   },
   "devDependencies": {
-    "@angular/common": "^4.4.3",
-    "@angular/compiler": "^4.4.3",
-    "@angular/compiler-cli": "^4.4.3",
-    "@angular/core": "^4.4.3",
-    "@angular/platform-browser": "^4.4.3",
-    "@angular/router": "^4.4.3",
-    "rxjs": "^5.4.3",
-    "typescript": "^2.5.2"
+    "@angular/cli": "^6.0.0",
+    "@angular/common": "^6.0.0",
+    "@angular/compiler": "^6.0.0",
+    "@angular/compiler-cli": "^6.0.0",
+    "@angular/core": "^6.0.0",
+    "@angular/platform-browser": "^6.0.0",
+    "@angular/router": "^6.0.0",
+    "rxjs": "^6.1.0",
+    "typescript": "^2.7.2"
   },
   "peerDependencies": {
-    "@angular/common": "^4.0.0",
-    "@angular/core": "^4.0.0",
-    "@angular/platform-browser": "^4.0.0",
-    "@angular/router": "^4.0.0",
-    "rxjs": "^5.4.3"
+    "@angular/common": "^6.0.0",
+    "@angular/core": "^6.0.0",
+    "@angular/platform-browser": "^6.0.0",
+    "@angular/router": "^6.0.0",
+    "rxjs": "^6.1.0"
   }
 }
