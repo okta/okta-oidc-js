@@ -18,7 +18,26 @@ npm install -g npm@5.0.3
 # Install required dependencies
 npm install -g lerna
 
+npm config get
+
+ENV_REGISTRY=$(npm config get registry)
+ENV_CAFILE=$(npm config get cafile)
+ENV_OKTAREGISTRY=$(npm config get @okta:registry)
+
+npm config delete registry
+npm config delete cafile
+npm config delete @okta:registry
+
+npm config get
+
 if ! lerna bootstrap; then
   echo "lerna bootstrap failed! Exiting..."
   exit ${FAILED_SETUP}
 fi
+
+npm config set registry "$ENV_REGISTRY"
+npm config set cafile "$ENV_CAFILE"
+npm config set @okta:registry "$ENV_OKTAREGISTRY"
+
+npm config get
+
