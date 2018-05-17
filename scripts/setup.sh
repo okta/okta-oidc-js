@@ -18,7 +18,7 @@ npm install -g npm@5.0.3
 # Install required dependencies
 npm install -g lerna
 
-if ! lerna bootstrap --ignore okta-react-native; then
+if ! lerna bootstrap --ignore "@okta/okta-react-native"; then
   echo "lerna bootstrap failed! Exiting..."
   exit ${FAILED_SETUP}
 fi
