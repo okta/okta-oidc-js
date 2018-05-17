@@ -25,6 +25,11 @@ dirs.forEach(name => {
   const pkg = require(`${moduleDir}/package`);
   const moduleWithVersion = `${pkg.name}@${pkg.version}`;
 
+  if (pkg.name === '@okta/okta-react-native') {
+    console.log(`Skipping ${pkg.name}`)
+    return
+  }
+
   console.log(`Checking if ${moduleWithVersion} exists`);
 
   let isInPublicNpm = false;
