@@ -18,7 +18,10 @@ npm install -g npm@5.0.3
 # Install required dependencies
 npm install -g lerna
 
-if ! lerna bootstrap; then
+# We are skipping react-native until we have a solution for the problem described here: https://github.com/expo/expo/issues/1767
+# If expo will not resolve then we will have to find another workaround
+
+if ! lerna bootstrap --ignore "@okta/okta-react-native"; then
   echo "lerna bootstrap failed! Exiting..."
   exit ${FAILED_SETUP}
 fi
