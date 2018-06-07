@@ -10,7 +10,7 @@
  * See the License for the specific language governing permissions and limitations under the License.
  */
 
-import { NgModule, InjectionToken } from '@angular/core';
+import { ModuleWithProviders, NgModule } from '@angular/core';
 
 import { OktaCallbackComponent, OktaLoginRedirectComponent } from './components/';
 import { OktaAuthService } from './services/okta.service';
@@ -28,7 +28,7 @@ import { OktaConfig, OKTA_CONFIG } from './models/okta.config';
   ]
 })
 export class OktaAuthModule {
-  static initAuth(config: OktaConfig) {
+  static initAuth(config: OktaConfig): ModuleWithProviders {
     return {
       ngModule: OktaAuthModule,
       providers: [
