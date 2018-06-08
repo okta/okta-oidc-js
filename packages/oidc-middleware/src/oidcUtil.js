@@ -95,7 +95,6 @@ oidcUtil.ensureAuthenticated = (context, options) => {
       ensureLoggedIn(options)(req, res, next);
     } else {
       res.sendStatus(401);
-      next();
     }
   };
 }
