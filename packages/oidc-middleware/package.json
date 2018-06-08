@@ -32,7 +32,7 @@
     "express": "^4.16.3",
     "lodash": "^4.17.5",
     "negotiator": "^0.6.1",
-    "openid-client": "^1.20.0",
+    "openid-client": "^2.1.0",
     "passport": "^0.3.2",
     "uuid": "^3.1.0"
   },
