@@ -12,6 +12,7 @@ This library currently supports:
 
 ## Prerequisites
 
+* This library requires the use of [Expo](https://expo.io/).
 * If you do not already have a **Developer Edition Account**, you can create one at [https://developer.okta.com/signup/](https://developer.okta.com/signup/).
 * If you don't have a React Native app, or are new to React Native, please continue with the [React Native Quickstart](https://github.com/react-community/create-react-native-app#getting-started) guide. It will walk you through the creation of a React Native app and other application development essentials.
 * If you are developing with an Android device emulator, make sure to check out the [React Native - Android Development](https://facebook.github.io/react-native/docs/getting-started.html#android-development-environment) setup instructions.
