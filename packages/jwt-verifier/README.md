@@ -1,4 +1,4 @@
-# Okta JWT Verifier
+# Okta JWT Verifier for Node.js
 
 [![npm version](https://img.shields.io/npm/v/@okta/jwt-verifier.svg?style=flat-square)](https://www.npmjs.com/package/@okta/jwt-verifier)
 [![build status](https://img.shields.io/travis/okta/okta-oidc-js/master.svg?style=flat-square)](https://travis-ci.org/okta/okta-oidc-js)
@@ -8,6 +8,10 @@ This library verifies Okta access tokens (issued by Okta authorization servers) 
 * Signature is valid (the token was signed by a private key which has a corresponding public key in the JWKS response from the authorization server).
 * Access token is not expired (requires local system time to be in sync with Okta, checks the `exp` claim of the access token).
 * Any custom claim assertions that have been configured.
+
+> This library is for Node.js applications and will not compile into a front-end application.  If you need to work with tokens in front-end applications, please see [okta-auth-js](https://github.com/okta/okta-auth-js).
+
+Using Express?  Our [Express Resource Server Example](https://github.com/okta/samples-nodejs-express-4/tree/master/resource-server) will show you how to use this library in your Express application.
 
 To learn more about verification cases and Okta's tokens please read [Working With OAuth 2.0 Tokens](https://developer.okta.com/authentication-guide/tokens/)
 
