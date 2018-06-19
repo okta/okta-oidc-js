@@ -10,15 +10,4 @@
  * See the License for the specific language governing permissions and limitations under the License.
  */
 
-export { OktaAuthModule }  from './okta/okta.module';
-export { OktaAuthGuard }   from './okta/okta.guard';
-export {
-  AUTH_API_INTERCEPTOR,
-  AuthApiInterceptor,
-} from './okta/interceptors';
-export { OktaAuthService } from './okta/services/okta.service';
-export { OKTA_CONFIG }     from './okta/models/okta.config';
-export { UserClaims }     from './okta/models/user-claims';
-
-// Okta View Components
-export { OktaCallbackComponent, OktaLoginRedirectComponent } from './okta/components';
+export * from './auth-api-interceptor/auth-api-interceptor.service';
