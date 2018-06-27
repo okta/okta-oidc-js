@@ -11,30 +11,25 @@ This library is under development and is currently in 0.x version series.  Break
 
 Need help? Contact [developers@okta.com](mailto:developers@okta.com) or use the [Okta Developer Forum].
 
-
 ## Table of Contents
 
-- [oidc-middleware](#oidc-middleware)
-  - [:warning: :construction: Alpha Preview :construction: :warning:](#warning-construction-alpha-preview-construction-warning)
-  - [Table of Contents](#table-of-contents)
-  - [Installation](#installation)
-  - [Prerequisites](#prerequisites)
-  - [Usage Example](#usage-example)
-  - [ExpressOIDC API](#expressoidc-api)
-    - [new ExpressOIDC(config)](#new-expressoidcconfig)
-    - [oidc.router](#oidcrouter)
-    - [oidc.on('ready', callback)](#oidconready-callback)
-    - [oidc.on('error', callback)](#oidconerror-callback)
-    - [oidc.ensureAuthenticated({ redirectTo?: '/uri' })](#oidcensureauthenticated-redirectto-uri)
-    - [req.isAuthenticated()](#reqisauthenticated)
-    - [req.logout()](#reqlogout)
-    - [req.userinfo](#requserinfo)
-  - [Customization](#customization)
-    - [Customizing Routes](#customizing-routes)
-    - [Using a Custom Login Page](#using-a-custom-login-page)
-    - [Extending the User](#extending-the-user)
-    - [Using Proxy Servers](#using-proxy-servers)
-
+- [Installation](#installation)
+- [Prerequisites](#prerequisites)
+- [Usage Example](#usage-example)
+- [ExpressOIDC API](#expressoidc-api)
+  - [new ExpressOIDC(config)](#new-expressoidcconfig)
+  - [oidc.router](#oidcrouter)
+  - [oidc.on('ready', callback)](#oidconready-callback)
+  - [oidc.on('error', callback)](#oidconerror-callback)
+  - [oidc.ensureAuthenticated({ redirectTo?: '/uri' })](#oidcensureauthenticated-redirectto-uri)
+  - [req.isAuthenticated()](#reqisauthenticated)
+  - [req.logout()](#reqlogout)
+  - [req.userinfo](#requserinfo)
+- [Customization](#customization)
+  - [Customizing Routes](#customizing-routes)
+  - [Using a Custom Login Page](#using-a-custom-login-page)
+  - [Extending the User](#extending-the-user)
+  - [Using Proxy Servers](#using-proxy-servers)
 
 ## Installation
 
