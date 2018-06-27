@@ -1,6 +1,6 @@
 {
   "name": "@okta/oidc-middleware",
-  "version": "0.1.2",
+  "version": "0.1.3",
   "description": "OpenId Connect middleware for authorization code flows",
   "repository": "https://github.com/okta/okta-oidc-js",
   "homepage": "https://github.com/okta/okta-oidc-js/tree/master/packages/oidc-middleware",
