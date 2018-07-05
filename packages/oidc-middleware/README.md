@@ -313,6 +313,10 @@ The underlying [openid-client][] library can be configured to use the [request][
 const Issuer = require('openid-client').Issuer;
 
 Issuer.useRequest();
+
+const oidc = new ExpressOIDC({
+  ...
+});
 ```
 
 Once you have done that you can read the documentation on the [request][] library to learn which environment variables can be used to define your proxy settings.
