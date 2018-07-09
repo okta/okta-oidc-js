@@ -78,6 +78,12 @@ export default withAuth(class SecureRoute extends Component {
   }
 
   render() {
-    return <Route path={this.props.path} render={this.createRenderWrapper} />;
+    return (
+      <Route
+       exact={this.props.exact}
+       path={this.props.path}
+       render={this.createRenderWrapper}
+      />
+    );
   }
 });
