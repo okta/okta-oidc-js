@@ -73,6 +73,7 @@ function install (Vue, options) {
       }
     }
   }
+  Vue.prototype.$auth.onAuthenticationError = authConfig.onAuthenticationError
 }
 
 function handleCallback () { return ImplicitCallback }
