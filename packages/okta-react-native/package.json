@@ -43,6 +43,6 @@
     "jest-expo": "^25.1.0",
     "jest-fetch-mock": "^1.4.2",
     "react": "*",
-    "react-native": "*"
+    "react-native": "0.55.4"
   }
 }
