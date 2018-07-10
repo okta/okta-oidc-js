@@ -11,6 +11,26 @@ This library is under development and is currently in 0.x version series.  Break
 
 Need help? Contact [developers@okta.com](mailto:developers@okta.com) or use the [Okta Developer Forum].
 
+## Table of Contents
+
+- [Installation](#installation)
+- [Prerequisites](#prerequisites)
+- [Usage Example](#usage-example)
+- [ExpressOIDC API](#expressoidc-api)
+  - [new ExpressOIDC(config)](#new-expressoidcconfig)
+  - [oidc.router](#oidcrouter)
+  - [oidc.on('ready', callback)](#oidconready-callback)
+  - [oidc.on('error', callback)](#oidconerror-callback)
+  - [oidc.ensureAuthenticated({ redirectTo?: '/uri' })](#oidcensureauthenticated-redirectto-uri)
+  - [req.isAuthenticated()](#reqisauthenticated)
+  - [req.logout()](#reqlogout)
+  - [req.userinfo](#requserinfo)
+- [Customization](#customization)
+  - [Customizing Routes](#customizing-routes)
+  - [Using a Custom Login Page](#using-a-custom-login-page)
+  - [Extending the User](#extending-the-user)
+  - [Using Proxy Servers](#using-proxy-servers)
+
 ## Installation
 
 ```sh
@@ -193,6 +213,8 @@ app.get('/', (req, res) => {
 });
 ```
 
+## Customization
+
 ### Customizing Routes
 
 If you need to modify the default login and callback routes, the `routes` config option is available.
@@ -282,3 +304,22 @@ oidc.on('error', err => console.log('could not start', err));
 [auth-code-docs]: https://developer.okta.com/standards/OAuth/#basic-flows
 [express-quickstart]: https://developer.okta.com/quickstart/#/okta-sign-in-page/nodejs/express
 [Okta Developer Forum]: https://devforum.okta.com/
+
+### Using Proxy Servers
+
+The underlying [openid-client][] library can be configured to use the [request][] library.  Do this by adding these lines to your app, before you call `new ExpressOIDC()`:
+
+```javascript
+const Issuer = require('openid-client').Issuer;
+
+Issuer.useRequest();
+
+const oidc = new ExpressOIDC({
+  ...
+});
+```
+
+Once you have done that you can read the documentation on the [request][] library to learn which environment variables can be used to define your proxy settings.
+
+[openid-client]: https://github.com/panva/node-openid-client
+[request]: https://github.com/request/request
