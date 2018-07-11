@@ -100,7 +100,8 @@ export default withAuth(class Home extends Component {
     super(props);
     this.state = { authenticated: null };
     this.checkAuthentication = this.checkAuthentication.bind(this);
-    this.checkAuthentication();
+    this.login = this.login.bind(this);
+    this.logout = this.logout.bind(this);
   }
 
   async checkAuthentication() {
@@ -110,15 +111,27 @@ export default withAuth(class Home extends Component {
     }
   }
 
-  componentDidUpdate() {
+  async login() {
+    this.props.auth.login('/');
+  }
+
+  async logout() {
+    this.props.auth.logout('/');
+  }
+
+  async componentDidMount() {
+    this.checkAuthentication();
+  }
+
+  async componentDidUpdate() {
     this.checkAuthentication();
   }
 
   render() {
     if (this.state.authenticated === null) return null;
     return this.state.authenticated ?
-      <button onClick={this.props.auth.logout}>Logout</button> :
-      <button onClick={this.props.auth.login}>Login</button>;
+      <button onClick={this.logout}>Logout</button> :
+      <button onClick={this.login}>Login</button>;
   }
 });
 ```
