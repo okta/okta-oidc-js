@@ -14,7 +14,6 @@ import React, { Component } from 'react';
 import { Route } from 'react-router';
 import withAuth from './withAuth';
 
-
 class RenderWrapper extends Component {
   checkAuthentication() {
     if (this.props.authenticated === false) {
@@ -40,7 +39,7 @@ class RenderWrapper extends Component {
   }
 }
 
-export default withAuth(class SecureRoute extends Component {
+class SecureRoute extends Component {
   constructor(props) {
     super(props);
 
@@ -80,10 +79,13 @@ export default withAuth(class SecureRoute extends Component {
   render() {
     return (
       <Route
-       exact={this.props.exact}
-       path={this.props.path}
-       render={this.createRenderWrapper}
+        exact={this.props.exact}
+        path={this.props.path}
+        render={this.createRenderWrapper}
       />
     );
   }
-});
+}
+
+export { SecureRoute };
+export default withAuth(SecureRoute)
