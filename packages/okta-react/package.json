@@ -75,7 +75,7 @@
       "./test/test-setup.js"
     ],
     "roots": [
-      "<rootDir>/test"
+      "<rootDir>/test/jest"
     ]
   }
 }
