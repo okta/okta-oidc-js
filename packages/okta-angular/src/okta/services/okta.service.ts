@@ -22,8 +22,7 @@ import packageInfo from '../packageInfo';
  * Import the okta-auth-js library
  */
 import * as OktaAuth from '@okta/okta-auth-js';
-import { Observable } from 'rxjs/Observable';
-import { Observer } from 'rxjs/Observer';
+import { Observable, Observer } from 'rxjs';
 
 @Injectable()
 export class OktaAuthService {
