@@ -33,9 +33,9 @@ export default withRouter(class Security extends Component {
 
   render() {
     return (
-      <div>
+      <div className="security-wrapper">
         {this.props.children}
-      </div> 
+      </div>
     );
   }
 });
