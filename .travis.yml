@@ -13,6 +13,7 @@ script:
 - npm install
 - npm run bootstrap
 - sh ./scripts/runTests.sh
+- bash ./scripts/snyk.sh
 
 install:
 - npm install
