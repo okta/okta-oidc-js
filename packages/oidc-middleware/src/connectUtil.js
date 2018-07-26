@@ -11,7 +11,7 @@
  */
 
 const csrf = require('csurf');
-const passport = require('passport');
+const passport = require('@passport-next/passport');
 const { Router } = require('express');
 const querystring = require('querystring');
 const uuid = require('uuid');

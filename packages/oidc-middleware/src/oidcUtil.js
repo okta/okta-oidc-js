@@ -10,7 +10,7 @@
  * See the License for the specific language governing permissions and limitations under the License.
  */
 
-const passport = require('passport');
+const passport = require('@passport-next/passport');
 const OpenIdClientStrategy = require('openid-client').Strategy;
 const Issuer = require('openid-client').Issuer;
 const ensureLoggedIn = require('connect-ensure-login').ensureLoggedIn;
