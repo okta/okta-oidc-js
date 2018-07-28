@@ -8,7 +8,8 @@ function install (Vue, options) {
     clientId: authConfig.client_id,
     issuer: authConfig.issuer,
     redirectUri: authConfig.redirect_uri,
-    url: authConfig.issuer.split('/oauth2/')[0]
+    url: authConfig.issuer.split('/oauth2/')[0],
+    tokenManager: authConfig.tokenManager || {}
   })
   oktaAuth.userAgent = `${packageInfo.name}/${packageInfo.version} ${oktaAuth.userAgent}`
 
