@@ -75,6 +75,7 @@ oidcUtil.bootstrapPassportStrategy = context => {
     sessionKey: context.options.sessionKey,
     client: context.client
   }, (tokens, userinfo, done) => {
+    userinfo.tokens = tokens;
     done(null, userinfo);
   });
 
