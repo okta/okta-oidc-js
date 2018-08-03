@@ -32,10 +32,6 @@ export default withRouter(class Security extends Component {
   }
 
   render() {
-    return (
-      <div>
-        {this.props.children}
-      </div> 
-    );
+    return this.props.children;
   }
 });
