@@ -1,5 +1,8 @@
 #!/bin/bash
 
+# Add yarn to the $PATH so npm cli commands do not fail
+export PATH="${PATH}:$(yarn global bin)"
+
 cd ${OKTA_HOME}/${REPO}
 
 # undo permissions change on scripts/publish.sh
@@ -11,9 +14,6 @@ git reset --hard $SHA
 
 git config --global user.email "oktauploader@okta.com"
 git config --global user.name "oktauploader-okta"
-
-# Use newer, faster npm
-npm install -g npm@5.0.3
 
 # Install required dependencies
 npm install -g lerna
