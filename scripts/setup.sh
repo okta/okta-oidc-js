@@ -1,5 +1,6 @@
 #!/bin/bash
 
+# Add yarn to the $PATH so npm cli commands do not fail
 export PATH="${PATH}:$(yarn global bin)"
 
 cd ${OKTA_HOME}/${REPO}
