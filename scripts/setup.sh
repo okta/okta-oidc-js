@@ -1,5 +1,7 @@
 #!/bin/bash
 
+export PATH="${PATH}:$(yarn global bin)"
+
 cd ${OKTA_HOME}/${REPO}
 
 # undo permissions change on scripts/publish.sh
