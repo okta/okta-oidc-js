@@ -32,9 +32,9 @@ export class OktaAuthModule {
     return {
       ngModule: OktaAuthModule,
       providers: [
+        { provide: OKTA_CONFIG, useValue: config },
         OktaAuthGuard,
         OktaAuthService,
-        { provide: OKTA_CONFIG, useValue: config }
       ]
     };
   }
