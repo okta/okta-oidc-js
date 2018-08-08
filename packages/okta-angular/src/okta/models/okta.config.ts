@@ -15,9 +15,9 @@ import { InjectionToken } from '@angular/core';
 import { AuthRequiredFunction } from './auth-required-function';
 
 export interface OktaConfig {
-  issuer?: string;
-  redirectUri?: string;
-  clientId?: string;
+  issuer: string;
+  redirectUri: string;
+  clientId: string;
   scope?: string;
   responseType?: string;
   onAuthRequired?: AuthRequiredFunction;
