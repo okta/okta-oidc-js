@@ -7,8 +7,7 @@ function install (Vue, options) {
   const oktaAuth = new AuthJS({
     clientId: authConfig.client_id,
     issuer: authConfig.issuer,
-    redirectUri: authConfig.redirect_uri,
-    url: authConfig.issuer.split('/oauth2/')[0]
+    redirectUri: authConfig.redirect_uri
   })
   oktaAuth.userAgent = `${packageInfo.name}/${packageInfo.version} ${oktaAuth.userAgent}`
 
@@ -43,16 +42,16 @@ function install (Vue, options) {
       return path
     },
     async getIdToken () {
-      const idToken = oktaAuth.tokenManager.get('idToken')
+      const idToken = await oktaAuth.tokenManager.get('idToken')
       return idToken ? idToken.idToken : undefined
     },
     async getAccessToken () {
-      const accessToken = oktaAuth.tokenManager.get('accessToken')
+      const accessToken = await oktaAuth.tokenManager.get('accessToken')
       return accessToken ? accessToken.accessToken : undefined
     },
     async getUser () {
-      const accessToken = oktaAuth.tokenManager.get('accessToken')
-      const idToken = oktaAuth.tokenManager.get('idToken')
+      const accessToken = await oktaAuth.tokenManager.get('accessToken')
+      const idToken = await oktaAuth.tokenManager.get('idToken')
       if (accessToken && idToken) {
         const userinfo = await oktaAuth.token.getUserInfo(accessToken)
         if (userinfo.sub === idToken.claims.sub) {

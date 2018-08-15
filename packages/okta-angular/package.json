@@ -34,7 +34,7 @@
   ],
   "license": "Apache-2.0",
   "dependencies": {
-    "@okta/okta-auth-js": "^1.14.0"
+    "@okta/okta-auth-js": "^2.0.0"
   },
   "devDependencies": {
     "@angular/common": "^4.4.3",

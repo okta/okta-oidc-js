@@ -57,8 +57,8 @@ export default class Auth {
   }
 
   async getUser() {
-    const accessToken = this._oktaAuth.tokenManager.get('accessToken');
-    const idToken = this._oktaAuth.tokenManager.get('idToken');
+    const accessToken = await this._oktaAuth.tokenManager.get('accessToken');
+    const idToken = await this._oktaAuth.tokenManager.get('idToken');
     if (accessToken && idToken) {
       const userinfo = await this._oktaAuth.token.getUserInfo(accessToken);
       if (userinfo.sub === idToken.claims.sub) {
@@ -71,12 +71,12 @@ export default class Auth {
   }
 
   async getIdToken() {
-    const idToken = this._oktaAuth.tokenManager.get('idToken');
+    const idToken = await this._oktaAuth.tokenManager.get('idToken');
     return idToken ? idToken.idToken : undefined;
   }
 
   async getAccessToken() {
-    const accessToken = this._oktaAuth.tokenManager.get('accessToken');
+    const accessToken = await this._oktaAuth.tokenManager.get('accessToken');
     return accessToken ? accessToken.accessToken : undefined;
   }
 

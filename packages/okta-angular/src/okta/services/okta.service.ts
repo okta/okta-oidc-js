@@ -51,7 +51,6 @@ export class OktaAuthService {
       this.observers = [];
 
       this.oktaAuth = new OktaAuth({
-        url: auth.issuer.split('/oauth2/')[0],
         clientId: auth.clientId,
         issuer: auth.issuer,
         redirectUri: auth.redirectUri
@@ -89,7 +88,7 @@ export class OktaAuthService {
      * Returns the current accessToken in the tokenManager.
      */
     async getAccessToken(): Promise<string | undefined>  {
-      const accessToken = this.oktaAuth.tokenManager.get('accessToken');
+      const accessToken = await this.oktaAuth.tokenManager.get('accessToken');
       return accessToken ? accessToken.accessToken : undefined;
     }
 
@@ -97,7 +96,7 @@ export class OktaAuthService {
      * Returns the current idToken in the tokenManager.
      */
     async getIdToken(): Promise<string | undefined> {
-      const idToken = this.oktaAuth.tokenManager.get('idToken');
+      const idToken = await this.oktaAuth.tokenManager.get('idToken');
       return idToken ? idToken.idToken : undefined;
     }
 
@@ -106,8 +105,8 @@ export class OktaAuthService {
      * accessToken is provided or parses the available idToken.
      */
     async getUser(): Promise<UserClaims|undefined> {
-      const accessToken = this.oktaAuth.tokenManager.get('accessToken');
-      const idToken = this.oktaAuth.tokenManager.get('idToken');
+      const accessToken = await this.oktaAuth.tokenManager.get('accessToken');
+      const idToken = await this.oktaAuth.tokenManager.get('idToken');
       if (accessToken && idToken) {
         const userinfo = await this.oktaAuth.token.getUserInfo(accessToken);
         if (userinfo.sub === idToken.claims.sub) {
