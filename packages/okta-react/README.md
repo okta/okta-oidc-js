@@ -313,6 +313,10 @@ auth.redirect({
 });
 ```
 
+#### `auth.refreshTokens({sessionToken})`
+
+Refreshes the `id_token` and `access_token` without prompting the user to log in again. Adds the newly obtained tokens to the underlying `tokenManager` and also returns tokens in promise. Parameter `sessionToken` is optional.
+
 #### `auth.handleAuthentication()`
 
 Parses tokens from the url and stores them.
