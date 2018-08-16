@@ -1,3 +1,9 @@
+# 1.0.3
+
+### Other
+
+- Updated `@okta/okta-auth-js` dependency to version 2.
+
 # 1.0.2
 
 ### Other
