@@ -1,6 +1,6 @@
 {
   "name": "@okta/okta-vue",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Vue support for Okta",
   "main": "dist/okta-vue.js",
   "files": [
@@ -50,7 +50,7 @@
   },
   "homepage": "https://github.com/okta/okta-oidc-js#readme",
   "dependencies": {
-    "@okta/okta-auth-js": "^1.14.0",
+    "@okta/okta-auth-js": "^2.0.0",
     "cross-env": "^5.1.1",
     "vue": "^2.5.9",
     "vue-router": "^3.0.1"

@@ -17,10 +17,10 @@ module.exports = {
       .setValue('#okta-signin-password', process.env.PASSWORD)
       .click('#okta-signin-submit')
       .waitForElementVisible('#app', 5000)
+      .pause(2000) // Wait for async token retrieval and userinfo to finish
       .assert.urlContains('/protected')
       .assert.elementPresent('#logout-button')
       .assert.containsText('.protected', 'Protected!')
-      .pause(2000) // Wait for async function to finish
       .assert.containsText('.protected .userinfo', 'email')
       .click('#logout-button')
       .end()
@@ -38,6 +38,7 @@ module.exports = {
       .setValue('#okta-signin-password', process.env.PASSWORD)
       .click('#okta-signin-submit')
       .waitForElementVisible('#app', 5000)
+      .pause(2000) // Wait for async token retrieval and userinfo to finish
       .assert.elementPresent('#logout-button')
       .click('#logout-button')
       .end()
