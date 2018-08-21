@@ -7,7 +7,8 @@
     "build": "rimraf dist/ && babel src -d dist",
     "build:harness": "npm --prefix test/e2e/harness install",
     "build:package-info": "node ../../util/write-package-info.js . src/packageInfo.js",
-    "jest": "jest test/jest/",
+    "jest": "jest",
+    "jest:watch": "jest --watchAll",
     "lint": "eslint src/**; exit 0",
     "lint:watch": "esw -w lib/**",
     "prepublish": "npm run build:package-info && npm run build",
@@ -51,6 +52,8 @@
     "babel-plugin-transform-runtime": "^6.23.0",
     "babel-preset-env": "^1.6.1",
     "babel-preset-react-app": "^3.0.2",
+    "enzyme": "^3.3.0",
+    "enzyme-adapter-react-16": "^1.1.1",
     "eslint": "^4.7.1",
     "eslint-plugin-import": "^2.7.0",
     "eslint-plugin-jsx-a11y": "^6.0.2",
@@ -61,9 +64,18 @@
     "jest": "^22.4.2",
     "polished": "^1.7.0",
     "protractor": "^5.1.2",
-    "react-dom": "^15.6.1",
+    "react": ">=16",
+    "react-dom": ">=16",
     "react-router-dom": "^4.2.2",
     "rimraf": "^2.6.2",
     "styled-components": "^2.1.2"
+  },
+  "jest": {
+    "setupFiles": [
+      "./test/test-setup.js"
+    ],
+    "roots": [
+      "<rootDir>/test/jest"
+    ]
   }
 }
