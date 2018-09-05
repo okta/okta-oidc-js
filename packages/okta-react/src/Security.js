@@ -15,7 +15,7 @@ import { withRouter } from 'react-router';
 import PropTypes from 'prop-types';
 import Auth from './Auth';
 
-export default withRouter(class Security extends Component {
+class Security extends Component {
   constructor(props) {
     super(props);
     this.auth = props.auth || new Auth(props);
@@ -33,9 +33,11 @@ export default withRouter(class Security extends Component {
 
   render() {
     return (
-      <div>
+      <div className={this.props.className}>
         {this.props.children}
-      </div> 
+      </div>
     );
   }
-});
+};
+
+export default withRouter(Security);

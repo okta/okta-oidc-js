@@ -40,7 +40,7 @@ class RenderWrapper extends Component {
   }
 }
 
-export default withAuth(class SecureRoute extends Component {
+class SecureRoute extends Component {
   constructor(props) {
     super(props);
 
@@ -78,6 +78,11 @@ export default withAuth(class SecureRoute extends Component {
   }
 
   render() {
-    return <Route path={this.props.path} render={this.createRenderWrapper} />;
+    return <Route
+      path={this.props.path}
+      render={this.createRenderWrapper}
+    />;
   }
-});
+};
+
+export default withAuth(SecureRoute);
