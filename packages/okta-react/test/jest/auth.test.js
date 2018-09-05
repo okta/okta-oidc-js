@@ -32,6 +32,9 @@ const mockAuthJsInstance = {
   userAgent: 'okta-auth-js',
   tokenManager: {
     get: jest.fn().mockReturnValue(Promise.resolve(standardAccessTokenParsed))
+  },
+  token: {
+    getWithRedirect: jest.fn()
   }
 };
 
@@ -39,18 +42,84 @@ AuthJS.mockImplementation(() => {
   return mockAuthJsInstance
 });
 
-test('Auth component sets the right user agent on AuthJS', () => {
-  const auth = new Auth({
-    issuer: 'https://foo/oauth2/default'
+describe('Auth component', () => {
+  test('sets the right user agent on AuthJS', () => {
+    const auth = new Auth({
+      issuer: 'https://foo/oauth2/default'
+    });
+    const expectedUserAgent = `${pkg.name}/${pkg.version} okta-auth-js`;
+    expect(auth._oktaAuth.userAgent).toMatch(expectedUserAgent);
   });
-  const expectedUserAgent = `${pkg.name}/${pkg.version} okta-auth-js`;
-  expect(auth._oktaAuth.userAgent).toMatch(expectedUserAgent);
-});
-test('Auth component can retrieve an accessToken from the tokenManager', async (done) => {
-  const auth = new Auth({
-    issuer: 'https://foo/oauth2/default'
+  test('can retrieve an accessToken from the tokenManager', async (done) => {
+    const auth = new Auth({
+      issuer: 'https://foo/oauth2/default'
+    });
+    const accessToken = await auth.getAccessToken();
+    expect(accessToken).toBe(mockAccessToken);
+    done();
   });
-  const accessToken = await auth.getAccessToken();
-  expect(accessToken).toBe(mockAccessToken);
-  done();
+  test('builds the authorize request with correct params', () => {
+    const auth = new Auth({
+      issuer: 'https://foo/oauth2/default'
+    });
+    auth.redirect();
+    expect(mockAuthJsInstance.token.getWithRedirect).toHaveBeenCalledWith({
+      responseType: ['id_token', 'token'],
+      scopes: ['openid', 'email', 'profile']
+    });
+  });
+  test('can override the authorize request builder scope with config params', () => {
+    const auth = new Auth({
+      issuer: 'https://foo/oauth2/default',
+      scope: ['openid', 'foo']
+    });
+    auth.redirect();
+    expect(mockAuthJsInstance.token.getWithRedirect).toHaveBeenCalledWith({
+      responseType: ['id_token', 'token'],
+      scopes: ['openid', 'foo']
+    });
+  });
+  test('can override the authorize request builder responseType with config params', () => {
+    const auth = new Auth({
+      issuer: 'https://foo/oauth2/default',
+      response_type: ['id_token']
+    });
+    auth.redirect();
+    expect(mockAuthJsInstance.token.getWithRedirect).toHaveBeenCalledWith({
+      responseType: ['id_token'],
+      scopes: ['openid', 'email', 'profile']
+    });
+  });
+  test('can override the authorize request builder with redirect params', () => {
+    const auth = new Auth({
+      issuer: 'https://foo/oauth2/default'
+    });
+    auth.redirect({scope: ['openid', 'foo']});
+    expect(mockAuthJsInstance.token.getWithRedirect).toHaveBeenCalledWith({
+      responseType: ['id_token', 'token'],
+      scopes: ['openid', 'foo']
+    });
+  });
+  test('can append the authorize request builder with additionalParams through auth.redirect', () => {
+    const auth = new Auth({
+      issuer: 'https://foo/oauth2/default'
+    });
+    auth.redirect({foo: 'bar'});
+    expect(mockAuthJsInstance.token.getWithRedirect).toHaveBeenCalledWith({
+      responseType: ['id_token', 'token'],
+      scopes: ['openid', 'email', 'profile'],
+      foo: 'bar'
+    });
+  });
+  test('can append the authorize request builder with additionalParams through auth.login', () => {
+    const auth = new Auth({
+      issuer: 'https://foo/oauth2/default'
+    });
+    auth.login({foo: 'bar'});
+    expect(mockAuthJsInstance.token.getWithRedirect).toHaveBeenCalledWith({
+      responseType: ['id_token', 'token'],
+      scopes: ['openid', 'email', 'profile'],
+      foo: 'bar'
+    });
+  });
 });

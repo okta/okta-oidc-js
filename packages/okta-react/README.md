@@ -295,23 +295,29 @@ Retrieves the id token from storage if it exists.
 
 Retrieves the access token from storage if it exists.
 
-#### `auth.login(fromUri)`
+#### `auth.login(fromUri, additionalParams)`
 
-Calls `onAuthRequired` or redirects to Okta if `onAuthRequired` is undefined. This method accepts a `fromUri` parameter to push the user to after successful authentication.
+Calls `onAuthRequired` or redirects to Okta if `onAuthRequired` is undefined. This method accepts a `fromUri` parameter to push the user to after successful authentication, and an optional `additionalParams` object.
+
+For more information on `additionalParams`, see the [`auth.redirect`](#authredirectadditionalparams) method below.
 
 #### `auth.logout(uri)`
 
 Terminates the user's session in Okta and clears all stored tokens. Accepts an optional `uri` parameter to push the user to after logout.
 
-#### `auth.redirect({sessionToken})`
+#### `auth.redirect(additionalParams)`
 
-Performs a redirect to Okta with an optional `sessionToken`.
+Performs a full-page redirect to Okta with optional request parameters.
+
+The `additionalParams` are mapped to Okta's [`/authorize` request parameters](https://developer.okta.com/docs/api/resources/oidc#authorize). This will override any existing [configuration](#configuration-options). As an example, if you have an Okta `sessionToken`, you can bypass the full-page redirect by passing in this token. This is recommended when using the [Okta Sign-In Widget](https://github.com/okta/okta-signin-widget). Simply pass in a `sessionToken` into the `redirect` method as follows:
 
 ```typescript
 auth.redirect({
   sessionToken: '{sampleSessionToken}'
 });
 ```
+
+> Note: For information on obtaining a `sessionToken` using the [Okta Sign-In Widget](https://github.com/okta/okta-signin-widget), please see the [`renderEl()` example](https://github.com/okta/okta-signin-widget#rendereloptions-success-error).
 
 #### `auth.handleAuthentication()`
 
