@@ -34,7 +34,7 @@ class App extends Component {
             <Route path='/' component={Home}/>
             <Route path='/login' component={CustomLogin}/>
             <Route path='/sessionToken-login' component={SessionTokenLogin}/>
-            <SecureRoute path='/protected' component={Protected}/>=
+            <SecureRoute exact path='/protected' component={Protected}/>
             <Route path='/implicit/callback' component={ImplicitCallback} />
           </Security>
         </Router>

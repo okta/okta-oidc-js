@@ -78,10 +78,15 @@ class SecureRoute extends Component {
   }
 
   render() {
-    return <Route
-      path={this.props.path}
-      render={this.createRenderWrapper}
-    />;
+    return (
+      <Route
+        path={this.props.path}
+        exact={this.props.exact}
+        strict={this.props.strict}
+        sensitive={this.props.sensitive}
+        render={this.createRenderWrapper}
+      />
+    );
   }
 };
 
