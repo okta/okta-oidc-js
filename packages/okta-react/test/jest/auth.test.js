@@ -68,7 +68,7 @@ describe('Auth component', () => {
       scopes: ['openid', 'email', 'profile']
     });
   });
-  test('can override the authorize request builder with config params', () => {
+  test('can override the authorize request builder scope with config params', () => {
     const auth = new Auth({
       issuer: 'https://foo/oauth2/default',
       scope: ['openid', 'foo']
@@ -77,6 +77,17 @@ describe('Auth component', () => {
     expect(mockAuthJsInstance.token.getWithRedirect).toHaveBeenCalledWith({
       responseType: ['id_token', 'token'],
       scopes: ['openid', 'foo']
+    });
+  });
+  test('can override the authorize request builder responseType with config params', () => {
+    const auth = new Auth({
+      issuer: 'https://foo/oauth2/default',
+      response_type: ['id_token']
+    });
+    auth.redirect();
+    expect(mockAuthJsInstance.token.getWithRedirect).toHaveBeenCalledWith({
+      responseType: ['id_token'],
+      scopes: ['openid', 'email', 'profile']
     });
   });
   test('can override the authorize request builder with redirect params', () => {
