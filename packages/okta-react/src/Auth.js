@@ -80,14 +80,20 @@ export default class Auth {
     return accessToken ? accessToken.accessToken : undefined;
   }
 
-  async login(fromUri) {
-    localStorage.setItem('secureRouterReferrerPath', JSON.stringify(fromUri ? { pathname: fromUri } : this._history.location));
+  async login(fromUri, additionalParams) {
+    const referrerPath = fromUri
+      ? { pathname: fromUri }
+      : this._history.location;
+    localStorage.setItem(
+      'secureRouterReferrerPath',
+      JSON.stringify(referrerPath)
+      );
     if (this._config.onAuthRequired) {
       const auth = this;
       const history = this._history;
       return this._config.onAuthRequired({ auth, history });
     }
-    await this.redirect();
+    await this.redirect(additionalParams);
   }
 
   async logout(path) {
@@ -96,11 +102,19 @@ export default class Auth {
     this._history.push(path || '/');
   }
 
-  async redirect({sessionToken} = {}) {
+  async redirect(additionalParams = {}) {
+    const responseType = additionalParams.response_type
+      || this._config.response_type
+      || ['id_token', 'token'];
+
+    const scopes = additionalParams.scope
+      || this._config.scope
+      || ['openid', 'email', 'profile'];
+
     this._oktaAuth.token.getWithRedirect({
-      responseType: this._config.response_type || ['id_token', 'token'],
-      scopes: this._config.scope || ['openid', 'email', 'profile'],
-      sessionToken
+      responseType: responseType,
+      scopes: scopes,
+      ...additionalParams
     });
 
     // return a promise that doesn't terminate so nothing
