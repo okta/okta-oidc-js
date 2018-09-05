@@ -192,6 +192,7 @@ Security is the top-most component of okta-react. This is where most of the conf
 - **redirect_uri** (required) - Where the callback handler is hosted
 - **scope** *(optional)*: Reserved or custom claims to be returned in the tokens
 - **response_type** *(optional)*: Desired token grant types
+- **idp** *(optional)*: Custom social or SAML Identity Provider
 - **onAuthRequired** (optional)
 - **auth** (optional) - Provide an Auth object instead of the options above. This is helpful when integrating `okta-react` with external libraries that need access to the tokens.
 

@@ -100,6 +100,7 @@ export default class Auth {
     this._oktaAuth.token.getWithRedirect({
       responseType: this._config.response_type || ['id_token', 'token'],
       scopes: this._config.scope || ['openid', 'email', 'profile'],
+      idp: this._config.idp,
       sessionToken
     });
 
