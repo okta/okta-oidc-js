@@ -45,6 +45,10 @@ describe('Basic login redirect', () => {
     await privatePage.waitUntilVisible();
     expect(privatePage.getBodyText()).toContain('sub');
 
+    // Default response_type of library should contain an accessToken and idToken
+    expect(privatePage.getBodyText()).toContain('access_token');
+    expect(privatePage.getBodyText()).toContain('id_token');
+
     // navigate to home page
     const homePage = new HomePage();
     await homePage.load();

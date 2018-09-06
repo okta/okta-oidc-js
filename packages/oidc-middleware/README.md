@@ -24,7 +24,7 @@ Need help? Contact [developers@okta.com](mailto:developers@okta.com) or use the 
   - [oidc.ensureAuthenticated({ redirectTo?: '/uri' })](#oidcensureauthenticated-redirectto-uri)
   - [req.isAuthenticated()](#reqisauthenticated)
   - [req.logout()](#reqlogout)
-  - [req.userinfo](#requserinfo)
+  - [req.userContext](#requsercontext)
 - [Customization](#customization)
   - [Customizing Routes](#customizing-routes)
   - [Using a Custom Login Page](#using-a-custom-login-page)
@@ -39,7 +39,7 @@ npm install --save @okta/oidc-middleware
 
 ## Prerequisites
 
-* You will need an Okta Developer Org, you can sign up for an account at https://developer.okta.com/signup/..
+* You will need an Okta Developer Org, you can sign up for an account at <https://developer.okta.com/signup/>.
 * An OIDC application in your Org, configured for Web mode.  If you are new to Okta or this flow, we suggest following the [Express.js Quickstart][express-quickstart].
 * This integration depends on sessions to store user information. Ensure the [express-session middleware](https://github.com/expressjs/session) is added before you add `ExpressOIDC`.  By default, the session middleware uses a MemoryStore, which is not designed for production use. Use [another session store](https://github.com/expressjs/session#compatible-session-stores) for production.
 
@@ -68,8 +68,8 @@ app.use(session({
 }));
 app.use(oidc.router);
 app.get('/', (req, res) => {
-  if (req.userinfo) {
-    res.send(`Hello ${req.userinfo.name}! <a href="logout">Logout</a>`);
+  if (req.userContext) {
+    res.send(`Hello ${req.userContext.userinfo.name}! <a href="logout">Logout</a>`);
   } else {
     res.send('Please <a href="/login">login</a>');
   }
@@ -90,7 +90,6 @@ oidc.on('error', err => {
 ```
 
 ## ExpressOIDC API
-
 
 ### new ExpressOIDC(config)
 
@@ -199,14 +198,27 @@ app.get('/logout', (req, res) => {
 });
 ```
 
-### req.userinfo
+### req.userContext
 
-This provides information about the authenticated user, and is obtained from the [userinfo endpoint of the authorization server](https://developer.okta.com/docs/api/resources/oidc.html#get-user-information) and depends on the scope requested (see scope option above):
+This provides information about the authenticated user and contains the requested tokens. The `userContext` object contains two keys:
+
+1. `userinfo`: The response from the [userinfo endpoint of the authorization server](https://developer.okta.com/docs/api/resources/oidc.html#get-user-information).
+2. `tokens`: [TokenSet object](https://github.com/panva/node-openid-client#tokenset) containing the `accessToken`, `idToken`, and/or `refreshToken` requested from the authorization server.
+
+> Note: Claims reflected in the userinfo response and token object depend on the scope requested (see scope option above).
 
 ```javascript
 app.get('/', (req, res) => {
-  if (req.userinfo) {
-    res.send(`Hi ${req.userinfo.sub}!`);
+  if (req.userContext && req.userContext.userinfo) {
+    const tokenSet = req.userContext.tokens;
+    const userinfo = req.userContext.userinfo;
+
+    console.log(`Access Token: ${tokenSet.access_token}`);
+    console.log(`Id Token: ${tokenSet.id_token}`);
+    console.log(`Claims: ${tokenSet.claims}`);
+    console.log(`Userinfo Response: ${userinfo}`);
+
+    res.send(`Hi ${userinfo.sub}!`);
   } else {
     res.send('Hi!');
   }
@@ -283,10 +295,10 @@ const oidc = new ExpressOIDC({ /* options */ });
 app.use(oidc.router);
 
 function addUserContext(req, res, next) {
-  if (!req.userinfo) return next();
+  if (!req.userContext.userinfo) return next();
 
   // request additional info from your database
-  User.findOne({ id: req.userinfo.sub }, (err, user) => {
+  User.findOne({ id: req.userContext.userinfo.sub }, (err, user) => {
     if (err) return next(err);
     req.user = user;
     next();
