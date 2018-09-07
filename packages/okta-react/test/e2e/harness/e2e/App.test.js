@@ -31,7 +31,7 @@ describe('React + Okta App', () => {
   });
 
   it('should redirect to Okta for login when trying to access a protected page', () => {
-    protectedPage.navigateTo();
+    protectedPage.navigateTo('?state=bar#baz');
 
     oktaLoginPage.waitUntilVisible();
     oktaLoginPage.signIn({
@@ -39,7 +39,7 @@ describe('React + Okta App', () => {
       password: process.env.PASSWORD
     });
 
-    protectedPage.waitUntilVisible();
+    protectedPage.waitUntilVisible('?state=bar#baz');
     expect(protectedPage.getLogoutButton().isPresent()).toBeTruthy();
 
     protectedPage.waitForElement('userinfo-container');
@@ -94,5 +94,13 @@ describe('React + Okta App', () => {
     appPage.getLogoutButton().click();
 
     appPage.waitUntilLoggedOut();
+  });
+
+  it('should honor the "exact" route param by not triggering the secureRoute', () => {
+    protectedPage.navigateTo('/nested/');
+    protectedPage.waitUntilVisible('/nested');
+
+    // Assert the navigation guard wasn't triggered due to "exact" path
+    expect(appPage.getLoginButton().isPresent()).toBeTruthy();
   });
 });
