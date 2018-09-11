@@ -209,7 +209,7 @@ This provides information about the authenticated user and contains the requeste
 
 ```javascript
 app.get('/', (req, res) => {
-  if (req.userContext && req.userContext.userinfo) {
+  if (req.userContext) {
     const tokenSet = req.userContext.tokens;
     const userinfo = req.userContext.userinfo;
 
@@ -295,7 +295,9 @@ const oidc = new ExpressOIDC({ /* options */ });
 app.use(oidc.router);
 
 function addUserContext(req, res, next) {
-  if (!req.userContext.userinfo) return next();
+  if (!req.userContext) {
+    return next();
+  }
 
   // request additional info from your database
   User.findOne({ id: req.userContext.userinfo.sub }, (err, user) => {
