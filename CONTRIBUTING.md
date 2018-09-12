@@ -18,7 +18,15 @@ We use a simplified form of [Atom's](https://github.com/atom/atom/blob/master/CO
     <BLANKLINE>
     More detailed description of commit
     <BLANKLINE>
-    Resolves: <Jira # or Issue #>
+    (If available) Resolves: <Jira # or Issue #>
+
+#### Template for specific package change
+
+    <emoji>[<package-name>] Short Description of Commit
+    <BLANKLINE>
+    More detailed description of commit
+    <BLANKLINE>
+    (If available) Resolves: <Jira # or Issue #>
 
 #### Emoji Categories
 
@@ -44,3 +52,10 @@ If you do not see an exact emoji match, use the best matching emoji.
     Updates Contributing.md with new template
 
     Resolves: #1234
+
+#### Example for specific package change
+    :bug:[okta-angular] Fixes bad bug
+
+    Fixes a very bad bug in okta-angular
+
+    Resolves: #5678

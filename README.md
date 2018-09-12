@@ -1,6 +1,8 @@
 # okta-oidc-js
 This is a monorepo that contains Okta's OpenID Connect JavaScript resources.
 
+Contributors should read our [contributing guidelines](./CONTRIBUTING.md) if they wish to contribute.
+
 [![build status](https://img.shields.io/travis/okta/okta-oidc-js/master.svg?style=flat-square)](https://travis-ci.org/okta/okta-oidc-js)
 
 **Table of Contents**
