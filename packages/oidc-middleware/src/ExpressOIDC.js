@@ -11,12 +11,15 @@
  */
 
 const EventEmitter = require('events').EventEmitter;
-const uuid = require('uuid');
 const _ = require('lodash');
 const oidcUtil = require('./oidcUtil');
 const connectUtil = require('./connectUtil');
-
-class OIDCMiddlewareError extends Error {}
+const {
+  assertIssuer,
+  assertClientId,
+  assertClientSecret,
+  assertRedirectUri
+} = require('./configUtil');
 
 /**
  * Class to easily integrate OpenId Connect with Express
@@ -36,6 +39,7 @@ module.exports = class ExpressOIDC extends EventEmitter {
    * @param {string} [options.scope=openid] The scopes that will determine the claims on the tokens
    * @param {string} [options.response_type=code] The OpenId Connect response type
    * @param {number} [options.maxClockSkew=120] The maximum discrepancy allowed between server clocks in seconds
+   * @param {Object} [options.testing] Testing overrides for disabling configuration validation
    * @param {Object} [options.routes]
    * @param {Object} [options.routes.login]
    * @param {string} [options.routes.login.path=/login] Path where the login middleware is hosted
@@ -55,14 +59,17 @@ module.exports = class ExpressOIDC extends EventEmitter {
       sessionKey
     } = options;
 
-    const missing = [];
-    if (!issuer) missing.push('issuer');
-    if (!client_id) missing.push('client_id');
-    if (!client_secret) missing.push('client_secret');
-    if (!redirect_uri) missing.push('redirect_uri');
-    if (missing.length) {
-      throw new OIDCMiddlewareError(`${missing.join(', ')} must be defined`);
-    }
+    // Validate the issuer param
+    assertIssuer(issuer, options.testing);
+
+    // Validate the client_id param
+    assertClientId(client_id);
+
+    // Validate the client_secret param
+    assertClientSecret(client_secret);
+
+    // Validate the redirect_uri param
+    assertRedirectUri(redirect_uri);
 
     // Add defaults to the options
     options = _.merge({

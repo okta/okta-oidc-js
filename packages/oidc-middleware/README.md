@@ -54,9 +54,9 @@ const { ExpressOIDC } = require('@okta/oidc-middleware');
 
 const app = express();
 const oidc = new ExpressOIDC({
-  issuer: 'https://{yourOktaDomain}.com/oauth2/default',
-  client_id: 'XXXXX',
-  client_secret: 'XXXXX',
+  issuer: 'https://{yourOktaDomain}/oauth2/default',
+  client_id: '{clientId}',
+  client_secret: '{clientSecret}',
   redirect_uri: 'http://localhost:3000/authorization-code/callback',
   scope: 'openid profile'
 });
@@ -99,20 +99,20 @@ To configure your OIDC integration, create an instance of `ExpressOIDC` and pass
 const { ExpressOIDC } = require('@okta/oidc-middleware');
 
 const oidc = new ExpressOIDC({
-  issuer: YOUR_ISSUER,
-  client_id: YOUR_CLIENT_ID,
-  client_secret: YOUR_CLIENT_SECRET,
-  redirect_uri: YOUR_REDIRECT_URI,
+  issuer: 'https://{yourOktaDomain}/oauth2/default',
+  client_id: '{clientId}',
+  client_secret: '{clientSecret}',
+  redirect_uri: '{redirectUri}',
   scope: 'openid profile'
 });
 ```
 
 Required config:
 
-* **issuer** - The OIDC provider (e.g. `https://YOUR_ORG.oktapreview.com/oauth2/default`)
+* **issuer** - The OIDC provider (e.g. `https://{yourOktaDomain}/oauth2/default`)
 * **client_id** - An id provided when you create an OIDC app in your Okta Org
 * **client_secret** - A secret provided when you create an OIDC app in your Okta Org
-* **redirect_uri** - The callback for your app. Locally, this is usually `http://localhost:3000/authorization-code/callback`. When deployed, this should be `https://YOUR_PROD_DOMAIN/authorization-code/callback`.
+* **redirect_uri** - The callback for your app. Locally, this is usually `http://localhost:3000/authorization-code/callback`. When deployed, this should be `https://{yourProductionDomain}/authorization-code/callback`.
 
 Optional config:
 
