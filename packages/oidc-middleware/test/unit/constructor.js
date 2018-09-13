@@ -1,15 +1,28 @@
-const expect = require('chai').expect;
+const chai = require('chai');
 const Issuer = require('openid-client').Issuer;
 const nock = require('nock');
 const os = require('os');
 const path = require('path');
-const rpt = require ('read-package-tree')
+const rpt = require ('read-package-tree');
+const sinon = require('sinon');
+const sinonChai = require('sinon-chai');
 
 const { ExpressOIDC } = require('../../index.js');
 const pkg = require('../../package.json');
 const packageRoot = path.join(__dirname, '..', '..');
 
+const expect = chai.expect;
+chai.use(sinonChai);
+
 describe('new ExpressOIDC()', () => {
+  beforeEach(() => {
+    sinon.spy(console, 'warn');
+  });
+
+  afterEach(function() {
+    console.warn.restore();
+  });
+
   const findDomainMessage = 'You can copy your domain from the Okta Developer ' +
     'Console. Follow these instructions to find it: https://bit.ly/finding-okta-domain';
 
@@ -39,13 +52,14 @@ describe('new ExpressOIDC()', () => {
     function createInstance() {
       new ExpressOIDC({
         issuer: 'http://foo.com',
-        skipConfigValidation: {
-          https: true
+        testing: {
+          disableHttpsCheck: true
         }
       });
     }
     const errorMsg = `Your Okta URL must start with https. Current value: http://foo.com. ${findDomainMessage}`;
     expect(createInstance).not.to.throw(errorMsg);
+    expect(console.warn).to.be.calledWith('Warning: HTTPS check is disabled. This allows for insecure configurations and is NOT recommended for production use.');
   });
 
   it('should throw if an issuer matching {yourOktaDomain} is provided', () => {

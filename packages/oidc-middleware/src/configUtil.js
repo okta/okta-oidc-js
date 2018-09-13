@@ -21,13 +21,19 @@ const copyCredentialsMessage = 'You can copy it from the Okta Developer Console 
   'in the details for the Application you created. ' +
   `Follow these instructions to find it: ${findAppCredentialsURL}`;
 
-configUtil.assertIssuer = (issuer, skip = {}) => {
+configUtil.assertIssuer = (issuer, testing = {}) => {
   const copyMessage = 'You can copy your domain from the Okta Developer ' +
     'Console. Follow these instructions to find it: ' + findDomainURL;
 
+  if (testing.disableHttpsCheck) {
+    const httpsWarning = 'Warning: HTTPS check is disabled. ' +
+      'This allows for insecure configurations and is NOT recommended for production use.';
+    console.warn(httpsWarning);
+  }
+
   if (!issuer) {
     throw new OIDCMiddlewareError('Your Okta URL is missing. ' + copyMessage);
-  } else if (!skip.https && !issuer.match(/^https:\/\//g)) {
+  } else if (!testing.disableHttpsCheck && !issuer.match(/^https:\/\//g)) {
     throw new OIDCMiddlewareError(
       'Your Okta URL must start with https. ' +
       `Current value: ${issuer}. ${copyMessage}`

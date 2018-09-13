@@ -39,7 +39,7 @@ module.exports = class ExpressOIDC extends EventEmitter {
    * @param {string} [options.scope=openid] The scopes that will determine the claims on the tokens
    * @param {string} [options.response_type=code] The OpenId Connect response type
    * @param {number} [options.maxClockSkew=120] The maximum discrepancy allowed between server clocks in seconds
-   * @param {Object} [options.skipConfigValidation] Skip configuration validation for specific keys
+   * @param {Object} [options.testing] Testing overrides for disabling configuration validation
    * @param {Object} [options.routes]
    * @param {Object} [options.routes.login]
    * @param {string} [options.routes.login.path=/login] Path where the login middleware is hosted
@@ -60,7 +60,7 @@ module.exports = class ExpressOIDC extends EventEmitter {
     } = options;
 
     // Validate the issuer param
-    assertIssuer(issuer, options.skipConfigValidation);
+    assertIssuer(issuer, options.testing);
 
     // Validate the client_id param
     assertClientId(client_id);

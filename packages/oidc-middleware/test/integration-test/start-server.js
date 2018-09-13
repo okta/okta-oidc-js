@@ -14,8 +14,8 @@ const util = require('../e2e/util/util');
 
 let server = util.createDemoServer({
   // Skip https validation for mocking Okta auth server responses
-  skipConfigValidation: {
-    https: true
+  testing: {
+    disableHttpsCheck: true
   }
 });
 server.start();
