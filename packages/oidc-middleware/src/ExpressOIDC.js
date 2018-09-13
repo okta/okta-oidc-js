@@ -14,7 +14,12 @@ const EventEmitter = require('events').EventEmitter;
 const _ = require('lodash');
 const oidcUtil = require('./oidcUtil');
 const connectUtil = require('./connectUtil');
-const configUtil = require('./configUtil');
+const {
+  assertIssuer,
+  assertClientId,
+  assertClientSecret,
+  assertRedirectUri
+} = require('./configUtil');
 
 /**
  * Class to easily integrate OpenId Connect with Express
@@ -55,16 +60,16 @@ module.exports = class ExpressOIDC extends EventEmitter {
     } = options;
 
     // Validate the issuer param
-    configUtil.assertIssuer(issuer, options.skipConfigValidation);
+    assertIssuer(issuer, options.skipConfigValidation);
 
     // Validate the client_id param
-    configUtil.assertClientCredentials(client_id);
+    assertClientId(client_id);
 
     // Validate the client_secret param
-    configUtil.assertClientCredentials(client_secret);
+    assertClientSecret(client_secret);
 
     // Validate the redirect_uri param
-    configUtil.assertRedirectUri(redirect_uri);
+    assertRedirectUri(redirect_uri);
 
     // Add defaults to the options
     options = _.merge({

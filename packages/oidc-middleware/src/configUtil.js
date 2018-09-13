@@ -1,5 +1,5 @@
 /*!
- * Copyright (c) 2017-Present, Okta, Inc. and/or its affiliates. All rights reserved.
+ * Copyright (c) 2018-Present, Okta, Inc. and/or its affiliates. All rights reserved.
  * The Okta software accompanied by this notice is provided pursuant to the Apache License, Version 2.0 (the "License.")
  *
  * You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0.
@@ -16,6 +16,10 @@ const configUtil = module.exports;
 
 const findDomainURL = 'https://bit.ly/finding-okta-domain';
 const findAppCredentialsURL = 'https://bit.ly/finding-okta-app-credentials';
+
+const copyCredentialsMessage = 'You can copy it from the Okta Developer Console ' +
+  'in the details for the Application you created. ' +
+  `Follow these instructions to find it: ${findAppCredentialsURL}`;
 
 configUtil.assertIssuer = (issuer, skip = {}) => {
   const copyMessage = 'You can copy your domain from the Okta Developer ' +
@@ -43,17 +47,19 @@ configUtil.assertIssuer = (issuer, skip = {}) => {
   }
 };
 
-configUtil.assertClientCredentials = (clientIdOrSecret) => {
-  const copyMessage = 'You can copy it from the Okta Developer Console ' +
-    'in the details for the Application you created. ' +
-    `Follow these instructions to find it: ${findAppCredentialsURL}`;
+configUtil.assertClientId = (clientId) => {
+  if (!clientId) {
+    throw new OIDCMiddlewareError('Your client ID is missing. ' + copyCredentialsMessage);
+  } else if (clientId.match(/{clientId}/g)) {
+    throw new OIDCMiddlewareError('Replace {clientId} with the client ID of your Application. ' + copyCredentialsMessage);
+  }
+}
 
-  if (!clientIdOrSecret) {
-    throw new OIDCMiddlewareError('Your client credentials are missing. ' + copyMessage);
-  } else if (clientIdOrSecret.match(/{clientId}/g)) {
-    throw new OIDCMiddlewareError('Replace {clientId} with the client ID of your Application. ' + copyMessage);
-  } else if (clientIdOrSecret.match(/{clientSecret}/g)) {
-    throw new OIDCMiddlewareError('Replace {clientSecret} with the client secret of your Application. ' + copyMessage);
+configUtil.assertClientSecret = (clientSecret) => {
+  if (!clientSecret) {
+    throw new OIDCMiddlewareError('Your client secret is missing. ' + copyCredentialsMessage);
+  } else if (clientSecret.match(/{clientSecret}/g)) {
+    throw new OIDCMiddlewareError('Replace {clientSecret} with the client secret of your Application. ' + copyCredentialsMessage);
   }
 };
 

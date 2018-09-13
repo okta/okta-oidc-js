@@ -10,12 +10,18 @@ const pkg = require('../../package.json');
 const packageRoot = path.join(__dirname, '..', '..');
 
 describe('new ExpressOIDC()', () => {
+  const findDomainMessage = 'You can copy your domain from the Okta Developer ' +
+    'Console. Follow these instructions to find it: https://bit.ly/finding-okta-domain';
+
+  const findCredentialsMessage = 'You can copy it from the Okta Developer Console ' +
+    'in the details for the Application you created. Follow these instructions to ' +
+    'find it: https://bit.ly/finding-okta-app-credentials';
+
   it('should throw if no issuer is provided', () => {
     function createInstance() {
       new ExpressOIDC();
     }
-    const errorMsg = 'Your Okta URL is missing. You can copy your domain from the Okta Developer ' +
-      'Console. Follow these instructions to find it: https://bit.ly/finding-okta-domain';
+    const errorMsg = `Your Okta URL is missing. ${findDomainMessage}`;
     expect(createInstance).to.throw(errorMsg);
   });
 
@@ -25,9 +31,7 @@ describe('new ExpressOIDC()', () => {
         issuer: 'http://foo.com'
       });
     }
-    const errorMsg = 'Your Okta URL must start with https. Current value: http://foo.com. ' +
-      'You can copy your domain from the Okta Developer Console. Follow these instructions ' +
-      'to find it: https://bit.ly/finding-okta-domain';
+    const errorMsg = `Your Okta URL must start with https. Current value: http://foo.com. ${findDomainMessage}`;
     expect(createInstance).to.throw(errorMsg);
   });
 
@@ -40,9 +44,7 @@ describe('new ExpressOIDC()', () => {
         }
       });
     }
-    const errorMsg = 'Your Okta URL must start with https. Current value: http://foo.com. ' +
-      'You can copy your domain from the Okta Developer Console. Follow these instructions ' +
-      'to find it: https://bit.ly/finding-okta-domain';
+    const errorMsg = `Your Okta URL must start with https. Current value: http://foo.com. ${findDomainMessage}`;
     expect(createInstance).not.to.throw(errorMsg);
   });
 
@@ -52,9 +54,7 @@ describe('new ExpressOIDC()', () => {
         issuer: 'https://{yourOktaDomain}'
       });
     }
-    const errorMsg = 'Replace {yourOktaDomain} with your Okta domain. ' +
-      'You can copy your domain from the Okta Developer ' +
-      'Console. Follow these instructions to find it: https://bit.ly/finding-okta-domain'
+    const errorMsg = `Replace {yourOktaDomain} with your Okta domain. ${findDomainMessage}`;
     expect(createInstance).to.throw(errorMsg);
   });
 
@@ -65,8 +65,7 @@ describe('new ExpressOIDC()', () => {
       });
     }
     const errorMsg = 'Your Okta domain should not contain -admin. Current value: ' +
-      'https://foo-admin.okta.com. You can copy your domain from the Okta Developer ' +
-      'Console. Follow these instructions to find it: https://bit.ly/finding-okta-domain'
+      `https://foo-admin.okta.com. ${findDomainMessage}`;
     expect(createInstance).to.throw(errorMsg);
   });
 
@@ -77,8 +76,7 @@ describe('new ExpressOIDC()', () => {
       });
     }
     const errorMsg = 'Your Okta domain should not contain -admin. Current value: ' +
-      'https://foo-admin.oktapreview.com. You can copy your domain from the Okta Developer ' +
-      'Console. Follow these instructions to find it: https://bit.ly/finding-okta-domain'
+      `https://foo-admin.oktapreview.com. ${findDomainMessage}`;
     expect(createInstance).to.throw(errorMsg);
   });
 
@@ -89,8 +87,7 @@ describe('new ExpressOIDC()', () => {
       });
     }
     const errorMsg = 'Your Okta domain should not contain -admin. Current value: ' +
-      'https://foo-admin.okta-emea.com. You can copy your domain from the Okta Developer ' +
-      'Console. Follow these instructions to find it: https://bit.ly/finding-okta-domain'
+      `https://foo-admin.okta-emea.com. ${findDomainMessage}`;
     expect(createInstance).to.throw(errorMsg);
   });
 
@@ -100,9 +97,8 @@ describe('new ExpressOIDC()', () => {
         issuer: 'https://foo.okta.com.com'
       });
     }
-    const errorMsg = 'It looks like there\'s a typo in your Okta domain. Current value: ' +
-      'https://foo.okta.com.com. You can copy your domain from the Okta Developer ' +
-      'Console. Follow these instructions to find it: https://bit.ly/finding-okta-domain'
+    const errorMsg = 'It looks like there\'s a typo in your Okta domain. ' +
+      `Current value: https://foo.okta.com.com. ${findDomainMessage}`;
     expect(createInstance).to.throw(errorMsg);
   });
 
@@ -112,9 +108,8 @@ describe('new ExpressOIDC()', () => {
         issuer: 'https://://foo.okta.com'
       });
     }
-    const errorMsg = 'It looks like there\'s a typo in your Okta domain. Current value: ' +
-      'https://://foo.okta.com. You can copy your domain from the Okta Developer ' +
-      'Console. Follow these instructions to find it: https://bit.ly/finding-okta-domain'
+    const errorMsg = 'It looks like there\'s a typo in your Okta domain. ' +
+      `Current value: https://://foo.okta.com. ${findDomainMessage}`;
     expect(createInstance).to.throw(errorMsg);
   });
 
@@ -124,9 +119,8 @@ describe('new ExpressOIDC()', () => {
         issuer: 'https://foo.okta://.com'
       });
     }
-    const errorMsg = 'It looks like there\'s a typo in your Okta domain. Current value: ' +
-      'https://foo.okta://.com. You can copy your domain from the Okta Developer ' +
-      'Console. Follow these instructions to find it: https://bit.ly/finding-okta-domain'
+    const errorMsg = 'It looks like there\'s a typo in your Okta domain. ' +
+      `Current value: https://foo.okta://.com. ${findDomainMessage}`;
     expect(createInstance).to.throw(errorMsg);
   });
 
@@ -136,9 +130,7 @@ describe('new ExpressOIDC()', () => {
         issuer: 'https://foo'
       });
     }
-    const errorMsg = 'Your client credentials are missing. You can copy it from the Okta ' +
-      'Developer Console in the details for the Application you created. ' +
-      'Follow these instructions to find it: https://bit.ly/finding-okta-app-credentials';
+    const errorMsg = `Your client ID is missing. ${findCredentialsMessage}`;
     expect(createInstance).to.throw(errorMsg);
   });
 
@@ -149,9 +141,7 @@ describe('new ExpressOIDC()', () => {
         issuer: 'https://foo'
       });
     }
-    const errorMsg = 'Your client credentials are missing. You can copy it from the Okta ' +
-      'Developer Console in the details for the Application you created. ' +
-      'Follow these instructions to find it: https://bit.ly/finding-okta-app-credentials';
+    const errorMsg = `Your client secret is missing. ${findCredentialsMessage}`;
   expect(createInstance).to.throw(errorMsg);
   });
 
@@ -162,9 +152,7 @@ describe('new ExpressOIDC()', () => {
         issuer: 'https://foo'
       });
     }
-    const errorMsg = 'Replace {clientId} with the client ID of your Application. You can copy ' +
-      'it from the Okta Developer Console in the details for the Application you created. ' +
-      'Follow these instructions to find it: https://bit.ly/finding-okta-app-credentials';
+    const errorMsg = `Replace {clientId} with the client ID of your Application. ${findCredentialsMessage}`;
     expect(createInstance).to.throw(errorMsg);
   });
 
@@ -176,9 +164,7 @@ describe('new ExpressOIDC()', () => {
         issuer: 'https://foo'
       });
     }
-    const errorMsg = 'Replace {clientSecret} with the client secret of your Application. You can copy ' +
-      'it from the Okta Developer Console in the details for the Application you created. ' +
-      'Follow these instructions to find it: https://bit.ly/finding-okta-app-credentials';
+    const errorMsg = `Replace {clientSecret} with the client secret of your Application. ${findCredentialsMessage}`;
     expect(createInstance).to.throw(errorMsg);
   });
 
