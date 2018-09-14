@@ -19,7 +19,7 @@
     "test": "npm run test:unit && npm run test:e2e && npm run test:integration",
     "test:e2e": "webdriver-manager update --gecko false && protractor test/e2e/conf.js",
     "test:integration": "sh tools/runIntegrationTests.sh",
-    "test:unit": "mocha test/unit/*.js"
+    "test:unit": "jest test/unit"
   },
   "engines": {
     "node": ">=6"
@@ -40,7 +40,7 @@
     "cross-env": "^5.1.1",
     "ejs": "^2.5.7",
     "express-session": "^1.15.5",
-    "mocha": "^5.0.0",
+    "jest": "^23.6.0",
     "nock": "^9.1.6",
     "protractor": "^5.1.2",
     "read-package-tree": "^5.1.6",

@@ -1,4 +1,3 @@
-const expect = require('chai').expect;
 const Issuer = require('openid-client').Issuer;
 const nock = require('nock');
 const os = require('os');
@@ -14,7 +13,7 @@ describe('new ExpressOIDC()', () => {
     function createInstance() {
       new ExpressOIDC();
     }
-    expect(createInstance).to.throw();
+    expect(createInstance).toThrow();
   });
 
   it('should set the HTTP timeout to 10 seconds', () => {
@@ -26,7 +25,7 @@ describe('new ExpressOIDC()', () => {
     }).on('error', () => {
       // Ignore errors caused by mock configuration data
     });
-    expect(Issuer.defaultHttpOptions.timeout).to.equal(10000);
+    expect(Issuer.defaultHttpOptions.timeout).toBe(10000);
   });
 
   it('should allow me to change the HTTP timeout', () => {
@@ -39,7 +38,7 @@ describe('new ExpressOIDC()', () => {
     }).on('error', () => {
       // Ignore errors caused by mock configuration data
     });
-    expect(Issuer.defaultHttpOptions.timeout).to.equal(1);
+    expect(Issuer.defaultHttpOptions.timeout).toBe(1);
   });
 
   it('should throw ETIMEOUT if the timeout is reached', (done) => {
@@ -55,7 +54,7 @@ describe('new ExpressOIDC()', () => {
       issuer: 'http://foo',
       timeout: 1
     }).on('error', (e) => {
-      expect(e.code).to.equal('ETIMEDOUT');
+      expect(e.code).toBe('ETIMEDOUT');
       done();
     });
   });
@@ -70,7 +69,7 @@ describe('new ExpressOIDC()', () => {
       .reply(200, function cb() {
         const userAgent = this.req.headers['user-agent'];
         const expectedAgent = `${pkg.name}/${pkg.version} ${openIdPkg.name}/${openIdPkg.version} node/${process.versions.node} ${os.platform()}/${os.release()}`;
-        expect(userAgent).to.equal(expectedAgent);
+        expect(userAgent).toBe(expectedAgent);
         done();
       });
       new ExpressOIDC({
