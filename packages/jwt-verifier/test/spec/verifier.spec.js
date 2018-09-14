@@ -10,7 +10,6 @@
  * See the License for the specific language governing permissions and limitations under the License.
  */
 
-const assert = require('assert');
 const fs = require('fs');
 const nJwt = require('njwt');
 const nock = require('nock');
@@ -55,8 +54,8 @@ describe('Jwt Verifier', () => {
     return getAccessToken(issuer1AccessTokenParams)
     .then(accessToken => verifier.verifyAccessToken(accessToken))
     .then(jwt => {
-      assert.equal(jwt.claims.iss, ISSUER);
-      assert.equal(jwt.claims.cid, CLIENT_ID);
+      expect(jwt.claims.iss).toBe(ISSUER);
+      expect(jwt.claims.cid).toBe(CLIENT_ID);
     });
   });
 
@@ -71,7 +70,7 @@ describe('Jwt Verifier', () => {
         .setHeader('kid', jwt.header.kid)
         .compact();
       return verifier.verifyAccessToken(token)
-      .catch(err => assert.equal(err.message, "Signature verification failed"));
+      .catch(err => expect(err.message).toBe('Signature verification failed'));
     });
   });
 
@@ -85,7 +84,7 @@ describe('Jwt Verifier', () => {
         .setSigningKey(rsaKeyPair.private)
         .compact();
       return verifier.verifyAccessToken(token)
-      .catch(err => assert.equal(err.message, 'Error while resolving signing key for kid "undefined"'));
+      .catch(err => expect(err.message).toBe('Error while resolving signing key for kid "undefined"'));
     });
   });
 
@@ -100,7 +99,7 @@ describe('Jwt Verifier', () => {
         .setHeader('kid', 'foo')
         .compact();
       return verifier.verifyAccessToken(token)
-      .catch(err => assert.equal(err.message, 'Error while resolving signing key for kid "foo"'));
+      .catch(err => expect(err.message).toBe('Error while resolving signing key for kid "foo"'));
     });
   });
 
@@ -119,7 +118,7 @@ describe('Jwt Verifier', () => {
         })
         .catch(err => {
           tk.travel(now);
-          assert.equal(err.message, 'Jwt is expired');
+          expect(err.message).toBe('Jwt is expired');
         });
       }));
   });
@@ -135,7 +134,7 @@ describe('Jwt Verifier', () => {
     return getAccessToken(issuer1AccessTokenParams)
     .then(accessToken =>
       verifier.verifyAccessToken(accessToken)
-      .catch(err => assert.equal(err.message,
+      .catch(err => expect(err.message).toBe(
         `claim 'cid' value '${CLIENT_ID}' does not match expected value 'baz', claim 'foo' value 'undefined' does not match expected value 'bar'`
       )));
   });
@@ -144,7 +143,7 @@ describe('Jwt Verifier', () => {
     const verifier = new OktaJwtVerifier({
       clientId: CLIENT_ID,
       issuer: ISSUER,
-      cacheMaxAge: 1000
+      cacheMaxAge: 500
     });
     return getAccessToken(issuer1AccessTokenParams)
     .then(accessToken => {
@@ -155,20 +154,20 @@ describe('Jwt Verifier', () => {
       const nockCallObjects = nock.recorder.play();
       return verifier.verifyAccessToken(accessToken)
       .then(jwt => {
-        assert.equal(nockCallObjects.length, 1);
+        expect(nockCallObjects.length).toBe(1);
         return verifier.verifyAccessToken(accessToken);
       })
       .then(jwt => {
-        assert.equal(nockCallObjects.length, 1);
+        expect(nockCallObjects.length).toBe(1);
         return new Promise((resolve, reject) => {
           setTimeout(() => {
             verifier.verifyAccessToken(accessToken)
             .then(jwt => {
-              assert.equal(nockCallObjects.length, 2);
+              expect(nockCallObjects.length).toBe(2);
               resolve();
             })
             .catch(reject);
-          }, 2000);
+          }, 1000);
         });
       })
     });
@@ -196,7 +195,7 @@ describe('Jwt Verifier', () => {
         .catch(err => {
           const nockCallObjects = nock.recorder.play();
           // Expect 1 request for the valid kid, and 1 request for the 2 attempts with an invalid kid
-          assert.equal(nockCallObjects.length, 2);
+          expect(nockCallObjects.length).toBe(2);
         });
       })
     }));

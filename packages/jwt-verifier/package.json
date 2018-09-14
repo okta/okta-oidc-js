@@ -10,7 +10,7 @@
   ],
   "scripts": {
     "test": "npm run test:sanity && npm run test:integration",
-    "test:sanity": "mocha --timeout 10000 test/spec",
+    "test:sanity": "jest test/spec",
     "test:integration": "sh tools/runIntegrationTests.sh"
   },
   "keywords": [
@@ -33,7 +33,7 @@
     "cors": "^2.8.4",
     "cross-env": "^5.1.1",
     "express": "^4.15.4",
-    "mocha": "^3.5.0",
+    "jest": "^23.6.0",
     "nock": "^9.0.14",
     "request": "^2.81.0",
     "timekeeper": "^1.0.0"

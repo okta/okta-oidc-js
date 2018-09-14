@@ -1,6 +1,7 @@
 # Setup
 
 ## Create a test org
+
 1. If you don't already have a dev org, [create one](https://developer.okta.com/signup/)
 2. Applications > Add Application
 3. Select SPA
@@ -10,7 +11,7 @@
 
 ## Set environment variables
 
-```
+```bash
 export ISSUER=[your okta domain]/oauth2/default
 export CLIENT_ID=[your SPA client id]
 export USERNAME=[created user]
