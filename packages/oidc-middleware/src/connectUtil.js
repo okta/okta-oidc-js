@@ -10,6 +10,7 @@
  * See the License for the specific language governing permissions and limitations under the License.
  */
 
+const http = require('http');
 const csrf = require('csurf');
 const passport = require('passport');
 const { Router } = require('express');
@@ -85,30 +86,94 @@ connectUtil.createLoginHandler = context => {
 connectUtil.createLoginCallbackHandler = context => {
   const routes = context.options.routes;
   const customHandler = routes.loginCallback.handler;
-
-  if (!customHandler) {
-    return passport.authenticate('oidc', {
-      successReturnToOrRedirect: routes.loginCallback.afterCallback,
-      failureRedirect: routes.loginCallback.failureRedirect
-    });
+  if (customHandler) {
+    var customHandlerArity = customHandler.length;
+    if (customHandlerArity < 3 || 4 < customHandlerArity) {
+      throw new OIDCMiddlewareError('Your custom callback handler must request "next"');
+    }
+  } else {
+    var successReturnToOrRedirect = routes.loginCallback.afterCallback;
+    var failureRedirect = routes.loginCallback.failureRedirect;
   }
-
-  const customHandlerArity = customHandler.length;
   return (req, res, next) => {
     const nextHandler = err => {
-      if (err && customHandlerArity < 4) return next(err);
-      switch(customHandlerArity) {
-        case 4:
-          customHandler(err, req, res, next);
-          break;
-        case 3:
-          customHandler(req, res, next);
-          break;
-        default:
-          throw new OIDCMiddlewareError('Your custom callback handler must request "next"');
+      if (customHandler && customHandlerArity === 4) {
+        return customHandler(err, req, res, next);
       }
-    };
-    passport.authenticate('oidc')(req, res, nextHandler);
+      next(err);
+    }
+    const redirect = url => {
+      if (req.session && req.session.save && typeof req.session.save == 'function') {
+        return req.session.save(function() {
+          res.redirect(url);
+        });
+      }
+      res.redirect(url);
+    }
+    passport.authenticate('oidc', (err, user, info, status) => {
+      if (err) {
+        return nextHandler(err);
+      }
+      if (user) {
+        info = info || {};
+        var msg;
+        
+        return req.logIn(user, function(err) {
+          if (err) { return nextHandler(err); }
+          
+          function complete() {
+            if (customHandler) {
+              if (customHandlerArity === 4) {
+                return customHandler(err, req, res, next);
+              }
+              return customHandler(req, res, next);
+            }
+            var url = successReturnToOrRedirect;
+            if (req.session && req.session.returnTo) {
+              url = req.session.returnTo;
+              delete req.session.returnTo;
+            }
+            return redirect(url);
+          }
+          
+          passport.transformAuthInfo(info, req, function(err, tinfo) {
+            if (err) { return nextHandler(err); }
+            req.authInfo = tinfo;
+            complete();
+          });
+        });
+      }
+      var failure = failures[0] || {}
+        , challenge = failure.challenge || {}
+        , msg;
+      if (!customHandler) {
+        return redirect(failureRedirect);
+      }
+      // When failure handling is not delegated to the application, the default
+      // is to respond with 401 Unauthorized.  Note that the WWW-Authenticate
+      // header will be set according to the strategies in use (see
+      // actions#fail).  If multiple strategies failed, each of their challenges
+      // will be included in the response.
+      var rchallenge = []
+        , rstatus, status;
+      
+      for (var j = 0, len = failures.length; j < len; j++) {
+        failure = failures[j];
+        challenge = failure.challenge;
+        status = failure.status;
+          
+        rstatus = rstatus || status;
+        if (typeof challenge == 'string') {
+          rchallenge.push(challenge);
+        }
+      }
+      
+      res.statusCode = rstatus || 401;
+      if (res.statusCode == 401 && rchallenge.length) {
+        res.setHeader('WWW-Authenticate', rchallenge);
+      }
+      res.end(http.STATUS_CODES[res.statusCode]);
+    })(req, res, nextHandler);
   }
 };
 

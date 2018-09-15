@@ -13,11 +13,11 @@
 const passport = require('passport');
 const OpenIdClientStrategy = require('openid-client').Strategy;
 const Issuer = require('openid-client').Issuer;
-const ensureLoggedIn = require('connect-ensure-login').ensureLoggedIn;
 const Negotiator = require('negotiator');
 const os = require('os');
 
 const pkg = require('../package.json');
+const ensureLoggedIn = require('./ensureLoggedIn');
 
 /**
  * Parse out the default user agent for the openid-client library, which currently looks like:
