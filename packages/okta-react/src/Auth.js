@@ -32,6 +32,9 @@ export default class Auth {
     this.isAuthenticated = this.isAuthenticated.bind(this);
     this.getUser = this.getUser.bind(this);
     this.getIdToken = this.getIdToken.bind(this);
+    this.isSessionActive = this.isSessionActive.bind(this);
+    this.getActiveSession = this.getActiveSession.bind(this);
+    this.refreshSession = this.refreshSession.bind(this);
     this.getAccessToken = this.getAccessToken.bind(this);
     this.login = this.login.bind(this);
     this.logout = this.logout.bind(this);
@@ -70,6 +73,19 @@ export default class Auth {
     return idToken ? idToken.claims : undefined;
   }
 
+  async isSessionActive() {
+    return !!(await this._oktaAuth.session.exists());
+  }
+
+  async getActiveSession() {
+    const isSessionActive = await this.isSessionActive();
+    return isSessionActive ? await this._oktaAuth.session.get() : undefined;
+  }
+
+  async refreshSession() {
+    return await this._oktaAuth.session.refresh();
+  }
+
   async getIdToken() {
     const idToken = await this._oktaAuth.tokenManager.get('idToken');
     return idToken ? idToken.idToken : undefined;
@@ -87,7 +103,7 @@ export default class Auth {
     localStorage.setItem(
       'secureRouterReferrerPath',
       JSON.stringify(referrerPath)
-      );
+    );
     if (this._config.onAuthRequired) {
       const auth = this;
       const history = this._history;
@@ -119,6 +135,6 @@ export default class Auth {
 
     // return a promise that doesn't terminate so nothing
     // happens after setting window.location
-    return new Promise((resolve, reject) => {});
+    return new Promise((resolve, reject) => { });
   }
 };
