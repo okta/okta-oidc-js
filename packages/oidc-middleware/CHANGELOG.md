@@ -22,6 +22,8 @@
   });
   ```
 
+- Basic configuration validation for catching common input mistakes.
+
 ### Breaking Changes
 
 - `req.userinfo` is now nested within `req.userContext` ([#226](https://github.com/okta/okta-oidc-js/issues/226)). Please update any use of `req.userinfo` to `req.userContext.userinfo`.
