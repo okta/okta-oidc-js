@@ -22,7 +22,7 @@ const connectUtil = module.exports;
 // Create a router to easily add routes
 connectUtil.createOIDCRouter = context => {
   const oidcRouter = new Router();
-  oidcRouter.use(passport.initialize({ userProperty: 'userinfo' }));
+  oidcRouter.use(passport.initialize({ userProperty: 'userContext' }));
   oidcRouter.use(passport.session());
 
   const {
@@ -105,4 +105,4 @@ connectUtil.createCallbackHandler = context => {
     };
     passport.authenticate('oidc')(req, res, nextHandler);
   }
-}
+};
