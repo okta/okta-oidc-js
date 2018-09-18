@@ -71,13 +71,27 @@ export default class Auth {
   }
 
   async getIdToken() {
-    const idToken = await this._oktaAuth.tokenManager.get('idToken');
-    return idToken ? idToken.idToken : undefined;
+    try {
+      const idToken = await this._oktaAuth.tokenManager.get('idToken');
+      return idToken.idToken;
+    } catch (err) {
+      // The user no longer has an existing SSO session in the browser.
+      // (OIDC error `login_required`)
+      // Ask the user to authenticate again.
+      return undefined;
+    }
   }
 
   async getAccessToken() {
-    const accessToken = await this._oktaAuth.tokenManager.get('accessToken');
-    return accessToken ? accessToken.accessToken : undefined;
+    try {
+      const accessToken = await this._oktaAuth.tokenManager.get('accessToken');
+      return accessToken.accessToken;
+    } catch (err) {
+      // The user no longer has an existing SSO session in the browser.
+      // (OIDC error `login_required`)
+      // Ask the user to authenticate again.
+      return undefined;
+    }
   }
 
   async login(fromUri, additionalParams) {
