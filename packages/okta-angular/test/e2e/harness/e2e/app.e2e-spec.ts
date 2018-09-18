@@ -13,24 +13,21 @@
 import {
   AppPage,
   OktaSignInPage,
-  LoginPage,
   ProtectedPage,
   SessionTokenSignInPage
-} from './page-objects';
+} from '@okta/okta-oidc-js.harness/page-objects/';
 
 import { environment } from '../src/environments/environment';
 import { Utils } from './utils';
 
 describe('Angular + Okta App', () => {
-  let page: AppPage;
+  let appPage: AppPage;
   let oktaLoginPage: OktaSignInPage;
-  let loginPage: LoginPage;
   let protectedPage: ProtectedPage;
   let sessionTokenSignInPage: SessionTokenSignInPage;
 
   beforeEach(() => {
-    page = new AppPage();
-    loginPage = new LoginPage();
+    appPage = new AppPage();
     oktaLoginPage = new OktaSignInPage();
     protectedPage = new ProtectedPage();
     sessionTokenSignInPage = new SessionTokenSignInPage();
@@ -39,7 +36,7 @@ describe('Angular + Okta App', () => {
   it('should redirect to Okta for login when trying to access a protected page', () => {
     protectedPage.navigateTo();
 
-    oktaLoginPage.waitUntilVisible(environment.ISSUER);
+    oktaLoginPage.waitUntilVisible();
     oktaLoginPage.signIn({
       username: environment.USERNAME,
       password: environment.PASSWORD
@@ -48,7 +45,7 @@ describe('Angular + Okta App', () => {
     protectedPage.waitUntilVisible();
     expect(protectedPage.getLogoutButton().isPresent()).toBeTruthy();
 
-    // Verify the user object was returned
+    protectedPage.waitForElement('userinfo-container');
     protectedPage.getUserInfo().getText()
     .then(userInfo => {
       expect(userInfo).toContain('email');
@@ -56,8 +53,8 @@ describe('Angular + Okta App', () => {
 
     // Logout
     protectedPage.getLogoutButton().click();
-    protectedPage.waitForElement('login-button');
-    expect(protectedPage.getLoginButton().isPresent()).toBeTruthy();
+
+    appPage.waitUntilLoggedOut();
   });
 
   /**
@@ -68,56 +65,61 @@ describe('Angular + Okta App', () => {
   util.slowDown(100);
 
   it('should preserve query paramaters after redirecting to Okta', () => {
-    protectedPage.navigateToWithQuery();
+    protectedPage.navigateTo('?state=bar');
 
-    oktaLoginPage.waitUntilVisible(environment.ISSUER);
+    oktaLoginPage.waitUntilVisible();
     oktaLoginPage.signIn({
       username: environment.USERNAME,
       password: environment.PASSWORD
     });
 
-    protectedPage.waitUntilQueryVisible();
+    protectedPage.waitUntilVisible('?state=bar');
     expect(protectedPage.getLogoutButton().isPresent()).toBeTruthy();
+
+    protectedPage.waitForElement('userinfo-container');
+    protectedPage.getUserInfo().getText()
+    .then(userInfo => {
+      expect(userInfo).toContain('email');
+    });
 
     // Logout
     protectedPage.getLogoutButton().click();
-    protectedPage.waitForElement('login-button');
-    expect(protectedPage.getLoginButton().isPresent()).toBeTruthy();
+
+    appPage.waitUntilLoggedOut();
   });
 
   it('should redirect to Okta for login', () => {
-    loginPage.navigateTo();
+    appPage.navigateTo();
+    appPage.waitUntilVisible();
+    appPage.getLoginButton().click();
 
-    oktaLoginPage.waitUntilVisible(environment.ISSUER);
+    oktaLoginPage.waitUntilVisible();
     oktaLoginPage.signIn({
-      username: environment.USERNAME,
-      password: environment.PASSWORD
+      username: process.env.USERNAME,
+      password: process.env.PASSWORD
     });
 
-    loginPage.waitUntilVisible();
-    expect(loginPage.getLogoutButton().isPresent()).toBeTruthy();
+    appPage.waitUntilVisible();
+    expect(protectedPage.getLogoutButton().isPresent()).toBeTruthy();
 
     // Logout
-    loginPage.getLogoutButton().click();
-    loginPage.waitForElement('login-button');
-    expect(loginPage.getLoginButton().isPresent()).toBeTruthy();
+    appPage.getLogoutButton().click();
+    appPage.waitUntilLoggedOut();
   });
 
   it('should allow passing sessionToken to skip Okta login', () => {
     sessionTokenSignInPage.navigateTo();
-
     sessionTokenSignInPage.waitUntilVisible();
     sessionTokenSignInPage.signIn({
       username: process.env.USERNAME,
       password: process.env.PASSWORD
     });
 
-    page.waitUntilLoggedIn();
-    expect(page.getLogoutButton().isPresent()).toBeTruthy();
+    appPage.waitUntilLoggedIn();
+    expect(appPage.getLogoutButton().isPresent()).toBeTruthy();
 
     // Logout
-    page.getLogoutButton().click();
-    page.waitForElement('login-button');
-    expect(page.getLoginButton().isPresent()).toBeTruthy();
+    appPage.getLogoutButton().click();
+    appPage.waitUntilLoggedOut();
   });
 });

@@ -1,12 +1,16 @@
 {
+	"private": true,
 	"devDependencies": {
 		"globby": "^6.1.0",
-		"lerna": "^2.1.0"
+		"lerna": "^2.2.0"
 	},
 	"scripts": {
 		"banners": "util/maintain-banners.js",
 		"publish": "lerna publish --skip-npm",
 		"bootstrap": "lerna bootstrap",
 		"test": "sh ./scripts/runTests.sh"
-	}
+	},
+	"workspaces": [
+		"packages/*"
+	]
 }

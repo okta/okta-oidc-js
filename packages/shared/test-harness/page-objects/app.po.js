@@ -10,9 +10,9 @@
  * See the License for the specific language governing permissions and limitations under the License.
  */
 
-import { browser, by, element } from 'protractor';
+const { browser, by, element } = require('protractor');
 
-export class AppPage {
+class AppPage {
   navigateTo() {
     return browser.get('/');
   }
@@ -42,4 +42,10 @@ export class AppPage {
   getProtectedButton() {
     return element(by.id('protected-button'));
   }
-}
+
+  getBody() {
+    return element(by.tagName('body'));
+  }
+};
+
+module.exports = AppPage;

@@ -1,8 +1,6 @@
 {
-  "lerna": "2.1.0",
-  "packages": [
-    "packages/*"
-  ],
+  "lerna": "2.2.0",
   "version": "independent",
+  "useWorkspaces": true,
   "hoist": false
 }

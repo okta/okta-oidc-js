@@ -10,15 +10,21 @@
  * See the License for the specific language governing permissions and limitations under the License.
  */
 
-import { browser, element, by, ExpectedConditions } from 'protractor';
+const { browser, element, by, ExpectedConditions } = require('protractor');
 
-export class ProtectedPage {
+class ProtectedPage {
   navigateTo(path) {
-    return browser.get('/protected' + path);
+    return path
+      ? browser.get('/protected' + path)
+      : browser.get('/protected');
   }
 
   waitUntilVisible(path) {
-    browser.wait(ExpectedConditions.urlContains('/protected' + path), 5000);
+    let url = '/protected';
+    if (path) {
+      url += path;
+    }
+    browser.wait(ExpectedConditions.urlContains(url), 5000);
   }
 
   waitForElement(id) {
@@ -37,4 +43,10 @@ export class ProtectedPage {
   getUserInfo() {
     return element(by.id('userinfo-container'));
   }
-}
+
+  getBody() {
+    return element(by.tagName('body'));
+  }
+};
+
+module.exports = ProtectedPage;

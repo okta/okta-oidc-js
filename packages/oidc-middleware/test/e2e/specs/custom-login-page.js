@@ -12,34 +12,40 @@
 
 const util = require('../util/util');
 const constants = require('../util/constants');
-const CustomLoginPage = require('../page-objects/CustomLoginPage');
-const HomePage = require('../page-objects/HomePage');
+
+const { AppPage, OktaSignInPage } = require('@okta/okta-oidc-js.harness/page-objects');
 
 browser.waitForAngularEnabled(false);
 
 describe('Custom login page', () => {
+  let appPage;
+  let oktaLoginPage;
+  let server;
 
   beforeEach(async () => {
     server = util.createDemoServerWithCustomLoginPage();
     await server.start();
+
+    appPage = new AppPage();
+    oktaLoginPage = new OktaSignInPage();
   });
 
   afterEach(async () => await server.stop());
 
   it('should use the custom login page for authentication', async () => {
-    const signInPage = new CustomLoginPage();
-    await signInPage.load();
-    await browser.sleep(3000);
-    await signInPage.waitUntilVisible();
-
-    await signInPage.signIn({
+    oktaLoginPage.navigateTo('/login');
+    oktaLoginPage.waitUntilVisible();
+    oktaLoginPage.signIn({
       username: constants.USERNAME,
       password: constants.PASSWORD
     });
 
+    // Keep the existing wait solution for the short term
+    // In the future, look for login/logout buttons like other libs
+    await browser.sleep(3000);
+
     // we should be redirected back to the home page
-    const homePage = new HomePage();
-    await homePage.waitUntilVisible();
-    expect(homePage.getBodyText()).toContain('Welcome home');
+    const bodyText = await appPage.getBody().getText();
+    expect(bodyText).toContain('Welcome home');
   });
 });

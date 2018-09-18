@@ -12,52 +12,57 @@
 
 const util = require('../util/util');
 const constants = require('../util/constants');
-const OktaSignInPage = require('../page-objects/OktaSignInPage');
-const ProtectedPage = require('../page-objects/ProtectedPage');
-const HomePage = require('../page-objects/HomePage');
+
+const {
+  AppPage,
+  OktaSignInPage,
+  ProtectedPage
+} = require('@okta/okta-oidc-js.harness/page-objects');
 
 browser.waitForAngularEnabled(false);
 
 describe('Basic login redirect', () => {
-
+  let appPage;
+  let oktaLoginPage;
+  let protectedPage;
   let server;
+
   beforeEach(async () => {
     server = util.createDemoServer();
     await server.start();
+
+    appPage = new AppPage();
+    oktaLoginPage = new OktaSignInPage();
+    protectedPage = new ProtectedPage();
   });
 
   afterEach(async () => await server.stop());
 
   it('should redirect to Okta if login is required, then return to the protected page', async () => {
-    // attempt to navigate to a protected page
-    const privatePage = new ProtectedPage();
-    await privatePage.load();
+    protectedPage.navigateTo();
 
     // we're not logged in, so we should redirect
-    const signInPage = new OktaSignInPage();
-    await signInPage.waitUntilVisible();
-    await signInPage.signIn({
+    oktaLoginPage.waitUntilVisible();
+    oktaLoginPage.signIn({
       username: constants.USERNAME,
       password: constants.PASSWORD
     });
 
     // wait for protected page to appear with contents
-    await privatePage.waitUntilVisible();
-    expect(privatePage.getBodyText()).toContain('sub');
-
-    // Default response_type of library should contain an accessToken and idToken
-    expect(privatePage.getBodyText()).toContain('access_token');
-    expect(privatePage.getBodyText()).toContain('id_token');
+    protectedPage.waitUntilVisible();
+    const userInfo = await protectedPage.getBody().getText();
+    expect(userInfo).toContain('email');
+    expect(userInfo).toContain('access_token');
+    expect(userInfo).toContain('id_token');
 
     // navigate to home page
-    const homePage = new HomePage();
-    await homePage.load();
-    await homePage.waitUntilVisible();
-    expect(homePage.getBodyText()).toContain('Welcome home');
+    appPage.navigateTo();
+
+    const bodyText = await appPage.getBody().getText();
+    expect(bodyText).toContain('Welcome home');
 
     // navigate to logout
     await browser.get(constants.LOGOUT_PATH);
-    await homePage.waitUntilVisible();
     expect(browser.getPageSource()).not.toContain('Welcome home');
   });
 });

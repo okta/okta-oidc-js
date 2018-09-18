@@ -1,0 +1,10 @@
+{
+  "name": "@okta/okta-oidc-js.harness",
+  "version": "0.0.0",
+  "files": [
+    "page-objects"
+  ],
+  "dependencies": {
+    "protractor": "^5.1.2"
+  }
+}

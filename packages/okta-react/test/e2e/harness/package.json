@@ -9,6 +9,7 @@
     "react-scripts": "1.0.13"
   },
   "devDependencies": {
+    "@okta/okta-oidc-js.harness": "file:../../../../shared/test-harness/",
     "babel-cli": "^6.26.0",
     "babel-core": "^6.26.0",
     "babel-eslint": "^8.0.0",

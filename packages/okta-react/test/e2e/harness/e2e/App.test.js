@@ -15,7 +15,7 @@ import {
   OktaSignInPage,
   ProtectedPage,
   SessionTokenSignInPage
-} from './page-objects';
+} from '@okta/okta-oidc-js.harness/page-objects';
 
 describe('React + Okta App', () => {
   let appPage;
@@ -30,7 +30,7 @@ describe('React + Okta App', () => {
     sessionTokenSignInPage = new SessionTokenSignInPage();
   });
 
-  it('should redirect to Okta for login when trying to access a protected page', () => {
+  it('should preserve query paramaters after redirecting to Okta', () => {
     protectedPage.navigateTo('?state=bar#baz');
 
     oktaLoginPage.waitUntilVisible();
@@ -56,13 +56,10 @@ describe('React + Okta App', () => {
 
   it('should redirect to Okta for login', () => {
     appPage.navigateTo();
-
     appPage.waitUntilVisible();
-
     appPage.getLoginButton().click();
 
     oktaLoginPage.waitUntilVisible();
-
     oktaLoginPage.signIn({
       username: process.env.USERNAME,
       password: process.env.PASSWORD
@@ -73,15 +70,12 @@ describe('React + Okta App', () => {
 
     // Logout
     appPage.getLogoutButton().click();
-
     appPage.waitUntilLoggedOut();
   });
 
   it('should allow passing sessionToken to skip Okta login', () => {
     sessionTokenSignInPage.navigateTo();
-
     sessionTokenSignInPage.waitUntilVisible();
-
     sessionTokenSignInPage.signIn({
       username: process.env.USERNAME,
       password: process.env.PASSWORD

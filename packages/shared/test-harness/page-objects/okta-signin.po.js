@@ -10,11 +10,16 @@
  * See the License for the specific language governing permissions and limitations under the License.
  */
 
-import { browser, by, element, ExpectedConditions } from 'protractor';
+const { browser, by, element, ExpectedConditions } = require('protractor');
 
-export class SessionTokenSignInPage {
-  navigateTo() {
-    return browser.get('/sessionToken-login');
+class OktaSignInPage {
+
+  constructor() {
+    browser.waitForAngularEnabled(false);
+  }
+
+  navigateTo(path) {
+    return browser.get(path);
   }
 
   waitUntilVisible() {
@@ -22,15 +27,15 @@ export class SessionTokenSignInPage {
   }
 
   getUsernameField() {
-    return element(by.id('username'));
+    return element(by.id('okta-signin-username'));
   }
 
   getPasswordField() {
-    return element(by.id('password'));
+    return element(by.id('okta-signin-password'));
   }
 
   getSubmitButton() {
-    return element(by.id('submit'));
+    return element(by.id('okta-signin-submit'));
   }
 
   signIn({username, password}) {
@@ -38,4 +43,6 @@ export class SessionTokenSignInPage {
     this.getPasswordField().sendKeys(password);
     this.getSubmitButton().click();
   }
-}
+};
+
+module.exports = OktaSignInPage;

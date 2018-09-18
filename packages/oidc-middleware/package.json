@@ -37,6 +37,7 @@
     "uuid": "^3.1.0"
   },
   "devDependencies": {
+    "@okta/okta-oidc-js.harness": "file:../shared/test-harness/",
     "cross-env": "^5.1.1",
     "ejs": "^2.5.7",
     "express-session": "^1.15.5",

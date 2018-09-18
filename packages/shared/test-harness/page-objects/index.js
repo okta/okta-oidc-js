@@ -10,8 +10,14 @@
  * See the License for the specific language governing permissions and limitations under the License.
  */
 
-export { AppPage } from './page-objects/app.po';
-export { OktaSignInPage } from './page-objects/okta-signin.po';
-export { LoginPage } from './page-objects/login.po';
-export { ProtectedPage } from './page-objects/protected.po';
-export { SessionTokenSignInPage } from './page-objects/sessionToken-signin.po';
+const AppPage = require('./app.po');
+const OktaSignInPage  = require('./okta-signin.po');
+const ProtectedPage = require('./protected.po');
+const SessionTokenSignInPage = require('./sessionToken-signin.po');
+
+module.exports = {
+  AppPage,
+  OktaSignInPage,
+  ProtectedPage,
+  SessionTokenSignInPage
+};

@@ -10,9 +10,9 @@
  * See the License for the specific language governing permissions and limitations under the License.
  */
 
-import { browser, by, element, ExpectedConditions } from 'protractor';
+const { browser, by, element, ExpectedConditions } = require('protractor');;
 
-export class SessionTokenSignInPage {
+class SessionTokenSignInPage {
   navigateTo() {
     return browser.get('/sessionToken-login');
   }
@@ -38,4 +38,6 @@ export class SessionTokenSignInPage {
     this.getPasswordField().sendKeys(password);
     this.getSubmitButton().click();
   }
-}
+};
+
+module.exports = SessionTokenSignInPage;

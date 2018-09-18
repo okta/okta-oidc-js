@@ -13,7 +13,10 @@
 exports.config = {
   framework: 'jasmine',
   directConnect: true,
-  specs: ['specs/*.js'],
+  specs: [
+    'specs/*.js'
+  ],
+  baseUrl: 'http://localhost:8080/',
   capabilities: {
     browserName: 'chrome',
     chromeOptions: {
@@ -23,6 +26,14 @@ exports.config = {
         '--window-size=800,600',
         '--no-sandbox'
       ]
-     }
+    },
+    jasmineNodeOpts: {
+      showColors: true,
+      defaultTimeoutInterval: 30000,
+      print: function() {}
+    },
+    onPrepare() {
+      browser.ignoreSynchronization = true;
+    }
   }
 }
