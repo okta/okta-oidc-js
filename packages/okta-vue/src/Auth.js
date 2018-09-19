@@ -27,7 +27,7 @@ function install (Vue, options) {
       await oktaAuth.signOut()
     },
     async isAuthenticated () {
-      return !!(await oktaAuth.tokenManager.get('accessToken')) || !!(await oktaAuth.tokenManager.get('idToken'))
+      return !!(await this.getAccessToken()) || !!(await this.getIdToken())
     },
     async handleAuthentication () {
       const tokens = await oktaAuth.token.parseFromUrl()
@@ -42,12 +42,26 @@ function install (Vue, options) {
       return path
     },
     async getIdToken () {
-      const idToken = await oktaAuth.tokenManager.get('idToken')
-      return idToken ? idToken.idToken : undefined
+      try {
+        const idToken = await oktaAuth.tokenManager.get('idToken')
+        return idToken.idToken
+      } catch (err) {
+        // The user no longer has an existing SSO session in the browser.
+        // (OIDC error `login_required`)
+        // Ask the user to authenticate again.
+        return undefined
+      }
     },
     async getAccessToken () {
-      const accessToken = await oktaAuth.tokenManager.get('accessToken')
-      return accessToken ? accessToken.accessToken : undefined
+      try {
+        const accessToken = await oktaAuth.tokenManager.get('accessToken')
+        return accessToken.accessToken
+      } catch (err) {
+        // The user no longer has an existing SSO session in the browser.
+        // (OIDC error `login_required`)
+        // Ask the user to authenticate again.
+        return undefined
+      }
     },
     async getUser () {
       const accessToken = await oktaAuth.tokenManager.get('accessToken')

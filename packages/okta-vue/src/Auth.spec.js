@@ -39,11 +39,24 @@ const mockAuthJsInstance = {
   }
 }
 
-AuthJS.mockImplementation(() => {
-  return mockAuthJsInstance
-})
+const mockAuthJsInstanceWithError = {
+  userAgent: 'foo',
+  token: {
+    getWithRedirect: jest.fn()
+  },
+  tokenManager: {
+    get: jest.fn().mockImplementation(() => {
+      throw new Error()
+    })
+  }
+}
 
 describe('Auth', () => {
+  beforeEach(() => {
+    AuthJS.mockImplementation(() => {
+      return mockAuthJsInstance
+    })
+  })
   test('is a Vue plugin', () => {
     expect(Auth.install).toBeTruthy()
   })
@@ -95,5 +108,33 @@ describe('Auth', () => {
     const accessToken = await localVue.prototype.$auth.getAccessToken()
     expect(accessToken).toBe(mockAccessToken)
     done()
+  })
+  test('isAuthenticated() returns true when the TokenManager returns an access token', async () => {
+    const localVue = createLocalVue()
+    localVue.use(Auth, {
+      issuer: '1',
+      client_id: '2',
+      redirect_uri: '3',
+      scope: 'foo bar',
+      response_type: 'token'
+    })
+    const authenticated = await localVue.prototype.$auth.isAuthenticated()
+    expect(mockAuthJsInstance.tokenManager.get).toHaveBeenCalledWith('accessToken')
+    expect(authenticated).toBeTruthy()
+  })
+  test('isAuthenticated() returns false when the TokenManager does not return an access token', async () => {
+    AuthJS.mockImplementation(() => {
+      return mockAuthJsInstanceWithError
+    })
+    const localVue = createLocalVue()
+    localVue.use(Auth, {
+      issuer: '1',
+      client_id: '2',
+      redirect_uri: '3',
+      scope: 'foo bar',
+      response_type: 'token'
+    })
+    const authenticated = await localVue.prototype.$auth.isAuthenticated()
+    expect(authenticated).toBeFalsy()
   })
 })
