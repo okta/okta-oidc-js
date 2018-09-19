@@ -37,6 +37,7 @@
     "uuid": "^3.1.0"
   },
   "devDependencies": {
+    "dotenv": "^5.0.1",
     "cross-env": "^5.1.1",
     "ejs": "^2.5.7",
     "express-session": "^1.15.5",

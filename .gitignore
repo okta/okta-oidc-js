@@ -16,3 +16,4 @@ packageInfo.js
 packageInfo.ts
 coverage
 *.tgz
+.idea/
