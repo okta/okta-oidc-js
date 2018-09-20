@@ -14,10 +14,13 @@ const express = require('express');
 const OktaJwtVerifier = require('../../lib');
 var cors = require('cors');
 
+const ISSUER = process.env.ISSUER || 'http://localhost:9090/oauth2/default';
+const AUDIENCE = process.env.AUDIANCE || 'api://default';
+
 const oktaJwtVerifier = new OktaJwtVerifier({
-  issuer: 'http://localhost:9090/oauth2/default',
+  issuer: ISSUER,
   assertClaims: {
-    aud: 'api://default'
+    aud: AUDIENCE
   },
 });
 
