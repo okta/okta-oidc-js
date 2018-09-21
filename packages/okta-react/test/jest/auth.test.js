@@ -38,11 +38,24 @@ const mockAuthJsInstance = {
   }
 };
 
-AuthJS.mockImplementation(() => {
-  return mockAuthJsInstance
-});
+const mockAuthJsInstanceWithError = {
+  userAgent: 'okta-auth-js',
+  tokenManager: {
+    get: jest.fn().mockImplementation(() => {
+      throw new Error();
+    })
+  },
+  token: {
+    getWithRedirect: jest.fn()
+  }
+};
 
 describe('Auth component', () => {
+  beforeEach(() => {
+    AuthJS.mockImplementation(() => {
+      return mockAuthJsInstance
+    });
+  });
   test('sets the right user agent on AuthJS', () => {
     const auth = new Auth({
       issuer: 'https://foo/oauth2/default'
@@ -121,5 +134,23 @@ describe('Auth component', () => {
       scopes: ['openid', 'email', 'profile'],
       foo: 'bar'
     });
+  });
+  test('isAuthenticated() returns true when the TokenManager returns an access token', async () => {
+    const auth = new Auth({
+      issuer: 'https://foo/oauth2/default'
+    });
+    const authenticated = await auth.isAuthenticated();
+    expect(mockAuthJsInstance.tokenManager.get).toHaveBeenCalledWith('accessToken');
+    expect(authenticated).toBeTruthy();
+  });
+  test('isAuthenticated() returns false when the TokenManager does not return an access token', async () => {
+    AuthJS.mockImplementation(() => {
+      return mockAuthJsInstanceWithError
+    });
+    const auth = new Auth({
+      issuer: 'https://foo/oauth2/default'
+    });
+    const authenticated = await auth.isAuthenticated();
+    expect(authenticated).toBeFalsy();
   });
 });
