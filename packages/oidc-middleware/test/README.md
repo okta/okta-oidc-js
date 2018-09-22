@@ -24,6 +24,6 @@ export PASSWORD=[password from activation]
 ```bash
 # At project root
 cd packages/oidc-middleware/
-npm install
-npm test
+yarn install
+yarn test
 ```
