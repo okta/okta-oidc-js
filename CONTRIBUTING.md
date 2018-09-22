@@ -45,14 +45,15 @@ If you do not see an exact emoji match, use the best matching emoji.
 
 ## Running Tests locally
 
-You can run tests is each individual package by navigating to the package and running `npm test`.
+We use Yarn as our node package manager. To install Yarn, check out their [install documentation](https://yarnpkg.com/en/docs/install).
+
+You can run tests is each individual package by navigating to the package and running `yarn test`.
 E.g:
 
 ```bash
 # At project root
 cd packages/oidc-middleware
-npm install
-npm test
+yarn test
 ```
 
 You can also run all the tests inside each of the packages from the project root.
@@ -61,8 +62,7 @@ For that, you will need to install the dependencies of each package. This can be
 
 ```bash
 # At project root
-npm install
-npm run bootstrap
+yarn install
 ```
 
 > **Note:** Since the packages contain libraries for both Single-Page applications and Web Applications, you will need to create an SPA and Web App in your okta org.
@@ -85,5 +85,5 @@ export PASSWORD={yourOktaOrgLoginPassword}
 After setting up the environment variables, run the following command to run all tests in the packages
 
 ```bash
-npm test
+yarn test
 ```

@@ -1,11 +1,8 @@
 # undo permissions change on scripts/publish_external.sh
 git checkout -- scripts
 
-# Use newer, faster npm
-npm install -g npm@5.0.3
-
 # Install required dependencies
-npm install -g lerna
+yarn global add lerna
 
 if ! lerna bootstrap; then
   echo "lerna bootstrap failed! Exiting..."

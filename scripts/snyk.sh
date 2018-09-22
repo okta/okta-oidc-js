@@ -9,7 +9,7 @@
 # master commits, it doesn't try to figure out which packages were updated.
 
 if [[ "$TRAVIS_BRANCH" == "master" && "$TRAVIS_PULL_REQUEST" == "false" ]]; then
-  npm install -g snyk
+  yarn global add snyk
   snyk auth $SNYK_API_TOKEN
   for package in `ls $PWD/packages`;
   do
