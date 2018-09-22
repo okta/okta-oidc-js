@@ -16,12 +16,9 @@ git config --global user.email "oktauploader@okta.com"
 git config --global user.name "oktauploader-okta"
 
 # Install required dependencies
-npm install -g lerna
+yarn global add lerna
 
-# We are skipping react-native until we have a solution for the problem described here: https://github.com/expo/expo/issues/1767
-# If expo will not resolve then we will have to find another workaround
-
-if ! lerna bootstrap --ignore "@okta/okta-react-native"; then
+if ! yarn install; then
   echo "lerna bootstrap failed! Exiting..."
   exit ${FAILED_SETUP}
 fi
