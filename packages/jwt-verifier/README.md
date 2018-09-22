@@ -17,10 +17,10 @@ To learn more about verification cases and Okta's tokens please read [Working Wi
 
 ## How to use
 
-Install this library from npm:
+We use Yarn as our node package manager. To install Yarn, check out their [install documentation](https://yarnpkg.com/en/docs/install).
 
 ```bash
-npm install --save @okta/jwt-verifier
+yarn add @okta/jwt-verifier
 ```
 
 Create a verifier instance, bound to the issuer (authorization server URL) and the client ID (the Okta application that will use this authorization server):
@@ -94,5 +94,5 @@ Run the following command to run all the e2e tests.
 Ensure you're in the `jwt-verifier` base directory
 
 ```bash
-npm run test
+yarn test
 ```
