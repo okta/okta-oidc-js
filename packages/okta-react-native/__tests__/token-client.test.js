@@ -20,7 +20,7 @@ import {
   mockRedirect,
   rateLimitError
 } from './mocks';
-import { SecureStore, WebBrowser } from 'expo';
+import { SecureStore } from 'expo';
 import TokenClient from '../src';
 const packageJson = require('../package.json');
 

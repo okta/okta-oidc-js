@@ -53,7 +53,11 @@ These values will be used in your React application to setup the OpenID Connect 
 This library is available through [npm](https://www.npmjs.com/package/@okta/okta-react-native). To install it, simply add it to your project:
 
 ```bash
+# npm
 npm install --save @okta/okta-react-native
+
+# yarn
+yarn add @okta/okta-react-native
 ```
 
 ## Configuration
