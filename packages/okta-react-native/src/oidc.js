@@ -18,7 +18,6 @@ import * as tokenClientUtil from './token-client-util';
 import { OidcError } from './errors';
 import { getWellKnown } from './token-client-util';
 import delve from 'dlv';
-const packageJson = require('../package.json');
 
 async function createPKCEParams() {
   const code_verifier = util.createRandomString(43);
