@@ -4,17 +4,17 @@
   "description": "React support for Okta",
   "main": "./dist/index.js",
   "scripts": {
-    "build": "rimraf dist/ && babel src -d dist",
-    "build:harness": "npm --prefix test/e2e/harness install",
+    "build": "rimraf dist/ && yarn build:package-info && babel src -d dist",
+    "build:harness": "yarn --cwd test/e2e/harness install",
     "build:package-info": "node ../../util/write-package-info.js . src/packageInfo.js",
     "jest": "jest test/jest/",
     "lint": "eslint src/**; exit 0",
     "lint:watch": "esw -w lib/**",
-    "prepublish": "npm run build:package-info && npm run build",
-    "prestart": "npm run build && npm run build:harness",
-    "start": "npm run --prefix test/e2e/harness start",
-    "pretest": "npm run build && npm run build:harness",
-    "test": "npm run jest && npm run --prefix test/e2e/harness test"
+    "prepublish": "yarn build",
+    "prestart": "yarn build && yarn build:harness",
+    "start": "yarn --cwd test/e2e/harness start",
+    "pretest": "yarn build && yarn build:harness",
+    "test": "yarn jest && yarn --cwd test/e2e/harness test"
   },
   "repository": {
     "type": "git",
@@ -72,6 +72,7 @@
   "jest": {
     "setupFiles": [
       "./test/jest/setup.js"
-    ]
+    ],
+    "testURL": "http://localhost/"
   }
 }
