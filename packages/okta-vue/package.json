@@ -8,16 +8,16 @@
     "src"
   ],
   "scripts": {
-    "prebuild": "npm run build:package-info",
-    "prestart": "npm run build && npm run build:harness",
+    "prebuild": "yarn build:package-info",
+    "prestart": "yarn build && yarn build:harness",
     "kill:port": "kill -9 $(lsof -t -i:8080 -sTCP:LISTEN) || true",
-    "pretest": "npm run kill:port && npm run build && npm run build:harness",
-    "prepublish": "npm run build",
+    "pretest": "yarn kill:port && yarn build && yarn build:harness",
+    "prepublish": "yarn build",
     "jest": "jest src/",
-    "test": "npm run lint && npm run jest && npm run --prefix test/e2e/harness/ test",
-    "start": "npm run --prefix test/e2e/harness/ start",
+    "test": "yarn lint && yarn jest && yarn --cwd test/e2e/harness/ test",
+    "start": "yarn --cwd test/e2e/harness/ start",
     "build": "rimraf dist/ && cross-env NODE_ENV=production webpack --config webpack.config.js --output-library-target=umd -p",
-    "build:harness": "npm --prefix test/e2e/harness install",
+    "build:harness": "yarn --cwd test/e2e/harness install",
     "build:package-info": "node ../../util/write-package-info.js . src/packageInfo.js",
     "lint": "eslint --ext .js,.vue src"
   },
@@ -28,8 +28,8 @@
       "vue"
     ],
     "transform": {
-      "^.+\\.js$": "<rootDir>/node_modules/babel-jest",
-      ".*\\.(vue)$": "<rootDir>/node_modules/vue-jest"
+      "^.+\\.js$": "<rootDir>/../../node_modules/babel-jest",
+      ".*\\.(vue)$": "<rootDir>/../../node_modules/vue-jest"
     },
     "moduleNameMapper": {
       "^@/(.*)$": "<rootDir>/src/$1"
@@ -90,7 +90,7 @@
   },
   "engines": {
     "node": ">= 4.0.0",
-    "npm": ">= 3.0.0"
+    "yarn": ">= 1.0.0"
   },
   "browserslist": [
     "> 1%",
