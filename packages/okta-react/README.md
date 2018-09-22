@@ -31,7 +31,6 @@ After you have created the application there are two more values you will need t
 | Client ID     | In the applications list, or on the "General" tab of a specific application.    |
 | Org URL       | On the home screen of the developer dashboard, in the upper right.             |
 
-
 These values will be used in your React application to setup the OpenID Connect flow with Okta.
 
 ## Installation
@@ -39,7 +38,11 @@ These values will be used in your React application to setup the OpenID Connect 
 This library is available through [npm](https://www.npmjs.com/package/@okta/okta-react). To install it, simply add it to your project:
 
 ```bash
+# npm
 npm install --save @okta/okta-react
+
+# yarn
+yarn add @okta/okta-react
 ```
 
 ## Usage
@@ -325,10 +328,12 @@ Parses tokens from the url and stores them.
 
 ## Development
 
+We use Yarn as our node package manager. To install Yarn, check out their [install documentation](https://yarnpkg.com/en/docs/install).
+
 1. Clone the repo:
    - `git clone git@github.com:okta/okta-oidc-js.git`
-2. Install the dependencies with lerna (install with `npm i lerna -g`):
-   - `lerna bootstrap`
+2. Install the dependencies:
+   - `yarn install`
 3. Navigate into the `okta-react` package:
    - `cd packages/okta-react`
 4. Make your changes to `okta-react/src/`
@@ -338,12 +343,12 @@ Parses tokens from the url and stores them.
    - `USERNAME` - username of org user, needed if you want to run tests
    - `PASSWORD` - password of org user, needed if you want to run tests
 6. Start a sample server:
-   - `npm start`
+   - `yarn start`
 
 ## Commands
 
 | Command        | Description                        |
 | -------------- | ---------------------------------- |
-| `npm start`    | Start the sample app using the SDK |
-| `npm test`     | Run integration tests              |
-| `npm run lint` | Run eslint linting tests           |
+| `yarn start`    | Start the sample app using the SDK |
+| `yarn test`     | Run integration tests              |
+| `yarn run lint` | Run eslint linting tests           |
