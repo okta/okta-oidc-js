@@ -21,6 +21,6 @@ export PASSWORD={password}
 ```bash
 # At project root
 cd packages/okta-angular
-npm install
-npm test
+yarn install
+yarn test
 ```
