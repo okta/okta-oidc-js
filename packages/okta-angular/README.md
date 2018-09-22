@@ -30,7 +30,11 @@ This library is tested against the latest version of Angular (currently 6), and 
 This library is available through [npm](https://www.npmjs.com/package/@okta/okta-angular). To install it, simply add it to your project:
 
 ```bash
+# npm
 npm install --save @okta/okta-angular
+
+# yarn
+yarn add @okta/okta-angular
 ```
 
 ## Usage
@@ -284,23 +288,31 @@ Returns the stored URI and query parameters stored when the `OktaAuthGuard` and/
 
 ## Development
 
+We use Yarn as our node package manager. To install Yarn, check out their [install documentation](https://yarnpkg.com/en/docs/install).
+
 1. Clone the repo:
     - `git clone git@github.com:okta/okta-oidc-js.git`
-2. Navigate into the `okta-angular` package:
-    - `cd packages/okta-angular`
-3. Install dependencies:
-    - Navigate into the sample and install all `@angular` dependencies
-    - `cd test/e2e/harness && npm install`
+2. Install the dependencies:
+   - `yarn install`
+3. Navigate into the `okta-angular` package:
+   - `cd packages/okta-angular`
 4. Make your changes to `okta-angular/src/`
+5. Set the following environment variables:
+   - `ISSUER` - your authorization server
+   - `CLIENT_ID` - the client id of your app
+   - `USERNAME` - username of org user, needed if you want to run tests
+   - `PASSWORD` - password of org user, needed if you want to run tests
+6. Start a sample server:
+   - `yarn start`
 
 ## Commands
 
 | Command        | Description                        |
 | -------------- | ---------------------------------- |
-| `npm start`    | Start the sample app using the SDK |
-| `npm test`     | Run integration tests              |
-| `npm run lint` | Run eslint linting tests           |
-| `npm run docs` | Generate typedocs                  |
+| `yarn start`    | Start the sample app using the SDK |
+| `yarn test`     | Run integration tests              |
+| `yarn lint` | Run eslint linting tests           |
+| `yarn docs` | Generate typedocs                  |
 
 [ID Token Claims]: https://developer.okta.com/docs/api/resources/oidc#id-token-claims
 [UserInfo endpoint]: https://developer.okta.com/docs/api/resources/oidc#userinfo
