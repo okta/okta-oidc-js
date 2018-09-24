@@ -2,7 +2,7 @@
 
 ### Bug fixes
 
-- [`95c3e62`](https://github.com/okta/okta-oidc-js/commit/dbfb7de3b41e932559ffa70790eeeca1dd30c270) - Fixes login_required error.
+- [`95c3e62`](https://github.com/okta/okta-oidc-js/commit/dbfb7de3b41e932559ffa70790eeeca1dd30c270) - Fixes an issue where the library would enter an error state when attempting to renew expired tokens (errorCode: `login_required`).
 
 # 1.0.3
 
