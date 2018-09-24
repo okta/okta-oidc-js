@@ -1,6 +1,6 @@
 {
   "name": "@okta/okta-vue",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "Vue support for Okta",
   "main": "dist/okta-vue.js",
   "files": [
