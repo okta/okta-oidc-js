@@ -1,3 +1,9 @@
+# 1.1.1
+
+### Bug fixes
+
+- [`dbfb7de`](https://github.com/okta/okta-oidc-js/commit/dbfb7de3b41e932559ffa70790eeeca1dd30c270) - Fixes login_required error.
+
 # 1.1.0
 
 ### Features
