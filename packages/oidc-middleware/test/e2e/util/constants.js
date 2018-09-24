@@ -9,6 +9,10 @@
  *
  * See the License for the specific language governing permissions and limitations under the License.
  */
+const path = require('path');
+const dotenv = require('dotenv');
+dotenv.config({path: path.join(require('os').homedir(), '.okta', 'testenv')});
+dotenv.config({path: path.join(__dirname, '..', '..', '..', '..', 'testenv')});
 
 const PORT = process.env.PORT || 8080;
 const BASE_URI = process.env.BASE_URI || `http://localhost:${PORT}`;
