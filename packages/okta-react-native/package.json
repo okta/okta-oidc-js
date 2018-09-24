@@ -4,14 +4,14 @@
   "description": "React Native support for OpenID Connect",
   "main": "src/token-client.js",
   "scripts": {
-    "test": "jest --coverage --verbose --testPathPattern __tests__/.*.test.js"
+    "test": "jest"
   },
   "jest": {
     "browser": true,
     "preset": "jest-expo",
     "automock": false,
     "setupFiles": [
-      "./setupJest.js"
+      "./test/unit/setup.js"
     ]
   },
   "repository": {
@@ -37,9 +37,9 @@
   "devDependencies": {
     "babel-core": "^6.26.0",
     "babel-preset-expo": "^4.0.0",
-    "babel-preset-jest": "^22.2.0",
+    "babel-preset-jest": "^23.2.0",
     "expo": "*",
-    "jest": "^22.4.0",
+    "jest": "^23.5.0",
     "jest-expo": "^30.0.0",
     "jest-fetch-mock": "^1.4.2",
     "react": "*",

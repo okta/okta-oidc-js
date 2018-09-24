@@ -17,9 +17,9 @@ import {
   rateLimitError
 } from './mocks';
 import { Platform } from 'react-native';
-import TokenClient from '../src/token-client';
-import * as tokenClientUtil from '../src/token-client-util';
-const packageJson = require('../package.json');
+import TokenClient from '../../src/token-client';
+import * as tokenClientUtil from '../../src/token-client-util';
+const packageJson = require('../../package.json');
 
 beforeEach(() => {
   clearMocks();

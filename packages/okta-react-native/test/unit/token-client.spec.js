@@ -21,8 +21,8 @@ import {
   rateLimitError
 } from './mocks';
 import { SecureStore } from 'expo';
-import TokenClient from '../src';
-const packageJson = require('../package.json');
+import TokenClient from '../../src';
+const packageJson = require('../../package.json');
 
 beforeEach(() => {
   clearMocks();

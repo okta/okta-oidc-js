@@ -13,28 +13,13 @@
     "kill:port": "kill -9 $(lsof -t -i:8080 -sTCP:LISTEN) || true",
     "pretest": "yarn kill:port && yarn build && yarn build:harness",
     "prepublish": "yarn build",
-    "jest": "jest src/",
-    "test": "yarn lint && yarn jest && yarn --cwd test/e2e/harness/ test",
+    "test": "yarn lint && yarn test:unit && yarn --cwd test/e2e/harness/ test",
+    "test:unit": "okta-oidc-js.runner jest",
     "start": "yarn --cwd test/e2e/harness/ start",
     "build": "rimraf dist/ && cross-env NODE_ENV=production webpack --config webpack.config.js --output-library-target=umd -p",
     "build:harness": "yarn --cwd test/e2e/harness install",
     "build:package-info": "node ../../util/write-package-info.js . src/packageInfo.js",
     "lint": "eslint --ext .js,.vue src"
-  },
-  "jest": {
-    "moduleFileExtensions": [
-      "js",
-      "json",
-      "vue"
-    ],
-    "transform": {
-      "^.+\\.js$": "<rootDir>/../../node_modules/babel-jest",
-      ".*\\.(vue)$": "<rootDir>/../../node_modules/vue-jest"
-    },
-    "moduleNameMapper": {
-      "^@/(.*)$": "<rootDir>/src/$1"
-    },
-    "mapCoverage": true
   },
   "repository": {
     "type": "git",
@@ -56,6 +41,7 @@
     "vue-router": "^3.0.1"
   },
   "devDependencies": {
+    "@okta/okta-oidc-js.runner": "0.0.0",
     "@vue/test-utils": "^1.0.0-beta.12",
     "autoprefixer": "^7.1.2",
     "babel-core": "^6.22.1",
@@ -77,7 +63,6 @@
     "eslint-plugin-node": "^5.2.0",
     "eslint-plugin-promise": "^3.4.0",
     "eslint-plugin-standard": "^3.0.1",
-    "jest": "^23.6.0",
     "nightwatch": "^0.9.12",
     "rimraf": "^2.6.2",
     "uglifyjs-webpack-plugin": "^1.1.1",
@@ -96,5 +81,19 @@
     "> 1%",
     "last 2 versions",
     "not ie <= 8"
-  ]
+  ],
+  "jest": {
+    "moduleFileExtensions": [
+      "js",
+      "json",
+      "vue"
+    ],
+    "transform": {
+      "^.+\\.js$": "babel-jest",
+      ".*\\.(vue)$": "vue-jest"
+    },
+    "moduleNameMapper": {
+      "^@/(.*)$": "<rootDir>/src/$1"
+    }
+  }
 }

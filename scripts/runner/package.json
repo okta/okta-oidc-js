@@ -1,0 +1,16 @@
+{
+  "name": "@okta/okta-oidc-js.runner",
+  "version": "0.0.0",
+  "description": "Tools to run and test packages",
+  "private": true,
+  "bin": {
+    "okta-oidc-js.runner": "./bin/runner.js"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "devDependencies": {
+    "jest": "^23.5.0",
+    "yargs": "^8.0.2"
+  }
+}

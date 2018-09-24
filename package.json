@@ -14,7 +14,10 @@
     "clean": "lerna clean"
   },
   "workspaces": {
-    "packages": ["packages/*"],
+    "packages": [
+      "packages/*",
+      "scripts/runner"
+    ],
     "nohoist": [
       "**/jest-expo",
       "**/jest-expo/**",

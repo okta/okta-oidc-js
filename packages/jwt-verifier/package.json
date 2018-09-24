@@ -9,8 +9,8 @@
     "src"
   ],
   "scripts": {
-    "test": "yarn test:sanity && yarn test:integration",
-    "test:sanity": "jest test/spec",
+    "test": "yarn test:unit && yarn test:integration",
+    "test:unit": "okta-oidc-js.runner jest",
     "test:integration": "sh tools/runIntegrationTests.sh"
   },
   "keywords": [
@@ -30,10 +30,10 @@
     "njwt": "^0.4.0"
   },
   "devDependencies": {
+    "@okta/okta-oidc-js.runner": "0.0.0",
     "cors": "^2.8.4",
     "cross-env": "^5.1.1",
     "express": "^4.15.4",
-    "jest": "^23.6.0",
     "nock": "^9.0.14",
     "request": "^2.81.0",
     "timekeeper": "^1.0.0"

@@ -1,8 +1,8 @@
 import AuthJS from '@okta/okta-auth-js'
 import { createLocalVue } from '@vue/test-utils'
-import { default as Auth } from './Auth'
+import { default as Auth } from '../../src/Auth'
 
-const pkg = require('../package.json')
+const pkg = require('../../package.json')
 jest.mock('@okta/okta-auth-js')
 
 const mockAccessToken = 'eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJ2ZXIiOj' +

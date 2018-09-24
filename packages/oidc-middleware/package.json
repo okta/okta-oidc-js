@@ -19,7 +19,7 @@
     "test": "yarn test:unit && yarn test:e2e && yarn test:integration",
     "test:e2e": "webdriver-manager update --gecko false && protractor test/e2e/conf.js",
     "test:integration": "sh tools/runIntegrationTests.sh",
-    "test:unit": "jest test/unit"
+    "test:unit": "okta-oidc-js.runner jest"
   },
   "engines": {
     "node": ">=6"
@@ -37,10 +37,10 @@
     "uuid": "^3.1.0"
   },
   "devDependencies": {
+    "@okta/okta-oidc-js.runner": "0.0.0",
     "cross-env": "^5.1.1",
     "ejs": "^2.5.7",
     "express-session": "^1.15.5",
-    "jest": "^23.6.0",
     "nock": "^9.1.6",
     "protractor": "^5.1.2",
     "read-package-tree": "^5.1.6",
