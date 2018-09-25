@@ -288,31 +288,16 @@ Returns the stored URI and query parameters stored when the `OktaAuthGuard` and/
 
 ## Development
 
-We use Yarn as our node package manager. To install Yarn, check out their [install documentation](https://yarnpkg.com/en/docs/install).
-
-1. Clone the repo:
-    - `git clone git@github.com:okta/okta-oidc-js.git`
-2. Install the dependencies:
-   - `yarn install`
-3. Navigate into the `okta-angular` package:
-   - `cd packages/okta-angular`
-4. Make your changes to `okta-angular/src/`
-5. Set the following environment variables:
-   - `ISSUER` - your authorization server
-   - `CLIENT_ID` - the client id of your app
-   - `USERNAME` - username of org user, needed if you want to run tests
-   - `PASSWORD` - password of org user, needed if you want to run tests
-6. Start a sample server:
-   - `yarn start`
+See the [getting started](/README.md#getting-started) section for step-by-step instructions.
 
 ## Commands
 
 | Command        | Description                        |
 | -------------- | ---------------------------------- |
-| `yarn start`    | Start the sample app using the SDK |
-| `yarn test`     | Run integration tests              |
-| `yarn lint` | Run eslint linting tests           |
-| `yarn docs` | Generate typedocs                  |
+| `yarn start`   | Start the sample app using the SDK |
+| `yarn test`    | Run integration tests              |
+| `yarn lint`    | Run eslint linting tests           |
+| `yarn docs`    | Generate typedocs                  |
 
 [ID Token Claims]: https://developer.okta.com/docs/api/resources/oidc#id-token-claims
 [UserInfo endpoint]: https://developer.okta.com/docs/api/resources/oidc#userinfo

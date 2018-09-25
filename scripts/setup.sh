@@ -15,10 +15,7 @@ git reset --hard $SHA
 git config --global user.email "oktauploader@okta.com"
 git config --global user.name "oktauploader-okta"
 
-# Install required dependencies
-yarn global add lerna
-
 if ! yarn install; then
-  echo "lerna bootstrap failed! Exiting..."
+  echo "yarn install failed! Exiting..."
   exit ${FAILED_SETUP}
 fi

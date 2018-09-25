@@ -268,22 +268,7 @@ Parses the tokens returned as hash fragments in the OAuth 2.0 Redirect URI.
 
 ## Development
 
-We use Yarn as our node package manager. To install Yarn, check out their [install documentation](https://yarnpkg.com/en/docs/install).
-
-1. Clone the repo:
-    - `git clone git@github.com:okta/okta-oidc-js.git`
-2. Install the dependencies:
-    - `yarn install`
-3. Navigate into the `okta-vue` package:
-    - `cd packages/okta-vue`
-4. Make your changes to `okta-vue/src/`
-5. Set the following environment variables:
-    - `ISSUER` - your authorization server
-    - `CLIENT_ID` - the client id of your app
-    - `USERNAME` - username of org user, needed if you want to run tests
-    - `PASSWORD` - password of org user, needed if you want to run tests
-6. Start a sample server:
-    - `yarn start`
+See the [getting started](/README.md#getting-started) section for step-by-step instructions.
 
 ## Commands
 

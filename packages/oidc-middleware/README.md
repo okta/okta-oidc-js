@@ -39,9 +39,11 @@ If you run into problems using the SDK, you can:
 
 Installing the Okta Node JS OIDC MIddlware in your project is simple.
 
-We use Yarn as our node package manager. To install Yarn, check out their [install documentation](https://yarnpkg.com/en/docs/install).
-
 ```sh
+# npm
+npm install --save @okta/oidc-middleware
+
+# yarn
 yarn add @okta/oidc-middleware
 ```
 
