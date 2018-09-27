@@ -1,0 +1,30 @@
+{
+  "name": "@okta/configuration-validation",
+  "version": "1.0.0",
+  "description": "Configuration validation support for Okta SDKs",
+  "main": "lib.js",
+  "files": [
+    "src"
+  ],
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/okta/okta-oidc-js.git"
+  },
+  "keywords": [
+    "okta",
+    "oidc",
+    "OpenID Connect",
+    "authentication",
+    "auth",
+    "oauth2"
+  ],
+  "author": "",
+  "license": "Apache-2.0",
+  "bugs": {
+    "url": "https://github.com/okta/okta-oidc-js/issues"
+  },
+  "homepage": "https://github.com/okta/okta-oidc-js#readme"
+}
