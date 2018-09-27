@@ -13,11 +13,23 @@
 import OktaAuth from '@okta/okta-auth-js';
 
 import packageInfo from './packageInfo';
+import {
+  assertIssuer,
+  assertClientId,
+  assertRedirectUri
+} from './utils/configUtil';
 
 const containsAuthTokens = /id_token|access_token|code/;
 
 export default class Auth {
   constructor(config) {
+    // Validate the issuer param
+    assertIssuer(config.issuer, config.testing);
+    // Validate the client_id param
+    assertClientId(config.client_id);
+    // Validate the redirect_uri param
+    assertRedirectUri(config.redirect_uri);
+
     this._oktaAuth = new OktaAuth({
       url: config.issuer.split('/oauth2/')[0],
       clientId: config.client_id,
@@ -101,7 +113,7 @@ export default class Auth {
     localStorage.setItem(
       'secureRouterReferrerPath',
       JSON.stringify(referrerPath)
-      );
+    );
     if (this._config.onAuthRequired) {
       const auth = this;
       const history = this._history;
@@ -133,6 +145,6 @@ export default class Auth {
 
     // return a promise that doesn't terminate so nothing
     // happens after setting window.location
-    return new Promise((resolve, reject) => {});
+    return new Promise((resolve, reject) => { });
   }
 };

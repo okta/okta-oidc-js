@@ -10,9 +10,7 @@
  * See the License for the specific language governing permissions and limitations under the License.
  */
 
-class OIDCMiddlewareError extends Error {}
-
-const configUtil = module.exports;
+class OktaReactError extends Error { }
 
 const findDomainURL = 'https://bit.ly/finding-okta-domain';
 const findAppCredentialsURL = 'https://bit.ly/finding-okta-app-credentials';
@@ -21,7 +19,7 @@ const copyCredentialsMessage = 'You can copy it from the Okta Developer Console 
   'in the details for the Application you created. ' +
   `Follow these instructions to find it: ${findAppCredentialsURL}`;
 
-configUtil.assertIssuer = (issuer, testing = {}) => {
+export const assertIssuer = (issuer, testing = {}) => {
   const copyMessage = 'You can copy your domain from the Okta Developer ' +
     'Console. Follow these instructions to find it: ' + findDomainURL;
 
@@ -32,47 +30,39 @@ configUtil.assertIssuer = (issuer, testing = {}) => {
   }
 
   if (!issuer) {
-    throw new OIDCMiddlewareError('Your Okta URL is missing. ' + copyMessage);
+    throw new OktaReactError('Your Okta URL is missing. ' + copyMessage);
   } else if (!testing.disableHttpsCheck && !issuer.match(/^https:\/\//g)) {
-    throw new OIDCMiddlewareError(
+    throw new OktaReactError(
       'Your Okta URL must start with https. ' +
       `Current value: ${issuer}. ${copyMessage}`
     );
   } else if (issuer.match(/{yourOktaDomain}/g)) {
-    throw new OIDCMiddlewareError('Replace {yourOktaDomain} with your Okta domain. ' + copyMessage);
+    throw new OktaReactError('Replace {yourOktaDomain} with your Okta domain. ' + copyMessage);
   } else if (issuer.match(/-admin.(okta|oktapreview|okta-emea).com/g)) {
-    throw new OIDCMiddlewareError(
+    throw new OktaReactError(
       'Your Okta domain should not contain -admin. ' +
       `Current value: ${issuer}. ${copyMessage}`
     );
   } else if (issuer.match(/(.com.com)|(:\/\/.*){2,}/g)) {
-    throw new OIDCMiddlewareError(
+    throw new OktaReactError(
       'It looks like there\'s a typo in your Okta domain. ' +
       `Current value: ${issuer}. ${copyMessage}`
     );
   }
 };
 
-configUtil.assertClientId = (clientId) => {
+export const assertClientId = (clientId) => {
   if (!clientId) {
-    throw new OIDCMiddlewareError('Your client ID is missing. ' + copyCredentialsMessage);
+    throw new OktaReactError('Your client ID is missing. ' + copyCredentialsMessage);
   } else if (clientId.match(/{clientId}/g)) {
-    throw new OIDCMiddlewareError('Replace {clientId} with the client ID of your Application. ' + copyCredentialsMessage);
+    throw new OktaReactError('Replace {clientId} with the client ID of your Application. ' + copyCredentialsMessage);
   }
 };
 
-configUtil.assertClientSecret = (clientSecret) => {
-  if (!clientSecret) {
-    throw new OIDCMiddlewareError('Your client secret is missing. ' + copyCredentialsMessage);
-  } else if (clientSecret.match(/{clientSecret}/g)) {
-    throw new OIDCMiddlewareError('Replace {clientSecret} with the client secret of your Application. ' + copyCredentialsMessage);
-  }
-};
-
-configUtil.assertRedirectUri = (redirectUri) => {
+export const assertRedirectUri = (redirectUri) => {
   if (!redirectUri) {
-    throw new OIDCMiddlewareError('Your redirect URI is missing.');
+    throw new OktaReactError('Your redirect URI is missing.');
   } else if (redirectUri.match(/{redirectUri}/g)) {
-    throw new OIDCMiddlewareError('Replace {redirectUri} with the redirect URI of your Application.');
+    throw new OktaReactError('Replace {redirectUri} with the redirect URI of your Application.');
   }
 };
