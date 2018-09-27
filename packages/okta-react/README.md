@@ -17,20 +17,19 @@ In Okta, applications are OpenID Connect clients that can use Okta Authorization
 * Log into the Okta Developer Dashboard, click **Applications** then **Add Application**.
 * Choose **Single Page App (SPA)** as the platform, then submit the form the default values, which should look like this:
 
-| Setting             | Value                                        |
-| ------------------- | -------------------------------------------- |
-| App Name            | My SPA App                                   |
-| Base URIs           | http://localhost:{port}                      |
-| Login redirect URIs | http://localhost:{port}/implicit/callback    |
-| Grant Types Allowed | Implicit                                     |
+| Setting             | Value                                     |
+|---------------------|-------------------------------------------|
+| App Name            | My SPA App                                |
+| Base URIs           | http://localhost:{port}                   |
+| Login redirect URIs | http://localhost:{port}/implicit/callback |
+| Grant Types Allowed | Implicit                                  |
 
 After you have created the application there are two more values you will need to gather:
 
-| Setting       | Where to Find                                                                  |
-| ------------- | ------------------------------------------------------------------------------ |
-| Client ID     | In the applications list, or on the "General" tab of a specific application.    |
-| Org URL       | On the home screen of the developer dashboard, in the upper right.             |
-
+| Setting   | Where to Find                                                                |
+|-----------|------------------------------------------------------------------------------|
+| Client ID | In the applications list, or on the "General" tab of a specific application. |
+| Org URL   | On the home screen of the developer dashboard, in the upper right.           |
 
 These values will be used in your React application to setup the OpenID Connect flow with Okta.
 
@@ -39,7 +38,11 @@ These values will be used in your React application to setup the OpenID Connect 
 This library is available through [npm](https://www.npmjs.com/package/@okta/okta-react). To install it, simply add it to your project:
 
 ```bash
+# npm
 npm install --save @okta/okta-react
+
+# yarn
+yarn add @okta/okta-react
 ```
 
 ## Usage
@@ -325,25 +328,12 @@ Parses tokens from the url and stores them.
 
 ## Development
 
-1. Clone the repo:
-   - `git clone git@github.com:okta/okta-oidc-js.git`
-2. Install the dependencies with lerna (install with `npm i lerna -g`):
-   - `lerna bootstrap`
-3. Navigate into the `okta-react` package:
-   - `cd packages/okta-react`
-4. Make your changes to `okta-react/src/`
-5. Set the following environment variables:
-   - `ISSUER` - your authorization server
-   - `CLIENT_ID` - the client id of your app
-   - `USERNAME` - username of org user, needed if you want to run tests
-   - `PASSWORD` - password of org user, needed if you want to run tests
-6. Start a sample server:
-   - `npm start`
+See the [getting started](/README.md#getting-started) section for step-by-step instructions.
 
 ## Commands
 
-| Command        | Description                        |
-| -------------- | ---------------------------------- |
-| `npm start`    | Start the sample app using the SDK |
-| `npm test`     | Run integration tests              |
-| `npm run lint` | Run eslint linting tests           |
+| Command      | Description                        |
+|--------------|------------------------------------|
+| `yarn start` | Start the sample app using the SDK |
+| `yarn test`  | Run integration tests              |
+| `yarn lint`  | Run eslint linting tests           |

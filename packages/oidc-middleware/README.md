@@ -40,7 +40,11 @@ If you run into problems using the SDK, you can:
 Installing the Okta Node JS OIDC MIddlware in your project is simple.
 
 ```sh
+# npm
 npm install --save @okta/oidc-middleware
+
+# yarn
+yarn add @okta/oidc-middleware
 ```
 
 You'll also need:

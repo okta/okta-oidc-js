@@ -6,7 +6,7 @@ const rpt = require ('read-package-tree');
 
 const { ExpressOIDC } = require('../../index.js');
 const pkg = require('../../package.json');
-const packageRoot = path.join(__dirname, '..', '..');
+const modulesRoot = path.join(__dirname, '../../../..');
 
 describe('new ExpressOIDC()', () => {
   const findDomainMessage = 'You can copy your domain from the Okta Developer ' +
@@ -238,7 +238,7 @@ describe('new ExpressOIDC()', () => {
   });
 
   it('should set the correct User-Agent string', (done) => {
-    rpt(packageRoot, function (node, kidName) {
+    rpt(modulesRoot, function (node, kidName) {
       return kidName.includes('openid');
     }, function (er, data) {
       const openIdPkg = data.children[0].package;

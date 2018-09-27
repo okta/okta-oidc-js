@@ -16,7 +16,7 @@
   ],
   "main": "index.js",
   "scripts": {
-    "test": "npm run test:unit && npm run test:e2e && npm run test:integration",
+    "test": "yarn test:unit && yarn test:e2e && yarn test:integration",
     "test:e2e": "webdriver-manager update --gecko false && protractor test/e2e/conf.js",
     "test:integration": "sh tools/runIntegrationTests.sh",
     "test:unit": "jest test/unit"
@@ -32,7 +32,7 @@
     "express": "^4.16.3",
     "lodash": "^4.17.5",
     "negotiator": "^0.6.1",
-    "openid-client": "^2.1.0",
+    "openid-client": "2.1.0",
     "passport": "^0.3.2",
     "uuid": "^3.1.0"
   },

@@ -9,7 +9,7 @@
     "src"
   ],
   "scripts": {
-    "test": "npm run test:sanity && npm run test:integration",
+    "test": "yarn test:sanity && yarn test:integration",
     "test:sanity": "jest test/spec",
     "test:integration": "sh tools/runIntegrationTests.sh"
   },

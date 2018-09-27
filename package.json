@@ -1,12 +1,25 @@
 {
-	"devDependencies": {
-		"globby": "^6.1.0",
-		"lerna": "^2.1.0"
-	},
-	"scripts": {
-		"banners": "util/maintain-banners.js",
-		"publish": "lerna publish --skip-npm",
-		"bootstrap": "lerna bootstrap",
-		"test": "sh ./scripts/runTests.sh"
-	}
+  "private": true,
+  "devDependencies": {
+    "globby": "^6.1.0",
+    "lerna": "^2.1.0"
+  },
+  "engines": {
+    "yarn": "^1.7.0"
+  },
+  "scripts": {
+    "banners": "util/maintain-banners.js",
+    "publish": "lerna publish --skip-npm",
+    "test": "sh ./scripts/runTests.sh",
+    "clean": "lerna clean"
+  },
+  "workspaces": {
+    "packages": ["packages/*"],
+    "nohoist": [
+      "**/jest-expo",
+      "**/jest-expo/**",
+      "**/expo",
+      "**/expo/**"
+    ]
+  }
 }

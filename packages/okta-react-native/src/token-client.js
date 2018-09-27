@@ -10,7 +10,6 @@
  * See the License for the specific language governing permissions and limitations under the License.
  */
 
-import { Platform } from 'react-native';
 import jwt from 'jwt-lite';
 import { WebBrowser, SecureStore } from 'expo';
 import * as util from './util';

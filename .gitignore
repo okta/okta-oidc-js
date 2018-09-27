@@ -5,6 +5,9 @@ npm-debug.log
 .envrc
 *.code-workspace
 lerna-debug.log
+yarn-debug.log*
+yarn-error.log*
+package-lock.json
 
 # Ignore TCK-related files in all folders
 okta-oidc-tck*

@@ -8,5 +8,5 @@ Run the following command to run all the integration tests.
 Ensure you're in the `oidc-middleware` base directory
 
 ```bash
-npm run test:integration
+yarn test:integration
 ```
