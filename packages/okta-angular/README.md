@@ -292,12 +292,11 @@ See the [getting started](/README.md#getting-started) section for step-by-step i
 
 ## Commands
 
-| Command        | Description                        |
-| -------------- | ---------------------------------- |
-| `yarn start`   | Start the sample app using the SDK |
-| `yarn test`    | Run integration tests              |
-| `yarn lint`    | Run eslint linting tests           |
-| `yarn docs`    | Generate typedocs                  |
+| Command      | Description                        |
+|--------------|------------------------------------|
+| `yarn start` | Start the sample app using the SDK |
+| `yarn test`  | Run unit and integration tests     |
+| `yarn lint`  | Run eslint linting tests           |
 
 [ID Token Claims]: https://developer.okta.com/docs/api/resources/oidc#id-token-claims
 [UserInfo endpoint]: https://developer.okta.com/docs/api/resources/oidc#userinfo
