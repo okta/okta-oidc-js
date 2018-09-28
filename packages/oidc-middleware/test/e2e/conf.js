@@ -14,6 +14,7 @@ exports.config = {
   framework: 'jasmine',
   directConnect: true,
   specs: ['specs/*.js'],
+  baseUrl: 'http://localhost:8080/',
   capabilities: {
     browserName: 'chrome',
     chromeOptions: {

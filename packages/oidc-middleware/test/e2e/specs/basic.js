@@ -56,7 +56,7 @@ describe('Basic login redirect', () => {
     expect(homePage.getBodyText()).toContain('Welcome home');
 
     // navigate to logout
-    await browser.get(constants.LOGOUT_PATH);
+    await browser.get('/logout');
     await homePage.waitUntilVisible();
     expect(browser.getPageSource()).not.toContain('Welcome home');
   });

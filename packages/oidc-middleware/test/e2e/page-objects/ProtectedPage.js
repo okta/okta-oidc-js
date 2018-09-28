@@ -19,11 +19,11 @@ module.exports = class ProtectedPage {
   }
 
   async load() {
-    await browser.get(constants.PROTECTED_PATH);
+    await browser.get('/protected');
   }
 
   async waitUntilVisible() {
-    await browser.wait(EC.urlIs(constants.PROTECTED_PATH), 5000);
+    await browser.wait(EC.urlIs(constants.BASE_URI + '/protected'), 5000);
   }
 
   async getBodyText() {

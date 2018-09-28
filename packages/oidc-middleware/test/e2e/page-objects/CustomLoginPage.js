@@ -10,7 +10,6 @@
  * See the License for the specific language governing permissions and limitations under the License.
  */
 
-const constants = require('../util/constants');
 const EC = protractor.ExpectedConditions;
 
 module.exports = class OktaSignInPage {
@@ -22,7 +21,7 @@ module.exports = class OktaSignInPage {
   }
 
   async load() {
-    await browser.get(constants.LOGIN_PATH);
+    await browser.get('/login');
   }
 
   async waitUntilVisible() {
