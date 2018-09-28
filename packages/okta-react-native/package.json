@@ -40,7 +40,7 @@
     "babel-preset-jest": "^22.2.0",
     "expo": "*",
     "jest": "^22.4.0",
-    "jest-expo": "^25.1.0",
+    "jest-expo": "^30.0.0",
     "jest-fetch-mock": "^1.4.2",
     "react": "*",
     "react-native": "0.55.4"

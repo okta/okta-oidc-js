@@ -6,10 +6,10 @@
   "private": true,
   "scripts": {
     "dev": "webpack-dev-server --inline --progress --config build/webpack.dev.conf.js",
-    "start": "npm run env && npm run dev",
+    "start": "yarn env && yarn dev",
     "env": "node ./scripts/prebuild.js",
     "e2e": "node test/e2e/runner.js",
-    "test": "npm run env && npm run e2e",
+    "test": "yarn env && yarn e2e",
     "lint": "eslint --ext .js,.vue src test/e2e/specs",
     "build": "node build/build.js"
   },
@@ -66,10 +66,6 @@
     "webpack-bundle-analyzer": "^2.9.0",
     "webpack-dev-server": "^2.9.1",
     "webpack-merge": "^4.1.0"
-  },
-  "engines": {
-    "node": ">= 4.0.0",
-    "npm": ">= 3.0.0"
   },
   "browserslist": [
     "> 1%",

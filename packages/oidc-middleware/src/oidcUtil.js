@@ -65,7 +65,7 @@ oidcUtil.createClient = context => {
 
     return client;
   });
-}
+};
 
 oidcUtil.bootstrapPassportStrategy = context => {
   const oidcStrategy = new OpenIdClientStrategy({
@@ -74,8 +74,13 @@ oidcUtil.bootstrapPassportStrategy = context => {
     },
     sessionKey: context.options.sessionKey,
     client: context.client
-  }, (tokens, userinfo, done) => {
-    done(null, userinfo);
+  }, (tokenSet, userinfo, done) => {
+    return tokenSet && userinfo
+      ? done(null, {
+        userinfo: userinfo,
+        tokens: tokenSet
+      })
+      : done(null);
   });
 
   // bypass passport's serializers

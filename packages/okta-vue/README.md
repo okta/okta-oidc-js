@@ -42,7 +42,11 @@ These values will be used in your Vue application to setup the OpenID Connect fl
 This library is available through [npm](https://www.npmjs.com/package/@okta/okta-vue). To install it, simply add it to your project:
 
 ```bash
+# npm
 npm install --save @okta/okta-vue
+
+# yarn
+yarn add @okta/okta-vue
 ```
 
 ### Configuration
@@ -264,21 +268,12 @@ Parses the tokens returned as hash fragments in the OAuth 2.0 Redirect URI.
 
 ## Development
 
-1. Clone the repo:
-    - `git clone git@github.com:okta/okta-oidc-js.git`
-2. Navigate into the `okta-vue` package:
-    - `cd packages/okta-vue`
-3. Install dependencies:
-    - Navigate into the sample and install all `vue` dependencies
-    - `cd test/e2e/harness && npm install`
-4. Make your changes to `okta-vue/src/`
-5. Update environment variables
-    - Manually set the `ISSUER`, `CLIENT_ID`, `USERNAME` and `PASSWORD` environment variables via the command line. For example: `export USERNAME={username}`
+See the [getting started](/README.md#getting-started) section for step-by-step instructions.
 
 ## Commands
 
 | Command        | Description                        |
 | -------------- | ---------------------------------- |
-| `npm start`    | Start the sample app using the SDK |
-| `npm test`     | Run integration tests              |
-| `npm run lint` | Run eslint linting tests           |
+| `yarn start`   | Start the sample app using the SDK |
+| `yarn test`    | Run integration tests              |
+| `yarn lint`    | Run eslint linting tests           |

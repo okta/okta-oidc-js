@@ -37,15 +37,15 @@ module.exports = class DemoServer {
     app.use(oidc.router);
 
     app.get('/', (req, res) => {
-      if (req.userinfo) {
-        res.send(`Hello ${req.userinfo.sub}! Welcome home`);
+      if (req.userContext) {
+        res.send(`Hello ${req.userContext.userinfo.sub}! Welcome home`)
       } else {
         res.send('Hello World!');
       }
     });
 
     app.get('/protected', oidc.ensureAuthenticated(), (req, res) => {
-      res.send(JSON.stringify(req.userinfo));
+      res.send(JSON.stringify(req.userContext));
     });
 
     app.get('/logout', (req, res) => {

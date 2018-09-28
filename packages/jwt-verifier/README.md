@@ -17,10 +17,12 @@ To learn more about verification cases and Okta's tokens please read [Working Wi
 
 ## How to use
 
-Install this library from npm:
-
 ```bash
+# npm
 npm install --save @okta/jwt-verifier
+
+# yarn
+yarn add @okta/jwt-verifier
 ```
 
 Create a verifier instance, bound to the issuer (authorization server URL) and the client ID (the Okta application that will use this authorization server):
@@ -74,25 +76,4 @@ const oktaJwtVerifier = new OktaJwtVerifier({
   cacheMaxAge: 60 * 60 * 1000, // 1 hour
   jwksRequestsPerMinute: 10
 });
-```
-
-## Run Tests
-
-### Prerequisite
-
-Export the following environment variables according to your environment
-
-```bash
-export ISSUER=[your okta domain]/oauth2/default
-export CLIENT_ID=[your client id]
-export USERNAME=[created user]
-export PASSWORD=[password from activation]
-export REDIRECT_URI=[redirect uri to your SPA]
-```
-
-Run the following command to run all the e2e tests.
-Ensure you're in the `jwt-verifier` base directory
-
-```bash
-npm run test
 ```

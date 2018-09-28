@@ -15,13 +15,26 @@ git reset --hard $SHA
 git config --global user.email "oktauploader@okta.com"
 git config --global user.name "oktauploader-okta"
 
-# Install required dependencies
-npm install -g lerna
+#!/bin/bash
+YARN_REGISTRY=https://registry.yarnpkg.com
+OKTA_REGISTRY=${ARTIFACTORY_URL}/api/npm/npm-okta-master
 
-# We are skipping react-native until we have a solution for the problem described here: https://github.com/expo/expo/issues/1767
-# If expo will not resolve then we will have to find another workaround
+# Yarn does not utilize the npmrc/yarnrc registry configuration
+# if a lockfile is present. This results in `yarn install` problems
+# for private registries. Until yarn@2.0.0 is released, this is our current
+# workaround.
+#
+# Related issues:
+#  - https://github.com/yarnpkg/yarn/issues/5892
+#  - https://github.com/yarnpkg/yarn/issues/3330
 
-if ! lerna bootstrap --ignore "@okta/okta-react-native"; then
-  echo "lerna bootstrap failed! Exiting..."
+# Replace yarn artifactory with Okta's
+sed -i "s#${YARN_REGISTRY}#${OKTA_REGISTRY}#" yarn.lock
+
+if ! yarn install ; then
+  echo "yarn install failed! Exiting..."
   exit ${FAILED_SETUP}
 fi
+
+# Revert the origional change
+sed -i "s#${OKTA_REGISTRY}#${YARN_REGISTRY}#" yarn.lock

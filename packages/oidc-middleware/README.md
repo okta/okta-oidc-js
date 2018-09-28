@@ -1,49 +1,59 @@
-# oidc-middleware
+[<img src="https://devforum.okta.com/uploads/oktadev/original/1X/bf54a16b5fda189e4ad2706fb57cbb7a1e5b8deb.png" align="right" width="256px"/>](https://devforum.okta.com/)
 
+[![Support](https://img.shields.io/badge/support-developer%20forum-blue.svg)][devforum]
 [![npm version](https://img.shields.io/npm/v/@okta/oidc-middleware.svg?style=flat-square)](https://www.npmjs.com/package/@okta/oidc-middleware)
 [![build status](https://img.shields.io/travis/okta/okta-oidc-js/master.svg?style=flat-square)](https://travis-ci.org/okta/okta-oidc-js)
 
+# Okta NodeJS OIDC Middleware
+
+* [Release status](#release-status)
+* [Need help?](#need-help)
+* [Getting started](#getting-started)
+* [Usage guide](#usage-guide)
+* [API reference](#api-reference)
+* [Contributing](#contributing)
+
 This package makes it easy to get your users logged in with Okta using OpenId Connect (OIDC).  It enables your Express application to participate in the [authorization code flow][auth-code-docs] flow by redirecting the user to Okta for authentication and handling the callback from Okta.  Once this flow is complete, a local session is created and the user context is saved for the duration of the session.
 
-## :warning: :construction: Alpha Preview :construction: :warning:
+## Release status
 
-This library is under development and is currently in 0.x version series.  Breaking changes may be introduced at minor versions in the 0.x range.  Please lock your dependency to a specific version until this library reaches 1.x.
+This library uses semantic versioning and follows Okta's [library version policy](https://developer.okta.com/code/library-versions/).
 
-Need help? Contact [developers@okta.com](mailto:developers@okta.com) or use the [Okta Developer Forum].
+:heavy_check_mark: The current stable major version series is: 1.x
 
-## Table of Contents
+| Version | Status                    |
+| ------- | ------------------------- |
+| 1.x     | :heavy_check_mark: Stable |
+| 0.x     | :x: Retired               |
 
-- [Installation](#installation)
-- [Prerequisites](#prerequisites)
-- [Usage Example](#usage-example)
-- [ExpressOIDC API](#expressoidc-api)
-  - [new ExpressOIDC(config)](#new-expressoidcconfig)
-  - [oidc.router](#oidcrouter)
-  - [oidc.on('ready', callback)](#oidconready-callback)
-  - [oidc.on('error', callback)](#oidconerror-callback)
-  - [oidc.ensureAuthenticated({ redirectTo?: '/uri' })](#oidcensureauthenticated-redirectto-uri)
-  - [req.isAuthenticated()](#reqisauthenticated)
-  - [req.logout()](#reqlogout)
-  - [req.userinfo](#requserinfo)
-- [Customization](#customization)
-  - [Customizing Routes](#customizing-routes)
-  - [Using a Custom Login Page](#using-a-custom-login-page)
-  - [Extending the User](#extending-the-user)
-  - [Using Proxy Servers](#using-proxy-servers)
+The latest release can always be found on the [releases page][github-releases].
 
-## Installation
+## Need help?
+
+If you run into problems using the SDK, you can:
+
+* Ask questions on the [Okta Developer Forums][devforum]
+* Post [issues][github-issues] here on GitHub (for code errors)
+
+## Getting started
+
+Installing the Okta Node JS OIDC MIddlware in your project is simple.
 
 ```sh
+# npm
 npm install --save @okta/oidc-middleware
+
+# yarn
+yarn add @okta/oidc-middleware
 ```
 
-## Prerequisites
+You'll also need:
 
-* You will need an Okta Developer Org, you can sign up for an account at https://developer.okta.com/signup/..
+* An Okta account, called an _organization_ (sign up for a free [developer organization](https://developer.okta.com/signup) if you need one).
 * An OIDC application in your Org, configured for Web mode.  If you are new to Okta or this flow, we suggest following the [Express.js Quickstart][express-quickstart].
 * This integration depends on sessions to store user information. Ensure the [express-session middleware](https://github.com/expressjs/session) is added before you add `ExpressOIDC`.  By default, the session middleware uses a MemoryStore, which is not designed for production use. Use [another session store](https://github.com/expressjs/session#compatible-session-stores) for production.
 
-## Usage Example
+## Usage guide
 
 Below is a terse Express application that examples the basic usage of this library.  If you'd like to clone a complete example, please see the [Okta Express Samples Repository](https://github.com/okta/samples-nodejs-express-4).
 
@@ -54,9 +64,9 @@ const { ExpressOIDC } = require('@okta/oidc-middleware');
 
 const app = express();
 const oidc = new ExpressOIDC({
-  issuer: 'https://{yourOktaDomain}.com/oauth2/default',
-  client_id: 'XXXXX',
-  client_secret: 'XXXXX',
+  issuer: 'https://{yourOktaDomain}/oauth2/default',
+  client_id: '{clientId}',
+  client_secret: '{clientSecret}',
   redirect_uri: 'http://localhost:3000/authorization-code/callback',
   scope: 'openid profile'
 });
@@ -68,8 +78,8 @@ app.use(session({
 }));
 app.use(oidc.router);
 app.get('/', (req, res) => {
-  if (req.userinfo) {
-    res.send(`Hello ${req.userinfo.name}! <a href="logout">Logout</a>`);
+  if (req.userContext) {
+    res.send(`Hello ${req.userContext.userinfo.name}! <a href="logout">Logout</a>`);
   } else {
     res.send('Please <a href="/login">login</a>');
   }
@@ -89,10 +99,26 @@ oidc.on('error', err => {
 });
 ```
 
-## ExpressOIDC API
+## API reference
 
+* [ExpressOIDC API](#expressoidc-api)
+  * [new ExpressOIDC(config)](#new-expressoidcconfig)
+  * [oidc.router](#oidcrouter)
+  * [oidc.on('ready', callback)](#oidconready-callback)
+  * [oidc.on('error', callback)](#oidconerror-callback)
+  * [oidc.ensureAuthenticated({ redirectTo?: '/uri' })](#oidcensureauthenticated-redirectto-uri)
+  * [req.isAuthenticated()](#reqisauthenticated)
+  * [req.logout()](#reqlogout)
+  * [req.userContext](#requsercontext)
+* [Customization](#customization)
+  * [Customizing Routes](#customizing-routes)
+  * [Using a Custom Login Page](#using-a-custom-login-page)
+  * [Extending the User](#extending-the-user)
+  * [Using Proxy Servers](#using-proxy-servers)
 
-### new ExpressOIDC(config)
+### ExpressOIDC API
+
+#### new ExpressOIDC(config)
 
 To configure your OIDC integration, create an instance of `ExpressOIDC` and pass options. Most apps will need this basic configuration:
 
@@ -100,20 +126,20 @@ To configure your OIDC integration, create an instance of `ExpressOIDC` and pass
 const { ExpressOIDC } = require('@okta/oidc-middleware');
 
 const oidc = new ExpressOIDC({
-  issuer: YOUR_ISSUER,
-  client_id: YOUR_CLIENT_ID,
-  client_secret: YOUR_CLIENT_SECRET,
-  redirect_uri: YOUR_REDIRECT_URI,
+  issuer: 'https://{yourOktaDomain}/oauth2/default',
+  client_id: '{clientId}',
+  client_secret: '{clientSecret}',
+  redirect_uri: '{redirectUri}',
   scope: 'openid profile'
 });
 ```
 
 Required config:
 
-* **issuer** - The OIDC provider (e.g. `https://YOUR_ORG.oktapreview.com/oauth2/default`)
+* **issuer** - The OIDC provider (e.g. `https://{yourOktaDomain}/oauth2/default`)
 * **client_id** - An id provided when you create an OIDC app in your Okta Org
 * **client_secret** - A secret provided when you create an OIDC app in your Okta Org
-* **redirect_uri** - The callback for your app. Locally, this is usually `http://localhost:3000/authorization-code/callback`. When deployed, this should be `https://YOUR_PROD_DOMAIN/authorization-code/callback`.
+* **redirect_uri** - The callback for your app. Locally, this is usually `http://localhost:3000/authorization-code/callback`. When deployed, this should be `https://{yourProductionDomain}/authorization-code/callback`.
 
 Optional config:
 
@@ -123,7 +149,7 @@ Optional config:
 * **maxClockSkew** - Defaults to 120. This is the maximum difference allowed between your server's clock and Okta's in seconds. Setting this to 0 is not recommended, because it increases the likelihood that valid jwts will fail verification due to `nbf` and `exp` issues.
 * **timeout** - Defaults to 10000 milliseconds. The HTTP max timeout for any requests to the issuer.  If a timeout exception occurs you can catch it with the `oidc.on('error', fn)` handler.
 
-### oidc.router
+#### oidc.router
 
 This should be added to your express app to attach the login and callback routes:
 
@@ -142,7 +168,7 @@ It's required in order for `ensureAuthenticated` and `isAuthenticated` to work a
 * `/login` - redirects to the Okta sign-in page by default
 * `/authorization-code/callback` - processes the OIDC response, then attaches userinfo to the session
 
-### oidc.on('ready', callback)
+#### oidc.on('ready', callback)
 
 The middleware must retrieve some information about your client before starting the server. You **must** wait until ExpressOIDC is ready to start your server.
 
@@ -152,7 +178,7 @@ oidc.on('ready', () => {
 });
 ```
 
-### oidc.on('error', callback)
+#### oidc.on('error', callback)
 
 This is triggered if an error occurs while ExpressOIDC is trying to start.
 
@@ -162,7 +188,7 @@ oidc.on('error', err => {
 });
 ```
 
-### oidc.ensureAuthenticated({ redirectTo?: '/uri' })
+#### oidc.ensureAuthenticated({ redirectTo?: '/uri' })
 
 Use this to protect your routes. If not authenticated, this will redirect to the login route and trigger the authentication flow. If the request prefers JSON then a 401 error response will be sent.
 
@@ -174,7 +200,7 @@ app.get('/protected', oidc.ensureAuthenticated(), (req, res) => {
 
 The `redirectTo` option can be used to redirect the user to a specific URI on your site, after a successful authentication callback.
 
-### req.isAuthenticated()
+#### req.isAuthenticated()
 
 This allows you to determine if a user is authenticated.
 
@@ -188,7 +214,7 @@ app.get('/', (req, res) => {
 });
 ```
 
-### req.logout()
+#### req.logout()
 
 This allows you to end the session.
 
@@ -199,23 +225,36 @@ app.get('/logout', (req, res) => {
 });
 ```
 
-### req.userinfo
+#### req.userContext
 
-This provides information about the authenticated user, and is obtained from the [userinfo endpoint of the authorization server](https://developer.okta.com/docs/api/resources/oidc.html#get-user-information) and depends on the scope requested (see scope option above):
+This provides information about the authenticated user and contains the requested tokens. The `userContext` object contains two keys:
+
+1. `userinfo`: The response from the [userinfo endpoint of the authorization server](https://developer.okta.com/docs/api/resources/oidc.html#get-user-information).
+2. `tokens`: [TokenSet object](https://github.com/panva/node-openid-client#tokenset) containing the `accessToken`, `idToken`, and/or `refreshToken` requested from the authorization server.
+
+> Note: Claims reflected in the userinfo response and token object depend on the scope requested (see scope option above).
 
 ```javascript
 app.get('/', (req, res) => {
-  if (req.userinfo) {
-    res.send(`Hi ${req.userinfo.sub}!`);
+  if (req.userContext) {
+    const tokenSet = req.userContext.tokens;
+    const userinfo = req.userContext.userinfo;
+
+    console.log(`Access Token: ${tokenSet.access_token}`);
+    console.log(`Id Token: ${tokenSet.id_token}`);
+    console.log(`Claims: ${tokenSet.claims}`);
+    console.log(`Userinfo Response: ${userinfo}`);
+
+    res.send(`Hi ${userinfo.sub}!`);
   } else {
     res.send('Hi!');
   }
 });
 ```
 
-## Customization
+### Customization
 
-### Customizing Routes
+#### Customizing Routes
 
 If you need to modify the default login and callback routes, the `routes` config option is available.
 
@@ -243,7 +282,7 @@ const oidc = new ExpressOIDC({
 * **`callback.path`** - The URI that this library will host the callback handler on. Defaults to `/authorization-code/callback`
 * **`login.path`** - The URI that redirects the user to the authorize endpoint. Defaults to `/login`.
 
-### Using a Custom Login Page
+#### Using a Custom Login Page
 
 By default the end-user will be redirected to the Okta Sign-In Page when authentication is required, this page is hosted on your Okta Org domain.  It is possible to host this experience within your own application by installing the [Okta Sign-In Widget](https://github.com/okta/okta-signin-widget) into a page in your application.  Please refer to the [test example file](test/e2e/harness/views/login.ejs) for an example of how the widget should be configured for this use case.
 
@@ -268,7 +307,7 @@ const oidc = new ExpressOIDC({
 });
 ```
 
-### Extending the User
+#### Extending the User
 
 To add additional data about a user from your database, we recommend adding middleware to extend `req`.
 
@@ -283,10 +322,12 @@ const oidc = new ExpressOIDC({ /* options */ });
 app.use(oidc.router);
 
 function addUserContext(req, res, next) {
-  if (!req.userinfo) return next();
+  if (!req.userContext) {
+    return next();
+  }
 
   // request additional info from your database
-  User.findOne({ id: req.userinfo.sub }, (err, user) => {
+  User.findOne({ id: req.userContext.userinfo.sub }, (err, user) => {
     if (err) return next(err);
     req.user = user;
     next();
@@ -305,7 +346,7 @@ oidc.on('error', err => console.log('could not start', err));
 [express-quickstart]: https://developer.okta.com/quickstart/#/okta-sign-in-page/nodejs/express
 [Okta Developer Forum]: https://devforum.okta.com/
 
-### Using Proxy Servers
+#### Using Proxy Servers
 
 The underlying [openid-client][] library can be configured to use the [request][] library.  Do this by adding these lines to your app, before you call `new ExpressOIDC()`:
 
@@ -321,5 +362,10 @@ const oidc = new ExpressOIDC({
 
 Once you have done that you can read the documentation on the [request][] library to learn which environment variables can be used to define your proxy settings.
 
+[devforum]: https://devforum.okta.com/
 [openid-client]: https://github.com/panva/node-openid-client
 [request]: https://github.com/request/request
+
+## Contributing
+
+We're happy to accept contributions and PRs! Please see the [contribution guide](https://github.com/okta/okta-oidc-js/blob/master/CONTRIBUTING.md) to understand how to structure a contribution.
