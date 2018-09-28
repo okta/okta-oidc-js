@@ -133,6 +133,7 @@ export default class Auth {
 
     // return a promise that doesn't terminate so nothing
     // happens after setting window.location
+    /* eslint-disable-next-line no-unused-vars */
     return new Promise((resolve, reject) => {});
   }
-};
+}

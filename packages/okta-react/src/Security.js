@@ -38,6 +38,6 @@ class Security extends Component {
       </div>
     );
   }
-};
+}
 
 export default withRouter(Security);

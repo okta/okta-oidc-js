@@ -7,14 +7,15 @@
     "build": "rimraf dist/ && yarn build:package-info && babel src -d dist",
     "build:harness": "yarn --cwd test/e2e/harness install",
     "build:package-info": "node ../../util/write-package-info.js . src/packageInfo.js",
-    "jest": "jest test/jest/",
-    "lint": "eslint src/**; exit 0",
+    "lint": "eslint src",
     "lint:watch": "esw -w lib/**",
     "prepublish": "yarn build",
     "prestart": "yarn build && yarn build:harness",
-    "start": "yarn --cwd test/e2e/harness start",
     "pretest": "yarn build && yarn build:harness",
-    "test": "yarn jest && yarn --cwd test/e2e/harness test"
+    "start": "yarn --cwd test/e2e/harness start",
+    "test": "yarn lint && yarn test:unit && yarn test:e2e",
+    "test:e2e": "yarn --cwd test/e2e/harness test",
+    "test:unit": "jest test/jest/"
   },
   "repository": {
     "type": "git",

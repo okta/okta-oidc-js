@@ -335,5 +335,5 @@ See the [getting started](/README.md#getting-started) section for step-by-step i
 | Command      | Description                        |
 |--------------|------------------------------------|
 | `yarn start` | Start the sample app using the SDK |
-| `yarn test`  | Run integration tests              |
+| `yarn test`  | Run unit and integration tests     |
 | `yarn lint`  | Run eslint linting tests           |

@@ -27,7 +27,7 @@
     "build:test": "rimraf e2e/dist && babel e2e/ -d e2e/dist",
     "kill:port": "kill -9 $(lsof -t -i:8080 -sTCP:LISTEN) || true",
     "pretest": "yarn kill:port && ./node_modules/.bin/webdriver-manager update --gecko false && yarn build:test",
-    "wait:server": "yarn start & ./node_modules/.bin/wait-on http://localhost:8080",
+    "wait:server": "BROWSER=none yarn start & ./node_modules/.bin/wait-on http://localhost:8080",
     "test": "yarn build && yarn wait:server && yarn protractor",
     "eject": "react-scripts eject",
     "protractor": "babel-node ./node_modules/.bin/protractor protractor.conf.js"
