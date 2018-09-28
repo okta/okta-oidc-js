@@ -22,6 +22,7 @@ class RenderWrapper extends Component {
     }
   }
 
+  /* eslint-disable-next-line react/no-deprecated */
   componentWillMount() {
     this.checkAuthentication();
   }
@@ -88,6 +89,6 @@ class SecureRoute extends Component {
       />
     );
   }
-};
+}
 
 export default withAuth(SecureRoute);
