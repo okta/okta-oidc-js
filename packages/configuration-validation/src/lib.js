@@ -28,6 +28,7 @@ configUtil.assertIssuer = (issuer, testing = {}) => {
   if (testing.disableHttpsCheck) {
     const httpsWarning = 'Warning: HTTPS check is disabled. ' +
       'This allows for insecure configurations and is NOT recommended for production use.';
+    /* eslint-disable-next-line no-console */
     console.warn(httpsWarning);
   }
 

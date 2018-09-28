@@ -1,13 +1,14 @@
 {
   "name": "@okta/configuration-validation",
   "version": "0.1.0",
-  "description": "Configuration validation support for Okta SDKs",
+  "description": "Configuration validation support for Okta JavaScript SDKs",
   "main": "src/lib.js",
   "files": [
     "src"
   ],
   "scripts": {
-    "test": "yarn test:unit",
+    "lint": "eslint .",
+    "test": "yarn lint && yarn test:unit",
     "test:unit": "jest test/"
   },
   "repository": {
@@ -28,6 +29,7 @@
   },
   "homepage": "https://github.com/okta/okta-oidc-js#readme",
   "devDependencies": {
-    "jest": "^23.6.0"
+    "jest": "^23.6.0",
+    "eslint": "^4.7.1"
   }
 }

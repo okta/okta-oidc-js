@@ -32,6 +32,7 @@ describe('Configuration Validation', () => {
           disableHttpsCheck: true
         })
       }).not.toThrow(errorMsg);
+      /* eslint-disable-next-line no-console */
       expect(console.warn).toBeCalledWith('Warning: HTTPS check is disabled. This allows for insecure configurations and is NOT recommended for production use.');
     });
 
