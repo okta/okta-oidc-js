@@ -9,9 +9,9 @@
     "src"
   ],
   "scripts": {
-    "test": "yarn test:sanity && yarn test:integration",
-    "test:sanity": "jest test/spec",
-    "test:integration": "sh tools/runIntegrationTests.sh"
+    "test": "yarn test:unit && yarn test:integration",
+    "test:integration": "sh tools/runIntegrationTests.sh",
+    "test:unit": "jest test/spec"
   },
   "keywords": [
     "okta",
