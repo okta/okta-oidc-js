@@ -1,13 +1,14 @@
 {
   "name": "@okta/configuration-validation",
-  "version": "1.0.0",
+  "version": "0.1.0",
   "description": "Configuration validation support for Okta SDKs",
-  "main": "lib.js",
+  "main": "src/lib.js",
   "files": [
     "src"
   ],
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "yarn test:unit",
+    "test:unit": "jest test/"
   },
   "repository": {
     "type": "git",
@@ -21,10 +22,12 @@
     "auth",
     "oauth2"
   ],
-  "author": "",
   "license": "Apache-2.0",
   "bugs": {
     "url": "https://github.com/okta/okta-oidc-js/issues"
   },
-  "homepage": "https://github.com/okta/okta-oidc-js#readme"
+  "homepage": "https://github.com/okta/okta-oidc-js#readme",
+  "devDependencies": {
+    "jest": "^23.6.0"
+  }
 }
