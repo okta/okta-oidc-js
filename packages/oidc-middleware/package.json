@@ -26,6 +26,7 @@
   },
   "license": "Apache-2.0",
   "dependencies": {
+    "@okta/configuration-validation": "^0.1.0",
     "body-parser": "^1.18.2",
     "connect-ensure-login": "^0.1.1",
     "csurf": "^1.9.0",
