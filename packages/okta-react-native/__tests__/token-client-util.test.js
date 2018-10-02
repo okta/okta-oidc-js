@@ -31,7 +31,7 @@ describe('TokenClientUtil', () => {
   beforeEach(() => {
     context = {};
     context.tokenClient = new TokenClient({
-      issuer: 'http://dummy_issuer',
+      issuer: 'https://dummy_issuer',
       redirect_uri: 'dummy://redirect',
       client_id: 'dummy_client_id'
     });
@@ -43,7 +43,7 @@ describe('TokenClientUtil', () => {
       mockFetch([
         {
           req: {
-            url: 'http://dummy_issuer/.well-known/openid-configuration',
+            url: 'https://dummy_issuer/.well-known/openid-configuration',
             method: 'GET',
             headers: {
               'Accept': 'application/json',
@@ -61,7 +61,7 @@ describe('TokenClientUtil', () => {
       mockFetch([
         {
           req: {
-            url: 'http://dummy_issuer/.well-known/openid-configuration',
+            url: 'https://dummy_issuer/.well-known/openid-configuration',
             method: 'GET',
             headers: {
               'Accept': 'application/json',
@@ -76,7 +76,7 @@ describe('TokenClientUtil', () => {
     });
     it('throws an error if unable to parse response', async () => {
       return expect(tokenClientUtil.getWellKnown(context.tokenClient))
-        .rejects.toThrow('Unable to parse response for GET http://dummy_issuer/.well-known/openid-configuration');
+        .rejects.toThrow('Unable to parse response for GET https://dummy_issuer/.well-known/openid-configuration');
     });
     it('throws an error if an Okta error is returned', async () => {
       mockFetch([

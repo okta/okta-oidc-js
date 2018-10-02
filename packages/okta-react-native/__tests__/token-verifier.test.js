@@ -26,7 +26,7 @@ describe('TokenVerifier', () => {
     beforeEach(() => {
       context = {};
       context.tokenVerifier = new TokenVerifier({
-        jwks_uri: 'http://dummy_issuer/jwks'
+        jwks_uri: 'https://dummy_issuer/jwks'
       });
       mocks.mockFetch([mocks.requests.jwks]);
     });
