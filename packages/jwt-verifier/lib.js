@@ -13,10 +13,17 @@
 const jwksClient = require('jwks-rsa');
 const nJwt = require('njwt');
 
+const {
+  assertIssuer,
+  assertClientId
+} = require('@okta/configuration-validation');
+
 class OktaJwtVerifier {
   constructor(options = {}) {
+    // Assert configuration
+    assertIssuer(options.issuer, options.testing);
+    assertClientId(options.clientId);
 
-    // TODO parameter validation
     this.clientId = options.clientId;
     this.claimsToAssert = options.assertClaims || {};
     this.jwksClient = jwksClient({

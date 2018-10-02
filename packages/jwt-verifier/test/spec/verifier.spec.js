@@ -126,6 +126,7 @@ describe('Jwt Verifier', () => {
   it('should allow me to assert custom claims', () => {
     const verifier = new OktaJwtVerifier({
       issuer: ISSUER,
+      clientId: CLIENT_ID,
       assertClaims: {
         cid: 'baz',
         foo: 'bar'
