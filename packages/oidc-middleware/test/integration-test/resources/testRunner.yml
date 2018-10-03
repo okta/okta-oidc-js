@@ -25,6 +25,6 @@ scenarios:
       ISSUER: https://localhost:9999/oauth2/default
       CLIENT_ID: OOICU812
       CLIENT_SECRET: VERY_SECRET
-      NODE_EXTRA_CA_CERTS: ../../tck-keystore.pem
+      NODE_EXTRA_CA_CERTS: ./tck-keystore.pem
     args:
     - test/integration-test/start-server.js
