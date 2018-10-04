@@ -22,7 +22,7 @@ const pkg = require('../package.json');
 /**
  * Parse out the default user agent for the openid-client library, which currently looks like:
  *
- * openid-client/1.15.0 (https://github.com/panva/node-openid-client)
+ * openid-client/x.y.z (https://github.com/panva/node-openid-client)
  *
  * We strip off the github link because it's not necessary.
  */

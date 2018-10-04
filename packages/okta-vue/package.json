@@ -29,13 +29,12 @@
       "vue"
     ],
     "transform": {
-      "^.+\\.js$": "<rootDir>/../../node_modules/babel-jest",
+      "^.+\\.js$": "<rootDir>/node_modules/babel-jest",
       ".*\\.(vue)$": "<rootDir>/../../node_modules/vue-jest"
     },
     "moduleNameMapper": {
       "^@/(.*)$": "<rootDir>/src/$1"
-    },
-    "mapCoverage": true
+    }
   },
   "repository": {
     "type": "git",
@@ -53,7 +52,7 @@
   "dependencies": {
     "@okta/okta-auth-js": "^2.0.0",
     "cross-env": "^5.1.1",
-    "vue": "^2.5.9",
+    "vue": "^2.5.17",
     "vue-router": "^3.0.1"
   },
   "devDependencies": {
