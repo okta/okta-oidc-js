@@ -26,8 +26,8 @@
   "dependencies": {
     "b64u-lite": "^1.0.1",
     "dlv": "^1.1.1",
-    "isomorphic-webcrypto": "^1.5.0",
-    "jwt-lite": "^1.1.0",
+    "isomorphic-webcrypto": "^1.6.1",
+    "jwt-lite": "^1.1.2",
     "str2buf": "^1.3.0"
   },
   "peerDependencies": {
@@ -38,9 +38,9 @@
   "devDependencies": {
     "babel-core": "^6.26.0",
     "babel-preset-expo": "^4.0.0",
-    "babel-preset-jest": "^22.2.0",
+    "babel-preset-jest": "^23.2.0",
     "expo": "*",
-    "jest": "^22.4.0",
+    "jest": "^23.6.0",
     "jest-expo": "^30.0.0",
     "jest-fetch-mock": "^1.4.2",
     "react": "*",

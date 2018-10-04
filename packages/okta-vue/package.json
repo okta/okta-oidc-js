@@ -29,13 +29,12 @@
       "vue"
     ],
     "transform": {
-      "^.+\\.js$": "<rootDir>/../../node_modules/babel-jest",
+      "^.+\\.js$": "<rootDir>/node_modules/babel-jest",
       ".*\\.(vue)$": "<rootDir>/../../node_modules/vue-jest"
     },
     "moduleNameMapper": {
       "^@/(.*)$": "<rootDir>/src/$1"
-    },
-    "mapCoverage": true
+    }
   },
   "repository": {
     "type": "git",
@@ -53,7 +52,7 @@
   "dependencies": {
     "@okta/okta-auth-js": "^2.0.0",
     "cross-env": "^5.1.1",
-    "vue": "^2.5.9",
+    "vue": "^2.5.17",
     "vue-router": "^3.0.1"
   },
   "devDependencies": {
@@ -79,10 +78,10 @@
     "eslint-plugin-promise": "^3.4.0",
     "eslint-plugin-standard": "^3.0.1",
     "jest": "^23.6.0",
-    "nightwatch": "^0.9.12",
+    "nightwatch": "^1.0.11",
     "rimraf": "^2.6.2",
     "uglifyjs-webpack-plugin": "^1.1.1",
-    "url-loader": "^0.5.8",
+    "url-loader": "^1.1.1",
     "vue-jest": "^2.1.1",
     "vue-loader": "13.0.2",
     "vue-style-loader": "^3.0.1",
