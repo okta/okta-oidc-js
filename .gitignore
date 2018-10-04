@@ -11,6 +11,7 @@ package-lock.json
 
 # Ignore TCK-related files in all folders
 okta-oidc-tck*
+tck-keystore.pem
 target
 packages/okta-vue/test/e2e/harness/config/dev.env.js
 
@@ -19,3 +20,4 @@ packageInfo.js
 packageInfo.ts
 coverage
 *.tgz
+.idea/
