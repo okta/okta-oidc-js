@@ -21,4 +21,10 @@ function runTest() {
     mkdir -p target
     #JAVA_OPTS="-agentlib:jdwp=transport=dt_socket,server=y,suspend=y,address=8000"
     java ${JAVA_OPTS} -Dconfig="${test_runner_yml}" -jar "${TCK_FILE}" -d "${test_output_dir}" "${testng_xml}"
+
+    # TestNG returns an exit code of 2 if tests are skipped. We don't want to consider it as test failure.
+    if [ $? == 2 ]
+    then
+        exit 0
+    fi
 }

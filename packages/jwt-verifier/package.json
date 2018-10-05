@@ -10,7 +10,7 @@
   ],
   "scripts": {
     "test": "yarn test:unit && yarn test:integration",
-    "test:integration": "/bin/bash tools/runIntegrationTests.sh",
+    "test:integration": "chmod +x tools/runIntegrationTests.sh && ./tools/runIntegrationTests.sh",
     "test:unit": "jest test/spec"
   },
   "keywords": [
