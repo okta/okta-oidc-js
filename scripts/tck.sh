@@ -1,4 +1,3 @@
-
 #!/bin/bash
 
 TCK_VERSION=0.4.0-SNAPSHOT
