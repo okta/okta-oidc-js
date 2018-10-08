@@ -12,6 +12,10 @@
 
 export { OktaAuthModule }  from './okta/okta.module';
 export { OktaAuthGuard }   from './okta/okta.guard';
+export {
+  AUTH_API_INTERCEPTOR,
+  AuthApiInterceptor,
+} from './okta/interceptors';
 export { OktaAuthService } from './okta/services/okta.service';
 export { OKTA_CONFIG }     from './okta/models/okta.config';
 export { UserClaims }     from './okta/models/user-claims';
