@@ -21,7 +21,7 @@ scenarios:
     ports:
       applicationPort: 8080
       mockPort: 9090
-      mockHttpsPort: 8888
+      mockHttpsPort: 9999
     command: node
     env:
       ISSUER: https://localhost:9999/oauth2/default
