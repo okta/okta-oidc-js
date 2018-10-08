@@ -18,7 +18,7 @@
   "scripts": {
     "test": "yarn test:unit && yarn test:e2e && yarn test:integration",
     "test:e2e": "webdriver-manager update --gecko false && protractor test/e2e/conf.js",
-    "test:integration": "sh tools/runIntegrationTests.sh",
+    "test:integration": "../../scripts/tck.sh",
     "test:unit": "jest test/unit"
   },
   "engines": {

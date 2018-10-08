@@ -10,7 +10,7 @@
   ],
   "scripts": {
     "test": "yarn test:unit && yarn test:integration",
-    "test:integration": "sh tools/runIntegrationTests.sh",
+    "test:integration": "../../scripts/tck.sh",
     "test:unit": "jest test/spec"
   },
   "keywords": [

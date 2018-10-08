@@ -13,11 +13,20 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
+
+# Do NOT change the env section of this config file. You can NOT run tests against your own org/issuer
+# Tests are run against a mock server which expects specific env values
 scenarios:
   oidc-code-flow-local-validation:
     ports:
       applicationPort: 8080
       mockPort: 9090
+      mockHttpsPort: 9999
     command: node
+    env:
+      ISSUER: https://localhost:9999/oauth2/default
+      CLIENT_ID: OOICU812
+      CLIENT_SECRET: VERY_SECRET
+      NODE_EXTRA_CA_CERTS: ./tck-keystore.pem
     args:
     - test/integration-test/start-server.js
