@@ -2,7 +2,7 @@ import {
   assertIssuer,
   assertClientId,
   assertRedirectUri
-} from '@okta/configuration-validation';
+} from '@okta/configuration-validation'
 import AuthJS from '@okta/okta-auth-js'
 import packageInfo from './packageInfo'
 import ImplicitCallback from './components/ImplicitCallback'
