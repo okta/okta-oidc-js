@@ -38,7 +38,6 @@ export class OktaAuthService {
 
     constructor(@Inject(OKTA_CONFIG) private auth: OktaConfig, private router: Router) {
       // Assert Configuration
-      console.log(auth);
       assertIssuer(auth.issuer);
       assertClientId(auth.clientId);
       assertRedirectUri(auth.redirectUri)
