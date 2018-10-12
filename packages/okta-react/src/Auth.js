@@ -9,7 +9,11 @@
  *
  * See the License for the specific language governing permissions and limitations under the License.
  */
-
+import {
+  assertIssuer,
+  assertClientId,
+  assertRedirectUri
+} from '@okta/configuration-validation';
 import OktaAuth from '@okta/okta-auth-js';
 
 import packageInfo from './packageInfo';
@@ -18,6 +22,9 @@ const containsAuthTokens = /id_token|access_token|code/;
 
 export default class Auth {
   constructor(config) {
+    assertIssuer(config.issuer);
+    assertClientId(config.client_id);
+    assertRedirectUri(config.redirect_uri);
     this._oktaAuth = new OktaAuth({
       url: config.issuer.split('/oauth2/')[0],
       clientId: config.client_id,

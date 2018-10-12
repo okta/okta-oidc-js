@@ -35,6 +35,7 @@
   },
   "homepage": "https://github.com/okta/okta-oidc-js#readme",
   "dependencies": {
+    "@okta/configuration-validation": "^0.1.0",
     "@okta/okta-auth-js": "^2.0.0",
     "babel-runtime": "^6.26.0",
     "prop-types": "^15.5.10"
