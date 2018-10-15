@@ -24,6 +24,7 @@
     "src/"
   ],
   "dependencies": {
+    "@okta/configuration-validation": "^0.1.0",
     "b64u-lite": "^1.0.1",
     "dlv": "^1.1.1",
     "isomorphic-webcrypto": "^1.6.1",

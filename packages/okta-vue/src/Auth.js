@@ -1,3 +1,8 @@
+import {
+  assertIssuer,
+  assertClientId,
+  assertRedirectUri
+} from '@okta/configuration-validation'
 import AuthJS from '@okta/okta-auth-js'
 import packageInfo from './packageInfo'
 import ImplicitCallback from './components/ImplicitCallback'
@@ -91,12 +96,12 @@ function install (Vue, options) {
 function handleCallback () { return ImplicitCallback }
 
 const initConfig = auth => {
-  const missing = []
-  if (!auth.issuer) missing.push('issuer')
-  if (!auth.client_id) missing.push('client_id')
-  if (!auth.redirect_uri) missing.push('redirect_uri')
+  // Assert configuration
+  assertIssuer(auth.issuer)
+  assertClientId(auth.client_id)
+  assertRedirectUri(auth.redirect_uri)
+
   if (!auth.scope) auth.scope = 'openid'
-  if (missing.length) throw new Error(`${missing.join(', ')} must be defined`)
 
   // Use space separated response_type or default value
   auth.response_type = (auth.response_type || 'id_token token').split(' ')

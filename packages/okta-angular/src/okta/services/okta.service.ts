@@ -12,6 +12,11 @@
 
 import { Inject, Injectable } from '@angular/core';
 import { Router, NavigationExtras } from '@angular/router';
+import {
+  assertIssuer,
+  assertClientId,
+  assertRedirectUri
+} from '@okta/configuration-validation';
 
 import { OKTA_CONFIG, OktaConfig } from '../models/okta.config';
 import { UserClaims } from '../models/user-claims';
@@ -32,21 +37,10 @@ export class OktaAuthService {
     $authenticationState: Observable<boolean>;
 
     constructor(@Inject(OKTA_CONFIG) private auth: OktaConfig, private router: Router) {
-      const missing: string[] = [];
-
-      if (!auth.issuer) {
-        missing.push('issuer');
-      }
-      if (!auth.clientId) {
-        missing.push('clientId');
-      }
-      if (!auth.redirectUri) {
-        missing.push('redirectUri');
-      }
-
-      if (missing.length) {
-        throw new Error(`${missing.join(', ')} must be defined`);
-      }
+      // Assert Configuration
+      assertIssuer(auth.issuer);
+      assertClientId(auth.clientId);
+      assertRedirectUri(auth.redirectUri)
 
       this.observers = [];
 

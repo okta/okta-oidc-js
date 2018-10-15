@@ -130,7 +130,7 @@ export function mockRedirect(options) {
 export const requests = {
   token: {
     req: {
-      url: 'http://dummy_issuer/token',
+      url: 'https://dummy_issuer/token',
       method: 'POST'
     },
     res: {
@@ -144,21 +144,21 @@ export const requests = {
   },
   wellKnown: {
     req: {
-      url: 'http://dummy_issuer/.well-known/openid-configuration',
+      url: 'https://dummy_issuer/.well-known/openid-configuration',
       method: 'GET'
     },
     res: {
       json: {
-        authorization_endpoint: 'http://dummy_issuer/authorize',
-        token_endpoint: 'http://dummy_issuer/token',
-        userinfo_endpoint: 'http://dummy_issuer/userinfo',
-        jwks_uri: 'http://dummy_issuer/jwks'
+        authorization_endpoint: 'https://dummy_issuer/authorize',
+        token_endpoint: 'https://dummy_issuer/token',
+        userinfo_endpoint: 'https://dummy_issuer/userinfo',
+        jwks_uri: 'https://dummy_issuer/jwks'
       }
     }
   },
   jwks: {
     req: {
-      url: 'http://dummy_issuer/jwks',
+      url: 'https://dummy_issuer/jwks',
       method: 'GET'
     },
     res: {
