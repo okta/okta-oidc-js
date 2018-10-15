@@ -26,50 +26,30 @@ import { Observable, Observer } from 'rxjs';
 
 @Injectable()
 export class OktaAuthService {
-    private oktaAuth: OktaAuth;
     private config: OktaConfig;
-    private observers: Observer<boolean>[];
-    $authenticationState: Observable<boolean>;
+    private observers: Observer<boolean>[] = [];
+    $authenticationState: Observable<boolean> = new Observable((observer: Observer<boolean>) => {
+      this.observers.push(observer)
+    });
 
-    constructor(@Inject(OKTA_CONFIG) private auth: OktaConfig, private router: Router) {
-      const missing: string[] = [];
-
-      if (!auth.issuer) {
-        missing.push('issuer');
-      }
-      if (!auth.clientId) {
-        missing.push('clientId');
-      }
-      if (!auth.redirectUri) {
-        missing.push('redirectUri');
-      }
-
-      if (missing.length) {
-        throw new Error(`${missing.join(', ')} must be defined`);
-      }
-
-      this.observers = [];
-
-      this.oktaAuth = new OktaAuth({
-        clientId: auth.clientId,
-        issuer: auth.issuer,
-        redirectUri: auth.redirectUri
+    get oktaAuth(): OktaAuth {
+      const auth = new OktaAuth({
+        url: this.auth.issuer.split('/oauth2/')[0],
+        clientId: this.auth.clientId,
+        issuer: this.auth.issuer,
+        redirectUri: this.auth.redirectUri,
+        /**
+         * Scrub scopes to ensure 'openid' is included
+         */
+        scope: this.scrubScopes(this.auth.scope)
       });
 
-      this.oktaAuth.userAgent = `${packageInfo.name}/${packageInfo.version} ${this.oktaAuth.userAgent}`;
+      auth.userAgent = `${packageInfo.name}/${packageInfo.version} ${this.oktaAuth.userAgent}`;
 
-      /**
-       * Scrub scopes to ensure 'openid' is included
-       */
-      auth.scope = this.scrubScopes(auth.scope);
-
-      /**
-       * Cache the auth config.
-       */
-      this.config = auth;
-
-      this.$authenticationState = new Observable((observer: Observer<boolean>) => {this.observers.push(observer)})
+      return auth;
     }
+
+    constructor(@Inject(OKTA_CONFIG) private auth: OktaConfig, private router: Router) {}
 
     /**
      * Checks if there is an access token and id token
