@@ -31,7 +31,7 @@ Create a verifier instance, bound to the issuer (authorization server URL) and t
 const OktaJwtVerifier = require('@okta/jwt-verifier');
 
 const oktaJwtVerifier = new OktaJwtVerifier({
-  issuer: 'http://{your-okta-org-url}/oauth2/default'
+  issuer: 'https://{yourOktaDomain}/oauth2/default'
 })
 ```
 
@@ -56,7 +56,7 @@ For basic use cases, you can ask the verifier to assert a custom set of claims. 
 const verifier = new OktaJwtVerifier({
   issuer: ISSUER,
   assertClaims: {
-    cid: 'myKnownClientId'
+    cid: '{clientId}'
   }
 });
 ```

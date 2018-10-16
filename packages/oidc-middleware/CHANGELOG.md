@@ -1,3 +1,16 @@
+# 1.0.1
+
+### Features
+
+- [`ed29bf5`](https://github.com/okta/okta-oidc-js/pull/320/commits/ed29bf5f1618a7b6941b8a4d47160fac7fb3f749) - Adds configuration validation for `issuer`, `client_id`, `client_secret`, and `redirect_uri` when passed into the middleware.
+
+### Other
+
+- [`c37b9cf`](https://github.com/okta/okta-oidc-js/pull/326/commits/c37b9cf483e17720b233800b8b5609c3383b8167) - Updates the TCK version to support new integration tests.
+- [`3582f25`](https://github.com/okta/okta-oidc-js/pull/318/commits/3582f259cf74dbb45b6eed673065c2d3c03e9db3) - Rely on shared environment configuration from project root.
+- [`c8b7ab5a`](https://github.com/okta/okta-oidc-js/commit/c8b7ab5aacecf5793efb6a626c0a24a78147ded9#diff-b8cfe5f7aa410fb30a335b09346dc4d2) - Migrate dependencies to project root utilizing [yarn workspaces](https://yarnpkg.com/lang/en/docs/workspaces/).
+- [`8494be0`](https://github.com/okta/okta-oidc-js/pull/292/commits/8494be0ec98887d19870941d2a0ddbf653dbbb6c) - Migrate mocha tests to jest.
+
 # 1.0.0
 
 ### Features
