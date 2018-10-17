@@ -1,6 +1,6 @@
 {
   "name": "@okta/okta-react",
-  "version": "1.1.2",
+  "version": "1.1.3",
   "description": "React support for Okta",
   "main": "./dist/index.js",
   "scripts": {
@@ -9,7 +9,7 @@
     "build:package-info": "node ../../util/write-package-info.js . src/packageInfo.js",
     "lint": "eslint src",
     "lint:watch": "esw -w lib/**",
-    "prepublish": "yarn build",
+    "prepare": "yarn build",
     "prestart": "yarn build && yarn build:harness",
     "pretest": "yarn build && yarn build:harness",
     "start": "yarn --cwd test/e2e/harness start",

@@ -1,6 +1,6 @@
 {
   "name": "@okta/okta-vue",
-  "version": "1.0.5",
+  "version": "1.0.6",
   "description": "Vue support for Okta",
   "main": "dist/okta-vue.js",
   "files": [
@@ -16,7 +16,7 @@
     "prebuild": "yarn build:package-info",
     "prestart": "yarn build && yarn build:harness",
     "pretest": "yarn kill:port && yarn build && yarn build:harness",
-    "prepublish": "yarn build",
+    "prepare": "yarn build",
     "start": "yarn --cwd test/e2e/harness/ start",
     "test": "yarn lint && yarn test:unit && yarn test:e2e",
     "test:e2e": "yarn --cwd test/e2e/harness/ test",
