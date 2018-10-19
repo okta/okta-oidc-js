@@ -9,6 +9,7 @@
     "start": "yarn env && yarn dev",
     "env": "node ./scripts/prebuild.js",
     "e2e": "node test/e2e/runner.js",
+    "pretest": "./node_modules/.bin/webdriver-manager update --versions.chrome 2.40 --gecko false",
     "test": "yarn env && yarn e2e",
     "lint": "eslint --ext .js,.vue src test/e2e/specs",
     "build": "node build/build.js"

@@ -25,7 +25,7 @@
     "build": "CLIENT_ID=${SPA_CLIENT_ID:=$CLIENT_ID} && REACT_APP_ISSUER=$ISSUER REACT_APP_CLIENT_ID=$CLIENT_ID PORT=8080 react-scripts build",
     "build:test": "rimraf e2e/dist && babel e2e/ -d e2e/dist",
     "kill:port": "kill -9 $(lsof -t -i:8080 -sTCP:LISTEN) || true",
-    "pretest": "yarn kill:port && ./node_modules/.bin/webdriver-manager update --gecko false && yarn build:test",
+    "pretest": "yarn kill:port && ./node_modules/.bin/webdriver-manager update --versions.chrome 2.40 --gecko false && yarn build:test",
     "wait:server": "BROWSER=none yarn start & ./node_modules/.bin/wait-on http://localhost:8080",
     "test": "yarn build && yarn wait:server && yarn protractor",
     "eject": "react-scripts eject",
