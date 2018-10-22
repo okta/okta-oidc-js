@@ -9,6 +9,7 @@ lerna-debug.log
 yarn-debug.log*
 yarn-error.log*
 package-lock.json
+dist
 
 # Ignore TCK-related files in all folders
 okta-oidc-tck*
