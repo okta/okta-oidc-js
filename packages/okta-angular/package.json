@@ -1,6 +1,6 @@
 {
   "name": "@okta/okta-angular",
-  "version": "1.0.6",
+  "version": "1.0.7",
   "description": "Angular support for Okta",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
@@ -33,7 +33,7 @@
   ],
   "license": "Apache-2.0",
   "dependencies": {
-    "@okta/configuration-validation": "^0.1.0",
+    "@okta/configuration-validation": "^0.1.1",
     "@okta/okta-auth-js": "^2.0.0"
   },
   "devDependencies": {
