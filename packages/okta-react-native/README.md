@@ -68,7 +68,7 @@ Assuming you're using an app created with `create-react-native-app`, modify your
 {
   "expo": {
     "sdkVersion": "25.0.0",
-    "scheme": "com.oktapreview.{yourOrg}"
+    "scheme": "your.application.scheme"
   }
 }
 ```
@@ -93,7 +93,7 @@ const tokenClient = new TokenClient({
   client_id: '{clientId}',
   redirect_uri: __DEV__ ?
     'exp://localhost:19000/+expo-auth-session' :
-    'com.oktapreview.{yourOrg}:/+expo-auth-session'
+    'your.application.scheme://+expo-auth-session'
 });
 ```
 
