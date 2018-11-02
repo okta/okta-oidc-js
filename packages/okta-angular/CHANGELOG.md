@@ -1,3 +1,15 @@
+# 1.0.7
+
+### Other
+
+- [`2945461`](https://github.com/okta/okta-oidc-js/pull/338/commits/294546166a41173b699579d7d647ba7d5cab0764) - Updates `@okta/configuration-validation` version
+
+# 1.0.6
+
+### Bug fixes
+
+- [`6242f2d`](https://github.com/okta/okta-oidc-js/pull/332/commits/6242f2d1586aabd80e60b3b237d5b5136bfd95e9) - Fixes an issue where the library was not correctly building the `/dist` output before publishing to `npm`.
+
 # 1.0.5
 
 ### Features

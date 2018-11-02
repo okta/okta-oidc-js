@@ -1,3 +1,9 @@
+# 0.0.14
+
+### Other
+
+- [`2945461`](https://github.com/okta/okta-oidc-js/pull/338/commits/294546166a41173b699579d7d647ba7d5cab0764) - Updates `@okta/configuration-validation` version.
+
 # 0.0.13
 
 ### Features
