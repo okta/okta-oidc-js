@@ -77,14 +77,23 @@ const appRoutes: Routes = [
   }
 ];
 
-const config = {
+let config = {
   issuer: environment.ISSUER,
   redirectUri: environment.REDIRECT_URI,
   clientId: environment.CLIENT_ID,
   scope: 'email',
   responseType: 'id_token token',
-  onAuthRequired: onNeedsGlobalAuthenticationGuard
+  onAuthRequired: onNeedsGlobalAuthenticationGuard,
+  testing: {
+    disableHttpsCheck: false
+  }
 };
+
+if (environment.DISABLE_HTTPS_CHECK) {
+  config.testing = {
+    disableHttpsCheck: true
+  }
+}
 
 @NgModule({
   imports: [

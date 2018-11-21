@@ -21,6 +21,7 @@ export interface OktaConfig {
   scope?: string;
   responseType?: string;
   onAuthRequired?: AuthRequiredFunction;
+  testing?: Object;
 }
 
 export const OKTA_CONFIG = new InjectionToken<OktaConfig>('okta.config.angular');
