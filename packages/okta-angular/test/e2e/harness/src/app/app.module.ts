@@ -77,7 +77,7 @@ const appRoutes: Routes = [
   }
 ];
 
-let config = {
+const config = {
   issuer: environment.ISSUER,
   redirectUri: environment.REDIRECT_URI,
   clientId: environment.CLIENT_ID,
@@ -92,7 +92,7 @@ let config = {
 if (environment.DISABLE_HTTPS_CHECK) {
   config.testing = {
     disableHttpsCheck: true
-  }
+  };
 }
 
 @NgModule({
