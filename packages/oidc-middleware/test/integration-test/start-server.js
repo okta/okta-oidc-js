@@ -19,7 +19,7 @@ const mockServerOptions = {
     testing: {
         disableHttpsCheck: true
     }
-}
+};
 
 let server = util.createDemoServer(mockServerOptions);
 server.start();

@@ -21,8 +21,6 @@ if (process.env.OKTA_TESTING_DISABLEHTTPSCHECK) {
   }
 }
 
-console.log(config)
-
 Vue.use(Router)
 Vue.use(Auth, config)
 
