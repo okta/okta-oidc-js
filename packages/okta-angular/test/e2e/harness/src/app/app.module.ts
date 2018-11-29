@@ -89,7 +89,7 @@ const config = {
   }
 };
 
-if (environment.DISABLE_HTTPS_CHECK) {
+if (environment.OKTA_TESTING_DISABLEHTTPSCHECK) {
   config.testing = {
     disableHttpsCheck: true
   };

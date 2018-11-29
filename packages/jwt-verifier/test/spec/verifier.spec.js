@@ -26,7 +26,7 @@ const CLIENT_ID = constants.CLIENT_ID;
 const USERNAME = constants.USERNAME;
 const PASSWORD = constants.PASSWORD;
 const REDIRECT_URI = constants.REDIRECT_URI
-const DISABLE_HTTPS_CHECK = constants.DISABLE_HTTPS_CHECK
+const OKTA_TESTING_DISABLEHTTPSCHECK = constants.OKTA_TESTING_DISABLEHTTPSCHECK
 
 // Used to get an access token from the AS
 const issuer1AccessTokenParams = {
@@ -50,7 +50,7 @@ describe('Jwt Verifier', () => {
     clientId: CLIENT_ID,
     issuer: ISSUER,
     testing: {
-      disableHttpsCheck: DISABLE_HTTPS_CHECK
+      disableHttpsCheck: OKTA_TESTING_DISABLEHTTPSCHECK
     }
   });
 
@@ -136,7 +136,7 @@ describe('Jwt Verifier', () => {
         foo: 'bar'
       },
       testing: {
-        disableHttpsCheck: DISABLE_HTTPS_CHECK
+        disableHttpsCheck: OKTA_TESTING_DISABLEHTTPSCHECK
       }
     });
     return getAccessToken(issuer1AccessTokenParams)
@@ -153,7 +153,7 @@ describe('Jwt Verifier', () => {
       issuer: ISSUER,
       cacheMaxAge: 500,
       testing: {
-        disableHttpsCheck: DISABLE_HTTPS_CHECK
+        disableHttpsCheck: OKTA_TESTING_DISABLEHTTPSCHECK
       }
     });
     return getAccessToken(issuer1AccessTokenParams)
@@ -190,7 +190,7 @@ describe('Jwt Verifier', () => {
       issuer: ISSUER,
       jwksRequestsPerMinute: 2,
       testing: {
-        disableHttpsCheck: DISABLE_HTTPS_CHECK
+        disableHttpsCheck: OKTA_TESTING_DISABLEHTTPSCHECK
       }
     });
     return getAccessToken(issuer1AccessTokenParams)

@@ -27,7 +27,7 @@ describe('Basic login redirect', () => {
       client_id: constants.CLIENT_ID,
       client_secret: constants.CLIENT_SECRET,
       testing: {
-          disableHttpsCheck: constants.DISABLE_HTTPS_CHECK
+          disableHttpsCheck: constants.OKTA_TESTING_DISABLEHTTPSCHECK
         }
     }
 

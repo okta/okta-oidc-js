@@ -12,7 +12,7 @@ module.exports = (overrides = {}) => {
     ISSUER: process.env.ISSUER || 'https://{yourOktaDomain}/oauth2/defalt',
     USERNAME: process.env.USERNAME || '{username}',
     PASSWORD: process.env.PASSWORD || '{password}',
-    DISABLE_HTTPS_CHECK: process.env.DISABLE_HTTPS_CHECK || false,
+    OKTA_TESTING_DISABLEHTTPSCHECK: process.env.OKTA_TESTING_DISABLEHTTPSCHECK || false,
     BASE_URI,
     PORT
   };

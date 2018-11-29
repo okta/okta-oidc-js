@@ -15,7 +15,7 @@ let config = {
   }
 }
 
-if (process.env.DISABLE_HTTPS_CHECK) {
+if (process.env.OKTA_TESTING_DISABLEHTTPSCHECK) {
   config.testing = {
     disableHttpsCheck: true
   }
