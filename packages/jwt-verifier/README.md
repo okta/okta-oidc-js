@@ -76,7 +76,7 @@ Here is a configuration example that shows the default values:
 // All values are default files
 const oktaJwtVerifier = new OktaJwtVerifier({
   issuer: 'https://{yourOktaDomain}/oauth2/default',
-  clientId: '{clientId}' // required
+  clientId: '{clientId}',
   cacheMaxAge: 60 * 60 * 1000, // 1 hour
   jwksRequestsPerMinute: 10
 });
