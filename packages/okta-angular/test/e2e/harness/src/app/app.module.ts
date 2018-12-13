@@ -83,8 +83,17 @@ const config = {
   clientId: environment.CLIENT_ID,
   scope: 'email',
   responseType: 'id_token token',
-  onAuthRequired: onNeedsGlobalAuthenticationGuard
+  onAuthRequired: onNeedsGlobalAuthenticationGuard,
+  testing: {
+    disableHttpsCheck: false
+  }
 };
+
+if (environment.OKTA_TESTING_DISABLEHTTPSCHECK) {
+  config.testing = {
+    disableHttpsCheck: true
+  };
+}
 
 @NgModule({
   imports: [

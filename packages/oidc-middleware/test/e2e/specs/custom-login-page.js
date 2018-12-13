@@ -20,7 +20,16 @@ browser.waitForAngularEnabled(false);
 describe('Custom login page', () => {
 
   beforeEach(async () => {
-    server = util.createDemoServerWithCustomLoginPage();
+    const serverOptions = {
+      issuer: constants.ISSUER,
+      client_id: constants.CLIENT_ID,
+      client_secret: constants.CLIENT_SECRET,
+      testing: {
+          disableHttpsCheck: constants.OKTA_TESTING_DISABLEHTTPSCHECK
+        }
+    }
+
+    server = util.createDemoServerWithCustomLoginPage(serverOptions);
     await server.start();
   });
 

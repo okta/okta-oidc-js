@@ -7,9 +7,11 @@
     "start": "yarn env && ng serve --port=3000",
     "env": "node ./scripts/prebuild.js",
     "build": "ng build",
+    "pretest": "./node_modules/.bin/webdriver-manager update --gecko false",
     "test": "ng test --watch=false",
     "lint": "ng lint",
-    "e2e": "yarn env && ng e2e ---port 3000"
+    "pree2e": "./node_modules/.bin/webdriver-manager update --versions.chrome 2.40 --gecko false",
+    "e2e": "yarn env && ng e2e ---port 3000 --no-webdriver-update"
   },
   "private": true,
   "dependencies": {
