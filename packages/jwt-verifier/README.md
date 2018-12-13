@@ -31,8 +31,9 @@ Create a verifier instance, bound to the issuer (authorization server URL) and t
 const OktaJwtVerifier = require('@okta/jwt-verifier');
 
 const oktaJwtVerifier = new OktaJwtVerifier({
-  issuer: 'https://{yourOktaDomain}/oauth2/default'
-})
+  issuer: 'https://{yourOktaDomain}/oauth2/default', // required
+  clientId: '{clientId}' // required
+});
 ```
 
 With a verifier, you can now verify access tokens:
@@ -40,7 +41,7 @@ With a verifier, you can now verify access tokens:
 ```javascript
 oktaJwtVerifier.verifyAccessToken(accessTokenString)
 .then(jwt => {
-  // the token is valid
+  // the token is valid (per definition of 'valid' above)
   console.log(jwt.claims);
 })
 .catch(err => {
@@ -54,7 +55,8 @@ For basic use cases, you can ask the verifier to assert a custom set of claims. 
 
 ```javascript
 const verifier = new OktaJwtVerifier({
-  issuer: ISSUER,
+  issuer: 'https://{yourOktaDomain}/oauth2/default',
+  clientId: '{clientId}'
   assertClaims: {
     cid: '{clientId}'
   }
@@ -73,6 +75,8 @@ Here is a configuration example that shows the default values:
 ```javascript
 // All values are default files
 const oktaJwtVerifier = new OktaJwtVerifier({
+  issuer: 'https://{yourOktaDomain}/oauth2/default',
+  clientId: '{clientId}',
   cacheMaxAge: 60 * 60 * 1000, // 1 hour
   jwksRequestsPerMinute: 10
 });
