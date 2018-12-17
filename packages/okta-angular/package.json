@@ -17,8 +17,9 @@
     "prepare": "yarn ngc",
     "prengc": "yarn build:package-info",
     "start": "yarn --cwd test/e2e/harness/ start",
-    "test": "yarn lint && yarn test:e2e && yarn test:unit",
-    "test:e2e": "yarn --cwd test/e2e/harness/ e2e",
+    "test": "yarn lint && yarn e2e && yarn test:unit",
+    "pree2e": "yarn build:dependencies",
+    "e2e": "yarn --cwd test/e2e/harness/ e2e",
     "test:unit": "yarn --cwd test/e2e/harness/ test"
   },
   "repository": "https://github.com/okta/okta-oidc-js",
