@@ -7,6 +7,7 @@ import {
   OktaAuthGuard,
   OktaAuthModule,
   OktaCallbackComponent,
+  OktaConfig,
   OktaLoginRedirectComponent
 } from '@okta/okta-angular';
 
@@ -37,19 +38,19 @@ describe('Unit Tests', () => {
   let component: AppComponent;
   let fixture: ComponentFixture<AppComponent>;
 
-  beforeEach(() => {
-    const config = {
-      issuer: environment.ISSUER,
-      redirectUri: environment.REDIRECT_URI,
-      clientId: environment.CLIENT_ID,
-      scope: 'email',
-      responseType: 'id_token'
-    };
+  const defaultConfig: OktaConfig = {
+    issuer: environment.ISSUER,
+    redirectUri: environment.REDIRECT_URI,
+    clientId: environment.CLIENT_ID,
+    scope: 'email',
+    responseType: 'id_token'
+  }
 
+  beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [
         RouterTestingModule.withRoutes([{ path: 'foo', redirectTo: '/foo' }]),
-        OktaAuthModule.initAuth(config)
+        OktaAuthModule.initAuth(defaultConfig)
       ],
       declarations: [
         AppComponent
@@ -73,8 +74,7 @@ describe('Unit Tests', () => {
     expect(config.issuer).toBe(environment.ISSUER);
     expect(config.redirectUri).toBe(environment.REDIRECT_URI);
     expect(config.clientId).toBe(environment.CLIENT_ID);
-    expect(config.scope).toBe('email openid');
-    expect(config.responseType).toBe('id_token');
+    expect(config).toEqual(defaultConfig);
   }));
 
   it('can retrieve an accessToken from the tokenManager', async (done) => {

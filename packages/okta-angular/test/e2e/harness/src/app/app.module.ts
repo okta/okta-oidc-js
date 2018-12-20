@@ -24,6 +24,7 @@ import {
   OktaAuthModule,
   OktaAuthService,
   OktaCallbackComponent,
+  OktaConfig,
   OktaLoginRedirectComponent
 } from '@okta/okta-angular';
 
@@ -77,7 +78,7 @@ const appRoutes: Routes = [
   }
 ];
 
-const config = {
+const config: OktaConfig = {
   issuer: environment.ISSUER,
   redirectUri: environment.REDIRECT_URI,
   clientId: environment.CLIENT_ID,
