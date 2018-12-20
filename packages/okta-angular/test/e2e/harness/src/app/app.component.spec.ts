@@ -89,20 +89,20 @@ describe('Unit Tests', () => {
   let component: AppComponent;
   let fixture: ComponentFixture<AppComponent>;
 
-  const defaultConfig: OktaConfig = {
-    issuer: environment.ISSUER,
-    redirectUri: environment.REDIRECT_URI,
-    clientId: environment.CLIENT_ID,
-    scope: 'email',
-    responseType: 'id_token',
-    testing: {
-      disableHttpsCheck: false
-    }
-  };
-
   beforeEach(() => {
+    const config: OktaConfig = {
+      issuer: environment.ISSUER,
+      redirectUri: environment.REDIRECT_URI,
+      clientId: environment.CLIENT_ID,
+      scope: 'email',
+      responseType: 'id_token',
+      testing: {
+        disableHttpsCheck: false
+      }
+    };
+
     if (environment.OKTA_TESTING_DISABLEHTTPSCHECK) {
-      defaultConfig.testing = {
+      config.testing = {
         disableHttpsCheck: true
       };
     }
@@ -110,7 +110,7 @@ describe('Unit Tests', () => {
     TestBed.configureTestingModule({
       imports: [
         RouterTestingModule.withRoutes([{ path: 'foo', redirectTo: '/foo' }]),
-        OktaAuthModule.initAuth(defaultConfig)
+        OktaAuthModule.initAuth(config)
       ],
       declarations: [
         AppComponent
