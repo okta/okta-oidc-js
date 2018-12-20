@@ -25,13 +25,6 @@ dirs.forEach(name => {
   const pkg = require(`${moduleDir}/package`);
   const moduleWithVersion = `${pkg.name}@${pkg.version}`;
 
-  if (pkg.name === '@okta/okta-react-native') {
-    // We are skipping react-native until we have a solution for the problem described here: https://github.com/expo/expo/issues/1767
-    // If expo will not resolve then we will have to find another workaround
-    console.log(`Skipping ${pkg.name}`);
-    return;
-  }
-
   console.log(`Checking if ${moduleWithVersion} exists`);
 
   let isInPublicNpm = false;

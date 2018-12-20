@@ -22,7 +22,16 @@ describe('Basic login redirect', () => {
 
   let server;
   beforeEach(async () => {
-    server = util.createDemoServer();
+    const serverOptions = {
+      issuer: constants.ISSUER,
+      client_id: constants.CLIENT_ID,
+      client_secret: constants.CLIENT_SECRET,
+      testing: {
+        disableHttpsCheck: constants.OKTA_TESTING_DISABLEHTTPSCHECK
+      }
+    };
+
+    server = util.createDemoServer(serverOptions);
     await server.start();
   });
 
@@ -56,7 +65,7 @@ describe('Basic login redirect', () => {
     expect(homePage.getBodyText()).toContain('Welcome home');
 
     // navigate to logout
-    await browser.get(constants.LOGOUT_PATH);
+    await browser.get('/logout');
     await homePage.waitUntilVisible();
     expect(browser.getPageSource()).not.toContain('Welcome home');
   });

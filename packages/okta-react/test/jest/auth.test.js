@@ -50,6 +50,116 @@ const mockAuthJsInstanceWithError = {
   }
 };
 
+describe('Auth configuration', () => {
+  it('should throw if no issuer is provided', () => {
+    function createInstance () {
+      return new Auth();
+    }
+    expect(createInstance).toThrow()
+  });
+  it('should throw if an issuer that does not contain https is provided', () => {
+    function createInstance () {
+      return new Auth({
+        issuer: 'http://foo.com'
+      });
+    }
+    expect(createInstance).toThrow()
+  });
+  it('should throw if an issuer matching {yourOktaDomain} is provided', () => {
+    function createInstance () {
+      return new Auth({
+        issuer: 'https://{yourOktaDomain}'
+      });
+    }
+    expect(createInstance).toThrow()
+  });
+  it('should throw if an issuer matching -admin.okta.com is provided', () => {
+    function createInstance () {
+      return new Auth({
+        issuer: 'https://foo-admin.okta.com'
+      });
+    }
+    expect(createInstance).toThrow()
+  });
+  it('should throw if an issuer matching -admin.oktapreview.com is provided', () => {
+    function createInstance () {
+      return new Auth({
+        issuer: 'https://foo-admin.oktapreview.com'
+      });
+    }
+    expect(createInstance).toThrow()
+  });
+  it('should throw if an issuer matching -admin.okta-emea.com is provided', () => {
+    function createInstance () {
+      return new Auth({
+        issuer: 'https://foo-admin.okta-emea.com'
+      });
+    }
+    expect(createInstance).toThrow()
+  });
+  it('should throw if an issuer matching more than one ".com" is provided', () => {
+    function createInstance () {
+      return new Auth({
+        issuer: 'https://foo.okta.com.com'
+      });
+    }
+    expect(createInstance).toThrow()
+  });
+  it('should throw if an issuer matching more than one sequential "://" is provided', () => {
+    function createInstance () {
+      return new Auth({
+        issuer: 'https://://foo.okta.com'
+      });
+    }
+    expect(createInstance).toThrow()
+  });
+  it('should throw if an issuer matching more than one "://" is provided', () => {
+    function createInstance () {
+      return new Auth({
+        issuer: 'https://foo.okta://.com'
+      });
+    }
+    expect(createInstance).toThrow()
+  });
+  it('should throw if the client_id is not provided', () => {
+    function createInstance () {
+      return new Auth({
+        issuer: 'https://foo/oauth2/default'
+      });
+    }
+    expect(createInstance).toThrow()
+  });
+  it('should throw if a client_id matching {clientId} is provided', () => {
+    function createInstance () {
+      return new Auth({
+        issuer: 'https://foo/oauth2/default',
+        client_id: '{clientId}',
+      });
+    }
+    expect(createInstance).toThrow()
+  });
+  it('should throw if the redirect_uri is not provided', () => {
+    function createInstance () {
+      return new Auth({
+        issuer: 'https://foo/oauth2/default',
+        client_id: 'foo'
+      });
+    }
+    expect(createInstance).toThrow();
+  });
+
+  it('should throw if a redirect_uri matching {redirectUri} is provided', () => {
+    function createInstance () {
+      return new Auth({
+        issuer: 'https://foo/oauth2/default',
+        client_id: 'foo',
+        redirect_uri: '{redirectUri}'
+      });
+    }
+    expect(createInstance).toThrow();
+  });
+});
+
 describe('Auth component', () => {
   beforeEach(() => {
     AuthJS.mockImplementation(() => {
@@ -58,14 +168,18 @@ describe('Auth component', () => {
   });
   test('sets the right user agent on AuthJS', () => {
     const auth = new Auth({
-      issuer: 'https://foo/oauth2/default'
+      issuer: 'https://foo/oauth2/default',
+      client_id: 'foo',
+      redirect_uri: 'foo'
     });
     const expectedUserAgent = `${pkg.name}/${pkg.version} okta-auth-js`;
     expect(auth._oktaAuth.userAgent).toMatch(expectedUserAgent);
   });
   test('can retrieve an accessToken from the tokenManager', async (done) => {
     const auth = new Auth({
-      issuer: 'https://foo/oauth2/default'
+      issuer: 'https://foo/oauth2/default',
+      client_id: 'foo',
+      redirect_uri: 'foo'
     });
     const accessToken = await auth.getAccessToken();
     expect(accessToken).toBe(mockAccessToken);
@@ -73,7 +187,9 @@ describe('Auth component', () => {
   });
   test('builds the authorize request with correct params', () => {
     const auth = new Auth({
-      issuer: 'https://foo/oauth2/default'
+      issuer: 'https://foo/oauth2/default',
+      client_id: 'foo',
+      redirect_uri: 'foo'
     });
     auth.redirect();
     expect(mockAuthJsInstance.token.getWithRedirect).toHaveBeenCalledWith({
@@ -84,6 +200,8 @@ describe('Auth component', () => {
   test('can override the authorize request builder scope with config params', () => {
     const auth = new Auth({
       issuer: 'https://foo/oauth2/default',
+      client_id: 'foo',
+      redirect_uri: 'foo',
       scope: ['openid', 'foo']
     });
     auth.redirect();
@@ -95,6 +213,8 @@ describe('Auth component', () => {
   test('can override the authorize request builder responseType with config params', () => {
     const auth = new Auth({
       issuer: 'https://foo/oauth2/default',
+      client_id: 'foo',
+      redirect_uri: 'foo',
       response_type: ['id_token']
     });
     auth.redirect();
@@ -105,7 +225,9 @@ describe('Auth component', () => {
   });
   test('can override the authorize request builder with redirect params', () => {
     const auth = new Auth({
-      issuer: 'https://foo/oauth2/default'
+      issuer: 'https://foo/oauth2/default',
+      client_id: 'foo',
+      redirect_uri: 'foo'
     });
     auth.redirect({scope: ['openid', 'foo']});
     expect(mockAuthJsInstance.token.getWithRedirect).toHaveBeenCalledWith({
@@ -115,7 +237,9 @@ describe('Auth component', () => {
   });
   test('can append the authorize request builder with additionalParams through auth.redirect', () => {
     const auth = new Auth({
-      issuer: 'https://foo/oauth2/default'
+      issuer: 'https://foo/oauth2/default',
+      client_id: 'foo',
+      redirect_uri: 'foo'
     });
     auth.redirect({foo: 'bar'});
     expect(mockAuthJsInstance.token.getWithRedirect).toHaveBeenCalledWith({
@@ -126,7 +250,9 @@ describe('Auth component', () => {
   });
   test('can append the authorize request builder with additionalParams through auth.login', () => {
     const auth = new Auth({
-      issuer: 'https://foo/oauth2/default'
+      issuer: 'https://foo/oauth2/default',
+      client_id: 'foo',
+      redirect_uri: 'foo'
     });
     auth.login({foo: 'bar'});
     expect(mockAuthJsInstance.token.getWithRedirect).toHaveBeenCalledWith({
@@ -137,7 +263,9 @@ describe('Auth component', () => {
   });
   test('isAuthenticated() returns true when the TokenManager returns an access token', async () => {
     const auth = new Auth({
-      issuer: 'https://foo/oauth2/default'
+      issuer: 'https://foo/oauth2/default',
+      client_id: 'foo',
+      redirect_uri: 'foo'
     });
     const authenticated = await auth.isAuthenticated();
     expect(mockAuthJsInstance.tokenManager.get).toHaveBeenCalledWith('accessToken');
@@ -148,7 +276,9 @@ describe('Auth component', () => {
       return mockAuthJsInstanceWithError
     });
     const auth = new Auth({
-      issuer: 'https://foo/oauth2/default'
+      issuer: 'https://foo/oauth2/default',
+      client_id: 'foo',
+      redirect_uri: 'foo'
     });
     const authenticated = await auth.isAuthenticated();
     expect(authenticated).toBeFalsy();

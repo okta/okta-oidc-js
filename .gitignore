@@ -3,14 +3,17 @@ npm-debug.log
 .DS_STORE
 .vscode
 .envrc
+.yarnrc
 *.code-workspace
 lerna-debug.log
 yarn-debug.log*
 yarn-error.log*
 package-lock.json
+dist
 
 # Ignore TCK-related files in all folders
 okta-oidc-tck*
+tck-keystore.pem
 target
 packages/okta-vue/test/e2e/harness/config/dev.env.js
 
@@ -19,3 +22,4 @@ packageInfo.js
 packageInfo.ts
 coverage
 *.tgz
+.idea/

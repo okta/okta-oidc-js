@@ -5,13 +5,24 @@ import SessionTokenLogin from '@/components/SessionTokenLogin'
 
 import Auth from '@/../../../../dist/okta-vue.js'
 
-Vue.use(Router)
-Vue.use(Auth, {
+let config = {
   issuer: process.env.ISSUER,
   redirect_uri: process.env.REDIRECT_URI,
   client_id: process.env.CLIENT_ID,
-  scope: 'openid profile email'
-})
+  scope: 'openid profile email',
+  testing: {
+    disableHttpsCheck: false
+  }
+}
+
+if (process.env.OKTA_TESTING_DISABLEHTTPSCHECK) {
+  config.testing = {
+    disableHttpsCheck: true
+  }
+}
+
+Vue.use(Router)
+Vue.use(Auth, config)
 
 const router = new Router({
   mode: 'history',

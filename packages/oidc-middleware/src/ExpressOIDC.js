@@ -19,7 +19,7 @@ const {
   assertClientId,
   assertClientSecret,
   assertRedirectUri
-} = require('./configUtil');
+} = require('@okta/configuration-validation');
 
 /**
  * Class to easily integrate OpenId Connect with Express

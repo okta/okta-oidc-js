@@ -1,5 +1,7 @@
 var path = require('path')
 var webpack = require('webpack')
+var UglifyJsPlugin = require('uglifyjs-webpack-plugin')
+var VueLoaderPlugin = require('vue-loader/lib/plugin')
 
 module.exports = {
   entry: './src/Auth.js',
@@ -11,12 +13,6 @@ module.exports = {
   module: {
     rules: [
       {
-        test: /\.css$/,
-        use: [
-          'vue-style-loader'
-        ]
-      },
-      {
         test: /\.vue$/,
         loader: 'vue-loader'
       },
@@ -24,13 +20,6 @@ module.exports = {
         test: /\.js$/,
         loader: 'babel-loader',
         exclude: /node_modules/
-      },
-      {
-        test: /\.(png|jpg|gif|svg)$/,
-        loader: 'file-loader',
-        options: {
-          name: '[name].[ext]?[hash]'
-        }
       }
     ]
   },
@@ -40,15 +29,22 @@ module.exports = {
     },
     extensions: ['*', '.js', '.vue', '.json']
   },
-  devServer: {
-    historyApiFallback: true,
-    noInfo: true,
-    overlay: true
-  },
   performance: {
     hints: false
   },
-  devtool: '#eval-source-map'
+  devtool: '#eval-source-map',
+  optimization: {
+    minimizer: [
+      new UglifyJsPlugin({
+        sourceMap: true,
+        uglifyOptions: {
+          compress: {
+            warnings: false
+          }
+        }
+      })
+    ]
+  }
 }
 
 if (process.env.NODE_ENV === 'production') {
@@ -60,12 +56,7 @@ if (process.env.NODE_ENV === 'production') {
         NODE_ENV: '"production"'
       }
     }),
-    new webpack.optimize.UglifyJsPlugin({
-      sourceMap: true,
-      compress: {
-        warnings: false
-      }
-    }),
+    new VueLoaderPlugin(),
     new webpack.LoaderOptionsPlugin({
       minimize: true
     })

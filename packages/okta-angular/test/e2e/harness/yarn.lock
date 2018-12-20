@@ -189,10 +189,14 @@
     tree-kill "^1.0.0"
     webpack-sources "^1.1.0"
 
-"@okta/okta-angular@file:../../../okta-okta-angular-v1.0.3.tgz":
-  version "1.0.3"
-  resolved "file:../../../okta-okta-angular-v1.0.3.tgz#453b05ab70040b5223972e2e4a24b52bb3fb37bd"
+"@okta/configuration-validation@^0.1.0":
+  version "0.1.0"
+  resolved "https://registry.yarnpkg.com/@okta/configuration-validation/-/@okta/configuration-validation-0.1.0.tgz#f64ee23415d0307be2b817e76c2ec76619ba11a3"
+
+"@okta/okta-angular@../../../":
+  version "1.0.6"
   dependencies:
+    "@okta/configuration-validation" "^0.1.0"
     "@okta/okta-auth-js" "^2.0.0"
 
 "@okta/okta-auth-js@^2.0.0":
@@ -1840,7 +1844,7 @@ ee-first@1.1.1:
   version "1.1.1"
   resolved "https://registry.yarnpkg.com/ee-first/-/ee-first-1.1.1.tgz#590c61156b0ae2f4f0255732a158b266bc56b21d"
 
-ejs@^2.5.6, ejs@^2.5.7:
+ejs@^2.5.7:
   version "2.6.1"
   resolved "https://registry.yarnpkg.com/ejs/-/ejs-2.6.1.tgz#498ec0d495655abc6f23cd61868d926464071aa0"
 

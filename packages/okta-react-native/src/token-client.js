@@ -12,17 +12,22 @@
 
 import jwt from 'jwt-lite';
 import { WebBrowser, SecureStore } from 'expo';
+import {
+  assertIssuer,
+  assertClientId,
+  assertRedirectUri
+} from '@okta/configuration-validation';
 import * as util from './util';
 import * as clientUtil from './token-client-util';
 import * as oidc from './oidc';
 
 export default class TokenClient {
   constructor(config = {}) {
-    const missing = [];
-    if (!config.issuer) missing.push('issuer');
-    if (!config.redirect_uri) missing.push('redirect_uri');
-    if (!config.client_id) missing.push('client_id');
-    if (missing.length) throw new Error(`Must provide ${missing}`);
+
+    // Assert configuration
+    assertIssuer(config.issuer, config.testing);
+    assertClientId(config.client_id);
+    assertRedirectUri(config.redirect_uri);
 
     this.issuer = config.issuer;
     this.authorization_endpoint = config.authorization_endpoint;

@@ -5,8 +5,7 @@
         "> 0.1%",
         "not ie < 11"
       ]
-    },
-    "debug": true
+    }
   }], "react"],
   "plugins": [
     "transform-object-rest-spread",

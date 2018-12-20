@@ -1,6 +1,6 @@
 {
   "name": "@okta/okta-angular",
-  "version": "1.0.4",
+  "version": "1.0.7",
   "description": "Angular support for Okta",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
@@ -14,10 +14,11 @@
     "ngc": "./node_modules/.bin/ngc -p tsconfig.json",
     "pretest": "yarn build:dependencies",
     "prestart": "yarn build:dependencies",
-    "prepublish": "yarn ngc",
+    "prepare": "yarn ngc",
     "prengc": "yarn build:package-info",
     "start": "yarn --cwd test/e2e/harness/ start",
     "test": "yarn lint && yarn test:e2e && yarn test:unit",
+    "pretest:e2e": "yarn build:dependencies",
     "test:e2e": "yarn --cwd test/e2e/harness/ e2e",
     "test:unit": "yarn --cwd test/e2e/harness/ test"
   },
@@ -33,6 +34,7 @@
   ],
   "license": "Apache-2.0",
   "dependencies": {
+    "@okta/configuration-validation": "^0.1.1",
     "@okta/okta-auth-js": "^2.0.0"
   },
   "devDependencies": {
