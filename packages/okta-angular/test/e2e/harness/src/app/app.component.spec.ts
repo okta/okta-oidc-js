@@ -131,7 +131,8 @@ describe('Unit Tests', () => {
     expect(config.issuer).toBe(environment.ISSUER);
     expect(config.redirectUri).toBe(environment.REDIRECT_URI);
     expect(config.clientId).toBe(environment.CLIENT_ID);
-    expect(config).toEqual(defaultConfig);
+    expect(config.scope).toBe('email openid');
+    expect(config.responseType).toBe('id_token');
   }));
 
   it('can retrieve an accessToken from the tokenManager', async (done) => {
