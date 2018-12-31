@@ -21,6 +21,7 @@ module.exports = {
       .assert.urlContains('/protected')
       .assert.elementPresent('#logout-button')
       .assert.containsText('.protected', 'Protected!')
+      .pause(2000)
       .assert.containsText('.protected .userinfo', 'email')
       .click('#logout-button')
       .end()

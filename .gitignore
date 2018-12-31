@@ -16,6 +16,8 @@ okta-oidc-tck*
 tck-keystore.pem
 target
 packages/okta-vue/test/e2e/harness/config/dev.env.js
+packages/okta-vue/test/e2e/harness/chromedriver.zip
+packages/okta-vue/test/e2e/harness/test/e2e/lib
 
 # package info files are generated during build and included in final artifacts
 packageInfo.js
