@@ -11,7 +11,7 @@
   "scripts": {
     "test": "yarn test:unit && yarn test:integration",
     "test:integration": "../../scripts/tck.sh",
-    "test:unit": "JEST_JUNIT_OUTPUT=./reports/junit/results.xml jest --env=node test/spec"
+    "test:unit": "JEST_JUNIT_OUTPUT=./reports/junit/results.xml jest test/spec"
   },
   "keywords": [
     "okta",
@@ -25,7 +25,8 @@
     "node": ">=6"
   },
   "jest": {
-    "reporters": [ "default", "jest-junit" ]
+    "reporters": [ "default", "jest-junit" ],
+    "testEnvironment": "jsdom"
   },
   "license": "Apache-2.0",
   "dependencies": {

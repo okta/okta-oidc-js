@@ -25,6 +25,9 @@
   "engines": {
     "node": ">=6"
   },
+  "jest": {
+    "testEnvironment": "jsdom"
+  },
   "license": "Apache-2.0",
   "dependencies": {
     "@okta/configuration-validation": "^0.1.1",

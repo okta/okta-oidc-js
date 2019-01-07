@@ -15,7 +15,8 @@
     "babel-preset-env": "^1.6.0",
     "babel-preset-es2015": "^6.24.1",
     "babel-preset-react-app": "^3.0.2",
-    "jasmine-spec-reporter": "^4.2.1",
+    "jasmine-reporters": "^2.2.0",
+    "jasmine-spec-reporter": "^4.1.0",
     "protractor": "^5.1.2",
     "rimraf": "^2.6.2",
     "wait-on": "^2.0.1"
