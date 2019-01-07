@@ -18,7 +18,7 @@
   "scripts": {
     "test": "yarn test:unit && yarn test:e2e && yarn test:integration",
     "pretest:e2e": "./node_modules/.bin/webdriver-manager update --gecko false",
-    "test:e2e": "protractor test/e2e/conf.js",
+    "test:e2e": "protractor test/e2e/protractor.conf.js",
     "test:integration": "../../scripts/tck.sh",
     "test:unit": "jest test/unit"
   },
@@ -42,6 +42,8 @@
     "cross-env": "^5.1.1",
     "ejs": "^2.5.7",
     "express-session": "^1.15.5",
+    "jasmine-reporters": "^2.2.0",
+    "jasmine-spec-reporter": "^4.1.0",
     "jest": "^23.6.0",
     "nock": "^9.1.6",
     "protractor": "^5.1.2",

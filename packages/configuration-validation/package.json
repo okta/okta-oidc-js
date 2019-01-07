@@ -12,7 +12,7 @@
     "lint": "eslint .",
     "prepare": "yarn build",
     "test": "yarn lint && yarn test:unit",
-    "test:unit": "jest test/"
+    "test:unit": "jest --env=node test/"
   },
   "repository": {
     "type": "git",

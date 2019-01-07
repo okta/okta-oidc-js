@@ -25,3 +25,10 @@ packageInfo.ts
 coverage
 *.tgz
 .idea/
+
+# test reports
+packages/jwt-verifier/reports/
+packages/oidc-middleware/reports/
+packages/okta-angular/reports/
+packages/okta-react/reports/
+packages/okta-vue/reports/
