@@ -88,7 +88,7 @@ describe('React + Okta App', () => {
     });
 
     appPage.waitUntilLoggedIn();
-    expect(appPage.getLogoutButton().isPresent()).toBeTruthy();
+    expect(appPage.getLogoutButton().isPresent()).toBeFalsy();
 
     // Logout
     appPage.getLogoutButton().click();

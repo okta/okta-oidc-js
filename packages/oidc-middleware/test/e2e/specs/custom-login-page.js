@@ -49,6 +49,6 @@ describe('Custom login page', () => {
     // we should be redirected back to the home page
     const homePage = new HomePage();
     await homePage.waitUntilVisible();
-    expect(homePage.getBodyText()).toContain('Welcome home');
+    expect(homePage.getBodyText()).toContain('Welcome homes');
   });
 });
