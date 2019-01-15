@@ -14,6 +14,7 @@
     "pretest": "yarn build && yarn build:harness",
     "start": "yarn --cwd test/e2e/harness start",
     "test": "yarn lint && yarn test:unit && yarn test:e2e",
+    "pretest:e2e": "yarn build && yarn build:harness",
     "test:e2e": "yarn --cwd test/e2e/harness test",
     "test:unit": "jest test/jest/"
   },
