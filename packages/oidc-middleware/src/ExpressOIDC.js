@@ -11,9 +11,10 @@
  */
 
 const EventEmitter = require('events').EventEmitter;
-const _ = require('lodash');
+const merge = require('lodash/merge');
 const oidcUtil = require('./oidcUtil');
 const connectUtil = require('./connectUtil');
+const logout = require('./logout');
 const {
   assertIssuer,
   assertClientId,
@@ -32,10 +33,12 @@ module.exports = class ExpressOIDC extends EventEmitter {
    * Creates an instance of ExpressOIDC
    *
    * @param {Object} options
+   * @param {string} options.appBaseUrl The protocol + domain + post of this app
    * @param {string} options.issuer The OpenId Connect issuer
    * @param {string} options.client_id This app's OpenId Connect client id
    * @param {string} options.client_secret This app's OpenId Connect client secret
-   * @param {string} options.redirect_uri The location of the authorization callback
+   * @param {string} options.loginRedirectUri The location of the login authorization callback if not redirecting to this app
+   * @param {string} options.logoutRedirectUri The location of the logout callback if not redirecting to this app
    * @param {string} [options.scope=openid] The scopes that will determine the claims on the tokens
    * @param {string} [options.response_type=code] The OpenId Connect response type
    * @param {number} [options.maxClockSkew=120] The maximum discrepancy allowed between server clocks in seconds
@@ -43,10 +46,15 @@ module.exports = class ExpressOIDC extends EventEmitter {
    * @param {Object} [options.routes]
    * @param {Object} [options.routes.login]
    * @param {string} [options.routes.login.path=/login] Path where the login middleware is hosted
-   * @param {Object} [options.routes.callback]
-   * @param {string} [options.routes.callback.path=/authorization-code] Path where the callback middleware is hosted
-   * @param {string} [options.routes.callback.defaultRedirect=/] Where to redirect if there is no returnTo path defined
-   * @param {Function} [options.routes.callback.handler] This handles responses from the OpenId Connect callback
+   * @param {Object} [options.routes.loginCallback]
+   * @param {string} [options.routes.loginCallback.afterCallback=/] Where to redirect to once callback is complete
+   * @param {Function} [options.routes.loginCallback.handler] This handles responses from the OpenId Connect callback
+   * @param {string} [options.routes.loginCallback.path=/authorization-code/callback] Path where the callback middleware is hosted
+   * @param {Object} [options.routes.logout]
+   * @param {string} [options.routes.logout.path=/logout] Path where the login middleware is hosted
+   * @param {Object} [options.routes.logoutCallback]
+   * @param {string} [options.routes.logoutCallback.afterCallback=/] Where to redirect to once callback is complete
+   * @param {string} [options.routes.logoutCallback.path=/logout/callback] Path where the callback middleware is hosted
    */
   constructor(options = {}) {
     super();
@@ -55,7 +63,10 @@ module.exports = class ExpressOIDC extends EventEmitter {
       issuer,
       client_id,
       client_secret,
-      redirect_uri,
+      appBaseUrl,
+      redirect_uri, // DEPRECATED in favor of `loginRedirectUri` or automatic determination via `appBaseUrl` and `routes.postLoginCallback`
+      loginRedirectUri,
+      logoutRedirectUri,
       sessionKey
     } = options;
 
@@ -68,28 +79,51 @@ module.exports = class ExpressOIDC extends EventEmitter {
     // Validate the client_secret param
     assertClientSecret(client_secret);
 
-    // Validate the redirect_uri param
-    assertRedirectUri(redirect_uri);
+    
+    // DEPRECATED: options.routes.callback is deprecated in favor of options.routes.loginCallback
+    // Fallbacks for deprecated options will be removed in a future update
+    if(options.routes) { 
+      options.routes.loginCallback = options.routes.loginCallback || options.routes.callback;
+    }
 
     // Add defaults to the options
-    options = _.merge({
+    options = merge({
       response_type: 'code',
       scope: 'openid',
       routes: {
         login: {
           path: '/login'
         },
-        callback: {
+        loginCallback: {
           path: '/authorization-code/callback',
-          defaultRedirect: '/'
-        }
+          afterCallback: '/'
+        },
+        logout: { 
+          path: '/logout'
+        },
+        logoutCallback: { 
+          path: '/logout/callback',
+          afterCallback: '/'
+        },
       },
-      sessionKey: sessionKey || `oidc:${options.issuer}`,
+      sessionKey: sessionKey || `oidc:${issuer}`,
       maxClockSkew: 120
-    }, options)
+    }, options);
+
+    // Build redirect uris unless they were explicitly set
+    // DEPRECATED: `redirect_uri` is deprecated in favor of `loginRedirectUri` (and most users will just set `appBaseUrl` and not set either of these)
+    // DEPRECATED: `options.routes.callback` is deprecated in favor of `options.routes.loginCallback`
+    // Fallbacks for deprecated options will be removed in a future update
+    options.loginRedirectUri = loginRedirectUri || redirect_uri || `${appBaseUrl}${options.routes.loginCallback.path}` || `${appBaseUrl}${options.routes.callback.path}`;
+    options.logoutRedirectUri = logoutRedirectUri || `${appBaseUrl}${options.routes.logoutCallback.path}`;
+    options.routes.loginCallback.afterCallback = options.routes.loginCallback.afterCallback || options.routes.loginCallback.defaultRedirect;
+
+    // Validate the redirect_uri param now that appBaseUrl applied
+    assertRedirectUri(options.loginRedirectUri); 
 
     const context = {
-      options
+      options,
+      emitter: this
     };
 
     /**
@@ -112,13 +146,23 @@ module.exports = class ExpressOIDC extends EventEmitter {
      */
     this.ensureAuthenticated = oidcUtil.ensureAuthenticated.bind(null, context);
 
+    /**
+     * Perform a logout at the Okta side and revoke the id/access tokens
+     * Will 200 even if user is not logged in
+     *
+     * @instance
+     * @function
+     * @memberof ExpressOIDC
+     */
+    this.forceLogoutAndRevoke = logout.forceLogoutAndRevoke.bind(null, context);
+
     // create client
     oidcUtil.createClient(context)
     .then(client => {
       context.client = client;
       oidcUtil.bootstrapPassportStrategy(context);
-      this.emit('ready');
+      context.emitter.emit('ready');
     })
-    .catch(err => this.emit('error', err));
+    .catch(err => context.emitter.emit('error', err));
   }
 };
