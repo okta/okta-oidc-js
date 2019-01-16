@@ -86,13 +86,23 @@ oidcUtil.bootstrapPassportStrategy = context => {
     },
     sessionKey: context.options.sessionKey,
     client: context.client
-  }, (tokenSet, userinfo, done) => {
-    return tokenSet && userinfo
-      ? done(null, {
-        userinfo: userinfo,
-        tokens: tokenSet
-      })
-      : done(null);
+  }, (...args) => {
+    // Skip returning userinfo if none
+    if (args.length === 2) {
+      return args[1](null, {
+        tokens: args[0]
+      });
+    }
+
+    // Userinfo if in the response
+    if (args.length === 3) {
+      return args[2](null, {
+        userinfo: args[1],
+        tokens: args[0]
+      });
+    }
+
+    return done(null);
   });
 
   // bypass passport's serializers
