@@ -48,11 +48,18 @@ Assert that a valid `clientSecret` was provided.
 ```javascript
 assertClientSecret('superSecret');
 ```
-
 ### assertRedirectUri(redirectUri)
 
 Assert that a valid `redirectUri` was provided.
 
 ```javascript
 assertRedirectUri('https://example.com/callback');
+```
+
+### assertAppBaseUrl(appBaseUrl)
+
+Assert that a valid `appBaseUrl` was provided.
+
+```javascript
+assertAppBaseUrl('https://example.com');
 ```

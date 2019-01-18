@@ -22,14 +22,15 @@ const connectUtil = module.exports;
 
 // Create a router to easily add routes
 connectUtil.createOIDCRouter = context => {
+  const routes = context.options.routes;
   const oidcRouter = new Router();
   oidcRouter.use(passport.initialize({ userProperty: 'userContext' }));
   oidcRouter.use(passport.session());
 
-  const loginPath = context.options.routes.login.path;
-  const logoutPath = context.options.routes.logout.path;
-  const loginCallbackPath = context.options.routes.loginCallback.path;
-  const logoutCallbackPath = context.options.routes.logoutCallback.path;
+  const loginPath = routes.login.path;
+  const logoutPath = routes.logout.path;
+  const loginCallbackPath = routes.loginCallback.path;
+  const logoutCallbackPath = routes.logoutCallback.path;
 
   oidcRouter.use(loginPath, bodyParser.urlencoded({ extended: false}), connectUtil.createLoginHandler(context));
   oidcRouter.use(loginCallbackPath, connectUtil.createLoginCallbackHandler(context));
@@ -64,7 +65,7 @@ connectUtil.createLoginHandler = context => {
           nonce,
           state,
           client_id: context.options.client_id,
-          redirect_uri: context.options.post_login_redirect_uri,
+          redirect_uri: context.options.loginRedirectUri,
           scope: context.options.scope,
           response_type: 'code',
           sessionToken: req.body.sessionToken
@@ -82,11 +83,12 @@ connectUtil.createLoginHandler = context => {
 };
 
 connectUtil.createLoginCallbackHandler = context => {
-  const customHandler = context.options.routes.loginCallback.handler;
+  const routes = context.options.routes;
+  const customHandler = routes.loginCallback.handler;
   if (!customHandler) {
     return passport.authenticate('oidc', {
-      successReturnToOrRedirect: context.options.routes.loginCallback.afterCallback,
-      failureRedirect: context.options.routes.loginCallback.failureRedirect
+      successReturnToOrRedirect: routes.loginCallback.afterCallback,
+      failureRedirect: routes.loginCallback.failureRedirect
     });
   }
   const customHandlerArity = customHandler.length;

@@ -39,7 +39,7 @@ If you run into problems using the SDK, you can:
 
 ## Getting started
 
-See [Upgrading](#upgrading) for information on updating to the latest version of the library
+See [Upgrading](#upgrading) for information on updating to the latest version of the library.
 
 Installing the Okta Node JS OIDC Middlware in your project is simple.
 
@@ -145,11 +145,7 @@ Required config:
 * **issuer** - The OIDC provider (e.g. `https://{yourOktaDomain}/oauth2/default`)
 * **client_id** - An id provided when you create an OIDC app in your Okta Org
 * **client_secret** - A secret provided when you create an OIDC app in your Okta Org
-* **appBaseUrl** - The base scheme, host, and port (if not 80/443) of your app.  You may specific `loginRedirectUri` and `logoutRedirectUri` to override this setting if you redirect to other apps.
-
-Deprecated config:
-
-* **redirect_uri** - This has been replaced with `loginRedirectUri`, but you can omit it entirely if you aren't redirecting Okta logins to a different app than this one.  This deprecated config will continue to work until removed in a later version, but you should remove/replace it.  (see [Upgrading](#upgrading))
+* **appBaseUrl** - The base scheme, host, and port (if not 80/443) of your app, not including any path (e.g. http://localhost:3000, not http://localhost:3000/ )  You may specific `loginRedirectUri` and `logoutRedirectUri` to override this setting if you redirect to other apps.
 
 Optional config:
 
@@ -175,10 +171,14 @@ const oidc = new ExpressOIDC({ /* options */ });
 app.use(oidc.router);
 ```
 
-It's required in order for `ensureAuthenticated` and `isAuthenticated` to work and adds the following routes:
+It's required in order for `ensureAuthenticated`, `isAuthenticated`, and `forceLogoutAndRevoke` to work and adds the following routes:
 
 * `/login` - redirects to the Okta sign-in page by default
 * `/authorization-code/callback` - processes the OIDC response, then attaches userinfo to the session
+* `/logout` - revokes any known Okta access/refresh tokens, then redirects to the Okta logout endpoint which then redirects back to a callback url for logout specified in your Okta settings
+* `/logout/callback` - the default callback url that Okta will redirect back to after the session at Okta is ended
+
+The paths for these generated routes can be customized using the `routes` config, see [Customizing Routes](#customizing-routes) for details.
 
 #### oidc.on('ready', callback)
 
@@ -192,7 +192,10 @@ oidc.on('ready', () => {
 
 #### oidc.on('error', callback)
 
-This is triggered if an error occurs while ExpressOIDC is trying to start or if an error occurs while calling the Okta /revoke service on the users tokens while logging out.
+This is triggered if an error occurs
+* while ExpressOIDC is trying to start
+* if an error occurs while calling the Okta `/revoke` service endpoint on the users tokens while logging out
+* if the state value for a logout does not match the current session
 
 ```javascript
 oidc.on('error', err => {
@@ -221,8 +224,6 @@ app.post('/forces-logout', oidc.forceLogoutAndRevoke(), (req, res) => {
   // Nothing here will execute, after the redirects the user will end up wherever the `routes.logoutCallback.afterCallback` specifies (default `/`)
 });
 ```
-
-The `redirectTo` option can be used to redirect the user to a specific URI on your site after the logout callback route instead of the default `/`.
 
 #### req.isAuthenticated()
 
@@ -308,7 +309,7 @@ const oidc = new ExpressOIDC({
 ```
 
 * **`loginCallback.afterCallback`** - Where the user is redirected to after a successful authentication callback, if no `redirectTo` value was specified by `oidc.ensureAuthenticated()`. Defaults to `/`.
-* **`loginCallback.failureRedirect`** - Where the user is redirected to after authentication failure, defaults to a page which just shows error message.
+* **`loginCallback.failureRedirect`** - Where the user is redirected to after authentication failure. Defaults to a page which just shows error message.
 * **`loginCallback.handler`** - A function that is called after a successful authentication callback, but before the final redirect within your application. Useful for requirements such as conditional post-authentication redirects, or sending data to logging systems.
 * **`loginCallback.path`** - The URI that this library will host the login callback handler on. Defaults to `/authorization-code/callback`.  Must match a value from the Login Redirect Uri list from the Okta console for this application.
 * **`login.path`** - The URI that redirects the user to the Okta authorize endpoint. Defaults to `/login`.
@@ -407,13 +408,13 @@ Once you have done that you can read the documentation on the [request][] librar
 The 2.x improves support for default options without removing flexibility and adds logout functionality that includes Okta logout and token revocation, not just local session destruction.
 
 ##### Straightforward Okta logout for your app
-You should specify the `appBaseUrl` property in your config - this is the base scheme + domain + port for your application that will be used for
+Specify the `appBaseUrl` property in your config - this is the base scheme + domain + port for your application that will be used for
 
-You should remove the `redirect_uri` property in your config.  
+Remove the `redirect_uri` property in your config.  
   * If you are using the Okta default value (appBaseUrl + /authorization-code/callback) it will be given a route by default, no additional configuration required.
   * If you are NOT using the Okta default value, but are using a route on the same server indicated by your appBaseUrl, you should define your login callback path in your routes.loginCallback.path config (see [the API reference](#expressoidc-api)).
 
-You will need to configure a logout redirect uri for your application in the Okta admin console for your application, if one is not already defined
+Configure a logout redirect uri for your application in the Okta admin console for your application, if one is not already defined
   * If you do not, logouts will not return to your application but will end on the Okta site
   * Okta recommends `{appBaseUrl}/logout/callback`.  Be sure to fully specify the uri for your application
   * If you chose a different logout redirect uri, specific the path for the local route to create in your routes.logoutCallback.path value (see [the API reference](#expressoidc-api)).
@@ -426,7 +427,7 @@ Any value previously set for `routes.callback.defaultRedirect` should now be don
 
 ##### Local logout
 
-If you had previously implemented a '/logout' route that called `req.logout()` (performing a local logout for your app) you should remove that route and use the new automatically added `/logout` route.  If you used that route using direct links or GET requests, those will have to become POST requests.  (You can create a GET route for /logout, but that is open for abuse and is not recommended)
+If you had previously implemented a '/logout' route that called `req.logout()` (performing a local logout for your app) you should remove that route and use the new automatically added `/logout` route.  If you used that route using direct links or GET requests, those will have to become POST requests.  You can create a GET route for /logout, but that as a GET request is open for abuse and/or pre-fetching complications it is not recommended.
 
 If you desire to have a route that performs a local logout while leaving the user logged in to Okta, you can create any route you wish (that does not conflict with automatically created routes) and call `req.logout()` to destroy your local session without altering the status of the user's browser session at Okta.
 

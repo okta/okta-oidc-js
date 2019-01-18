@@ -21,6 +21,13 @@ const copyCredentialsMessage = 'You can copy it from the Okta Developer Console 
   'in the details for the Application you created. ' +
   `Follow these instructions to find it: ${findAppCredentialsURL}`;
 
+const isHttps = new RegExp('^https://');
+const hasProtocol = new RegExp('://');
+const hasDomainAdmin = /-admin.(okta|oktapreview|okta-emea).com/;
+const hasDomainTypo = new RegExp('(.com.com)|(://.*){2,}');
+const endsInPath = new RegExp('/$');
+
+
 configUtil.assertIssuer = (issuer, testing = {}) => {
   const copyMessage = 'You can copy your domain from the Okta Developer ' +
     'Console. Follow these instructions to find it: ' + findDomainURL;
@@ -32,21 +39,22 @@ configUtil.assertIssuer = (issuer, testing = {}) => {
     console.warn(httpsWarning);
   }
 
+
   if (!issuer) {
     throw new ConfigurationValidationError('Your Okta URL is missing. ' + copyMessage);
-  } else if (!testing.disableHttpsCheck && !issuer.match(/^https:\/\//g)) {
+  } else if (!testing.disableHttpsCheck && !issuer.match(isHttps)) {
     throw new ConfigurationValidationError(
       'Your Okta URL must start with https. ' +
       `Current value: ${issuer}. ${copyMessage}`
     );
-  } else if (issuer.match(/{yourOktaDomain}/g)) {
+  } else if (issuer.match(/{yourOktaDomain}/)) {
     throw new ConfigurationValidationError('Replace {yourOktaDomain} with your Okta domain. ' + copyMessage);
-  } else if (issuer.match(/-admin.(okta|oktapreview|okta-emea).com/g)) {
+  } else if (issuer.match(hasDomainAdmin)) {
     throw new ConfigurationValidationError(
       'Your Okta domain should not contain -admin. ' +
       `Current value: ${issuer}. ${copyMessage}`
     );
-  } else if (issuer.match(/(.com.com)|(:\/\/.*){2,}/g)) {
+  } else if (issuer.match(hasDomainTypo)) {
     throw new ConfigurationValidationError(
       'It looks like there\'s a typo in your Okta domain. ' +
       `Current value: ${issuer}. ${copyMessage}`
@@ -57,7 +65,7 @@ configUtil.assertIssuer = (issuer, testing = {}) => {
 configUtil.assertClientId = (clientId) => {
   if (!clientId) {
     throw new ConfigurationValidationError('Your client ID is missing. ' + copyCredentialsMessage);
-  } else if (clientId.match(/{clientId}/g)) {
+  } else if (clientId.match(/{clientId}/)) {
     throw new ConfigurationValidationError('Replace {clientId} with the client ID of your Application. ' + copyCredentialsMessage);
   }
 };
@@ -65,7 +73,7 @@ configUtil.assertClientId = (clientId) => {
 configUtil.assertClientSecret = (clientSecret) => {
   if (!clientSecret) {
     throw new ConfigurationValidationError('Your client secret is missing. ' + copyCredentialsMessage);
-  } else if (clientSecret.match(/{clientSecret}/g)) {
+  } else if (clientSecret.match(/{clientSecret}/)) {
     throw new ConfigurationValidationError('Replace {clientSecret} with the client secret of your Application. ' + copyCredentialsMessage);
   }
 };
@@ -73,7 +81,19 @@ configUtil.assertClientSecret = (clientSecret) => {
 configUtil.assertRedirectUri = (redirectUri) => {
   if (!redirectUri) {
     throw new ConfigurationValidationError('Your redirect URI is missing.');
-  } else if (redirectUri.match(/{redirectUri}/g)) {
+  } else if (redirectUri.match(/{redirectUri}/)) {
     throw new ConfigurationValidationError('Replace {redirectUri} with the redirect URI of your Application.');
   }
+};
+
+configUtil.assertAppBaseUrl = (appBaseUrl) => { 
+  if (!appBaseUrl) { 
+    throw new ConfigurationValidationError('Your appBaseUrl is missing.');
+  } else if (appBaseUrl.match(/{appBaseUrl}/)) {
+    throw new ConfigurationValidationError('Replace {appBaseUrl} with the base URL of your Application.');
+  } else if (!appBaseUrl.match(hasProtocol)) {
+    throw new ConfigurationValidationError(`Your appBaseUrl must contain a protocol (e.g. https://). Current value: ${appBaseUrl}.`);
+  } else if (appBaseUrl.match(endsInPath)) {
+    throw new ConfigurationValidationError(`Your appBaseUrl must not end in a '/'. Current value: ${appBaseUrl}.`);
+  } 
 };

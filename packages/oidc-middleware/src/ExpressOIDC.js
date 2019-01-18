@@ -19,7 +19,8 @@ const {
   assertIssuer,
   assertClientId,
   assertClientSecret,
-  assertRedirectUri
+  assertRedirectUri,
+  assertAppBaseUrl
 } = require('@okta/configuration-validation');
 
 /**
@@ -48,7 +49,7 @@ module.exports = class ExpressOIDC extends EventEmitter {
    * @param {string} [options.routes.login.path=/login] Path where the login middleware is hosted
    * @param {Object} [options.routes.loginCallback]
    * @param {string} [options.routes.loginCallback.afterCallback=/] Where to redirect to once callback is complete
-   * @param {Function} [options.routes.loginCallback.handler] This handles responses from the OpenId Connect callback
+   * @param {Function} [options.routes.loginCallback.viewHandler] This handles responses from the OpenId Connect callback
    * @param {string} [options.routes.loginCallback.path=/authorization-code/callback] Path where the callback middleware is hosted
    * @param {Object} [options.routes.logout]
    * @param {string} [options.routes.logout.path=/logout] Path where the login middleware is hosted
@@ -64,7 +65,6 @@ module.exports = class ExpressOIDC extends EventEmitter {
       client_id,
       client_secret,
       appBaseUrl,
-      redirect_uri, // DEPRECATED in favor of `loginRedirectUri` or automatic determination via `appBaseUrl` and `routes.postLoginCallback`
       loginRedirectUri,
       logoutRedirectUri,
       sessionKey
@@ -79,12 +79,8 @@ module.exports = class ExpressOIDC extends EventEmitter {
     // Validate the client_secret param
     assertClientSecret(client_secret);
 
-    
-    // DEPRECATED: options.routes.callback is deprecated in favor of options.routes.loginCallback
-    // Fallbacks for deprecated options will be removed in a future update
-    if(options.routes) { 
-      options.routes.loginCallback = options.routes.loginCallback || options.routes.callback;
-    }
+    // Validate the appBaseUrl param
+    assertAppBaseUrl(appBaseUrl);
 
     // Add defaults to the options
     options = merge({
@@ -111,12 +107,8 @@ module.exports = class ExpressOIDC extends EventEmitter {
     }, options);
 
     // Build redirect uris unless they were explicitly set
-    // DEPRECATED: `redirect_uri` is deprecated in favor of `loginRedirectUri` (and most users will just set `appBaseUrl` and not set either of these)
-    // DEPRECATED: `options.routes.callback` is deprecated in favor of `options.routes.loginCallback`
-    // Fallbacks for deprecated options will be removed in a future update
-    options.loginRedirectUri = loginRedirectUri || redirect_uri || `${appBaseUrl}${options.routes.loginCallback.path}` || `${appBaseUrl}${options.routes.callback.path}`;
+    options.loginRedirectUri = loginRedirectUri || `${appBaseUrl}${options.routes.loginCallback.path}`;
     options.logoutRedirectUri = logoutRedirectUri || `${appBaseUrl}${options.routes.logoutCallback.path}`;
-    options.routes.loginCallback.afterCallback = options.routes.loginCallback.afterCallback || options.routes.loginCallback.defaultRedirect;
 
     // Validate the redirect_uri param now that appBaseUrl applied
     assertRedirectUri(options.loginRedirectUri); 
