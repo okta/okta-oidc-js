@@ -2,7 +2,8 @@ const {
   assertIssuer,
   assertClientId,
   assertClientSecret,
-  assertRedirectUri
+  assertRedirectUri,
+  assertAppBaseUrl
 } = require('../src/lib');
 
 describe('Configuration Validation', () => {
@@ -25,7 +26,7 @@ describe('Configuration Validation', () => {
     });
 
     it('should not throw if https issuer validation is skipped', () => {
-      jest.spyOn(console, 'warn');
+      jest.spyOn(console, 'warn').mockImplementation(() => {}); // silence for testing
       const errorMsg = `Your Okta URL must start with https. Current value: http://foo.com. ${findDomainMessage}`;
       expect(() => {
         assertIssuer('http://foo.com', {
@@ -113,4 +114,27 @@ describe('Configuration Validation', () => {
       expect(() => assertRedirectUri('{redirectUri}')).toThrow(errorMsg);
     });
   });
+
+  describe('assertAppBaseUrl', () => { 
+    it('should throw if the appBaseUrl is not provided', () => {
+      const errorMsg = 'Your appBaseUrl is missing.';
+      expect(() => assertAppBaseUrl()).toThrow(errorMsg);
+    });
+
+    it('should throw if a appBaseUrl matching {appBaseUrl} is provided', () => {
+      const errorMsg = 'Replace {appBaseUrl} with the base URL of your Application.'
+      expect(() => assertAppBaseUrl('{appBaseUrl}')).toThrow(errorMsg);
+    });
+
+    it('should throw if an appBaseUrl without a protocol is provided', () => {
+      const errorMsg = 'Your appBaseUrl must contain a protocol (e.g. https://). Current value: foo.example.com.';
+      expect(() => assertAppBaseUrl('foo.example.com')).toThrow(errorMsg);
+    });
+
+    it('should throw if an appBaseUrl that ends in a slash is provided', () => {
+      const errorMsg = `Your appBaseUrl must not end in a '/'. Current value: https://foo.example.com/.`;
+      expect(() => assertAppBaseUrl('https://foo.example.com/')).toThrow(errorMsg);
+    });
+  });
+
 });
