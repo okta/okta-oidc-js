@@ -112,7 +112,7 @@ oidc.on('error', err => {
   * [oidc.on('ready', callback)](#oidconready-callback)
   * [oidc.on('error', callback)](#oidconerror-callback)
   * [oidc.ensureAuthenticated({ redirectTo?: '/uri' })](#oidcensureauthenticated-redirectto-uri-)
-  * [oidc.forceLogoutAndRevoke()](#oidceforcelogoutandrevoke)
+  * [oidc.forceLogoutAndRevoke()](#oidcforcelogoutandrevoke)
   * [req.isAuthenticated()](#reqisauthenticated)
   * [req.logout()](#reqlogout)
   * [req.userContext](#requsercontext)
@@ -135,7 +135,7 @@ const oidc = new ExpressOIDC({
   issuer: 'https://{yourOktaDomain}/oauth2/default',
   client_id: '{clientId}',
   client_secret: '{clientSecret}',
-  appBaseUrl: 'https://{yourdomain}', 
+  appBaseUrl: 'https://{yourdomain}',
   scope: 'openid profile'
 });
 ```

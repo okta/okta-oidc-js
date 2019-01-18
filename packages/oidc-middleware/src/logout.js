@@ -16,7 +16,7 @@ const uuid = require('uuid');
 const logout = module.exports;
 
 const makeErrorHandler = emitter => err => { 
-  if(err.type) { 
+  if (err.type) { 
     emitter.emit('error', `${err.type} - ${err.text}`);
   } else {
     emitter.emit('error', err);

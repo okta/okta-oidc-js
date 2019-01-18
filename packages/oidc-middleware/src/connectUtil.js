@@ -114,7 +114,7 @@ connectUtil.createLogoutHandler = context => logout.forceLogoutAndRevoke(context
 
 connectUtil.createLogoutCallbackHandler = context => { 
   return (req, res, next) => { 
-    if( req.session[context.options.sessionKey].state !== req.query.state ) {
+    if ( req.session[context.options.sessionKey].state !== req.query.state ) {
       context.emitter.emit('error', { type: 'logoutError', message: `'state' parameter did not match value in session` });
     } else {
       req.logout();
