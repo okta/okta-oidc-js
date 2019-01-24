@@ -21,20 +21,17 @@ const connectUtil = module.exports;
 
 // Create a router to easily add routes
 connectUtil.createOIDCRouter = context => {
+  const routes = context.options.routes;
   const oidcRouter = new Router();
   oidcRouter.use(passport.initialize({ userProperty: 'userContext' }));
   oidcRouter.use(passport.session());
 
-  const {
-    login: {
-      path:loginPath
-    },
-    callback: {
-      path:callbackPath
-    }
-  } = context.options.routes;
+  const loginPath = routes.login.path;
+  const loginCallbackPath = routes.loginCallback.path;
+
   oidcRouter.use(loginPath, bodyParser.urlencoded({ extended: false}), connectUtil.createLoginHandler(context));
-  oidcRouter.use(callbackPath, connectUtil.createCallbackHandler(context));
+  oidcRouter.use(loginCallbackPath, connectUtil.createLoginCallbackHandler(context));
+
   oidcRouter.use((err, req, res, next) => {
     // Cast all errors from the passport strategy as 401 (rather than 500, which would happen if we just call through to next())
     res.status(401);
@@ -63,7 +60,7 @@ connectUtil.createLoginHandler = context => {
           nonce,
           state,
           client_id: context.options.client_id,
-          redirect_uri: context.options.redirect_uri,
+          redirect_uri: context.options.loginRedirectUri,
           scope: context.options.scope,
           response_type: 'code',
           sessionToken: req.body.sessionToken
@@ -80,14 +77,17 @@ connectUtil.createLoginHandler = context => {
   }
 };
 
-connectUtil.createCallbackHandler = context => {
-  const customHandler = context.options.routes.callback.handler;
+connectUtil.createLoginCallbackHandler = context => {
+  const routes = context.options.routes;
+  const customHandler = routes.loginCallback.handler;
+
   if (!customHandler) {
     return passport.authenticate('oidc', {
-      successReturnToOrRedirect: context.options.routes.callback.defaultRedirect,
-      failureRedirect: context.options.routes.callback.failureRedirect
+      successReturnToOrRedirect: routes.loginCallback.afterCallback,
+      failureRedirect: routes.loginCallback.failureRedirect
     });
   }
+
   const customHandlerArity = customHandler.length;
   return (req, res, next) => {
     const nextHandler = err => {

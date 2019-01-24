@@ -73,7 +73,7 @@ module.exports = class DemoServer {
     });
   }
   stop() {
-    console.log('Sever shutting down');
+    console.log('Server shutting down');
     return new Promise((resolve, reject) => {
       this.httpServer.destroy((err) => {
         console.log('Server destroyed')

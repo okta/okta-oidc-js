@@ -16,9 +16,19 @@ describe('new ExpressOIDC()', () => {
     'in the details for the Application you created. Follow these instructions to ' +
     'find it: https://bit.ly/finding-okta-app-credentials';
 
+  const minimumConfig = { 
+    client_id: 'foo',
+    client_secret: 'foo',
+    issuer: 'https://foo',
+    appBaseUrl: 'https://app.foo'
+  };
+
   it('should throw if no issuer is provided', () => {
     function createInstance() {
-      new ExpressOIDC();
+      new ExpressOIDC({ 
+        ...minimumConfig,
+        issuer: undefined
+      });
     }
     const errorMsg = `Your Okta URL is missing. ${findDomainMessage}`;
     expect(createInstance).toThrow(errorMsg);
@@ -27,6 +37,7 @@ describe('new ExpressOIDC()', () => {
   it('should throw if an issuer that does not contain https is provided', () => {
     function createInstance() {
       new ExpressOIDC({
+        ...minimumConfig,
         issuer: 'http://foo.com'
       });
     }
@@ -35,14 +46,15 @@ describe('new ExpressOIDC()', () => {
   });
 
   it('should not throw if https issuer validation is skipped', () => {
-    jest.spyOn(console, 'warn');
+    jest.spyOn(console, 'warn').mockImplementation(() => {}); // silence for testing
     function createInstance() {
       new ExpressOIDC({
+        ...minimumConfig,
         issuer: 'http://foo.com',
         testing: {
           disableHttpsCheck: true
         }
-      });
+      }).on('error', () => {}); // prevent warning about unhandled error emits
     }
     const errorMsg = `Your Okta URL must start with https. Current value: http://foo.com. ${findDomainMessage}`;
     expect(createInstance).not.toThrow(errorMsg);
@@ -52,6 +64,7 @@ describe('new ExpressOIDC()', () => {
   it('should throw if an issuer matching {yourOktaDomain} is provided', () => {
     function createInstance() {
       new ExpressOIDC({
+        ...minimumConfig,
         issuer: 'https://{yourOktaDomain}'
       });
     }
@@ -62,6 +75,7 @@ describe('new ExpressOIDC()', () => {
   it('should throw if an issuer matching -admin.okta.com is provided', () => {
     function createInstance() {
       new ExpressOIDC({
+        ...minimumConfig, 
         issuer: 'https://foo-admin.okta.com'
       });
     }
@@ -73,6 +87,7 @@ describe('new ExpressOIDC()', () => {
   it('should throw if an issuer matching -admin.oktapreview.com is provided', () => {
     function createInstance() {
       new ExpressOIDC({
+        ...minimumConfig,
         issuer: 'https://foo-admin.oktapreview.com'
       });
     }
@@ -95,6 +110,7 @@ describe('new ExpressOIDC()', () => {
   it('should throw if an issuer matching more than one ".com" is provided', () => {
     function createInstance() {
       new ExpressOIDC({
+        ...minimumConfig,
         issuer: 'https://foo.okta.com.com'
       });
     }
@@ -106,6 +122,7 @@ describe('new ExpressOIDC()', () => {
   it('should throw if an issuer matching more than one sequential "://" is provided', () => {
     function createInstance() {
       new ExpressOIDC({
+        ...minimumConfig,
         issuer: 'https://://foo.okta.com'
       });
     }
@@ -117,6 +134,7 @@ describe('new ExpressOIDC()', () => {
   it('should throw if an issuer matching more than one "://" is provided', () => {
     function createInstance() {
       new ExpressOIDC({
+        ...minimumConfig,
         issuer: 'https://foo.okta://.com'
       });
     }
@@ -128,7 +146,8 @@ describe('new ExpressOIDC()', () => {
   it('should throw if the client_id is not provided', () => {
     function createInstance() {
       new ExpressOIDC({
-        issuer: 'https://foo'
+        ...minimumConfig,
+        client_id: undefined
       });
     }
     const errorMsg = `Your client ID is missing. ${findCredentialsMessage}`;
@@ -138,19 +157,19 @@ describe('new ExpressOIDC()', () => {
   it('should throw if the client_secret is not provided', () => {
     function createInstance() {
       new ExpressOIDC({
-        client_id: 'foo',
-        issuer: 'https://foo'
+        ...minimumConfig,
+        client_secret: undefined
       });
     }
     const errorMsg = `Your client secret is missing. ${findCredentialsMessage}`;
-  expect(createInstance).toThrow(errorMsg);
+    expect(createInstance).toThrow(errorMsg);
   });
 
   it('should throw if a client_id matching {clientId} is provided', () => {
     function createInstance() {
       new ExpressOIDC({
-        client_id: '{clientId}',
-        issuer: 'https://foo'
+        ...minimumConfig,
+        client_id: '{clientId}'
       });
     }
     const errorMsg = `Replace {clientId} with the client ID of your Application. ${findCredentialsMessage}`;
@@ -160,46 +179,62 @@ describe('new ExpressOIDC()', () => {
   it('should throw if a client_secret matching {clientSecret} is provided', () => {
     function createInstance() {
       new ExpressOIDC({
-        client_secret: '{clientSecret}',
-        client_id: 'foo',
-        issuer: 'https://foo'
+        ...minimumConfig,
+        client_secret: '{clientSecret}'
       });
     }
     const errorMsg = `Replace {clientSecret} with the client secret of your Application. ${findCredentialsMessage}`;
     expect(createInstance).toThrow(errorMsg);
   });
 
-  it('should throw if the redirect_uri is not provided', () => {
+  it('should throw if the appBaseUrl is not provided', () => {
     function createInstance() {
       new ExpressOIDC({
-        client_secret: 'foo',
-        client_id: 'foo',
-        issuer: 'https://foo'
+        ...minimumConfig,
+        appBaseUrl: undefined
       });
     }
-    const errorMsg = 'Your redirect URI is missing.';
+    const errorMsg = 'Your appBaseUrl is missing.';
     expect(createInstance).toThrow(errorMsg);
   });
 
-  it('should throw if a redirect_uri matching {redirectUri} is provided', () => {
+  it('should throw if a appBaseUrl matching {appBaseUrl} is provided', () => {
     function createInstance() {
       new ExpressOIDC({
-        redirect_uri: '{redirectUri}',
-        client_secret: 'foo',
-        client_id: 'foo',
-        issuer: 'https://foo'
+        ...minimumConfig,
+        appBaseUrl: '{appBaseUrl}'
       });
     }
-    const errorMsg = 'Replace {redirectUri} with the redirect URI of your Application.'
+    const errorMsg = 'Replace {appBaseUrl} with the base URL of your Application.'
     expect(createInstance).toThrow(errorMsg);
   });
+
+  it('should throw if an appBaseUrl without a protocol is provided', () => {
+    function createInstance() {
+      new ExpressOIDC({
+        ...minimumConfig,
+        appBaseUrl: 'foo.example.com'
+      });
+    }
+    const errorMsg = 'Your appBaseUrl must contain a protocol (e.g. https://). Current value: foo.example.com.';
+    expect(createInstance).toThrow(errorMsg);
+  });
+
+  it('should throw if an appBaseUrl ending in a slash is provided', () => {
+    function createInstance() {
+      new ExpressOIDC({
+        ...minimumConfig,
+        appBaseUrl: 'https://foo.example.com/'
+      });
+    }
+    const errorMsg = `Your appBaseUrl must not end in a '/'. Current value: https://foo.example.com/.`;
+    expect(createInstance).toThrow(errorMsg);
+  });
+
 
   it('should set the HTTP timeout to 10 seconds', () => {
     new ExpressOIDC({
-      client_id: 'foo',
-      client_secret: 'foo',
-      redirect_uri: 'foo',
-      issuer: 'https://foo'
+      ...minimumConfig
     }).on('error', () => {
       // Ignore errors caused by mock configuration data
     });
@@ -208,10 +243,7 @@ describe('new ExpressOIDC()', () => {
 
   it('should allow me to change the HTTP timeout', () => {
     new ExpressOIDC({
-      client_id: 'foo',
-      client_secret: 'foo',
-      redirect_uri: 'foo',
-      issuer: 'https://foo',
+      ...minimumConfig,
       timeout: 1
     }).on('error', () => {
       // Ignore errors caused by mock configuration data
@@ -221,15 +253,12 @@ describe('new ExpressOIDC()', () => {
 
   it('should throw ETIMEOUT if the timeout is reached', (done) => {
     nock('https://foo')
-    .get('/.well-known/openid-configuration')
-    .reply(200, function cb() {
-      // dont reply, we want to timeout
-    });
+      .get('/.well-known/openid-configuration')
+      .reply(200, function cb() {
+        // dont reply, we want to timeout
+      });
     new ExpressOIDC({
-      client_id: 'foo',
-      client_secret: 'foo',
-      redirect_uri: 'foo',
-      issuer: 'https://foo',
+      ...minimumConfig,
       timeout: 1
     }).on('error', (e) => {
       expect(e.code).toBe('ETIMEDOUT');
@@ -243,18 +272,15 @@ describe('new ExpressOIDC()', () => {
     }, function (er, data) {
       const openIdPkg = data.children[0].package;
       nock('https://foo')
-      .get('/.well-known/openid-configuration')
-      .reply(200, function cb() {
-        const userAgent = this.req.headers['user-agent'];
-        const expectedAgent = `${pkg.name}/${pkg.version} ${openIdPkg.name}/${openIdPkg.version} node/${process.versions.node} ${os.platform()}/${os.release()}`;
-        expect(userAgent).toBe(expectedAgent);
-        done();
-      });
+        .get('/.well-known/openid-configuration')
+        .reply(200, function cb() {
+          const userAgent = this.req.headers['user-agent'];
+          const expectedAgent = `${pkg.name}/${pkg.version} ${openIdPkg.name}/${openIdPkg.version} node/${process.versions.node} ${os.platform()}/${os.release()}`;
+          expect(userAgent).toBe(expectedAgent);
+          done();
+        });
       new ExpressOIDC({
-        client_id: 'foo',
-        client_secret: 'foo',
-        redirect_uri: 'foo',
-        issuer: 'https://foo'
+        ...minimumConfig
       }).on('error', () => {
         // Because we're mocking and not fulfilling the real response, the client will error
         // Ignore this because we're only asserting what we see on the request
