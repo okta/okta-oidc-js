@@ -11,13 +11,14 @@
  */
 
 const EventEmitter = require('events').EventEmitter;
-const _ = require('lodash');
+const merge = require('lodash/merge');
 const oidcUtil = require('./oidcUtil');
 const connectUtil = require('./connectUtil');
 const {
   assertIssuer,
   assertClientId,
   assertClientSecret,
+  assertAppBaseUrl,
   assertRedirectUri
 } = require('@okta/configuration-validation');
 
@@ -32,10 +33,11 @@ module.exports = class ExpressOIDC extends EventEmitter {
    * Creates an instance of ExpressOIDC
    *
    * @param {Object} options
+   * @param {string} options.appBaseUrl The protocol+domain+port of this app
    * @param {string} options.issuer The OpenId Connect issuer
    * @param {string} options.client_id This app's OpenId Connect client id
    * @param {string} options.client_secret This app's OpenId Connect client secret
-   * @param {string} options.redirect_uri The location of the authorization callback
+   * @param {string} options.loginRedirectUri The location of the login authorization callback
    * @param {string} [options.scope=openid] The scopes that will determine the claims on the tokens
    * @param {string} [options.response_type=code] The OpenId Connect response type
    * @param {number} [options.maxClockSkew=120] The maximum discrepancy allowed between server clocks in seconds
@@ -43,10 +45,10 @@ module.exports = class ExpressOIDC extends EventEmitter {
    * @param {Object} [options.routes]
    * @param {Object} [options.routes.login]
    * @param {string} [options.routes.login.path=/login] Path where the login middleware is hosted
-   * @param {Object} [options.routes.callback]
-   * @param {string} [options.routes.callback.path=/authorization-code] Path where the callback middleware is hosted
-   * @param {string} [options.routes.callback.defaultRedirect=/] Where to redirect if there is no returnTo path defined
-   * @param {Function} [options.routes.callback.handler] This handles responses from the OpenId Connect callback
+   * @param {Object} [options.routes.loginCallback
+   * @param {string} [options.routes.loginCallback.path=/authorization-code] Path where the callback middleware is hosted
+   * @param {string} [options.routes.loginCallback.afterCallback=/] Where to redirect once callback is complete
+   * @param {Function} [options.routes.loginCallback.handler] This handles responses from the OpenId Connect callback
    */
   constructor(options = {}) {
     super();
@@ -55,7 +57,8 @@ module.exports = class ExpressOIDC extends EventEmitter {
       issuer,
       client_id,
       client_secret,
-      redirect_uri,
+      appBaseUrl,
+      loginRedirectUri,
       sessionKey
     } = options;
 
@@ -68,28 +71,35 @@ module.exports = class ExpressOIDC extends EventEmitter {
     // Validate the client_secret param
     assertClientSecret(client_secret);
 
-    // Validate the redirect_uri param
-    assertRedirectUri(redirect_uri);
+    // Validate the appBaseUrl param
+    assertAppBaseUrl(appBaseUrl);
 
     // Add defaults to the options
-    options = _.merge({
+    options = merge({
       response_type: 'code',
       scope: 'openid',
       routes: {
         login: {
           path: '/login'
         },
-        callback: {
+        loginCallback: {
           path: '/authorization-code/callback',
-          defaultRedirect: '/'
+          afterCallback: '/'
         }
       },
-      sessionKey: sessionKey || `oidc:${options.issuer}`,
+      sessionKey: sessionKey || `oidc:${issuer}`,
       maxClockSkew: 120
     }, options)
 
+    // Build redirect uri unless explicitly set
+    options.loginRedirectUri = loginRedirectUri || `${appBaseUrl}${options.routes.loginCallback.path}`;
+
+    // Validate the redirect_uri param
+    assertRedirectUri(options.loginRedirectUri);
+
     const context = {
-      options
+      options,
+      emitter: this
     };
 
     /**
@@ -117,8 +127,8 @@ module.exports = class ExpressOIDC extends EventEmitter {
     .then(client => {
       context.client = client;
       oidcUtil.bootstrapPassportStrategy(context);
-      this.emit('ready');
+      context.emitter.emit('ready');
     })
-    .catch(err => this.emit('error', err));
+    .catch(err => context.emitter.emit('error', err));
   }
 };
