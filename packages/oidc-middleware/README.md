@@ -392,6 +392,10 @@ Any customization previously done to `routes.callback` should now be done to `ro
 
 Any value previously set for `routes.callback.defaultRedirect` should now be done to `routes.loginCallback.afterCallback`.  
 
+##### Okta with additional apps
+
+If you had the `redirect_uri` pointing to a different application than this one, replace `redirect_uri` with `loginRedirectUri`.
+
 ## Contributing
 
 We're happy to accept contributions and PRs! Please see the [contribution guide](https://github.com/okta/okta-oidc-js/blob/master/CONTRIBUTING.md) to understand how to structure a contribution.
