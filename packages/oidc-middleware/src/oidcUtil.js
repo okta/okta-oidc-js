@@ -44,7 +44,7 @@ oidcUtil.createClient = context => {
     issuer,
     client_id,
     client_secret,
-    loginRedirectUri: redirect_uri,    
+    loginRedirectUri: redirect_uri,
     maxClockSkew,
     timeout
   } = context.options;
