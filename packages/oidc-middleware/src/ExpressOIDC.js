@@ -14,6 +14,8 @@ const EventEmitter = require('events').EventEmitter;
 const merge = require('lodash/merge');
 const oidcUtil = require('./oidcUtil');
 const connectUtil = require('./connectUtil');
+const logout = require('./logout');
+
 const {
   assertIssuer,
   assertClientId,
@@ -37,7 +39,8 @@ module.exports = class ExpressOIDC extends EventEmitter {
    * @param {string} options.issuer The OpenId Connect issuer
    * @param {string} options.client_id This app's OpenId Connect client id
    * @param {string} options.client_secret This app's OpenId Connect client secret
-   * @param {string} options.loginRedirectUri The location of the login authorization callback
+   * @param {string} options.loginRedirectUri The location of the login authorization callback if not redirecting to this app 
+   * @param {string} options.logoutRedirectUri The location of the logout callback if not redirecting to this app
    * @param {string} [options.scope=openid] The scopes that will determine the claims on the tokens
    * @param {string} [options.response_type=code] The OpenId Connect response type
    * @param {number} [options.maxClockSkew=120] The maximum discrepancy allowed between server clocks in seconds
@@ -59,6 +62,7 @@ module.exports = class ExpressOIDC extends EventEmitter {
       client_secret,
       appBaseUrl,
       loginRedirectUri,
+      logoutRedirectUri,
       sessionKey
     } = options;
 
@@ -85,14 +89,22 @@ module.exports = class ExpressOIDC extends EventEmitter {
         loginCallback: {
           path: '/authorization-code/callback',
           afterCallback: '/'
+        },
+        logout: {
+          path: '/logout'
+        },
+        logoutCallback: {
+          path: '/logout/callback',
+          afterCallback: '/'
         }
       },
       sessionKey: sessionKey || `oidc:${issuer}`,
       maxClockSkew: 120
-    }, options)
+    }, options);
 
     // Build redirect uri unless explicitly set
     options.loginRedirectUri = loginRedirectUri || `${appBaseUrl}${options.routes.loginCallback.path}`;
+    options.logoutRedirectUri = logoutRedirectUri || `${appBaseUrl}${options.routes.logoutCallback.path}`;
 
     // Validate the redirect_uri param
     assertRedirectUri(options.loginRedirectUri);
@@ -121,6 +133,16 @@ module.exports = class ExpressOIDC extends EventEmitter {
      * @memberof ExpressOIDC
      */
     this.ensureAuthenticated = oidcUtil.ensureAuthenticated.bind(null, context);
+
+    /**
+     * Perform a logout at the Okta side and revoke the id/access tokens
+     * Will 200 even if user is not logged in
+     *
+     * @instance
+     * @function
+     * @memberof ExpressOIDC
+     */
+    this.forceLogoutAndRevoke = logout.forceLogoutAndRevoke.bind(null, context);
 
     // create client
     oidcUtil.createClient(context)

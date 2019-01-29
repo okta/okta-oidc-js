@@ -28,7 +28,7 @@ describe('Custom login page', () => {
       testing: {
         disableHttpsCheck: constants.OKTA_TESTING_DISABLEHTTPSCHECK
       }
-    };
+    }
 
     server = util.createDemoServerWithCustomLoginPage(serverOptions);
     await server.start();

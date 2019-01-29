@@ -38,7 +38,12 @@ module.exports = class DemoServer {
 
     app.get('/', (req, res) => {
       if (req.userContext) {
-        res.send(`Hello ${req.userContext.userinfo.sub}! Welcome home`)
+        res.send(`
+          Hello ${req.userContext.userinfo.sub}! Welcome home
+          <form method="POST" action="/logout">
+            <button id="logout" type="submit">Logout</button>
+          </form>
+        `);
       } else {
         res.send('Hello World!');
       }
@@ -46,11 +51,6 @@ module.exports = class DemoServer {
 
     app.get('/protected', oidc.ensureAuthenticated(), (req, res) => {
       res.send(JSON.stringify(req.userContext));
-    });
-
-    app.get('/logout', (req, res) => {
-      req.logout();
-      res.redirect('/');
     });
 
     return new Promise((resolve, reject) => {
