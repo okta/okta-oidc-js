@@ -233,7 +233,7 @@ describe('new ExpressOIDC()', () => {
   });
 
   it('should set the HTTP timeout to 10 seconds', () => {
-    new ExpressOIDC({ 
+    new ExpressOIDC({
       ...minimumConfig
     }).on('error', () => {
       // Ignore errors caused by mock configuration data

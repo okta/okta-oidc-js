@@ -31,7 +31,7 @@ module.exports = class HomePage {
   async performLogout() { 
     const logoutButton = $('#logout');
     await logoutButton.click();
-    await browser.wait(EC.not(EC.presenceOf(logoutButton)), 10000);
+    await browser.wait(EC.not(EC.presenceOf(logoutButton)), 5000);
   }
 
   async getBodyText() {
