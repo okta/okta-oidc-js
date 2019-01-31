@@ -65,9 +65,13 @@ describe('Basic login redirect', () => {
     await homePage.waitUntilVisible();
     expect(homePage.getBodyText()).toContain('Welcome home');
 
-    // navigate to logout
-    await browser.get('/logout');
-    await homePage.waitUntilVisible();
+    // navigate to Okta logout and follow redirects
+    await homePage.performLogout(); 
+    await homePage.waitUntilVisible(); // after all redirects
     expect(browser.getPageSource()).not.toContain('Welcome home');
+
+    // confirm that Okta now requires login
+    await privatePage.load();
+    await signInPage.waitUntilVisible();
   });
 });

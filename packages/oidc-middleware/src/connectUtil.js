@@ -16,6 +16,7 @@ const { Router } = require('express');
 const querystring = require('querystring');
 const uuid = require('uuid');
 const bodyParser = require('body-parser');
+const logout = require('./logout');
 
 const connectUtil = module.exports;
 
@@ -28,9 +29,13 @@ connectUtil.createOIDCRouter = context => {
 
   const loginPath = routes.login.path;
   const loginCallbackPath = routes.loginCallback.path;
+  const logoutPath = routes.logout.path;
+  const logoutCallbackPath = routes.logoutCallback.path;
 
   oidcRouter.use(loginPath, bodyParser.urlencoded({ extended: false}), connectUtil.createLoginHandler(context));
   oidcRouter.use(loginCallbackPath, connectUtil.createLoginCallbackHandler(context));
+  oidcRouter.post(logoutPath, connectUtil.createLogoutHandler(context));
+  oidcRouter.use(logoutCallbackPath, connectUtil.createLogoutCallbackHandler(context));
 
   oidcRouter.use((err, req, res, next) => {
     // Cast all errors from the passport strategy as 401 (rather than 500, which would happen if we just call through to next())
@@ -105,4 +110,17 @@ connectUtil.createLoginCallbackHandler = context => {
     };
     passport.authenticate('oidc')(req, res, nextHandler);
   }
+};
+
+connectUtil.createLogoutHandler = context => logout.forceLogoutAndRevoke(context);
+
+connectUtil.createLogoutCallbackHandler = context => {
+  return (req, res) => {
+    if ( req.session[context.options.sessionKey].state !== req.query.state ) {
+      context.emitter.emit('error', { type: 'logoutError', message: `'state' parameter did not match value in session` });
+    } else {
+      req.logout();
+      res.redirect(context.options.routes.logoutCallback.afterCallback);
+    };
+  };
 };
