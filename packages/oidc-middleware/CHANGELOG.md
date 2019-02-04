@@ -2,6 +2,10 @@
 
 ### Features
 
+- [`a4b54f7`](https://github.com/okta/okta-oidc-js/commit/a4b54f771e19f2eeece46a39ded135550061f2a1) - adds Okta logout capability
+
+- [`a999b95`](https://github.com/okta/okta-oidc-js/commit/a999b959c98bfea2f138281b2f93efb2d2d5fac7) - adds appBaseUrl, removes redirect_uri
+
 - Adds Okta logout capability (informing Okta that the session is ended rather than just locally forgetting the current session) ([#162](https://github.com/okta/okta-oidc-js/issues/162))
 
 ### Breaking Changes 
