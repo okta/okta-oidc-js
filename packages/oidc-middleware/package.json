@@ -17,7 +17,7 @@
   "main": "index.js",
   "scripts": {
     "test": "yarn test:unit && yarn test:e2e && yarn test:integration",
-    "pretest:e2e": "./node_modules/.bin/webdriver-manager update --gecko false",
+    "pretest:e2e": "./node_modules/.bin/webdriver-manager update --versions.chrome 2.45 --gecko false",
     "test:e2e": "protractor test/e2e/conf.js",
     "test:integration": "../../scripts/tck.sh",
     "test:unit": "jest test/unit"
