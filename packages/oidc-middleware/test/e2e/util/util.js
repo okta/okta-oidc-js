@@ -21,7 +21,7 @@ const environmentConfig = {
   issuer: constants.ISSUER,
   client_id: constants.CLIENT_ID,
   client_secret: constants.CLIENT_SECRET,
-  redirect_uri: constants.REDIRECT_URI,
+  appBaseUrl: constants.APP_BASE_URL,
   scope: 'profile email openid'
 };
 

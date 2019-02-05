@@ -26,7 +26,7 @@ module.exports = (overrides = {}) => {
   const webConstants = {
     CLIENT_ID: process.env.WEB_CLIENT_ID || process.env.CLIENT_ID || '{clientId}',
     CLIENT_SECRET: process.env.CLIENT_SECRET || '{clientSecret}',
-    REDIRECT_URI: `${BASE_URI}/authorization-code/callback`,
+    APP_BASE_URL: BASE_URI,
     ...defaults
   };
 
