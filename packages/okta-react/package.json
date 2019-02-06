@@ -75,6 +75,7 @@
   "jest": {
     "setupFiles": [
       "./test/jest/setup.js"
-    ]
+    ],
+    "testEnvironment": "jsdom"
   }
 }

@@ -10,7 +10,8 @@
  * See the License for the specific language governing permissions and limitations under the License.
  */
 
-const { SpecReporter } = require('jasmine-spec-reporter');
+const SpecReporter = require('jasmine-spec-reporter').SpecReporter;
+const JUnitXmlReporter = require('jasmine-reporters').JUnitXmlReporter;
 
 exports.config = {
   allScriptsTimeout: 11000,
@@ -33,6 +34,14 @@ exports.config = {
   },
   onPrepare() {
     browser.ignoreSynchronization = true;
-    jasmine.getEnv().addReporter(new SpecReporter({ spec: { displayStacktrace: true } }));
+    jasmine.getEnv().addReporter(new SpecReporter({
+      spec: {
+        displayStacktrace: true
+      }
+    }));
+    jasmine.getEnv().addReporter(new JUnitXmlReporter({
+      savePath: '../../../reports/junit',
+      filePrefix: 'results',
+    }));
   }
 };

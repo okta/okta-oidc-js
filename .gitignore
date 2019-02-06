@@ -25,3 +25,6 @@ packageInfo.ts
 coverage
 *.tgz
 .idea/
+
+# test reports
+packages/*/reports/
