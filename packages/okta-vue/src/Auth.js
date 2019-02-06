@@ -1,7 +1,8 @@
 import {
   assertIssuer,
   assertClientId,
-  assertRedirectUri
+  assertRedirectUri,
+  buildConfigObject
 } from '@okta/configuration-validation'
 import AuthJS from '@okta/okta-auth-js'
 import packageInfo from './packageInfo'
@@ -9,11 +10,7 @@ import ImplicitCallback from './components/ImplicitCallback'
 
 function install (Vue, options) {
   const authConfig = initConfig(options)
-  const oktaAuth = new AuthJS({
-    clientId: authConfig.client_id,
-    issuer: authConfig.issuer,
-    redirectUri: authConfig.redirect_uri
-  })
+  const oktaAuth = new AuthJS(buildConfigObject(buildConfigObject));
   oktaAuth.userAgent = `${packageInfo.name}/${packageInfo.version} ${oktaAuth.userAgent}`
 
   Vue.prototype.$auth = {

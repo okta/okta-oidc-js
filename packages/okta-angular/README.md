@@ -57,6 +57,8 @@ The `OktaAuthModule` is the initializer for your OpenID Connect client configura
 - `scope` *(optional)*: Reserved for custom claims to be returned in the tokens
 - `responseType` *(optional)*: Desired token grant types
 - `onAuthRequired` *(optional)*: Accepts a callback to make a decision when authentication is required. If not supplied, `okta-angular` will redirect directly to Okta for authentication.
+- [`storage`](#storage) *(optional)*: Specify the type of storage for tokens
+- [`autoRenew`](#autorenew) *(optional)*: Defaults to true, enables tokens auto renewal
 
 ```typescript
 // myApp.module.ts
@@ -83,6 +85,20 @@ const appRoutes: Routes = [
 })
 export class MyAppModule { }
 ```
+
+#### storage
+
+Specify the type of storage for tokens.
+The types are:
+- [`localStorage`](https://developer.mozilla.org/en-US/docs/Web/API/Window/localStorage)
+- [`sessionStorage`](https://developer.mozilla.org/en-US/docs/Web/API/Window/sessionStorage)
+- [`cookie`](https://developer.mozilla.org/en-US/docs/Web/API/Document/cookie)
+
+Defaults to `localStorage` and will fall back to `sessionStorage`, and/or `cookie` if no one of the previous type is available.
+
+#### autoRenew
+
+By default, the library will attempt to renew expired tokens. When an expired token is requested by the library, a renewal request is executed to update the token. If you wish to  to disable auto renewal of tokens, set autoRenew to false.
 
 ### `OktaAuthGuard`
 

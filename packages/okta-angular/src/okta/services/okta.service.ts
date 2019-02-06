@@ -15,7 +15,8 @@ import { Router, NavigationExtras } from '@angular/router';
 import {
   assertIssuer,
   assertClientId,
-  assertRedirectUri
+  assertRedirectUri,
+  buildConfigObject
 } from '@okta/configuration-validation';
 
 import { OKTA_CONFIG, OktaConfig } from '../models/okta.config';
@@ -44,11 +45,7 @@ export class OktaAuthService {
 
       this.observers = [];
 
-      this.oktaAuth = new OktaAuth({
-        clientId: auth.clientId,
-        issuer: auth.issuer,
-        redirectUri: auth.redirectUri
-      });
+      this.oktaAuth = new OktaAuth(buildConfigObject(auth));
 
       this.oktaAuth.userAgent = `${packageInfo.name}/${packageInfo.version} ${this.oktaAuth.userAgent}`;
 
