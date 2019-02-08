@@ -3,7 +3,8 @@ const {
   assertClientId,
   assertClientSecret,
   assertRedirectUri,
-  assertAppBaseUrl
+  assertAppBaseUrl,
+  buildConfigObject
 } = require('../src/lib');
 
 describe('Configuration Validation', () => {
@@ -13,6 +14,71 @@ describe('Configuration Validation', () => {
   const findCredentialsMessage = 'You can copy it from the Okta Developer Console ' +
     'in the details for the Application you created. Follow these instructions to ' +
     'find it: https://bit.ly/finding-okta-app-credentials';
+
+  describe('buildConfigObject', () => {
+    it('returns correct config object when parameters are passed in camelCase', () => {
+      const passedConfig = {
+        clientId: '{clientId}',
+        issuer: '{issuer}',
+        redirectUri: '{redirectUri}',
+        storage: '{storage}',
+        autoRenew: '{autoRenew}'
+      }
+
+      expect(buildConfigObject(passedConfig)).toEqual({
+        clientId: '{clientId}',
+        issuer: '{issuer}',
+        redirectUri: '{redirectUri}',
+        tokenManager: {
+          storage: '{storage}',
+          autoRenew: '{autoRenew}'
+        }
+      });
+    });
+
+    it('returns correct config object when parameters are passed in underscore_case', () => {
+      const passedConfig = {
+        client_id: '{client_id}',
+        issuer: '{issuer}',
+        redirect_uri: '{redirect_uri}',
+        storage: '{storage}',
+        auto_renew: '{auto_renew}'
+      }
+
+      expect(buildConfigObject(passedConfig)).toEqual({
+        clientId: '{client_id}',
+        issuer: '{issuer}',
+        redirectUri: '{redirect_uri}',
+        tokenManager: {
+          storage: '{storage}',
+          autoRenew: '{auto_renew}'
+        }
+      });
+    });
+
+    it('returns correct config object from camelCase parameters when both camelCase and underscore_case parameters are passed', () => {
+      const passedConfig = {
+        clientId: '{clientId}',
+        client_id: '{client_id}',
+        issuer: '{issuer}',
+        redirectUri: '{redirectUri}',
+        redirect_uri: '{redirect_uri}',
+        storage: '{storage}',
+        autoRenew: '{autoRenew}',
+        auto_renew: '{auto_renew}'
+      }
+
+      expect(buildConfigObject(passedConfig)).toEqual({
+        clientId: '{clientId}',
+        issuer: '{issuer}',
+        redirectUri: '{redirectUri}',
+        tokenManager: {
+          storage: '{storage}',
+          autoRenew: '{autoRenew}'
+        }
+      });
+    });
+  });
 
   describe('assertIssuer', () => {
     it('should throw if no issuer is provided', () => {
