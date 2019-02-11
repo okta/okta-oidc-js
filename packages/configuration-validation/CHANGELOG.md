@@ -2,13 +2,13 @@
 
 ### Features
 
-- [`9b04ada`](https://github.com/okta/okta-oidc-js/commit/9b04ada6a01c9d9aca391abf0de3e5ecc9811e64) - Adds buildConfigObject function which accepts both camelCase and underscore_case
+- [`9b04ada`](https://github.com/okta/okta-oidc-js/commit/9b04ada6a01c9d9aca391abf0de3e5ecc9811e64) - Adds `buildConfigObject` function which accepts both camelCase and underscore_case
 
 # 0.2.0
 
 ### Features
 
-- [`035607b`](https://github.com/okta/okta-oidc-js/commit/035607bfee231e9a6fef8a43cec172fb75a59839) - Adds assertion function for appBaseUrl
+- [`035607b`](https://github.com/okta/okta-oidc-js/commit/035607bfee231e9a6fef8a43cec172fb75a59839) - Adds assertion function for `appBaseUrl`
 
 # 0.1.1
 
