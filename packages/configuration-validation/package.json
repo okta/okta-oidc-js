@@ -1,6 +1,6 @@
 {
   "name": "@okta/configuration-validation",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "description": "Configuration validation support for Okta JavaScript SDKs",
   "main": "./dist/lib.js",
   "files": [
