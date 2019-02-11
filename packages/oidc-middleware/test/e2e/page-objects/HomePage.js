@@ -28,6 +28,12 @@ module.exports = class HomePage {
     await browser.wait(EC.urlIs(url), 50000);
   }
 
+  async performLogout() { 
+    const logoutButton = $('#logout');
+    await logoutButton.click();
+    await browser.wait(EC.not(EC.presenceOf(logoutButton)), 5000);
+  }
+
   async getBodyText() {
     return this.body.getText();
   }

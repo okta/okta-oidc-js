@@ -16,25 +16,27 @@ const { Router } = require('express');
 const querystring = require('querystring');
 const uuid = require('uuid');
 const bodyParser = require('body-parser');
+const logout = require('./logout');
 
 const connectUtil = module.exports;
 
 // Create a router to easily add routes
 connectUtil.createOIDCRouter = context => {
+  const routes = context.options.routes;
   const oidcRouter = new Router();
   oidcRouter.use(passport.initialize({ userProperty: 'userContext' }));
   oidcRouter.use(passport.session());
 
-  const {
-    login: {
-      path:loginPath
-    },
-    callback: {
-      path:callbackPath
-    }
-  } = context.options.routes;
+  const loginPath = routes.login.path;
+  const loginCallbackPath = routes.loginCallback.path;
+  const logoutPath = routes.logout.path;
+  const logoutCallbackPath = routes.logoutCallback.path;
+
   oidcRouter.use(loginPath, bodyParser.urlencoded({ extended: false}), connectUtil.createLoginHandler(context));
-  oidcRouter.use(callbackPath, connectUtil.createCallbackHandler(context));
+  oidcRouter.use(loginCallbackPath, connectUtil.createLoginCallbackHandler(context));
+  oidcRouter.post(logoutPath, connectUtil.createLogoutHandler(context));
+  oidcRouter.use(logoutCallbackPath, connectUtil.createLogoutCallbackHandler(context));
+
   oidcRouter.use((err, req, res, next) => {
     // Cast all errors from the passport strategy as 401 (rather than 500, which would happen if we just call through to next())
     res.status(401);
@@ -63,7 +65,7 @@ connectUtil.createLoginHandler = context => {
           nonce,
           state,
           client_id: context.options.client_id,
-          redirect_uri: context.options.redirect_uri,
+          redirect_uri: context.options.loginRedirectUri,
           scope: context.options.scope,
           response_type: 'code',
           sessionToken: req.body.sessionToken
@@ -80,14 +82,17 @@ connectUtil.createLoginHandler = context => {
   }
 };
 
-connectUtil.createCallbackHandler = context => {
-  const customHandler = context.options.routes.callback.handler;
+connectUtil.createLoginCallbackHandler = context => {
+  const routes = context.options.routes;
+  const customHandler = routes.loginCallback.handler;
+
   if (!customHandler) {
     return passport.authenticate('oidc', {
-      successReturnToOrRedirect: context.options.routes.callback.defaultRedirect,
-      failureRedirect: context.options.routes.callback.failureRedirect
+      successReturnToOrRedirect: routes.loginCallback.afterCallback,
+      failureRedirect: routes.loginCallback.failureRedirect
     });
   }
+
   const customHandlerArity = customHandler.length;
   return (req, res, next) => {
     const nextHandler = err => {
@@ -105,4 +110,17 @@ connectUtil.createCallbackHandler = context => {
     };
     passport.authenticate('oidc')(req, res, nextHandler);
   }
+};
+
+connectUtil.createLogoutHandler = context => logout.forceLogoutAndRevoke(context);
+
+connectUtil.createLogoutCallbackHandler = context => {
+  return (req, res) => {
+    if ( req.session[context.options.sessionKey].state !== req.query.state ) {
+      context.emitter.emit('error', { type: 'logoutError', message: `'state' parameter did not match value in session` });
+    } else {
+      req.logout();
+      res.redirect(context.options.routes.logoutCallback.afterCallback);
+    };
+  };
 };
