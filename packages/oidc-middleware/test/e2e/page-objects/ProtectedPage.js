@@ -23,7 +23,7 @@ module.exports = class ProtectedPage {
   }
 
   async waitUntilVisible() {
-    await browser.wait(EC.urlIs(constants.BASE_URI + '/protected'), 5000);
+    await browser.wait(EC.urlIs(constants.BASE_URI + '/protected'), 10000);
   }
 
   async getBodyText() {

@@ -2,7 +2,9 @@ const {
   assertIssuer,
   assertClientId,
   assertClientSecret,
-  assertRedirectUri
+  assertRedirectUri,
+  assertAppBaseUrl,
+  buildConfigObject
 } = require('../src/lib');
 
 describe('Configuration Validation', () => {
@@ -12,6 +14,71 @@ describe('Configuration Validation', () => {
   const findCredentialsMessage = 'You can copy it from the Okta Developer Console ' +
     'in the details for the Application you created. Follow these instructions to ' +
     'find it: https://bit.ly/finding-okta-app-credentials';
+
+  describe('buildConfigObject', () => {
+    it('returns correct config object when parameters are passed in camelCase', () => {
+      const passedConfig = {
+        clientId: '{clientId}',
+        issuer: '{issuer}',
+        redirectUri: '{redirectUri}',
+        storage: '{storage}',
+        autoRenew: '{autoRenew}'
+      }
+
+      expect(buildConfigObject(passedConfig)).toEqual({
+        clientId: '{clientId}',
+        issuer: '{issuer}',
+        redirectUri: '{redirectUri}',
+        tokenManager: {
+          storage: '{storage}',
+          autoRenew: '{autoRenew}'
+        }
+      });
+    });
+
+    it('returns correct config object when parameters are passed in underscore_case', () => {
+      const passedConfig = {
+        client_id: '{client_id}',
+        issuer: '{issuer}',
+        redirect_uri: '{redirect_uri}',
+        storage: '{storage}',
+        auto_renew: '{auto_renew}'
+      }
+
+      expect(buildConfigObject(passedConfig)).toEqual({
+        clientId: '{client_id}',
+        issuer: '{issuer}',
+        redirectUri: '{redirect_uri}',
+        tokenManager: {
+          storage: '{storage}',
+          autoRenew: '{auto_renew}'
+        }
+      });
+    });
+
+    it('returns correct config object from camelCase parameters when both camelCase and underscore_case parameters are passed', () => {
+      const passedConfig = {
+        clientId: '{clientId}',
+        client_id: '{client_id}',
+        issuer: '{issuer}',
+        redirectUri: '{redirectUri}',
+        redirect_uri: '{redirect_uri}',
+        storage: '{storage}',
+        autoRenew: '{autoRenew}',
+        auto_renew: '{auto_renew}'
+      }
+
+      expect(buildConfigObject(passedConfig)).toEqual({
+        clientId: '{clientId}',
+        issuer: '{issuer}',
+        redirectUri: '{redirectUri}',
+        tokenManager: {
+          storage: '{storage}',
+          autoRenew: '{autoRenew}'
+        }
+      });
+    });
+  });
 
   describe('assertIssuer', () => {
     it('should throw if no issuer is provided', () => {
@@ -25,7 +92,7 @@ describe('Configuration Validation', () => {
     });
 
     it('should not throw if https issuer validation is skipped', () => {
-      jest.spyOn(console, 'warn');
+      jest.spyOn(console, 'warn').mockImplementation(() => {}); // silence for testing
       const errorMsg = `Your Okta URL must start with https. Current value: http://foo.com. ${findDomainMessage}`;
       expect(() => {
         assertIssuer('http://foo.com', {
@@ -113,4 +180,27 @@ describe('Configuration Validation', () => {
       expect(() => assertRedirectUri('{redirectUri}')).toThrow(errorMsg);
     });
   });
+
+  describe('assertAppBaseUrl', () => { 
+    it('should throw if the appBaseUrl is not provided', () => {
+      const errorMsg = 'Your appBaseUrl is missing.';
+      expect(() => assertAppBaseUrl()).toThrow(errorMsg);
+    });
+
+    it('should throw if a appBaseUrl matching {appBaseUrl} is provided', () => {
+      const errorMsg = 'Replace {appBaseUrl} with the base URL of your Application.'
+      expect(() => assertAppBaseUrl('{appBaseUrl}')).toThrow(errorMsg);
+    });
+
+    it('should throw if an appBaseUrl without a protocol is provided', () => {
+      const errorMsg = 'Your appBaseUrl must contain a protocol (e.g. https://). Current value: foo.example.com.';
+      expect(() => assertAppBaseUrl('foo.example.com')).toThrow(errorMsg);
+    });
+
+    it('should throw if an appBaseUrl that ends in a slash is provided', () => {
+      const errorMsg = `Your appBaseUrl must not end in a '/'. Current value: https://foo.example.com/.`;
+      expect(() => assertAppBaseUrl('https://foo.example.com/')).toThrow(errorMsg);
+    });
+  });
+
 });

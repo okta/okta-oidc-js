@@ -14,11 +14,18 @@ const express = require('express');
 const OktaJwtVerifier = require('../../lib');
 var cors = require('cors');
 
+const MOCK_ISSUER='http://localhost:9090/oauth2/default';
+const MOCK_CLIENT_ID='OOICU812';
+
 const oktaJwtVerifier = new OktaJwtVerifier({
-  issuer: 'http://localhost:9090/oauth2/default',
+  issuer: MOCK_ISSUER,
+  clientId: MOCK_CLIENT_ID,
   assertClaims: {
     aud: 'api://default'
   },
+  testing: {
+    disableHttpsCheck: true
+  }
 });
 
 /**

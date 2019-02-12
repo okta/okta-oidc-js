@@ -97,7 +97,7 @@ function handleCallback () { return ImplicitCallback }
 
 const initConfig = auth => {
   // Assert configuration
-  assertIssuer(auth.issuer)
+  assertIssuer(auth.issuer, auth.testing)
   assertClientId(auth.client_id)
   assertRedirectUri(auth.redirect_uri)
 

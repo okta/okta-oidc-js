@@ -29,8 +29,9 @@ class App extends Component {
         <Router>
           <Security issuer={process.env.REACT_APP_ISSUER}
                     client_id={process.env.REACT_APP_CLIENT_ID}
+                    disableHttpsCheck={true}
                     redirect_uri={window.location.origin + '/implicit/callback'}
-                    onAuthRequired={({history}) => history.push('/login')} >
+                    onAuthRequired={({history}) => history.push('/login')}>
             <Route path='/' component={Home}/>
             <Route path='/login' component={CustomLogin}/>
             <Route path='/sessionToken-login' component={SessionTokenLogin}/>

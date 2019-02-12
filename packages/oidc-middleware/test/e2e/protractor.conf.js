@@ -10,8 +10,27 @@
  * See the License for the specific language governing permissions and limitations under the License.
  */
 
+const JUnitXmlReporter = require('jasmine-reporters').JUnitXmlReporter;
+const SpecReporter = require('jasmine-spec-reporter').SpecReporter;
+
 exports.config = {
-  framework: 'jasmine',
+  framework: 'jasmine2',
+  onPrepare() {
+    jasmine.getEnv().addReporter(new JUnitXmlReporter({
+      savePath: 'reports/junit',
+      filePrefix: 'results',
+    }));
+    jasmine.getEnv().addReporter(new SpecReporter({
+      spec: {
+        displayStacktrace: true
+      }
+    }));
+  },
+
+  jasmineNodeOpts: {
+    print: () => {},
+    defaultTimeoutInterval: 2 * 60 * 1000 // 2 minutes
+  },
   directConnect: true,
   specs: ['specs/*.js'],
   baseUrl: 'http://localhost:8080/',

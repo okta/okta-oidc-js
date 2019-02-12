@@ -12,6 +12,7 @@ module.exports = (overrides = {}) => {
     ISSUER: process.env.ISSUER || 'https://{yourOktaDomain}/oauth2/defalt',
     USERNAME: process.env.USERNAME || '{username}',
     PASSWORD: process.env.PASSWORD || '{password}',
+    OKTA_TESTING_DISABLEHTTPSCHECK: process.env.OKTA_TESTING_DISABLEHTTPSCHECK || false,
     BASE_URI,
     PORT
   };
@@ -25,7 +26,7 @@ module.exports = (overrides = {}) => {
   const webConstants = {
     CLIENT_ID: process.env.WEB_CLIENT_ID || process.env.CLIENT_ID || '{clientId}',
     CLIENT_SECRET: process.env.CLIENT_SECRET || '{clientSecret}',
-    REDIRECT_URI: `${BASE_URI}/authorization-code/callback`,
+    APP_BASE_URL: BASE_URI,
     ...defaults
   };
 

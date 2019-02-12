@@ -94,8 +94,17 @@ describe('Unit Tests', () => {
       redirectUri: environment.REDIRECT_URI,
       clientId: environment.CLIENT_ID,
       scope: 'email',
-      responseType: 'id_token'
+      responseType: 'id_token',
+      testing: {
+        disableHttpsCheck: false
+      }
     };
+
+    if (environment.OKTA_TESTING_DISABLEHTTPSCHECK) {
+      config.testing = {
+        disableHttpsCheck: true
+      };
+    }
 
     TestBed.configureTestingModule({
       imports: [

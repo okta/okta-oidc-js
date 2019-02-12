@@ -44,7 +44,7 @@ oidcUtil.createClient = context => {
     issuer,
     client_id,
     client_secret,
-    redirect_uri,
+    loginRedirectUri: redirect_uri,
     maxClockSkew,
     timeout
   } = context.options;
@@ -87,7 +87,7 @@ oidcUtil.bootstrapPassportStrategy = context => {
   passport.serializeUser((user, done) => done(null, user));
   passport.deserializeUser((user, done) => done(null, user));
   passport.use('oidc', oidcStrategy);
-}
+};
 
 oidcUtil.ensureAuthenticated = (context, options) => {
   options = options || context.options.routes.login.path;
@@ -102,4 +102,4 @@ oidcUtil.ensureAuthenticated = (context, options) => {
       res.sendStatus(401);
     }
   };
-}
+};

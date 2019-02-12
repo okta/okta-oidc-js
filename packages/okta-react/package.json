@@ -14,6 +14,7 @@
     "pretest": "yarn build && yarn build:harness",
     "start": "yarn --cwd test/e2e/harness start",
     "test": "yarn lint && yarn test:unit && yarn test:e2e",
+    "pretest:e2e": "yarn build && yarn build:harness",
     "test:e2e": "yarn --cwd test/e2e/harness test",
     "test:unit": "jest test/jest/"
   },
@@ -47,7 +48,7 @@
   "devDependencies": {
     "babel-cli": "^6.26.0",
     "babel-core": "^6.26.0",
-    "babel-eslint": "^8.0.0",
+    "babel-eslint": "^8.1.1",
     "babel-plugin-transform-class-properties": "^6.24.1",
     "babel-plugin-transform-object-rest-spread": "^6.26.0",
     "babel-plugin-transform-runtime": "^6.23.0",
@@ -74,6 +75,7 @@
   "jest": {
     "setupFiles": [
       "./test/jest/setup.js"
-    ]
+    ],
+    "testEnvironment": "jsdom"
   }
 }

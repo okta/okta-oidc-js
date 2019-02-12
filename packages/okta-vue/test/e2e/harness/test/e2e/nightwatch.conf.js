@@ -1,10 +1,9 @@
 require('babel-register')
 var config = require('../../config')
-
 // http://nightwatchjs.org/gettingstarted#settings-file
 module.exports = {
   src_folders: ['test/e2e/specs'],
-  output_folder: 'test/e2e/reports',
+  output_folder: '../../../reports/junit',
   custom_assertions_path: ['test/e2e/custom-assertions'],
 
   selenium: {
@@ -13,7 +12,7 @@ module.exports = {
     host: '127.0.0.1',
     port: 4444,
     cli_args: {
-      'webdriver.chrome.driver': require('chromedriver').path
+      'webdriver.chrome.driver': './test/e2e/lib/chromedriver'
     }
   },
 
@@ -31,7 +30,10 @@ module.exports = {
       desiredCapabilities: {
         browserName: 'chrome',
         javascriptEnabled: true,
-        acceptSslCerts: true
+        acceptSslCerts: true,
+        chromeOptions: {
+          args: ['--no-sandbox']
+        }
       }
     },
 

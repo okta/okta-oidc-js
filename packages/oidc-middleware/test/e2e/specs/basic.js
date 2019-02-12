@@ -22,7 +22,17 @@ describe('Basic login redirect', () => {
 
   let server;
   beforeEach(async () => {
-    server = util.createDemoServer();
+    const serverOptions = {
+      issuer: constants.ISSUER,
+      client_id: constants.CLIENT_ID,
+      client_secret: constants.CLIENT_SECRET,
+      appBaseUrl: constants.APP_BASE_URL,
+      testing: {
+        disableHttpsCheck: constants.OKTA_TESTING_DISABLEHTTPSCHECK
+      }
+    };
+
+    server = util.createDemoServer(serverOptions);
     await server.start();
   });
 
@@ -55,9 +65,13 @@ describe('Basic login redirect', () => {
     await homePage.waitUntilVisible();
     expect(homePage.getBodyText()).toContain('Welcome home');
 
-    // navigate to logout
-    await browser.get('/logout');
-    await homePage.waitUntilVisible();
+    // navigate to Okta logout and follow redirects
+    await homePage.performLogout(); 
+    await homePage.waitUntilVisible(); // after all redirects
     expect(browser.getPageSource()).not.toContain('Welcome home');
+
+    // confirm that Okta now requires login
+    await privatePage.load();
+    await signInPage.waitUntilVisible();
   });
 });
