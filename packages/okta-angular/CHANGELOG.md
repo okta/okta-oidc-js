@@ -1,3 +1,9 @@
+# 1.1.0
+
+### Features
+
+-[](TODO: add after merged) - Adds TokenManager configuration parameters.
+
 # 1.0.7
 
 ### Other
