@@ -10,7 +10,7 @@ import ImplicitCallback from './components/ImplicitCallback'
 
 function install (Vue, options) {
   const authConfig = initConfig(options)
-  const oktaAuth = new AuthJS(buildConfigObject(buildConfigObject));
+  const oktaAuth = new AuthJS(buildConfigObject(authConfig))
   oktaAuth.userAgent = `${packageInfo.name}/${packageInfo.version} ${oktaAuth.userAgent}`
 
   Vue.prototype.$auth = {

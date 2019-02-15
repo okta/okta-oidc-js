@@ -34,7 +34,7 @@
   ],
   "license": "Apache-2.0",
   "dependencies": {
-    "@okta/configuration-validation": "^0.1.1",
+    "@okta/configuration-validation": "^0.3.0",
     "@okta/okta-auth-js": "^2.0.0"
   },
   "devDependencies": {
