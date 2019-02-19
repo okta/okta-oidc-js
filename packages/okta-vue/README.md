@@ -231,6 +231,16 @@ router.beforeEach((to, from, next) {
 - `redirect_uri` **(required)**: Where the callback is hosted
 - `scope` *(optional)*: Reserved or custom claims to be returned in the tokens
 - `response_type` *(optional)*: Desired token grant types
+- `storage` *(optional)*:
+  Specify the type of storage for tokens.
+  The types are:
+  - [`localStorage`](https://developer.mozilla.org/en-US/docs/Web/API/Window/localStorage)
+  - [`sessionStorage`](https://developer.mozilla.org/en-US/docs/Web/API/Window/sessionStorage)
+  - [`cookie`](https://developer.mozilla.org/en-US/docs/Web/API/Document/cookie)
+
+  Defaults to `localStorage`. If [local storage](https://developer.mozilla.org/en-US/docs/Web/API/Web_Storage_API/Local_storage) is not available, falls back to `sessionStorage` or `cookie`.
+- `auto_renew` *(optional)*:
+  By default, the library will attempt to renew expired tokens. When an expired token is requested by the library, a renewal request is executed to update the token. If you wish to  to disable auto renewal of tokens, set `auto_renew` to `false`.
 
 #### `$auth.loginRedirect(fromUri, additionalParams)`
 

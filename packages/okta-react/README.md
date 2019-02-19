@@ -201,6 +201,15 @@ Security is the top-most component of okta-react. This is where most of the conf
   Accepts a callback to make a decision when authentication is required. If this is not supplied, `okta-react` redirects to Okta. This callback will receive `auth` and `history` parameters. This is triggered when:
     1. `auth.login` is called
     2. SecureRoute is accessed without authentication
+- **storage** *(optional)*:
+  Specify the type of storage for tokens. The types are:
+  - [`localStorage`](https://developer.mozilla.org/en-US/docs/Web/API/Window/localStorage)
+  - [`sessionStorage`](https://developer.mozilla.org/en-US/docs/Web/API/Window/sessionStorage)
+  - [`cookie`](https://developer.mozilla.org/en-US/docs/Web/API/Document/cookie)
+
+  Defaults to `localStorage`. If [local storage](https://developer.mozilla.org/en-US/docs/Web/API/Web_Storage_API/Local_storage) is not available, falls back to `sessionStorage` or `cookie`.
+- **auto_renew** *(optional)*:
+  By default, the library will attempt to renew expired tokens. When an expired token is requested by the library, a renewal request is executed to update the token. If you wish to  to disable auto renewal of tokens, set `auto_renew` to `false`.
 
 #### Example
 
