@@ -2,7 +2,7 @@
 
 ### Features
 
--[](TODO: add after merged) - Adds TokenManager configuration parameters.
+- [`2ae1eff`](https://github.com/okta/okta-oidc-js/commit/2ae1effe948c35d112f58f12fbf3b4730e3a24e4) - Adds TokenManager configuration parameters.
 
 # 1.1.4
 

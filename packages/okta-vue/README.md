@@ -238,7 +238,7 @@ router.beforeEach((to, from, next) {
   - [`sessionStorage`](https://developer.mozilla.org/en-US/docs/Web/API/Window/sessionStorage)
   - [`cookie`](https://developer.mozilla.org/en-US/docs/Web/API/Document/cookie)
 
-  Defaults to `localStorage` and will fall back to `sessionStorage`, and/or `cookie` if no one of the previous type is available.
+  Defaults to `localStorage`. If [local storage](https://developer.mozilla.org/en-US/docs/Web/API/Web_Storage_API/Local_storage) is not available, falls back to `sessionStorage` or `cookie`.
 - `auto_renew` *(optional)*:
   By default, the library will attempt to renew expired tokens. When an expired token is requested by the library, a renewal request is executed to update the token. If you wish to  to disable auto renewal of tokens, set `auto_renew` to `false`.
 
