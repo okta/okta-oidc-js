@@ -12,7 +12,8 @@
 import {
   assertIssuer,
   assertClientId,
-  assertRedirectUri
+  assertRedirectUri,
+  buildConfigObject
 } from '@okta/configuration-validation';
 import OktaAuth from '@okta/okta-auth-js';
 
@@ -30,12 +31,7 @@ export default class Auth {
     assertIssuer(config.issuer, testing);
     assertClientId(config.client_id);
     assertRedirectUri(config.redirect_uri);
-    this._oktaAuth = new OktaAuth({
-      url: config.issuer.split('/oauth2/')[0],
-      clientId: config.client_id,
-      issuer: config.issuer,
-      redirectUri: config.redirect_uri
-    });
+    this._oktaAuth = new OktaAuth(buildConfigObject(config));
     this._oktaAuth.userAgent = `${packageInfo.name}/${packageInfo.version} ${this._oktaAuth.userAgent}`;
     this._config = config;
     this._history = config.history;
