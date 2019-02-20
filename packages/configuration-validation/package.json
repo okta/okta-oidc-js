@@ -9,7 +9,7 @@
   ],
   "scripts": {
     "build": "babel src -d dist",
-    "lint": "eslint .",
+    "lint": "eslint src",
     "prepare": "yarn build",
     "test": "yarn lint && yarn test:unit",
     "test:unit": "jest test/"
@@ -32,9 +32,10 @@
   },
   "homepage": "https://github.com/okta/okta-oidc-js#readme",
   "devDependencies": {
-    "babel-cli": "^6.26.0",
+    "@babel/cli": "^7.2.3",
+    "@babel/preset-env": "^7.3.1",
     "eslint": "^4.7.1",
-    "jest": "^23.6.0"
+    "jest": "^24.1.0"
   },
   "jest": {
     "testEnvironment": "jsdom"
