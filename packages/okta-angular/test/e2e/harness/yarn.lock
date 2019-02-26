@@ -189,15 +189,15 @@
     tree-kill "^1.0.0"
     webpack-sources "^1.1.0"
 
-"@okta/configuration-validation@^0.1.1":
-  version "0.1.1"
-  resolved "https://registry.yarnpkg.com/@okta/configuration-validation/-/configuration-validation-0.1.1.tgz#b19ee16b0fc9f01a7406229b25af6265e91ae942"
-  integrity sha512-nXULaL9l6W5eODVgXxvr0wmde3nE6JLSmGBpZ0axPsaLLx3wo/aY5mC1JwWtIF1kyrfzRHEHIPmdUZ+U5xq/CQ==
+"@okta/configuration-validation@^0.3.0":
+  version "0.3.0"
+  resolved "https://registry.yarnpkg.com/@okta/configuration-validation/-/configuration-validation-0.3.0.tgz#41954ce0567b25b7ff0d4eb7fc60468a709444d7"
+  integrity sha512-GWu+IpqkpE+Pl2BgxiF2CxuQpo0ZpeTG4M6musJXzVX70RNdH0wuM+SCIjT+yTbzcHl0LpXkC58M2YQtT2OSrw==
 
 "@okta/okta-angular@../../../":
-  version "1.0.7"
+  version "1.1.0"
   dependencies:
-    "@okta/configuration-validation" "^0.1.1"
+    "@okta/configuration-validation" "^0.3.0"
     "@okta/okta-auth-js" "^2.0.0"
 
 "@okta/okta-auth-js@^2.0.0":
