@@ -8170,12 +8170,13 @@ nightwatch@^1.0.11:
   optionalDependencies:
     mocha "^5.1.1"
 
-njwt@^0.4.0:
-  version "0.4.0"
-  resolved "https://registry.yarnpkg.com/njwt/-/njwt-0.4.0.tgz#7324ed9d76a9d54b5e265cb7b6a3c55f146fd3c7"
+njwt@^1.0.0:
+  version "1.0.0"
+  resolved "https://registry.npmjs.org/njwt/-/njwt-1.0.0.tgz#da5bfa9c251b144a9cdb40a8ad025b3d7b5b52ee"
+  integrity sha512-n+FaPUauVQF/So+YcOACBb/zCxDH5WlCV3dTrX0u7VMGagjDiI39XRJWaPd2PtpT6IpIQUcd7x0twiRZaIQNDQ==
   dependencies:
     ecdsa-sig-formatter "^1.0.5"
-    uuid "^2.0.1"
+    uuid "^3.3.2"
 
 nock@^9.0.14, nock@^9.1.6:
   version "9.6.1"
