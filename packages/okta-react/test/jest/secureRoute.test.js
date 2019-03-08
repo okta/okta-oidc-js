@@ -72,6 +72,33 @@ describe('<SecureRoute />', () => {
     );
     expect(wrapper.find(SecureRoute).props().sensitive).toBe(true);
   });
+  it('should not immediately render when not provided an "authenticated" prop', () => {
+    const wrapper = mount(
+      <MemoryRouter>
+        <Security {...mockProps}>
+          <SecureRoute
+            path='/'
+            render={() => <div className="doNotRenderThis" />}
+          />
+        </Security>
+      </MemoryRouter>
+    );
+    expect(wrapper.find('.doNotRenderThis').length).toBe(0);
+  });
+  it('should accept a "authenticated" override initial prop and initialize state to its value', () => {
+    const wrapper = mount(
+      <MemoryRouter>
+        <Security {...mockProps}>
+          <SecureRoute
+            path='/'
+            authenticated
+            render={() => <div className="renderThis" />}
+          />
+        </Security>
+      </MemoryRouter>
+    );
+    expect(wrapper.find('.renderThis').length).toBe(1);
+  });
   it('should accept an "exact" prop and pass it to an internal Route', () => {
     const wrapper = mount(
       <MemoryRouter>
