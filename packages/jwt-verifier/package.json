@@ -25,14 +25,17 @@
     "node": ">=6"
   },
   "jest": {
-    "reporters": [ "default", "jest-junit" ],
+    "reporters": [
+      "default",
+      "jest-junit"
+    ],
     "testEnvironment": "jsdom"
   },
   "license": "Apache-2.0",
   "dependencies": {
     "@okta/configuration-validation": "^0.1.1",
     "jwks-rsa": "^1.2.0",
-    "njwt": "^0.4.0"
+    "njwt": "^1.0.0"
   },
   "devDependencies": {
     "cors": "^2.8.4",
