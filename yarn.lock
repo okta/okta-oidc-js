@@ -8172,7 +8172,7 @@ nightwatch@^1.0.11:
 
 njwt@^1.0.0:
   version "1.0.0"
-  resolved "https://registry.npmjs.org/njwt/-/njwt-1.0.0.tgz#da5bfa9c251b144a9cdb40a8ad025b3d7b5b52ee"
+  resolved "https://registry.yarnpkg.com/njwt/-/njwt-1.0.0.tgz#da5bfa9c251b144a9cdb40a8ad025b3d7b5b52ee"
   integrity sha512-n+FaPUauVQF/So+YcOACBb/zCxDH5WlCV3dTrX0u7VMGagjDiI39XRJWaPd2PtpT6IpIQUcd7x0twiRZaIQNDQ==
   dependencies:
     ecdsa-sig-formatter "^1.0.5"
