@@ -89,7 +89,7 @@ app.get('/', (req, res) => {
       <form method="POST" action="/logout">
         <button type="submit">Logout</button>
       </form>
-    ');
+    `);
   } else {
     res.send('Please <a href="/login">login</a>');
   }
@@ -298,7 +298,7 @@ const oidc = new ExpressOIDC({
       handler: (req, res, next) => {
         // Perform custom logic before final redirect, then call next()
       },
-      afterCallback '/home'
+      afterCallback: '/home'
     },
     logout: {
       path: '/different/logout'
