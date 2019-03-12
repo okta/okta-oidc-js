@@ -416,12 +416,6 @@ Remove the `redirect_uri` property in your config.
   * If you are using the Okta default value (appBaseUrl + /authorization-code/callback) it will be given a route by default, no additional configuration required.
   * If you are NOT using the Okta default value, but are using a route on the same server indicated by your appBaseUrl, you should define your login callback path in your routes.loginCallback.path config (see [the API reference](#expressoidc-api)).
 
-Specify the `appBaseUrl` property in your config - this is the base scheme + domain + port for your application that will be used for generating the URIs validated against the Okta settings for your application.
-
-Remove the `redirect_uri` property in your config.
-+  * If you are using the Okta default value (appBaseUrl + /authorization-code/callback) it will be given a route by default, no additional configuration required.
-+  * If you are NOT using the Okta default value, but are using a route on the same server indicated by your appBaseUrl, you should define your login callback path in your routes.loginCallback.path config (see [the API reference](#expressoidc-api)).
-
 Any customization previously done to `routes.callback` should now be done to `routes.loginCallback` as the name of that property object has changed.
 
 Any value previously set for `routes.callback.defaultRedirect` should now be done to `routes.loginCallback.afterCallback`.  
