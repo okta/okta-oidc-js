@@ -566,15 +566,20 @@
     pouchdb-collections "^1.0.1"
     tiny-queue "^0.2.1"
 
+"@jest/types@^24.5.0":
+  version "24.5.0"
+  resolved "https://registry.yarnpkg.com/@jest/types/-/types-24.5.0.tgz#feee214a4d0167b0ca447284e95a57aa10b3ee95"
+  dependencies:
+    "@types/istanbul-lib-coverage" "^1.1.0"
+    "@types/yargs" "^12.0.9"
+
 "@okta/configuration-validation@^0.1.1":
   version "0.1.1"
   resolved "https://registry.yarnpkg.com/@okta/configuration-validation/-/configuration-validation-0.1.1.tgz#b19ee16b0fc9f01a7406229b25af6265e91ae942"
-  integrity sha512-nXULaL9l6W5eODVgXxvr0wmde3nE6JLSmGBpZ0axPsaLLx3wo/aY5mC1JwWtIF1kyrfzRHEHIPmdUZ+U5xq/CQ==
 
 "@okta/configuration-validation@^0.2.0":
   version "0.2.0"
   resolved "https://registry.yarnpkg.com/@okta/configuration-validation/-/configuration-validation-0.2.0.tgz#8084ef1f2a2a561ad16b32ab6bc61a5587e06568"
-  integrity sha512-tUyqM68QSXvsWnFQPh4ruG1ZVKNuUuDxiDdA4f64KphKCKx9R1spGQZ/xrPD1fZ0NaM8Dixz7K+mn7qswa9Ytg==
 
 "@okta/okta-auth-js@^2.0.0":
   version "2.0.1"
@@ -671,6 +676,10 @@
     "@types/express-serve-static-core" "*"
     "@types/serve-static" "*"
 
+"@types/istanbul-lib-coverage@^1.1.0":
+  version "1.1.0"
+  resolved "https://registry.yarnpkg.com/@types/istanbul-lib-coverage/-/istanbul-lib-coverage-1.1.0.tgz#2cc2ca41051498382b43157c8227fea60363f94a"
+
 "@types/mime@*":
   version "2.0.0"
   resolved "https://registry.yarnpkg.com/@types/mime/-/mime-2.0.0.tgz#5a7306e367c539b9f6543499de8dd519fac37a8b"
@@ -713,6 +722,10 @@
 "@types/strip-json-comments@0.0.30":
   version "0.0.30"
   resolved "https://registry.yarnpkg.com/@types/strip-json-comments/-/strip-json-comments-0.0.30.tgz#9aa30c04db212a9a0649d6ae6fd50accc40748a1"
+
+"@types/yargs@^12.0.9":
+  version "12.0.9"
+  resolved "https://registry.yarnpkg.com/@types/yargs/-/yargs-12.0.9.tgz#693e76a52f61a2f1e7fb48c0eef167b95ea4ffd0"
 
 "@vue/component-compiler-utils@^2.0.0":
   version "2.2.0"
@@ -1038,6 +1051,10 @@ ansi-regex@^2.0.0:
 ansi-regex@^3.0.0:
   version "3.0.0"
   resolved "https://registry.yarnpkg.com/ansi-regex/-/ansi-regex-3.0.0.tgz#ed0317c322064f79466c02966bddb605ab37d998"
+
+ansi-regex@^4.0.0:
+  version "4.1.0"
+  resolved "https://registry.yarnpkg.com/ansi-regex/-/ansi-regex-4.1.0.tgz#8b9f8f08cf1acb843756a839ca8c7e3168c51997"
 
 ansi-styles@^2.2.1:
   version "2.2.1"
@@ -2717,6 +2734,10 @@ camelcase@^2.0.0:
 camelcase@^4.1.0:
   version "4.1.0"
   resolved "https://registry.yarnpkg.com/camelcase/-/camelcase-4.1.0.tgz#d545635be1e33c542649c69173e5de6acfae34dd"
+
+camelcase@^5.0.0:
+  version "5.2.0"
+  resolved "https://registry.yarnpkg.com/camelcase/-/camelcase-5.2.0.tgz#e7522abda5ed94cc0489e1b8466610e88404cf45"
 
 caniuse-lite@^1.0.30000792, caniuse-lite@^1.0.30000805, caniuse-lite@^1.0.30000844:
   version "1.0.30000885"
@@ -6297,7 +6318,6 @@ jasmine-core@~2.8.0:
 jasmine-reporters@^2.2.0:
   version "2.3.2"
   resolved "https://registry.yarnpkg.com/jasmine-reporters/-/jasmine-reporters-2.3.2.tgz#898818ffc234eb8b3f635d693de4586f95548d43"
-  integrity sha512-u/7AT9SkuZsUfFBLLzbErohTGNsEUCKaQbsVYnLFW1gEuL2DzmBL4n8v90uZsqIqlWvWUgian8J6yOt5Fyk/+A==
   dependencies:
     mkdirp "^0.5.1"
     xmldom "^0.1.22"
@@ -6305,7 +6325,6 @@ jasmine-reporters@^2.2.0:
 jasmine-spec-reporter@^4.1.0:
   version "4.2.1"
   resolved "https://registry.yarnpkg.com/jasmine-spec-reporter/-/jasmine-spec-reporter-4.2.1.tgz#1d632aec0341670ad324f92ba84b4b32b35e9e22"
-  integrity sha512-FZBoZu7VE5nR7Nilzy+Np8KuVIOxF4oXDPDknehCYBDE080EnlPu0afdZNmpGDBRCUBv3mj5qgqCRmk6W/K8vg==
   dependencies:
     colors "1.1.2"
 
@@ -6546,6 +6565,10 @@ jest-fetch-mock@^1.4.2:
 jest-get-type@^22.1.0, jest-get-type@^22.4.3:
   version "22.4.3"
   resolved "https://registry.yarnpkg.com/jest-get-type/-/jest-get-type-22.4.3.tgz#e3a8504d8479342dd4420236b322869f18900ce4"
+
+jest-get-type@^24.3.0:
+  version "24.3.0"
+  resolved "https://registry.yarnpkg.com/jest-get-type/-/jest-get-type-24.3.0.tgz#582cfd1a4f91b5cdad1d43d2932f816d543c65da"
 
 jest-haste-map@22.4.2:
   version "22.4.2"
@@ -6874,7 +6897,7 @@ jest-validate@^22.4.4:
     leven "^2.1.0"
     pretty-format "^22.4.0"
 
-jest-validate@^23.0.1, jest-validate@^23.6.0:
+jest-validate@^23.6.0:
   version "23.6.0"
   resolved "https://registry.yarnpkg.com/jest-validate/-/jest-validate-23.6.0.tgz#36761f99d1ed33fcd425b4e4c5595d62b6597474"
   dependencies:
@@ -6882,6 +6905,17 @@ jest-validate@^23.0.1, jest-validate@^23.6.0:
     jest-get-type "^22.1.0"
     leven "^2.1.0"
     pretty-format "^23.6.0"
+
+jest-validate@^24.0.0:
+  version "24.5.0"
+  resolved "https://registry.yarnpkg.com/jest-validate/-/jest-validate-24.5.0.tgz#62fd93d81214c070bb2d7a55f329a79d8057c7de"
+  dependencies:
+    "@jest/types" "^24.5.0"
+    camelcase "^5.0.0"
+    chalk "^2.0.1"
+    jest-get-type "^24.3.0"
+    leven "^2.1.0"
+    pretty-format "^24.5.0"
 
 jest-watcher@^23.4.0:
   version "23.4.0"
@@ -8173,7 +8207,6 @@ nightwatch@^1.0.11:
 njwt@^1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/njwt/-/njwt-1.0.0.tgz#da5bfa9c251b144a9cdb40a8ad025b3d7b5b52ee"
-  integrity sha512-n+FaPUauVQF/So+YcOACBb/zCxDH5WlCV3dTrX0u7VMGagjDiI39XRJWaPd2PtpT6IpIQUcd7x0twiRZaIQNDQ==
   dependencies:
     ecdsa-sig-formatter "^1.0.5"
     uuid "^3.3.2"
@@ -8209,7 +8242,6 @@ node-fetch@^1.0.1, node-fetch@^1.3.3:
 node-fetch@^2.3.0:
   version "2.3.0"
   resolved "https://registry.yarnpkg.com/node-fetch/-/node-fetch-2.3.0.tgz#1a1d940bbfb916a1d3e0219f037e89e71f8c5fa5"
-  integrity sha512-MOd8pV3fxENbryESLgVIeaGKrdl+uaYhCSSVkjeOb/31/njTpcis5aWfdqgNlHIrKOLRbMnfPINPOML2CIFeXA==
 
 node-forge@^0.7.1:
   version "0.7.6"
@@ -9012,6 +9044,15 @@ pretty-format@^23.6.0:
     ansi-regex "^3.0.0"
     ansi-styles "^3.2.0"
 
+pretty-format@^24.5.0:
+  version "24.5.0"
+  resolved "https://registry.yarnpkg.com/pretty-format/-/pretty-format-24.5.0.tgz#cc69a0281a62cd7242633fc135d6930cd889822d"
+  dependencies:
+    "@jest/types" "^24.5.0"
+    ansi-regex "^4.0.0"
+    ansi-styles "^3.2.0"
+    react-is "^16.8.4"
+
 pretty-format@^4.2.1:
   version "4.3.1"
   resolved "http://registry.npmjs.org/pretty-format/-/pretty-format-4.3.1.tgz#530be5c42b3c05b36414a7a2a4337aa80acd0e8d"
@@ -9310,6 +9351,10 @@ react-dom@^16.4.2:
 react-is@^16.4.2, react-is@^16.5.2:
   version "16.5.2"
   resolved "https://registry.yarnpkg.com/react-is/-/react-is-16.5.2.tgz#e2a7b7c3f5d48062eb769fcb123505eb928722e3"
+
+react-is@^16.8.4:
+  version "16.8.4"
+  resolved "https://registry.yarnpkg.com/react-is/-/react-is-16.8.4.tgz#90f336a68c3a29a096a3d648ab80e87ec61482a2"
 
 react-native-branch@2.2.5:
   version "2.2.5"
@@ -11486,7 +11531,6 @@ xml2js@^0.4.17:
 xml@^1.0.1:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/xml/-/xml-1.0.1.tgz#78ba72020029c5bc87b8a81a3cfcd74b4a2fc1e5"
-  integrity sha1-eLpyAgApxbyHuKgaPPzXS0ovweU=
 
 xmlbuilder@4.0.0:
   version "4.0.0"
