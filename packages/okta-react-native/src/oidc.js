@@ -113,7 +113,7 @@ export async function refreshAccessToken(client, options) {
 
   // Create token endpoint params
   options = Object.assign({
-    client_id: client.client_id,
+    client_id: client.config.client_id,
     grant_type: 'refresh_token',
     refresh_token: authContext.refreshToken.string
   }, options);
