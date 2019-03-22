@@ -22,11 +22,11 @@ import { Router } from '@angular/router';
 @NgModule({
   declarations: [
     OktaCallbackComponent,
-    OktaLoginRedirectComponent,
+    OktaLoginRedirectComponent
   ],
   exports: [
     OktaCallbackComponent,
-    OktaLoginRedirectComponent,
+    OktaLoginRedirectComponent
   ],
   providers: [
     OktaAuthGuard,
@@ -47,8 +47,8 @@ export class OktaAuthModule {
       ngModule: OktaAuthModule,
       providers: [
         // Will NOT provide config when using AOT compiler. Your app module should provide this value statically in its providers section.
-        { provide: OKTA_CONFIG, useValue: config },
-      ],
+        { provide: OKTA_CONFIG, useValue: config }
+      ]
     };
   }
 }
