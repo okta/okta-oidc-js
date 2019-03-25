@@ -11,6 +11,8 @@ This library currently supports:
 
 This library is tested against the latest version of Angular (currently 6), and is currently known to be compatible with Angular 4, 5, and 6.
 
+`okta-angular` works directly with [`@angular/router`](https://angular.io/guide/router). 
+
 ## Getting Started
 
 - If you do not already have a **Developer Edition Account**, you can create one at [https://developer.okta.com/signup/](https://developer.okta.com/signup/).
@@ -39,17 +41,39 @@ yarn add @okta/okta-angular
 
 ## Usage
 
-`okta-angular` works directly with [`@angular/router`](https://angular.io/guide/router) and provides the additional components and services:
+Add [`OktaAuthModule`](#oktaauthmodule) to your module's imports.
+Create a configuration object and provide this as [`OKTA_CONFIG`](#okta_config).
 
-- [`OktaAuthModule`](#oktaauthmodule) - Allows you to supply your OpenID Connect client configuration.
-- [`OktaAuthGuard`](#oktaauthguard) - A navigation guard using [CanActivate](https://angular.io/api/router/CanActivate) to grant access to a page only after successful authentication.
-- [`OktaCallbackComponent`](#oktacallbackcomponent) - Handles the implicit flow callback by parsing tokens from the URL and storing them automatically.
-- [`OktaLoginRedirectComponent`](#oktaloginredirectcomponent) - Redirects users to the Okta Hosted Login Page for authentication.
-- [`OktaAuthService`](#oktaauthservice) - Highest-level service containing the `okta-angular` public methods.
 
-### `OktaAuthModule`
+```typescript
+// myApp.module.ts
 
-The `OktaAuthModule` is the initializer for your OpenID Connect client configuration. It accepts the following properties:
+import {
+  OKTA_CONFIG,
+  OktaAuthModule
+} from '@okta/okta-angular';
+
+const oktaConfig = {
+  issuer: 'https://{yourOktaDomain}.com/oauth2/default',
+  clientId: '{clientId}',
+  redirectUri: 'http://localhost:{port}/implicit/callback'
+}
+
+@NgModule({
+  imports: [
+    ...
+    OktaAuthModule
+  ],
+  providers: [
+    { provide: OKTA_CONFIG, useValue: oktaConfig }
+  ],
+})
+export class MyAppModule { }
+```
+
+### `OKTA_CONFIG`
+
+An Angular InjectionToken used to configure the OktaAuthService. This value must be provided by your own application. It is initialized by a plain object which can have the following properties:
 
 - `issuer` **(required)**: The OpenID Connect `issuer`
 - `clientId` **(required)**: The OpenID Connect `client_id`
@@ -68,31 +92,14 @@ The `OktaAuthModule` is the initializer for your OpenID Connect client configura
 - `autoRenew` *(optional)*:
   By default, the library will attempt to renew expired tokens. When an expired token is requested by the library, a renewal request is executed to update the token. If you wish to  to disable auto renewal of tokens, set autoRenew to false.
 
-```typescript
-// myApp.module.ts
+### `OktaAuthModule`
 
-import {
-  OktaAuthModule
-} from '@okta/okta-angular';
+The top-level Angular module which provides these components and services:
 
-const oktaConfig = {
-  issuer: 'https://{yourOktaDomain}.com/oauth2/default',
-  clientId: '{clientId}',
-  redirectUri: 'http://localhost:{port}/implicit/callback'
-}
-
-const appRoutes: Routes = [
-  ...
-]
-
-@NgModule({
-  imports: [
-    ...
-    OktaAuthModule.initAuth(oktaConfig)
-  ],
-})
-export class MyAppModule { }
-```
+- [`OktaAuthGuard`](#oktaauthguard) - A navigation guard using [CanActivate](https://angular.io/api/router/CanActivate) to grant access to a page only after successful authentication.
+- [`OktaCallbackComponent`](#oktacallbackcomponent) - Handles the implicit flow callback by parsing tokens from the URL and storing them automatically.
+- [`OktaLoginRedirectComponent`](#oktaloginredirectcomponent) - Redirects users to the Okta Hosted Login Page for authentication.
+- [`OktaAuthService`](#oktaauthservice) - Highest-level service containing the `okta-angular` public methods.
 
 ### `OktaAuthGuard`
 
