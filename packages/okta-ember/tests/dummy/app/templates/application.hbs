@@ -1,3 +1,27 @@
-<h2 id="title">Welcome to Ember</h2>
+<div class="app">
+    <nav class="main-nav">
+        <h1 class="logo">
+            {{#link-to "index"}}
+                <span class="sr-only">Ember Okta</span>
+            {{/link-to}}
+        </h1>
 
-{{outlet}}
+        <ul>
+            <li>{{#link-to "authenticated"}}Authenticated{{/link-to}}</li>
+            {{#if auth.authenticated}}
+                <li>User is Authenticated</li>
+            {{else}}
+                <li>User is not Authenticated</li>
+            {{/if}}
+        </ul>
+        {{#if auth.authenticated}}
+            <button {{action "logout"}}>Logout</button>
+        {{/if}}
+    </nav>
+
+    <main class="app-content">
+        <input type="checkbox" id="redirect-auth" value={{redirect}} onclick={{action "UpdateRedirect"}}>
+        <label for="redirect-auth">Redirect for login</label>
+        {{outlet}}
+    </main>
+</div>
