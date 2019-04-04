@@ -10,6 +10,6 @@ export default Component.extend({
   init() {
     this._super(...arguments);
 
-    this.auth.handleAuthentication();
+    this.auth.loginRedirect();
   },
 });
