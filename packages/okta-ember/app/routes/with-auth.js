@@ -1,1 +1,1 @@
-export { default } from 'okta-ember/routes/with-auth';
+export { default } from '@okta/okta-ember/routes/with-auth';

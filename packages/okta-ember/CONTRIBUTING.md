@@ -3,7 +3,7 @@
 ## Installation
 
 * `git clone <repository-url>`
-* `cd okta-ember`
+* `cd @okta/okta-ember`
 * `yarn install`
 
 ## Linting

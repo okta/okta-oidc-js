@@ -13,7 +13,7 @@ Installation
 ------------------------------------------------------------------------------
 
 ```
-ember install okta-ember
+ember install @okta/okta-ember
 ```
 
 
@@ -55,7 +55,7 @@ The `WithAuth` route will check that a valid `accessToken` is stored before the 
 ```js
 // routes/my-route.js
 
-import WithAuth from 'okta-ember/routes/with-auth';
+import WithAuth from '@okta/okta-ember/routes/with-auth';
 
 export default WithAuth.extend({});
 ```
