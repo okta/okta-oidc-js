@@ -48,10 +48,10 @@
     "typescript": "^2.5.2"
   },
   "peerDependencies": {
-    "@angular/common": ">=4 <7",
-    "@angular/core": ">=4 <7",
-    "@angular/platform-browser": ">=4 <7",
-    "@angular/router": ">=4 <7",
-    "rxjs": ">=5.4.3 <7"
+    "@angular/common": ">=4",
+    "@angular/core": ">=4",
+    "@angular/platform-browser": ">=4",
+    "@angular/router": ">=4",
+    "rxjs": ">=5.4.3"
   }
 }
