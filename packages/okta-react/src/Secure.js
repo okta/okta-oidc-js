@@ -10,17 +10,13 @@
  * See the License for the specific language governing permissions and limitations under the License.
  */
 
-import { Component } from 'react';
-import PropTypes from 'prop-types';
+import React from 'react';
+import { useOkta } from './OktaContext';
 
-export default class Secure extends Component {
-  static contextTypes = {
-    auth: PropTypes.object.isRequired
-  }
+const Secure = ({ render }) => {
+  const { auth } = useOkta();
 
-  render() {
-    return this.props.render({
-      auth: this.context.auth
-    });
-  }
-}
+  return render({ auth });
+};
+
+export default Secure
