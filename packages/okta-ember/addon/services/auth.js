@@ -152,14 +152,14 @@ export default Service.extend({
      */
     const fromRoute = this.getFromRoute();
 
-    this.router.transitionTo(fromRoute.route || 'index', fromRoute.extras);
+    this.router.transitionTo(fromRoute.route || '/', fromRoute.extras);
   },
 
   async logout(route) {
     this.oktaAuth.tokenManager.clear();
     await this.oktaAuth.signOut();
     this.set('authenticated', false);
-    this.router.transitionTo(route || 'index');
+    this.router.transitionTo(route || '/');
   },
 
   checkScope: scope => {
