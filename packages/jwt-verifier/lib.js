@@ -51,10 +51,28 @@ class OktaJwtVerifier {
         delete jwt.body;
         const errors = [];
         for (let claim of Object.keys(this.claimsToAssert)) {
-          const actualValue = jwt.claims[claim];
           const expectedValue = this.claimsToAssert[claim];
-          if (actualValue !== expectedValue) {
+          let op = undefined;
+          let idx = claim.indexOf('.');
+          if (idx >= 0) {
+            op = claim.substring(idx + 1);      
+            if (op !== 'includes') { // only support includes right now. Can be expanded later
+              return reject(new Error(`operator: '${op}' invalid. Supported operators: 'includes'.`));
+            }
+            claim = claim.substring(0, idx);
+          }
+          const actualValue = jwt.claims[claim];
+          
+          if (!op && actualValue !== expectedValue) {
             errors.push(`claim '${claim}' value '${actualValue}' does not match expected value '${expectedValue}'`);
+          } else if (op === 'includes' && Array.isArray(expectedValue)) {
+            expectedValue.forEach(value => {
+              if (!actualValue || !actualValue.includes(value)) {
+                errors.push(`claim '${claim}' value '${actualValue}' does not include expected value '${value}'`);
+              }
+            })
+          } else if (op === 'includes' && (!actualValue || !actualValue.includes(expectedValue))) {
+            errors.push(`claim '${claim}' value '${actualValue}' does not include expected value '${expectedValue}'`);
           }
         }
         if (errors.length) {

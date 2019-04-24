@@ -147,6 +147,63 @@ describe('Jwt Verifier', () => {
       )));
   });
 
+  it('should only allow includes operator for custom claims', () => {
+    const verifier = new OktaJwtVerifier({
+      issuer: ISSUER,
+      clientId: CLIENT_ID,
+      assertClaims: {
+        'groups.blarg': 'Everyone'
+      },
+      testing: {
+        disableHttpsCheck: OKTA_TESTING_DISABLEHTTPSCHECK
+      }
+    });
+    return getAccessToken(issuer1AccessTokenParams)
+    .then(accessToken =>
+      verifier.verifyAccessToken(accessToken)
+      .catch(err => expect(err.message).toBe(
+        `operator: 'blarg' invalid. Supported operators: 'includes'.`
+      )));
+  });
+
+  it('should allow me to assert included values in custom claims', () => {
+    const verifier = new OktaJwtVerifier({
+      issuer: ISSUER,
+      clientId: CLIENT_ID,
+      assertClaims: {
+        'groups.includes': 'Everyone'
+      },
+      testing: {
+        disableHttpsCheck: OKTA_TESTING_DISABLEHTTPSCHECK
+      }
+    });
+    return getAccessToken(issuer1AccessTokenParams)
+    .then(accessToken =>
+      verifier.verifyAccessToken(accessToken)
+      .catch(err => expect(err.message).toBe(
+        `claim 'groups' value 'undefined' does not include expected value 'Everyone'`
+      )));
+  });
+
+  it('should allow me to assert an array of included values in custom claims', () => {
+    const verifier = new OktaJwtVerifier({
+      issuer: ISSUER,
+      clientId: CLIENT_ID,
+      assertClaims: {
+        'groups.includes': ['Everyone', 'Another']
+      },
+      testing: {
+        disableHttpsCheck: OKTA_TESTING_DISABLEHTTPSCHECK
+      }
+    });
+    return getAccessToken(issuer1AccessTokenParams)
+    .then(accessToken =>
+      verifier.verifyAccessToken(accessToken)
+      .catch(err => expect(err.message).toBe(
+        `claim 'groups' value 'undefined' does not include expected value 'Everyone', claim 'groups' value 'undefined' does not include expected value 'Another'`
+      )));
+  });
+
   it('should cache the jwks for the configured amount of time', () => {
     const verifier = new OktaJwtVerifier({
       clientId: CLIENT_ID,
