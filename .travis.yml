@@ -7,7 +7,7 @@ addons:
   chrome: stable
   apt:
     packages:
-      - oracle-java9-set-default
+      - openjdk-8-jdk
 
 script:
 - yarn install
