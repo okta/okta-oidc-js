@@ -15,7 +15,9 @@
     "postinstall": "lerna run prepare"
   },
   "workspaces": {
-    "packages": ["packages/*"],
+    "packages": [
+      "packages/*"
+    ],
     "nohoist": [
       "**/jest-expo",
       "**/jest-expo/**",
