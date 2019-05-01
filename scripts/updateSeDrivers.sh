@@ -10,5 +10,5 @@ then
   export SE_STANDALONE_VER=3.141.59
 fi
 
-./node_modules/protractor/bin/webdriver-manager update --versions.chrome ${CHROME_DRIVER_VER} --gecko false --versions.standalone ${SE_STANDALONE_VER}
+./node_modules/.bin/protractor/bin/webdriver-manager update --versions.chrome ${CHROME_DRIVER_VER} --gecko false --versions.standalone ${SE_STANDALONE_VER}
 
