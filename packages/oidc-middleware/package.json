@@ -42,9 +42,7 @@
     "node-fetch": "^2.3.0",
     "openid-client": "2.1.0",
     "passport": "^0.3.2",
-    "protractor": "^5.4.2",
-    "uuid": "^3.1.0",
-    "webdriver-manager": "^12.1.4"
+    "uuid": "^3.1.0"
   },
   "devDependencies": {
     "cross-env": "^5.1.1",
@@ -54,7 +52,9 @@
     "jasmine-spec-reporter": "^4.1.0",
     "jest": "^23.6.0",
     "nock": "^9.1.6",
+    "protractor": "^5.1.2",
     "read-package-tree": "^5.1.6",
-    "server-destroy": "^1.0.1"
+    "server-destroy": "^1.0.1",
+    "webdriver-manager": "^12.0.6"
   }
 }
