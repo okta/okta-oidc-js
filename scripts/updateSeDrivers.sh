@@ -63,4 +63,4 @@ CHROME_DRIVER_VER_PARAM="--versions.chrome ${CHROME_DRIVER_VER}"
 echo "Chrome Driver Version: ${CHROME_DRIVER_VER}"
 echo "Selenium Standalone Version: ${SE_STANDALONE_VER}"
 
-./node_modules/.bin/webdriver-manager update --versions.chrome ${CHROME_DRIVER_VER} --gecko false --versions.standalone ${SE_STANDALONE_VER}
+./node_modules/protractor/node_modules/.bin/webdriver-manager update --versions.chrome ${CHROME_DRIVER_VER} --gecko false --versions.standalone ${SE_STANDALONE_VER}
