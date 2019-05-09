@@ -26,6 +26,7 @@
     "@angular/router": "^6.0.7",
     "@okta/okta-angular": "../../../",
     "core-js": "^2.4.1",
+    "protractor": "^5.4.2",
     "rxjs": "^6.2.1",
     "zone.js": "^0.8.14"
   },
@@ -47,7 +48,6 @@
     "karma-coverage-istanbul-reporter": "^1.2.1",
     "karma-jasmine": "~1.1.0",
     "karma-jasmine-html-reporter": "^0.2.2",
-    "protractor": "~5.1.2",
     "ts-node": "~3.2.0",
     "tslint": "~5.5.0",
     "typescript": "~2.7.2"
