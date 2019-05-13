@@ -22,6 +22,7 @@ const copyCredentialsMessage = 'You can copy it from the Okta Developer Console 
   'in the details for the Application you created. ' +
   `Follow these instructions to find it: ${findAppCredentialsURL}`;
 
+const isLocal = new RegExp('^http://localhost');
 const isHttps = new RegExp('^https://');
 const hasProtocol = new RegExp('://');
 const hasDomainAdmin = /-admin.(okta|oktapreview|okta-emea).com/;
@@ -49,14 +50,16 @@ configUtil.buildConfigObject = (config) => {
   let tokenManager = config.tokenManager;
   const autoRenew = config.autoRenew || config.auto_renew;
   const storage = config.storage;
-  if (storage || autoRenew) {
+  const disableHttpsCheck = config.testing ? config.testing.disableHttpsCheck : false;
+  if (storage || autoRenew || disableHttpsCheck) {
     // Properties already defined within the "tokenManager" section will not be overwritten
     tokenManager = merge({
       autoRenew: autoRenew,
       storage: storage,
+      secure: disableHttpsCheck ? false : undefined,
     }, tokenManager || {});
   }
-
+  
   // Legacy support: allow 'responseType' to be a string or an array
   let responseType = config.responseType || config.response_type;
   if (typeof responseType === 'string' && responseType.indexOf(' ') >= 0) {
@@ -123,15 +126,36 @@ configUtil.assertClientSecret = (clientSecret) => {
   }
 };
 
-configUtil.assertRedirectUri = (redirectUri) => {
+configUtil.assertRedirectUri = (redirectUri, testing = {}) => {
+  if (testing.disableHttpsCheck) {
+    const httpsWarning = 'Warning: HTTPS check is disabled. ' +
+      'This allows for insecure configurations and is NOT recommended for production use.';
+    /* eslint-disable-next-line no-console */
+    console.warn(httpsWarning);
+  }
+
   if (!redirectUri) {
     throw new ConfigurationValidationError('Your redirect URI is missing.');
   } else if (redirectUri.match(/{redirectUri}/)) {
     throw new ConfigurationValidationError('Replace {redirectUri} with the redirect URI of your Application.');
   }
+
+  if (!testing.disableHttpsCheck && !redirectUri.match(isLocal) && !redirectUri.match(isHttps)) {
+    throw new ConfigurationValidationError(
+      'Your redirect URI must start with https. ' +
+      `Current value: ${redirectUri}.`
+    );
+  }
 };
 
-configUtil.assertAppBaseUrl = (appBaseUrl) => { 
+configUtil.assertAppBaseUrl = (appBaseUrl, testing = {}) => {
+  if (testing.disableHttpsCheck) {
+    const httpsWarning = 'Warning: HTTPS check is disabled. ' +
+      'This allows for insecure configurations and is NOT recommended for production use.';
+    /* eslint-disable-next-line no-console */
+    console.warn(httpsWarning);
+  }
+
   if (!appBaseUrl) { 
     throw new ConfigurationValidationError('Your appBaseUrl is missing.');
   } else if (appBaseUrl.match(/{appBaseUrl}/)) {
@@ -141,4 +165,11 @@ configUtil.assertAppBaseUrl = (appBaseUrl) => {
   } else if (appBaseUrl.match(endsInPath)) {
     throw new ConfigurationValidationError(`Your appBaseUrl must not end in a '/'. Current value: ${appBaseUrl}.`);
   } 
+
+  if (!testing.disableHttpsCheck && !appBaseUrl.match(isLocal) && !appBaseUrl.match(isHttps)) {
+    throw new ConfigurationValidationError(
+      'Your app base URL must start with https. ' +
+      `Current value: ${appBaseUrl}.`
+    );
+  }
 };

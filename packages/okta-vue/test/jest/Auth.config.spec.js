@@ -8,7 +8,7 @@ describe('Auth configuration', () => {
     const validConfig = {
       issuer: 'https://foo',
       clientId: 'foo',
-      redirectUri: 'foo'
+      redirectUri: 'https://foo/redirect'
     }
     function createInstance () {
       const localVue = createLocalVue()
@@ -136,5 +136,32 @@ describe('Auth configuration', () => {
       })
     }
     expect(createInstance).toThrow()
+  })
+
+  it('should throw if a redirect_uri is not https', () => {
+    function createInstance () {
+      const localVue = createLocalVue()
+      localVue.use(Auth, {
+        issuer: 'https://foo/oauth2/default',
+        client_id: 'foo',
+        redirect_uri: 'http://foo'
+      })
+    }
+    expect(createInstance).toThrow()
+  })
+
+  it('should not throw for http redirect_uri is testing.disableHttpsCheck = true', () => {
+    function createInstance () {
+      const localVue = createLocalVue()
+      localVue.use(Auth, {
+        issuer: 'https://foo/oauth2/default',
+        client_id: 'foo',
+        redirect_uri: 'http://foo',
+        testing: {
+          disableHttpsCheck: true
+        }
+      })
+    }
+    expect(createInstance).not.toThrow()
   })
 })

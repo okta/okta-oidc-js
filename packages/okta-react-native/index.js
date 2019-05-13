@@ -25,8 +25,8 @@ export const createConfig = async({
 
   assertIssuer(discoveryUri);
   assertClientId(clientId);
-  assertRedirectUri(redirectUri);
-  assertRedirectUri(endSessionRedirectUri);
+  assertRedirectUri(redirectUri, { disableHttpsCheck: true});
+  assertRedirectUri(endSessionRedirectUri, { disableHttpsCheck: true});
 
   if (Platform.OS === 'ios') {
     scopes = scopes.join(' ');

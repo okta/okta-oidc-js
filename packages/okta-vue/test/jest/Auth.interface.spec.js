@@ -8,7 +8,7 @@ jest.mock('@okta/okta-auth-js')
 const baseConfig = {
   issuer: 'https://foo',
   clientId: 'foo',
-  redirectUri: 'foo'
+  redirectUri: 'https://foo/callback'
 }
 
 describe('Auth constructor', () => {
@@ -46,14 +46,14 @@ describe('Auth constructor', () => {
     const legacyConfig = {
       issuer: 'https://foo',
       client_id: 'foo',
-      redirect_uri: 'foo',
+      redirect_uri: 'https://foo/redirect',
       scope: 'foo bar',
       response_type: 'token foo'
     }
     localVue.use(Auth, legacyConfig)
     expect(AuthJS).toHaveBeenCalledWith(Object.assign({}, legacyConfig, {
       clientId: 'foo',
-      redirectUri: 'foo',
+      redirectUri: 'https://foo/redirect',
       scopes: ['openid', 'foo', 'bar'],
       responseType: ['token', 'foo']
     }))

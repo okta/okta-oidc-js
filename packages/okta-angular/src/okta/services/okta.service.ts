@@ -55,7 +55,7 @@ export class OktaAuthService {
       // Assert Configuration
       assertIssuer(this.config.issuer, this.config.testing);
       assertClientId(this.config.clientId);
-      assertRedirectUri(this.config.redirectUri);
+      assertRedirectUri(this.config.redirectUri, this.config.testing);
 
       this.oktaAuth = new OktaAuth(this.config);
       this.oktaAuth.userAgent = `${packageInfo.name}/${packageInfo.version} ${this.oktaAuth.userAgent}`;

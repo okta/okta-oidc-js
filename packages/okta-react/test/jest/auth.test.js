@@ -175,7 +175,7 @@ describe('Auth configuration', () => {
     const options = {
       clientId: 'foo',
       issuer: 'https://foo/oauth2/default',
-      redirectUri: 'foo',
+      redirectUri: 'https://foo',
       pkce: true,
     }
 
@@ -196,7 +196,7 @@ describe('Auth component', () => {
     const auth = new Auth({
       issuer: 'https://foo/oauth2/default',
       client_id: 'foo',
-      redirect_uri: 'foo'
+      redirect_uri: 'https://foo'
     });
     const expectedUserAgent = `${pkg.name}/${pkg.version} okta-auth-js`;
     expect(auth._oktaAuth.userAgent).toMatch(expectedUserAgent);
@@ -205,7 +205,7 @@ describe('Auth component', () => {
     const auth = new Auth({
       issuer: 'https://foo/oauth2/default',
       client_id: 'foo',
-      redirect_uri: 'foo'
+      redirect_uri: 'https://foo'
     });
     const accessToken = await auth.getAccessToken();
     expect(accessToken).toBe(mockAccessToken);
@@ -215,7 +215,7 @@ describe('Auth component', () => {
     const auth = new Auth({
       issuer: 'https://foo/oauth2/default',
       client_id: 'foo',
-      redirect_uri: 'foo'
+      redirect_uri: 'https://foo'
     });
     auth.redirect();
     expect(mockAuthJsInstance.token.getWithRedirect).toHaveBeenCalledWith({
@@ -227,7 +227,7 @@ describe('Auth component', () => {
     const auth = new Auth({
       issuer: 'https://foo/oauth2/default',
       client_id: 'foo',
-      redirect_uri: 'foo',
+      redirect_uri: 'https://foo',
       scope: ['openid', 'foo']
     });
     auth.redirect();
@@ -240,7 +240,7 @@ describe('Auth component', () => {
     const auth = new Auth({
       issuer: 'https://foo/oauth2/default',
       client_id: 'foo',
-      redirect_uri: 'foo',
+      redirect_uri: 'https://foo',
       response_type: ['id_token']
     });
     auth.redirect();
@@ -253,7 +253,7 @@ describe('Auth component', () => {
     const auth = new Auth({
       issuer: 'https://foo/oauth2/default',
       client_id: 'foo',
-      redirect_uri: 'foo'
+      redirect_uri: 'https://foo'
     });
     const overrides = {
       scopes: ['openid', 'foo'],
@@ -267,7 +267,7 @@ describe('Auth component', () => {
     const auth = new Auth({
       issuer: 'https://foo/oauth2/default',
       client_id: 'foo',
-      redirect_uri: 'foo'
+      redirect_uri: 'https://foo'
     });
     const overrides = {
       scope: 'openid foo',
@@ -284,7 +284,7 @@ describe('Auth component', () => {
     const auth = new Auth({
       issuer: 'https://foo/oauth2/default',
       client_id: 'foo',
-      redirect_uri: 'foo'
+      redirect_uri: 'https://foo'
     });
     const overrides = {
       scope: ['openid', 'foo'],
@@ -301,7 +301,7 @@ describe('Auth component', () => {
     const auth = new Auth({
       issuer: 'https://foo/oauth2/default',
       client_id: 'foo',
-      redirect_uri: 'foo'
+      redirect_uri: 'https://foo'
     });
     auth.redirect({foo: 'bar'});
     expect(mockAuthJsInstance.token.getWithRedirect).toHaveBeenCalledWith({
@@ -314,7 +314,7 @@ describe('Auth component', () => {
     const auth = new Auth({
       issuer: 'https://foo/oauth2/default',
       client_id: 'foo',
-      redirect_uri: 'foo'
+      redirect_uri: 'https://foo'
     });
     auth.login({foo: 'bar'});
     expect(mockAuthJsInstance.token.getWithRedirect).toHaveBeenCalledWith({
@@ -327,7 +327,7 @@ describe('Auth component', () => {
     const auth = new Auth({
       issuer: 'https://foo/oauth2/default',
       client_id: 'foo',
-      redirect_uri: 'foo'
+      redirect_uri: 'https://foo'
     });
     const authenticated = await auth.isAuthenticated();
     expect(mockAuthJsInstance.tokenManager.get).toHaveBeenCalledWith('accessToken');
@@ -340,7 +340,7 @@ describe('Auth component', () => {
     const auth = new Auth({
       issuer: 'https://foo/oauth2/default',
       client_id: 'foo',
-      redirect_uri: 'foo'
+      redirect_uri: 'https://foo'
     });
     const authenticated = await auth.isAuthenticated();
     expect(authenticated).toBeFalsy();

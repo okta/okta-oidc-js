@@ -76,7 +76,7 @@ module.exports = class ExpressOIDC extends EventEmitter {
     assertClientSecret(client_secret);
 
     // Validate the appBaseUrl param
-    assertAppBaseUrl(appBaseUrl);
+    assertAppBaseUrl(appBaseUrl, options.testing);
 
     // Add defaults to the options
     options = merge({
@@ -107,7 +107,7 @@ module.exports = class ExpressOIDC extends EventEmitter {
     options.logoutRedirectUri = logoutRedirectUri || `${appBaseUrl}${options.routes.logoutCallback.path}`;
 
     // Validate the redirect_uri param
-    assertRedirectUri(options.loginRedirectUri);
+    assertRedirectUri(options.loginRedirectUri, options.testing);
 
     const context = {
       options,

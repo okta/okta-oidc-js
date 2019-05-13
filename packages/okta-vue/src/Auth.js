@@ -96,9 +96,9 @@ const initConfig = options => {
   let auth = buildConfigObject(options)
 
   // Assert configuration
-  assertIssuer(auth.issuer, auth.testing)
+  assertIssuer(auth.issuer, options.testing)
   assertClientId(auth.clientId)
-  assertRedirectUri(auth.redirectUri)
+  assertRedirectUri(auth.redirectUri, options.testing)
 
   // Ensure "openid" exists in the scopes
   auth.scopes = auth.scopes || []
