@@ -8,7 +8,7 @@
     "dev": "webpack-dev-server --inline --progress --config build/webpack.dev.conf.js",
     "start": "yarn env && yarn dev",
     "env": "node ./scripts/prebuild.js",
-    "pree2e": "sh ./scripts/downloadChromeDriver.sh && ./node_modules/.bin/webdriver-manager update --versions.chrome 2.45 --gecko false",
+    "pree2e": "sh ./scripts/downloadChromeDriver.sh && ./node_modules/.bin/webdriver-manager update --versions.chrome 2.46 --gecko false",
     "e2e": "node test/e2e/runner.js",
     "test": "yarn env && yarn e2e",
     "lint": "eslint --ext .js,.vue src test/e2e/specs",
