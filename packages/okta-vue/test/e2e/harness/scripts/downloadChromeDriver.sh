@@ -1,18 +1,25 @@
 # Install ChromeDriver.
 OS="`uname`"
 
+if [ $# -eq 0 ]
+then
+  CHROME_DRIVER_VERSION=2.46
+else
+  CHROME_DRIVER_VERSION=2.45
+fi
+
 case $OS in
   'Linux')
     OS='Linux'
-    CHROME_DRIVER=http://chromedriver.storage.googleapis.com/2.46/chromedriver_linux64.zip
+    CHROME_DRIVER=http://chromedriver.storage.googleapis.com/${CHROME_DRIVER_VERSION}/chromedriver_linux64.zip
     ;;
   'WindowsNT')
     OS='Windows'
-    CHROME_DRIVER=http://chromedriver.storage.googleapis.com/2.46/chromedriver_win32.zip
+    CHROME_DRIVER=http://chromedriver.storage.googleapis.com/${CHROME_DRIVER_VERSION}/chromedriver_win32.zip
     ;;
   'Darwin')
     OS='Mac'
-    CHROME_DRIVER=http://chromedriver.storage.googleapis.com/2.46/chromedriver_mac64.zip
+    CHROME_DRIVER=http://chromedriver.storage.googleapis.com/${CHROME_DRIVER_VERSION}/chromedriver_mac64.zip
     ;;
   *) ;;
 esac
