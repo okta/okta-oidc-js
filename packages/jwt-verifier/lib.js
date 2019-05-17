@@ -18,6 +18,47 @@ const {
   assertClientId
 } = require('@okta/configuration-validation');
 
+class AssertedClaimsVerifier {
+  constructor() {
+    this.errors = [];
+  }
+
+  extractOperator(claim) {
+    let idx = claim.indexOf('.');
+    if (idx >= 0) {
+      return claim.substring(idx + 1);
+    }
+    return undefined;
+  }
+
+  extractClaim(claim) {
+    let idx = claim.indexOf('.');
+    if (idx >= 0) {
+      return claim.substring(0, idx);
+    }
+    return claim;
+  }
+
+  isValidOperator(operator) {
+    // may support more operators in the future
+    return !operator || operator === 'includes'
+  }
+
+  checkAssertions(op, claim, expectedValue, actualValue) {
+    if (!op && actualValue !== expectedValue) {
+      this.errors.push(`claim '${claim}' value '${actualValue}' does not match expected value '${expectedValue}'`);
+    } else if (op === 'includes' && Array.isArray(expectedValue)) {
+      expectedValue.forEach(value => {
+        if (!actualValue || !actualValue.includes(value)) {
+          this.errors.push(`claim '${claim}' value '${actualValue}' does not include expected value '${value}'`);
+        }
+      })
+    } else if (op === 'includes' && (!actualValue || !actualValue.includes(expectedValue))) {
+      this.errors.push(`claim '${claim}' value '${actualValue}' does not include expected value '${expectedValue}'`);
+    }
+  }
+}
+
 class OktaJwtVerifier {
   constructor(options = {}) {
     // Assert configuration
@@ -49,34 +90,19 @@ class OktaJwtVerifier {
         }
         jwt.claims = jwt.body;
         delete jwt.body;
-        const errors = [];
-        for (let claim of Object.keys(this.claimsToAssert)) {
-          const expectedValue = this.claimsToAssert[claim];
-          let op = undefined;
-          let idx = claim.indexOf('.');
-          if (idx >= 0) {
-            op = claim.substring(idx + 1);      
-            if (op !== 'includes') { // only support includes right now. Can be expanded later
-              return reject(new Error(`operator: '${op}' invalid. Supported operators: 'includes'.`));
-            }
-            claim = claim.substring(0, idx);
+        let assertedClaimsVerifier = new AssertedClaimsVerifier();
+        for (let key of Object.keys(this.claimsToAssert)) {
+          const expectedValue = this.claimsToAssert[key];
+          let operator = assertedClaimsVerifier.extractOperator(key);
+          if (!assertedClaimsVerifier.isValidOperator(operator)) {
+            return reject(new Error(`operator: '${operator}' invalid. Supported operators: 'includes'.`));
           }
+          let claim = assertedClaimsVerifier.extractClaim(key);
           const actualValue = jwt.claims[claim];
-          
-          if (!op && actualValue !== expectedValue) {
-            errors.push(`claim '${claim}' value '${actualValue}' does not match expected value '${expectedValue}'`);
-          } else if (op === 'includes' && Array.isArray(expectedValue)) {
-            expectedValue.forEach(value => {
-              if (!actualValue || !actualValue.includes(value)) {
-                errors.push(`claim '${claim}' value '${actualValue}' does not include expected value '${value}'`);
-              }
-            })
-          } else if (op === 'includes' && (!actualValue || !actualValue.includes(expectedValue))) {
-            errors.push(`claim '${claim}' value '${actualValue}' does not include expected value '${expectedValue}'`);
-          }
+          assertedClaimsVerifier.checkAssertions(operator, claim, expectedValue, actualValue)
         }
-        if (errors.length) {
-          return reject(new Error(errors.join(', ')));
+        if (assertedClaimsVerifier.errors.length) {
+          return reject(new Error(assertedClaimsVerifier.errors.join(', ')));
         }
         resolve(jwt);
       });
