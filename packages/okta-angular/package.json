@@ -1,6 +1,6 @@
 {
   "name": "@okta/okta-angular",
-  "version": "1.1.0",
+  "version": "1.2.1",
   "description": "Angular support for Okta",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
@@ -48,10 +48,10 @@
     "typescript": "^2.5.2"
   },
   "peerDependencies": {
-    "@angular/common": ">=4 <7",
-    "@angular/core": ">=4 <7",
-    "@angular/platform-browser": ">=4 <7",
-    "@angular/router": ">=4 <7",
-    "rxjs": ">=5.4.3 <7"
+    "@angular/common": ">=4",
+    "@angular/core": ">=4",
+    "@angular/platform-browser": ">=4",
+    "@angular/router": ">=4",
+    "rxjs": ">=5.4.3"
   }
 }

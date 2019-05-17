@@ -1,3 +1,13 @@
+# 1.2.1
+
+### Other
+- [`0703aff`](https://github.com/okta/okta-oidc-js/commit/0703afff55d9ab3a3c3ec608e45e06c969542d73) - Relaxes peerDependency to include latest versions of Angular
+
+# 1.2.0
+
+### Other
+- [`f972822`](https://github.com/okta/okta-oidc-js/commit/f972822542792275bfe645813c8487dcef45de36) - Deprecates 'initAuth' method.
+
 # 1.1.0
 
 ### Features
