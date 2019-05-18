@@ -24,7 +24,7 @@ class AssertedClaimsVerifier {
   }
 
   extractOperator(claim) {
-    let idx = claim.indexOf('.');
+    const idx = claim.indexOf('.');
     if (idx >= 0) {
       return claim.substring(idx + 1);
     }
@@ -32,7 +32,7 @@ class AssertedClaimsVerifier {
   }
 
   extractClaim(claim) {
-    let idx = claim.indexOf('.');
+    const idx = claim.indexOf('.');
     if (idx >= 0) {
       return claim.substring(0, idx);
     }
