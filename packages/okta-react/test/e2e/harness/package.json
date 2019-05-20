@@ -17,9 +17,13 @@
     "babel-preset-react-app": "^3.0.2",
     "jasmine-reporters": "^2.2.0",
     "jasmine-spec-reporter": "^4.1.0",
-    "protractor": "^5.1.2",
+    "protractor": "^5.4.2",
     "rimraf": "^2.6.2",
-    "wait-on": "^2.0.1"
+    "wait-on": "^2.0.1",
+    "webdriver-manager": "^12.1.4"
+  },
+  "resolutions": {
+    "webdriver-manager": "^12.1.4"
   },
   "scripts": {
     "start": "CLIENT_ID=${SPA_CLIENT_ID:=$CLIENT_ID} && REACT_APP_ISSUER=$ISSUER REACT_APP_CLIENT_ID=$CLIENT_ID PORT=8080 OKTA_TESTING_DISABLEHTTPSCHECK=$OKTA_TESTING_DISABLEHTTPSCHECK react-scripts start",
