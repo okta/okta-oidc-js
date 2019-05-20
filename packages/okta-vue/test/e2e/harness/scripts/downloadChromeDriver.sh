@@ -1,12 +1,6 @@
-# Install ChromeDriver.
+#!/bin/bash
 OS="`uname`"
-
-if [ $# -eq 0 ]
-then
-  CHROME_DRIVER_VERSION=2.46
-else
-  CHROME_DRIVER_VERSION=2.45
-fi
+CHROME_DRIVER_VERSION=$1
 
 case $OS in
   'Linux')
