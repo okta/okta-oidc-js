@@ -11,7 +11,9 @@
     "test": "ng test --watch=false",
     "lint": "ng lint",
     "pree2e": "./node_modules/.bin/webdriver-manager update --versions.chrome 2.46 --gecko false",
-    "e2e": "yarn env && ng e2e --port 3000 --no-webdriver-update"
+    "e2e": "yarn env && ng e2e --port 3000 --no-webdriver-update",
+    "pree2e:legacy": "./node_modules/.bin/webdriver-manager update --versions.chrome 2.45 --gecko false",
+    "e2e:legacy": "yarn env && ng e2e --port 3000 --no-webdriver-update"
   },
   "private": true,
   "dependencies": {

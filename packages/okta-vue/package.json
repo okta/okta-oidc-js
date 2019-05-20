@@ -21,6 +21,8 @@
     "test": "yarn lint && yarn test:unit && yarn test:e2e",
     "pretest:e2e": "yarn kill:port && yarn build && yarn build:harness",
     "test:e2e": "yarn --cwd test/e2e/harness/ test",
+    "pretest:e2e:legacy": "yarn kill:port && yarn build && yarn build:harness",
+    "test:e2e:legacy": "yarn --cwd test/e2e/harness/ test:legacy",
     "test:unit": "jest src/"
   },
   "jest": {
