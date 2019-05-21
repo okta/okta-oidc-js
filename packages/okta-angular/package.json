@@ -20,8 +20,6 @@
     "test": "yarn lint && yarn test:e2e && yarn test:unit",
     "pretest:e2e": "yarn build:dependencies",
     "test:e2e": "yarn --cwd test/e2e/harness/ e2e",
-    "pretest:e2e:legacy": "yarn build:dependencies",
-    "test:e2e:legacy": "yarn --cwd test/e2e/harness/ e2e:legacy",
     "test:unit": "yarn --cwd test/e2e/harness/ test"
   },
   "repository": "https://github.com/okta/okta-oidc-js",

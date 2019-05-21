@@ -16,8 +16,6 @@
     "test": "yarn lint && yarn test:unit && yarn test:e2e",
     "pretest:e2e": "yarn build && yarn build:harness",
     "test:e2e": "yarn --cwd test/e2e/harness test",
-    "pretest:e2e:legacy": "yarn build && yarn build:harness",
-    "test:e2e:legacy": "yarn --cwd test/e2e/harness test:legacy",
     "test:unit": "jest test/jest/"
   },
   "repository": {
@@ -67,12 +65,16 @@
     "jasmine-spec-reporter": "~4.1.0",
     "jest": "^23.6.0",
     "polished": "^1.7.0",
-    "protractor": "^5.1.2",
+    "protractor": "^5.4.2",
     "react": "^16.4.2",
     "react-dom": "^16.4.2",
     "react-router-dom": "^4.2.2",
     "rimraf": "^2.6.2",
-    "styled-components": "^2.1.2"
+    "styled-components": "^2.1.2",
+    "webdriver-manager": "^12.1.4"
+  },
+  "resolutions": {
+    "webdriver-manager": "^12.1.4"
   },
   "jest": {
     "setupFiles": [
