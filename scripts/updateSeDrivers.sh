@@ -1,5 +1,22 @@
 #! /bin/bash
 
+SCRIPT_PATH=$(dirname $(which $0))
+SCRIPT_DIR="${SCRIPT_PATH%scripts}"
+DIR_MARKER="../"
+
+DEPTH=$1
+if [[ -z ${DEPTH} ]];
+then
+    DEPTH=$(echo "${SCRIPT_DIR}" | awk -F"${DIR_MARKER}" '{print NF-1}')
+fi
+
+if [[ ${DEPTH} > 0 ]];
+then
+    TARGET_PATH=$(for i in $(seq ${DEPTH}); do echo -n ${DIR_MARKER}; done)
+else
+    TARGET_PATH=./
+fi
+
 if [[ -z ${SE_STANDALONE_VER} ]];
 then
   SE_STANDALONE_VER=3.141.59
@@ -63,4 +80,23 @@ CHROME_DRIVER_VER_PARAM="--versions.chrome ${CHROME_DRIVER_VER}"
 echo "Chrome Driver Version: ${CHROME_DRIVER_VER}"
 echo "Selenium Standalone Version: ${SE_STANDALONE_VER}"
 
-../../../../../node_modules/protractor/node_modules/.bin/webdriver-manager update --versions.chrome ${CHROME_DRIVER_VER} --gecko false --versions.standalone ${SE_STANDALONE_VER}
+# remove symlinks if found
+CHROME_DRIVER_LINK=${TARGET_PATH}node_modules/webdriver-manager/selenium/chromedriver
+if [[ -f ${CHROME_DRIVER_LINK} ]];
+then
+  rm ${CHROME_DRIVER_LINK}
+fi
+SE_STANDALONE_LINK=${TARGET_PATH}node_modules/webdriver-manager/selenium/selenium-server-standalone.jar
+if [[ -f ${SE_STANDALONE_LINK} ]];
+then
+  rm ${SE_STANDALONE_LINK}
+fi
+
+# update the chromedriver and standalone driver
+${TARGET_PATH}node_modules/protractor/bin/webdriver-manager update --versions.chrome ${CHROME_DRIVER_VER} --gecko false --versions.standalone ${SE_STANDALONE_VER}
+CHROME_DRIVER_FILE_NAME=chromedriver_${CHROME_DRIVER_VER}
+SE_STANDALONE_FILE_NAME=selenium-server-standalone-${SE_STANDALONE_VER}.jar
+
+# (re-)create the symlinks
+ln -s ${CHROME_DRIVER_FILE_NAME} ${CHROME_DRIVER_LINK}
+ln -s ${SE_STANDALONE_FILE_NAME} ${SE_STANDALONE_LINK}
