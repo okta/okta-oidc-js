@@ -18,12 +18,12 @@ export class ProtectedPage {
   }
 
   waitUntilVisible(path) {
-    browser.wait(ExpectedConditions.urlContains('/protected' + path), 5000);
+    browser.wait(ExpectedConditions.urlContains('/protected' + path), 15000);
   }
 
   waitForElement(id) {
     const el = element(by.id(id));
-    browser.wait(ExpectedConditions.presenceOf(el), 5000);
+    browser.wait(ExpectedConditions.presenceOf(el), 15000);
   }
 
   getLogoutButton() {

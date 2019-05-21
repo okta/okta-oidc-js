@@ -20,15 +20,15 @@ export class AppPage {
   waitUntilVisible() {
     const loginExists = ExpectedConditions.presenceOf(this.getLoginButton());
     const logoutExists = ExpectedConditions.presenceOf(this.getLogoutButton());
-    browser.wait(ExpectedConditions.or(loginExists, logoutExists), 5000);
+    browser.wait(ExpectedConditions.or(loginExists, logoutExists), 15000);
   }
 
   waitUntilLoggedOut() {
-    browser.wait(ExpectedConditions.presenceOf(this.getLoginButton()), 5000);
+    browser.wait(ExpectedConditions.presenceOf(this.getLoginButton()), 15000);
   }
 
   waitUntilLoggedIn() {
-    browser.wait(ExpectedConditions.presenceOf(this.getLogoutButton()), 5000);
+    browser.wait(ExpectedConditions.presenceOf(this.getLogoutButton()), 15000);
   }
 
   getLoginButton() {

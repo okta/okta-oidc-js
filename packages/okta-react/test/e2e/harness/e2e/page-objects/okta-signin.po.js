@@ -14,7 +14,9 @@ import { browser, by, element, ExpectedConditions } from 'protractor';
 
 export class OktaSignInPage {
     waitUntilVisible() {
-      browser.wait(ExpectedConditions.presenceOf(this.getSubmitButton()), 5000);
+      browser.wait(ExpectedConditions.presenceOf(this.getUsernameField()), 15000);
+      browser.wait(ExpectedConditions.presenceOf(this.getPasswordField()), 15000);
+      browser.wait(ExpectedConditions.presenceOf(this.getSubmitButton()), 15000);
     }
 
     getUsernameField() {

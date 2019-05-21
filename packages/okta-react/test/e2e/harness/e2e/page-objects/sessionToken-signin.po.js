@@ -18,7 +18,7 @@ export class SessionTokenSignInPage {
   }
 
   waitUntilVisible() {
-    browser.wait(ExpectedConditions.presenceOf(this.getSubmitButton()), 5000);
+    browser.wait(ExpectedConditions.presenceOf(this.getSubmitButton()), 15000);
   }
 
   getUsernameField() {
