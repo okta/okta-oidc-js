@@ -17,20 +17,22 @@
     "babel-preset-react-app": "^3.0.2",
     "jasmine-reporters": "^2.2.0",
     "jasmine-spec-reporter": "^4.1.0",
-    "protractor": "^5.1.2",
+    "protractor": "^5.4.2",
     "rimraf": "^2.6.2",
-    "wait-on": "^2.0.1"
+    "wait-on": "^2.0.1",
+    "webdriver-manager": "^12.1.4"
+  },
+  "resolutions": {
+    "webdriver-manager": "^12.1.4"
   },
   "scripts": {
     "start": "CLIENT_ID=${SPA_CLIENT_ID:=$CLIENT_ID} && REACT_APP_ISSUER=$ISSUER REACT_APP_CLIENT_ID=$CLIENT_ID PORT=8080 OKTA_TESTING_DISABLEHTTPSCHECK=$OKTA_TESTING_DISABLEHTTPSCHECK react-scripts start",
     "build": "CLIENT_ID=${SPA_CLIENT_ID:=$CLIENT_ID} && REACT_APP_ISSUER=$ISSUER REACT_APP_CLIENT_ID=$CLIENT_ID PORT=8080 OKTA_TESTING_DISABLEHTTPSCHECK=$OKTA_TESTING_DISABLEHTTPSCHECK react-scripts build",
     "build:test": "rimraf e2e/dist && babel e2e/ -d e2e/dist",
     "kill:port": "kill -9 $(lsof -t -i:8080 -sTCP:LISTEN) || true",
+    "pretest": "yarn kill:port && ../../../../../scripts/updateSeDrivers.sh 0 && yarn build:test",
     "wait:server": "BROWSER=none yarn start & ./node_modules/.bin/wait-on http://localhost:8080",
-    "pretest": "yarn kill:port && ./node_modules/.bin/webdriver-manager update --versions.chrome 2.46 --gecko false && yarn build:test",
     "test": "yarn build && yarn wait:server && yarn protractor",
-    "pretest:legacy": "yarn kill:port && ./node_modules/.bin/webdriver-manager update --versions.chrome 2.45 --gecko false && yarn build:test",
-    "test:legacy": "yarn build && yarn wait:server && yarn protractor",
     "eject": "react-scripts eject",
     "protractor": "babel-node ./node_modules/.bin/protractor protractor.conf.js"
   },

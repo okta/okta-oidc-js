@@ -8,12 +8,9 @@
     "dev": "webpack-dev-server --inline --progress --config build/webpack.dev.conf.js",
     "start": "yarn env && yarn dev",
     "env": "node ./scripts/prebuild.js",
-    "pree2e": "sh ./scripts/downloadChromeDriver.sh 2.46 && ./node_modules/.bin/webdriver-manager update --versions.chrome 2.46 --gecko false",
+    "pree2e": "../../../../../scripts/updateSeDrivers.sh",
     "e2e": "node test/e2e/runner.js",
-    "pree2e:legacy": "sh ./scripts/downloadChromeDriver.sh 2.45 && ./node_modules/.bin/webdriver-manager update --versions.chrome 2.45 --gecko false",
-    "e2e:legacy": "node test/e2e/runner.js",
     "test": "yarn env && yarn e2e",
-    "test:legacy": "yarn env && yarn e2e:legacy",
     "lint": "eslint --ext .js,.vue src test/e2e/specs",
     "build": "node build/build.js"
   },
@@ -65,11 +62,14 @@
     "vue-loader": "13.0.2",
     "vue-style-loader": "^3.0.1",
     "vue-template-compiler": "^2.5.2",
-    "webdriver-manager": "^12.0.6",
+    "webdriver-manager": "^12.1.4",
     "webpack": "^3.6.0",
     "webpack-bundle-analyzer": "^2.9.0",
     "webpack-dev-server": "^2.9.1",
     "webpack-merge": "^4.1.0"
+  },
+  "resolutions": {
+    "webdriver-manager": "^12.1.4"
   },
   "browserslist": [
     "> 1%",
