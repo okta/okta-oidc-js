@@ -17,10 +17,8 @@
   "main": "index.js",
   "scripts": {
     "test": "yarn test:unit && yarn test:e2e && yarn test:integration",
-    "pretest:e2e": "./node_modules/.bin/webdriver-manager update --versions.chrome 2.46 --gecko false",
+    "pretest:e2e": "../../scripts/updateSeDrivers.sh",
     "test:e2e": "protractor test/e2e/protractor.conf.js",
-    "pretest:e2e:legacy": "./node_modules/.bin/webdriver-manager update --versions.chrome 2.45 --gecko false",
-    "test:e2e:legacy": "protractor test/e2e/protractor.conf.js",
     "test:integration": "../../scripts/tck.sh",
     "test:unit": "jest test/unit"
   },
@@ -52,9 +50,11 @@
     "jasmine-spec-reporter": "^4.1.0",
     "jest": "^23.6.0",
     "nock": "^9.1.6",
-    "protractor": "^5.1.2",
+    "protractor": "^5.4.2",
     "read-package-tree": "^5.1.6",
-    "server-destroy": "^1.0.1",
-    "webdriver-manager": "^12.0.6"
+    "server-destroy": "^1.0.1"
+  },
+  "resolutions": {
+    "webdriver-manager": "^12.1.4"
   }
 }

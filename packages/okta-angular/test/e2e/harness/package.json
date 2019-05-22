@@ -7,13 +7,11 @@
     "start": "yarn env && ng serve --port=3000",
     "env": "node ./scripts/prebuild.js",
     "build": "ng build",
-    "pretest": "./node_modules/.bin/webdriver-manager update --versions.chrome 2.46 --gecko false",
+    "pretest": "../../../../../scripts/updateSeDrivers.sh 0",
     "test": "ng test --watch=false",
     "lint": "ng lint",
-    "pree2e": "./node_modules/.bin/webdriver-manager update --versions.chrome 2.46 --gecko false",
-    "e2e": "yarn env && ng e2e --port 3000 --no-webdriver-update",
-    "pree2e:legacy": "./node_modules/.bin/webdriver-manager update --versions.chrome 2.45 --gecko false",
-    "e2e:legacy": "yarn env && ng e2e --port 3000 --no-webdriver-update"
+    "pree2e": "../../../../../scripts/updateSeDrivers.sh 0",
+    "e2e": "yarn env && ng e2e --port 3000 --no-webdriver-update"
   },
   "private": true,
   "dependencies": {
@@ -49,9 +47,13 @@
     "karma-coverage-istanbul-reporter": "^1.2.1",
     "karma-jasmine": "~1.1.0",
     "karma-jasmine-html-reporter": "^0.2.2",
-    "protractor": "~5.1.2",
+    "protractor": "^5.4.2",
     "ts-node": "~3.2.0",
     "tslint": "~5.5.0",
-    "typescript": "~2.7.2"
+    "typescript": "~2.7.2",
+    "webdriver-manager": "^12.1.4"
+  },
+  "resolutions": {
+    "webdriver-manager": "^12.1.4"
   }
 }

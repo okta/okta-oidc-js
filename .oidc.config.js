@@ -9,7 +9,7 @@ module.exports = (overrides = {}) => {
   const BASE_URI = process.env.BASE_URI || `http://localhost:${PORT}`;
 
   const defaults = {
-    ISSUER: process.env.ISSUER || 'https://{yourOktaDomain}/oauth2/defalt',
+    ISSUER: process.env.ISSUER || 'https://{yourOktaDomain}/oauth2/default',
     USERNAME: process.env.USERNAME || '{username}',
     PASSWORD: process.env.PASSWORD || '{password}',
     OKTA_TESTING_DISABLEHTTPSCHECK: process.env.OKTA_TESTING_DISABLEHTTPSCHECK || false,

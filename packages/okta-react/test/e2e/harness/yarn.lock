@@ -732,10 +732,10 @@
   version "1.4.0"
   resolved "https://registry.yarnpkg.com/@csstools/convert-colors/-/convert-colors-1.4.0.tgz#ad495dc41b12e75d588c6db8b9834f08fa131eb7"
 
-"@okta/configuration-validation@^0.1.1":
-  version "0.1.1"
-  resolved "https://registry.yarnpkg.com/@okta/configuration-validation/-/configuration-validation-0.1.1.tgz#b19ee16b0fc9f01a7406229b25af6265e91ae942"
-  integrity sha512-nXULaL9l6W5eODVgXxvr0wmde3nE6JLSmGBpZ0axPsaLLx3wo/aY5mC1JwWtIF1kyrfzRHEHIPmdUZ+U5xq/CQ==
+"@okta/configuration-validation@^0.3.0":
+  version "0.3.0"
+  resolved "https://registry.yarnpkg.com/@okta/configuration-validation/-/configuration-validation-0.3.0.tgz#41954ce0567b25b7ff0d4eb7fc60468a709444d7"
+  integrity sha512-GWu+IpqkpE+Pl2BgxiF2CxuQpo0ZpeTG4M6musJXzVX70RNdH0wuM+SCIjT+yTbzcHl0LpXkC58M2YQtT2OSrw==
 
 "@okta/okta-auth-js@^2.0.0":
   version "2.0.1"
@@ -749,9 +749,9 @@
     xhr2 "0.1.3"
 
 "@okta/okta-react@../../../":
-  version "1.1.4"
+  version "1.2.0"
   dependencies:
-    "@okta/configuration-validation" "^0.1.1"
+    "@okta/configuration-validation" "^0.3.0"
     "@okta/okta-auth-js" "^2.0.0"
     babel-runtime "^6.26.0"
     prop-types "^15.5.10"
@@ -778,10 +778,6 @@
     "@babel/preset-react" "^7.0.0"
     "@svgr/core" "^2.4.1"
     loader-utils "^1.1.0"
-
-"@types/node@^6.0.46":
-  version "6.0.117"
-  resolved "https://registry.yarnpkg.com/@types/node/-/node-6.0.117.tgz#ccfc2506001404708528d657aad9c1b931111646"
 
 "@types/q@^0.0.32":
   version "0.0.32"
@@ -2422,13 +2418,9 @@ caniuse-api@^3.0.0:
     lodash.memoize "^4.1.2"
     lodash.uniq "^4.5.0"
 
-caniuse-lite@^1.0.0, caniuse-lite@^1.0.30000884, caniuse-lite@^1.0.30000887, caniuse-lite@^1.0.30000889:
+caniuse-lite@^1.0.0, caniuse-lite@^1.0.30000792, caniuse-lite@^1.0.30000844, caniuse-lite@^1.0.30000884, caniuse-lite@^1.0.30000887, caniuse-lite@^1.0.30000889:
   version "1.0.30000890"
   resolved "https://registry.yarnpkg.com/caniuse-lite/-/caniuse-lite-1.0.30000890.tgz#86a18ffcc65d79ec6a437e985761b8bf1c4efeaf"
-
-caniuse-lite@^1.0.30000792, caniuse-lite@^1.0.30000844:
-  version "1.0.30000885"
-  resolved "https://registry.yarnpkg.com/caniuse-lite/-/caniuse-lite-1.0.30000885.tgz#e889e9f8e7e50e769f2a49634c932b8aee622984"
 
 capture-exit@^1.2.0:
   version "1.2.0"
@@ -7295,11 +7287,11 @@ prop-types@^15.5.10, prop-types@^15.6.2:
     loose-envify "^1.3.1"
     object-assign "^4.1.1"
 
-protractor@^5.1.2:
-  version "5.4.1"
-  resolved "https://registry.yarnpkg.com/protractor/-/protractor-5.4.1.tgz#011a99e38df7aa45d22455b889ffbb13a6ce0bd9"
+protractor@^5.4.2:
+  version "5.4.2"
+  resolved "https://registry.yarnpkg.com/protractor/-/protractor-5.4.2.tgz#329efe37f48b2141ab9467799be2d4d12eb48c13"
+  integrity sha512-zlIj64Cr6IOWP7RwxVeD8O4UskLYPoyIcg0HboWJL9T79F1F0VWtKkGTr/9GN6BKL+/Q/GmM7C9kFVCfDbP5sA==
   dependencies:
-    "@types/node" "^6.0.46"
     "@types/q" "^0.0.32"
     "@types/selenium-webdriver" "^3.0.0"
     blocking-proxy "^1.0.0"
@@ -9017,9 +9009,10 @@ webdriver-js-extender@2.1.0:
     "@types/selenium-webdriver" "^3.0.0"
     selenium-webdriver "^3.0.1"
 
-webdriver-manager@^12.0.6:
-  version "12.1.0"
-  resolved "https://registry.yarnpkg.com/webdriver-manager/-/webdriver-manager-12.1.0.tgz#f6601e52de5f0c97fc7024c889eeb2416f2f1d9d"
+webdriver-manager@^12.0.6, webdriver-manager@^12.1.4:
+  version "12.1.4"
+  resolved "https://registry.yarnpkg.com/webdriver-manager/-/webdriver-manager-12.1.4.tgz#d737ab845fb131e4d66c0eaf8ac374c2bc3bfe22"
+  integrity sha512-aNUzdimlHSl3EotUTdE2QwP9sBUjZgWPCy8C+m1wMmF9jBDKuO/24nnpr2O25Db8dYtsjvj9drPTpSIGqRrNnQ==
   dependencies:
     adm-zip "^0.4.9"
     chalk "^1.1.1"

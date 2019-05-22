@@ -11,6 +11,7 @@
  */
 
 import { browser, by, element } from 'protractor';
+import { Util } from '../util'
 
 export class AppPage {
   navigateTo() {
@@ -18,17 +19,15 @@ export class AppPage {
   }
 
   waitUntilVisible() {
-    const loginExists = ExpectedConditions.presenceOf(this.getLoginButton());
-    const logoutExists = ExpectedConditions.presenceOf(this.getLogoutButton());
-    browser.wait(ExpectedConditions.or(loginExists, logoutExists), 5000);
+    Util.waitElementOr(this.getLoginButton(), this.getLogoutButton());
   }
 
   waitUntilLoggedOut() {
-    browser.wait(ExpectedConditions.presenceOf(this.getLoginButton()), 5000);
+    Util.waitElement(this.getLoginButton());
   }
 
   waitUntilLoggedIn() {
-    browser.wait(ExpectedConditions.presenceOf(this.getLogoutButton()), 5000);
+    Util.waitElement(this.getLogoutButton());
   }
 
   getLoginButton() {
