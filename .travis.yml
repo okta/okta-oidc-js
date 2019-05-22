@@ -1,8 +1,6 @@
 language: node_js
-
 node_js:
 - '8.10'
-
 addons:
   chrome: stable
   apt:
@@ -13,10 +11,8 @@ script:
 - yarn install
 - sh ./scripts/runTests.sh
 - bash ./scripts/snyk.sh
-
 install:
 - yarn install
-
 before_install:
 - curl -o- -L https://yarnpkg.com/install.sh | bash -s -- --version 1.13.0
 - export PATH="$HOME/.yarn/bin:$PATH"
@@ -24,3 +20,11 @@ before_install:
 - sh -e /etc/init.d/xvfb start
 - sudo apt-get update
 - sudo apt-get install -y libappindicator1
+
+notifications:
+  slack:
+    on_pull_requests: false
+    on_success: never
+    on_failure: always
+    rooms:
+     - secure: llwX53NUK+utV8UEFtzXTt5OuhXg+rx/Y3beFNBp7nwASI1k1cpYk8gHhDM6Kj14ydDGtwYd6bL4QcKWWzrA8Hc7EPpXyfgfxF7lDVxIbm62E3rSwqf2XpoNAo0EzcPvjwAGsQnydQUiQR7tR0JTzaHTX+685XreQeQyZXiIB9eWxXCaAkVCRfuoxngcAOXNw1IRMzaRt0pyYbu4qZ0RAA4bLwjlc5RqhAUllGszxX7KCSIJwAa4kXIYT/EsBC1mKeyCdvihvFYp6rPjTDL/J8w8+r9v9SVq8n6/LMcRdEpl8gOIQ3+oLzB1UcX5zWItrVqSXZ221d6z432Vu+mR5olhbcxULkfVZwtTW6tiR/5JkGxI08k5aZAmZupOjMlJN2UJtBxkAUhthCLKPXsrwU0RnW7pOeiH5CKECCsT9S06ZW2VvEJ+CZ1WOqzYtp18Kcq/VqbFqX/ubEy80m0YgnDugLGcwEUrDZFn44g+hu2B59TJMudeOTWEEk6bdy+XTNY4Ufd0uqCoHwBZQICKIXqhxMuxcRYdbFeguTzwu1R7OYagwL9S0PC/RoqrhoiN3vs/KTEVZp7yZLZautT/0cbuDQzfZzJ6RXJZzzNmrQ7Wof9lrNObJgDDdL+dZW9Umv7ELpTjqJicOlih6USjtMq+e+tBiUl/mHMFVnxbZX8=
