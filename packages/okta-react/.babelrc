@@ -1,16 +1,14 @@
 {
-  "presets": [["env", {
+  "presets": [["@babel/env", {
     "targets": {
       "browsers": [
         "> 0.1%",
         "not ie < 11"
       ]
     }
-  }], "react"],
+  }], "@babel/react"],
   "plugins": [
-    "transform-object-rest-spread",
-    "transform-class-properties",
-    "transform-runtime",
+    "@babel/plugin-proposal-class-properties",
     "dynamic-import-node"
   ]
 }

@@ -37,12 +37,12 @@
     "react-native-securerandom": "^0.1.1"
   },
   "devDependencies": {
-    "babel-core": "^6.26.0",
+    "@babel/core": "^7.3.3",
     "babel-preset-expo": "^4.0.0",
     "babel-preset-jest": "^23.2.0",
     "expo": "*",
-    "jest": "^23.6.0",
-    "jest-expo": "^30.0.0",
+    "jest": "^24.1.0",
+    "jest-expo": "29",
     "jest-fetch-mock": "^1.4.2",
     "react": "*",
     "react-native": "0.55.4"
