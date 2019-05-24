@@ -15,7 +15,7 @@ import {
   clearMocks,
   setMocks,
   rateLimitError
-} from './mocks';
+} from '../__mocks__/mocks';
 import { Platform } from 'react-native';
 import TokenClient from '../src/token-client';
 import * as tokenClientUtil from '../src/token-client-util';

@@ -10,7 +10,8 @@
  * See the License for the specific language governing permissions and limitations under the License.
  */
 
-import { SecureStore, Constants } from 'expo';
+import * as SecureStore from 'expo-secure-store';
+import Constants from 'expo-constants';
 import { Platform } from 'react-native';
 import delve from 'dlv';
 import TokenVerifier from './token-verifier';
