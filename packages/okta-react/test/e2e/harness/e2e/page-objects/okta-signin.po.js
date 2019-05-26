@@ -10,11 +10,14 @@
  * See the License for the specific language governing permissions and limitations under the License.
  */
 
-import { browser, by, element, ExpectedConditions } from 'protractor';
+import { by, element } from 'protractor';
+import { Util } from '../util'
 
 export class OktaSignInPage {
     waitUntilVisible() {
-      browser.wait(ExpectedConditions.presenceOf(this.getSubmitButton()), 5000);
+      Util.waitElement(this.getUsernameField());
+      Util.waitElement(this.getPasswordField());
+      Util.waitElement(this.getSubmitButton());
     }
 
     getUsernameField() {
