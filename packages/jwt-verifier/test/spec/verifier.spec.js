@@ -220,7 +220,10 @@ describe('Jwt Verifier', () => {
 
     const verifier = new OktaJwtVerifier({
       issuer: ISSUER,
-      clientId: CLIENT_ID
+      clientId: CLIENT_ID,
+      testing: {
+        disableHttpsCheck: OKTA_TESTING_DISABLEHTTPSCHECK
+      }
     });
 
     it('should only allow includes operator for custom claims', () => {
