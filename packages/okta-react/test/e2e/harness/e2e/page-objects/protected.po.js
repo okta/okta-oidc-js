@@ -10,7 +10,8 @@
  * See the License for the specific language governing permissions and limitations under the License.
  */
 
-import { browser, element, by, ExpectedConditions } from 'protractor';
+import { browser, element, by } from 'protractor';
+import { Util } from '../util'
 
 export class ProtectedPage {
   navigateTo(path) {
@@ -18,12 +19,12 @@ export class ProtectedPage {
   }
 
   waitUntilVisible(path) {
-    browser.wait(ExpectedConditions.urlContains('/protected' + path), 5000);
+    Util.waitUrlContains('/protected' + path);
   }
 
   waitForElement(id) {
     const el = element(by.id(id));
-    browser.wait(ExpectedConditions.presenceOf(el), 5000);
+    Util.waitElement(el);
   }
 
   getLogoutButton() {
