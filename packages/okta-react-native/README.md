@@ -12,7 +12,7 @@ This library currently supports:
 
 ## Prerequisites
 
-* This library requires the use of [Expo](https://expo.io/).
+* This library requires the use of [React Native Unimodules](https://github.com/unimodules/react-native-unimodules). For new projects, it is recommended to use [Expo Bare Workflow](https://docs.expo.io/versions/v32.0.0/bare/hello-world/). It sets up React Native Unimodules for you. If you are using [Expo](https://expo.io), you can skip this step.
 * If you do not already have a **Developer Edition Account**, you can create one at [https://developer.okta.com/signup/](https://developer.okta.com/signup/).
 * If you don't have a React Native app, or are new to React Native, please continue with the [React Native Quickstart](https://github.com/react-community/create-react-native-app#getting-started) guide. It will walk you through the creation of a React Native app and other application development essentials.
 * If you are developing with an Android device emulator, make sure to check out the [React Native - Android Development](https://facebook.github.io/react-native/docs/getting-started.html#android-development-environment) setup instructions.
