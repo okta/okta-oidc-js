@@ -48,6 +48,7 @@
     "jest": "24.1.0",
     "jest-expo": "^32.0.1",
     "jest-fetch-mock": "^2.1.2",
+    "react-native-unimodules": "0.3.1",
     "metro-react-native-babel-preset": "0.52.0",
     "expo-react-native-adapter": "^3.0.1",
     "react": "16.6.3",
