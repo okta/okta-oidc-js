@@ -178,16 +178,3 @@ export const rateLimitError = {
     errorCauses: []
   }
 };
-
-function mockProperties(moduleProperties, customMocks) {
-  const mockedProperties = {};
-  for (let propertyName of Object.keys(moduleProperties)) {
-    const property = moduleProperties[propertyName];
-    const customMock =
-      customMocks && customMocks.hasOwnProperty(propertyName)
-        ? customMocks[propertyName]
-        : property.mock;
-    mockedProperties[propertyName] = mock(property, customMock);
-  }
-  return mockedProperties;
-}
