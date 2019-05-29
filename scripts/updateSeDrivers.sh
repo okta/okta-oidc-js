@@ -113,7 +113,7 @@ function removeSymlinks() {
 function findLatestStandaloneVersion() {
   SE_STANDALONE_LATEST=$(ls -t1 ${TARGET_PATH}node_modules/webdriver-manager/selenium/selenium-server-standalone-*.jar | head -1)
   SE_STANDALONE_REAL_VER=$(echo ${SE_STANDALONE_LATEST} | sed -En 's/.*\/selenium-server-standalone-(.*).jar/\1/p')
-  echo "Real Standlone Version: ${SE_STANDALONE_REAL_VER}"
+  echo "Real Standalone Version: ${SE_STANDALONE_REAL_VER}"
 }
 
 function updateDrivers() {
