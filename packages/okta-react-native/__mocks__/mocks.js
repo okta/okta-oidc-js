@@ -45,7 +45,7 @@ export function setMocks() {
   });
 }
 
-export async function clearMocks() {
+export function clearMocks() {
   Date.now.mock && Date.now.mockClear();
   fetch.mock && fetch.mockClear();
   SecureStore.getItemAsync.mockClear();
