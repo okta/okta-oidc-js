@@ -4,8 +4,8 @@
   "description": "React Native support for OpenID Connect",
   "main": "src/token-client.js",
   "scripts": {
-    "test": "node_modules/.bin/jest",
-    "test:debug": "node --inspect-brk node_modules/jest/bin/jest.js --runInBand"
+    "test": "yarn test:unit",
+    "test:unit": "jest --coverage --verbose --testPathPattern __tests__/.*.test.js"
   },
   "jest": {
     "browser": true,
