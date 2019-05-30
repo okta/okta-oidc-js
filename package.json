@@ -22,7 +22,9 @@
       "**/jest-expo",
       "**/jest-expo/**",
       "**/babel-jest",
-      "**/babel-jest/**"
+      "**/babel-jest/**",
+      "**/react-native",
+      "**/react-native/**"
     ]
   }
 }
