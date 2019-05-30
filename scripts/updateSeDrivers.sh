@@ -3,6 +3,8 @@
 SCRIPT_PATH=$(dirname $(which $0))
 SCRIPT_DIR="${SCRIPT_PATH%scripts}"
 DIR_MARKER="../"
+DEFAULT_STANDALONE_VER=latest
+DEFAULT_CHROME_DRIVER_VER=2.46
 
 DEPTH=$1
 
@@ -79,7 +81,7 @@ function setChromeDriverVersion() {
                 CHROME_DRIVER_VER=75.0.3770.8
             ;;
             *)
-                CHROME_DRIVER_VER=2.46
+                CHROME_DRIVER_VER=${DEFAULT_CHROME_DRIVER_VER}
             ;;
         esac
     fi
@@ -89,7 +91,7 @@ function setChromeDriverVersion() {
 function setStandaloneVersion() {
     if [[ -z ${SE_STANDALONE_VER} ]];
     then
-      SE_STANDALONE_VER=3.141.59
+      SE_STANDALONE_VER=${DEFAULT_STANDALONE_VER}
     fi
     echo "Selenium Standalone Version: ${SE_STANDALONE_VER}"
 }
@@ -108,11 +110,23 @@ function removeSymlinks() {
     fi
 }
 
+function findLatestStandaloneVersion() {
+  SE_STANDALONE_LATEST=$(ls -t1 ${TARGET_PATH}node_modules/webdriver-manager/selenium/selenium-server-standalone-*.jar | head -1)
+  SE_STANDALONE_REAL_VER=$(echo ${SE_STANDALONE_LATEST} | sed -En 's/.*\/selenium-server-standalone-(.*).jar/\1/p')
+  echo "Real Standalone Version: ${SE_STANDALONE_REAL_VER}"
+}
+
 function updateDrivers() {
     # update the chromedriver and standalone driver
     ${TARGET_PATH}node_modules/protractor/bin/webdriver-manager update --versions.chrome ${CHROME_DRIVER_VER} --gecko false --versions.standalone ${SE_STANDALONE_VER}
     CHROME_DRIVER_FILE_NAME=chromedriver_${CHROME_DRIVER_VER}
-    SE_STANDALONE_FILE_NAME=selenium-server-standalone-${SE_STANDALONE_VER}.jar
+    if [[ ${SE_STANDALONE_VER} == 'latest' ]];
+    then
+      findLatestStandaloneVersion
+    else
+      SE_STANDLONE_REAL_VER=${SE_STANDALONE_VER}
+    fi
+    SE_STANDALONE_FILE_NAME=selenium-server-standalone-${SE_STANDALONE_REAL_VER}.jar
 }
 
 function createSymlinks() {
