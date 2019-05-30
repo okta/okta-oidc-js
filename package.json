@@ -17,10 +17,10 @@
   "workspaces": {
     "packages": ["packages/*"],
     "nohoist": [
+      "**/jest",
+      "**/jest/**",
       "**/jest-expo",
-      "**/jest-expo/**",
-      "**/expo",
-      "**/expo/**"
+      "**/jest-expo/**"
     ]
   }
 }

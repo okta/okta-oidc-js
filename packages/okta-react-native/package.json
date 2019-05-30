@@ -39,18 +39,21 @@
   },
   "peerDependencies": {
     "react-native": "*",
-    "react-native-unimodules": "0.3.1",
-    "react-native-securerandom": "^0.1.1"
+    "react-native-securerandom": "^0.1.1",
+    "react-native-unimodules": "0.3.1"
   },
   "devDependencies": {
-    "babel-jest": "24.1.0",
-    "jest": "24.1.0",
+    "@babel/core": "^7.4.5",
+    "@babel/preset-env": "^7.4.5",
+    "babel-jest": "^24.8.0",
+    "expo-react-native-adapter": "^3.0.1",
+    "jest": "^24.1.0",
     "jest-expo": "^32.0.1",
     "jest-fetch-mock": "^2.1.2",
-    "react-native-unimodules": "0.3.1",
     "metro-react-native-babel-preset": "0.52.0",
-    "expo-react-native-adapter": "^3.0.1",
-    "react": "16.6.3",
-    "react-native": "0.58.6"
+    "react": "*",
+    "react-native": "0.58.6",
+    "react-native-unimodules": "0.3.1",
+    "react-native-gesture-handler": "^1.2.2"
   }
 }
