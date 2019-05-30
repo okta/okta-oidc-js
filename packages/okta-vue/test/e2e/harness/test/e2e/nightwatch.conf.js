@@ -8,11 +8,11 @@ module.exports = {
 
   selenium: {
     start_process: true,
-    server_path: require('selenium-server').path,
+    server_path: '../../../../../node_modules/webdriver-manager/selenium/selenium-server-standalone.jar',
     host: '127.0.0.1',
     port: 4444,
     cli_args: {
-      'webdriver.chrome.driver': './test/e2e/lib/chromedriver'
+      'webdriver.chrome.driver': '../../../../../node_modules/webdriver-manager/selenium/chromedriver'
     }
   },
 
@@ -32,7 +32,7 @@ module.exports = {
         javascriptEnabled: true,
         acceptSslCerts: true,
         chromeOptions: {
-          args: ['--no-sandbox']
+          args: ['no-sandbox', 'headless']
         }
       }
     },

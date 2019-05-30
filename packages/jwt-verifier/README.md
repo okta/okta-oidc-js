@@ -63,7 +63,39 @@ const verifier = new OktaJwtVerifier({
 });
 ```
 
-Validation will fail and an error returned if an access token does not have the configured claim.
+Validation fails and an error is returned if an access token does not have the configured claim.
+
+For more complex use cases, you can ask the verifier to assert that a claim includes one or more values. This is useful for array type claims as well as claims that have space-separated values in a string.
+
+You use the form: `<claim name>.includes` in the `assertClaims` object with an array of values to validate.
+
+For example, if you want to assert that an array claim named `groups` includes (at least) `Everyone` and `Another`, you'd write code like this:
+
+```javascript
+const verifier = new OktaJwtVerifier({
+  issuer: ISSUER,
+  clientId: CLIENT_ID,
+  assertClaims: {
+    'groups.includes': ['Everyone', 'Another']
+  }
+});
+```
+
+If you want to assert that a space-separated string claim name `scp` includes (at least) `promos:write` and `promos:delete`, you'd write code like this:
+
+```javascript
+const verifier = new OktaJwtVerifier({
+  issuer: ISSUER,
+  clientId: CLIENT_ID,
+  assertClaims: {
+    'scp.includes': ['promos:write', 'promos:delete']
+  }
+});
+```
+
+The values you want to assert are included are always represented as an array (the right side of the expression). The claim that you're checking against (the left side of the expression) can have either an array (like `groups`) or a space-separated list in a string (like `scp`) as its value type.
+
+NOTE: Currently, `.includes` is the only supported claim operator.
 
 ## Caching & Rate Limiting
 
