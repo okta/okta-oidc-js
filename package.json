@@ -20,7 +20,9 @@
       "**/jest",
       "**/jest/**",
       "**/jest-expo",
-      "**/jest-expo/**"
+      "**/jest-expo/**",
+      "**/babel-jest",
+      "**/babel-jest/**"
     ]
   }
 }
