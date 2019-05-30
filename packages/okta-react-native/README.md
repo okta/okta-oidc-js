@@ -37,7 +37,7 @@ In Okta, applications are OpenID Connect clients that can use Okta Authorization
 |                     | exp://localhost:19000/+expo-auth-session     |
 | Grant Types Allowed | Authorization Code, Refresh Token            |
 
-**Note:** *Login redirect URIs will depend on your scheme. For setting up a scheme on Android and iOS, refer to [configuration](configuration).*
+**Note:** *Login redirect URIs will depend on your scheme. For setting up a scheme on Android and iOS, refer to [configuration](#configuration).*
 
 After you have created the application there are two more values you will need to gather:
 
