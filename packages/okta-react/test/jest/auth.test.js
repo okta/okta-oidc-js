@@ -121,7 +121,7 @@ describe('Auth configuration', () => {
     }
     expect(createInstance).toThrow()
   });
-  it('should throw if the client_id is not provided', () => {
+  it('should throw if the client id is not provided', () => {
     function createInstance () {
       return new Auth({
         issuer: 'https://foo/oauth2/default'
@@ -138,7 +138,16 @@ describe('Auth configuration', () => {
     }
     expect(createInstance).toThrow()
   });
-  it('should throw if the redirect_uri is not provided', () => {
+  it('should throw if a clientId matching {clientId} is provided', () => {
+    function createInstance () {
+      return new Auth({
+        issuer: 'https://foo/oauth2/default',
+        clientId: '{clientId}',
+      });
+    }
+    expect(createInstance).toThrow()
+  });
+  it('should throw if the redirect uri is not provided', () => {
     function createInstance () {
       return new Auth({
         issuer: 'https://foo/oauth2/default',
@@ -147,13 +156,22 @@ describe('Auth configuration', () => {
     }
     expect(createInstance).toThrow();
   });
-
   it('should throw if a redirect_uri matching {redirectUri} is provided', () => {
     function createInstance () {
       return new Auth({
         issuer: 'https://foo/oauth2/default',
         client_id: 'foo',
         redirect_uri: '{redirectUri}'
+      });
+    }
+    expect(createInstance).toThrow();
+  });
+  it('should throw if a redirectUri matching {redirectUri} is provided', () => {
+    function createInstance () {
+      return new Auth({
+        issuer: 'https://foo/oauth2/default',
+        clientId: 'foo',
+        redirectUri: '{redirectUri}'
       });
     }
     expect(createInstance).toThrow();
@@ -180,6 +198,16 @@ describe('Auth component', () => {
       issuer: 'https://foo/oauth2/default',
       client_id: 'foo',
       redirect_uri: 'foo'
+    });
+    const accessToken = await auth.getAccessToken();
+    expect(accessToken).toBe(mockAccessToken);
+    done();
+  });
+  test('can retrieve an accessToken from the with camelcase config keys', async (done) => {
+    const auth = new Auth({
+      issuer: 'https://foo/oauth2/default',
+      clientId: 'foo',
+      redirectUri: 'foo'
     });
     const accessToken = await auth.getAccessToken();
     expect(accessToken).toBe(mockAccessToken);

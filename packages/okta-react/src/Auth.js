@@ -29,8 +29,8 @@ export default class Auth {
     };
 
     assertIssuer(config.issuer, testing);
-    assertClientId(config.client_id);
-    assertRedirectUri(config.redirect_uri);
+    config.clientId ? assertClientId(config.clientId) : assertClientId(config.client_id);
+    config.redirectUri ? assertRedirectUri(config.redirectUri) : assertRedirectUri(config.redirect_uri);
     this._oktaAuth = new OktaAuth(buildConfigObject(config));
     this._oktaAuth.userAgent = `${packageInfo.name}/${packageInfo.version} ${this._oktaAuth.userAgent}`;
     this._config = config;

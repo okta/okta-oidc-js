@@ -75,8 +75,8 @@ class App extends Component {
     return (
       <Router>
         <Security issuer='https://{yourOktaDomain}.com/oauth2/default'
-                  client_id='{clientId}'
-                  redirect_uri={window.location.origin + '/implicit/callback'} >
+                  clientId='{clientId}'
+                  redirectUri={window.location.origin + '/implicit/callback'} >
           <Route path='/' exact={true} component={Home}/>
           <SecureRoute path='/protected' component={Protected}/>
           <Route path='/implicit/callback' component={ImplicitCallback} />
@@ -191,8 +191,8 @@ Security is the top-most component of okta-react. This is where most of the conf
 #### Configuration options
 
 - **issuer** (required) - The OpenId Connect `issuer`
-- **client_id** (required) - The OpenId Connect `client_id`
-- **redirect_uri** (required) - Where the callback handler is hosted
+- **clientId** (required) - The OpenId Connect `client_id`
+- **redirectUri** (required) - Where the callback handler is hosted
 - **scope** *(optional)*: Reserved or custom claims to be returned in the tokens
 - **response_type** *(optional)*: Desired token grant types
 - **onAuthRequired** (optional)
@@ -224,8 +224,8 @@ class App extends Component {
     return (
       <Router>
         <Security issuer='https://{yourOktaDomain}.com/oauth2/default'
-                  client_id='{clientId}'
-                  redirect_uri={window.location.origin + '/implicit/callback'}
+                  clientId='{clientId}'
+                  redirectUri={window.location.origin + '/implicit/callback'}
                   onAuthRequired={customAuthHandler} >
           <Router path='/login' component={CustomLoginComponent}>
           {/* some routes here */}
@@ -253,8 +253,8 @@ const history = createBrowserHistory();
 const auth = new Auth({
   history,
   issuer: 'https://{yourOktaDomain}.com/oauth2/default',
-  client_id: '{clientId}',
-  redirect_uri: window.location.origin + '/implicit/callback',
+  clientId: '{clientId}',
+  redirectUri: window.location.origin + '/implicit/callback',
   onAuthRequired: ({history}) => history.push('/login')
 });
 
