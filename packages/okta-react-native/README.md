@@ -12,7 +12,7 @@ This library currently supports:
 
 ## Prerequisites
 
-* This library requires the use of [React Native Unimodules](https://github.com/unimodules/react-native-unimodules) along with [Cocoapods](https://cocoapods.org/) for iOS development. For new projects, it is recommended to use [Expo Bare Workflow](https://docs.expo.io/versions/v32.0.0/bare/hello-world/), as it sets up React Native Unimodules and pod files for you. If you are using [Expo](https://expo.io), you can skip this step.
+* This library requires the use of [React Native Unimodules](https://github.com/unimodules/react-native-unimodules) along with [Cocoapods](https://cocoapods.org/) for iOS development. For new projects, it is recommended to use [Expo Bare Workflow](https://docs.expo.io/versions/v32.0.0/bare/hello-world/), as it sets up React Native Unimodules and pod files for you.
 * If you do not already have a **Developer Edition Account**, you can create one at [https://developer.okta.com/signup/](https://developer.okta.com/signup/).
 * If you don't have a React Native app, or are new to React Native, please continue with the [React Native Quickstart](https://github.com/react-community/create-react-native-app#getting-started) guide. It will walk you through the creation of a React Native app and other application development essentials.
 * If you are developing with an Android device emulator, make sure to check out the [React Native - Android Development](https://facebook.github.io/react-native/docs/getting-started.html#android-development-environment) setup instructions.
@@ -99,19 +99,6 @@ You will need to configure a scheme for Android and iOS in order for Okta to red
 #### [Optional] Routing
 
 If you would like to configure routing and navigation, you will need to install and configure [React Navigation](https://reactnavigation.org/en/)
-
-### Expo Users
-
-Assuming you're using an app created with `create-react-native-app`, modify your `app.json` to add a `scheme`:
-
-```javascript
-{
-  "expo": {
-    "sdkVersion": "25.0.0",
-    "scheme": "com.oktapreview.{yourOrg}"
-  }
-}
-```
 
 ### Testing on Android Devices
 
