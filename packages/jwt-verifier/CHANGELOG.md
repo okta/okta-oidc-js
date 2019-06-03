@@ -1,3 +1,15 @@
+# 0.0.16
+
+### Features
+
+- [`213e092`](https://github.com/okta/okta-oidc-js/commit/213e092c1f26d7f818a7e838c5b7eb996d9c9e3d) - Added support for an includes operator for assertClaims [#436](https://github.com/okta/okta-oidc-js/pull/436)
+
+# 0.0.15
+
+### Fixes
+
+- [`7fc3ebf`](https://github.com/okta/okta-oidc-js/pull/450/commits/7fc3ebfde56ac0defbd6a0587d7e48edcbd80634) - Pins jkws-rsa at 1.4.0 to work around a dependency problem (see #448 )
+
 # 0.0.14
 
 ### Other
