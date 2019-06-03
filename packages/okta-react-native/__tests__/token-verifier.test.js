@@ -11,7 +11,7 @@
  */
 
 import TokenVerifier from '../src/token-verifier';
-import * as mocks from './mocks';
+import * as mocks from '../__mocks__/mocks';
 
 describe('TokenVerifier', () => {
 

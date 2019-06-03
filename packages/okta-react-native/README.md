@@ -12,7 +12,7 @@ This library currently supports:
 
 ## Prerequisites
 
-* This library requires the use of [Expo](https://expo.io/).
+* This library requires the use of [React Native Unimodules](https://github.com/unimodules/react-native-unimodules) along with [Cocoapods](https://cocoapods.org/) for iOS development. For new projects, it is recommended to use [Expo Bare Workflow](https://docs.expo.io/versions/v32.0.0/bare/hello-world/), as it sets up React Native Unimodules and pod files for you. If you are using [Expo](https://expo.io), you can skip this step.
 * If you do not already have a **Developer Edition Account**, you can create one at [https://developer.okta.com/signup/](https://developer.okta.com/signup/).
 * If you don't have a React Native app, or are new to React Native, please continue with the [React Native Quickstart](https://github.com/react-community/create-react-native-app#getting-started) guide. It will walk you through the creation of a React Native app and other application development essentials.
 * If you are developing with an Android device emulator, make sure to check out the [React Native - Android Development](https://facebook.github.io/react-native/docs/getting-started.html#android-development-environment) setup instructions.
@@ -37,6 +37,8 @@ In Okta, applications are OpenID Connect clients that can use Okta Authorization
 |                     | exp://localhost:19000/+expo-auth-session     |
 | Grant Types Allowed | Authorization Code, Refresh Token            |
 
+**Note:** *Login redirect URIs will depend on your scheme. For setting up a scheme on Android and iOS, refer to [configuration](#configuration).*
+
 After you have created the application there are two more values you will need to gather:
 
 | Setting       | Where to Find                                                                  |
@@ -60,7 +62,45 @@ npm install --save @okta/okta-react-native
 yarn add @okta/okta-react-native
 ```
 
+If you're building a native application, do the following after installation:
+
+```bash
+cd ios
+
+pod install
+```
+
 ## Configuration
+
+### Native Users
+
+You will need to configure a scheme for Android and iOS in order for Okta to redirect back to your app. Here are the steps:
+
+#### Configuring iOS
+
+1. Open the iOS folder in Xcode
+2. Open `info.plist`, and create a new row called `URL types`
+3. Expand `URL types`, and expand `Item 0`, then choose `URL Schemes`
+4. Under `URL Schemes`, add your scheme to `Item 0`
+
+#### Configuring Android
+
+1. In `android/app/src/main`, open `AndroidManifest.xml`
+2. Add the following intent filter below the last intent filter that is already listed:
+```
+<intent-filter android:label="filter_react_native">
+  <action android:name="android.intent.action.VIEW" />
+  <category android:name="android.intent.category.DEFAULT" />
+  <category android:name="android.intent.category.BROWSABLE" />
+  <data android:scheme="yourScheme"/>
+</intent-filter>
+```
+
+#### [Optional] Routing
+
+If you would like to configure routing and navigation, you will need to install and configure [React Navigation](https://reactnavigation.org/en/)
+
+### Expo Users
 
 Assuming you're using an app created with `create-react-native-app`, modify your `app.json` to add a `scheme`:
 
@@ -96,6 +136,7 @@ const tokenClient = new TokenClient({
     'com.oktapreview.{yourOrg}:/+expo-auth-session'
 });
 ```
+**Note:** *redirect_uri will need to match the ones you configured in Okta*
 
 There are additional configuration options you can provide for specialized use cases:
 

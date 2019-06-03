@@ -17,10 +17,14 @@
   "workspaces": {
     "packages": ["packages/*"],
     "nohoist": [
+      "**/jest",
+      "**/jest/**",
       "**/jest-expo",
       "**/jest-expo/**",
-      "**/expo",
-      "**/expo/**"
+      "**/babel-jest",
+      "**/babel-jest/**",
+      "**/react-native",
+      "**/react-native/**"
     ]
   }
 }

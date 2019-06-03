@@ -19,8 +19,8 @@ import {
   expectAuthContext,
   mockRedirect,
   rateLimitError
-} from './mocks';
-import { SecureStore } from 'expo';
+} from '../__mocks__/mocks';
+import * as SecureStore from 'expo-secure-store';
 import TokenClient from '../src';
 const packageJson = require('../package.json');
 

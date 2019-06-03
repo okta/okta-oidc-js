@@ -11,7 +11,8 @@
  */
 
 import jwt from 'jwt-lite';
-import { WebBrowser, SecureStore } from 'expo';
+import * as SecureStore from 'expo-secure-store';
+import * as WebBrowser from 'expo-web-browser';
 import {
   assertIssuer,
   assertClientId,

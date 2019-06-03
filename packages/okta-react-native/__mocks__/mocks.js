@@ -10,7 +10,9 @@
  * See the License for the specific language governing permissions and limitations under the License.
  */
 
-import { SecureStore, WebBrowser, Constants } from 'expo';
+import * as SecureStore from 'expo-secure-store';
+import Constants from 'expo-constants';
+import * as WebBrowser from 'expo-web-browser';
 import { Platform } from 'react-native';
 import { URL } from 'url';
 
@@ -18,24 +20,14 @@ jest.mock('react-native', () => {
   const Platform = {};
   Object.defineProperty(Platform, 'OS', { get: jest.fn() });
   Object.defineProperty(Platform, 'Version', { get: jest.fn() });
-  return { Platform };
-});
-
-jest.mock('expo', () => {
-  const Constants = {};
-  Object.defineProperty(Constants, 'platform', { get: jest.fn() });
-  return {
-    SecureStore: {
-      getItemAsync: jest.fn(),
-      setItemAsync: jest.fn(),
-      deleteItemAsync: jest.fn()
-    },
-    WebBrowser: {
-      openAuthSessionAsync: jest.fn()
-    },
-    Constants
+  return { 
+    Platform
   };
 });
+
+jest.mock('expo-constants');
+jest.mock('expo-web-browser');
+jest.mock('expo-secure-store');
 
 Date.now = jest.fn();
 
