@@ -1,194 +1,43 @@
-# Okta React Native
+# react-native-okta-sdk-bridge
 
-[![npm version](https://img.shields.io/npm/v/@okta/okta-react-native.svg?style=flat-square)](https://www.npmjs.com/package/@okta/okta-react-native)
-[![build status](https://img.shields.io/travis/okta/okta-oidc-js/master.svg?style=flat-square)](https://travis-ci.org/okta/okta-oidc-js)
+## Getting started
 
-The Okta React Native client makes it easy to add authentication to your React Native app with Okta's [OpenID Connect API](https://developer.okta.com/docs/api/resources/oidc.html).
+`$ npm install react-native-okta-sdk-bridge --save`
 
-This library currently supports:
+### Mostly automatic installation
 
-* [OAuth 2.0 Authorization Code Flow](https://tools.ietf.org/html/rfc6749#section-1.3.1)
-* [Proof Key for Code Exchange (PKCE)](https://tools.ietf.org/html/rfc7636)
+`$ react-native link react-native-okta-sdk-bridge`
 
-## Prerequisites
+### Manual installation
 
-* This library requires the use of [React Native Unimodules](https://github.com/unimodules/react-native-unimodules) along with [Cocoapods](https://cocoapods.org/) for iOS development. For new projects, it is recommended to use [Expo Bare Workflow](https://docs.expo.io/versions/v32.0.0/bare/hello-world/), as it sets up React Native Unimodules and pod files for you. If you are using [Expo](https://expo.io), you can skip this step.
-* If you do not already have a **Developer Edition Account**, you can create one at [https://developer.okta.com/signup/](https://developer.okta.com/signup/).
-* If you don't have a React Native app, or are new to React Native, please continue with the [React Native Quickstart](https://github.com/react-community/create-react-native-app#getting-started) guide. It will walk you through the creation of a React Native app and other application development essentials.
-* If you are developing with an Android device emulator, make sure to check out the [React Native - Android Development](https://facebook.github.io/react-native/docs/getting-started.html#android-development-environment) setup instructions.
 
-## :warning: :construction: Alpha Preview :construction: :warning:
+#### iOS
 
-This library is under development and is currently in 0.x version series.  Breaking changes may be introduced at minor versions in the 0.x range.  Please lock your dependency to a specific version until this library reaches 1.x.
+1. In XCode, in the project navigator, right click `Libraries` ➜ `Add Files to [your project's name]`
+2. Go to `node_modules` ➜ `react-native-okta-sdk-bridge` and add `OktaSdkBridge.xcodeproj`
+3. In XCode, in the project navigator, select your project. Add `libOktaSdkBridge.a` to your project's `Build Phases` ➜ `Link Binary With Libraries`
+4. Run your project (`Cmd+R`)<
 
-Need help? Contact [developers@okta.com](mailto:developers@okta.com) or use the [Okta Developer Forum](https://devforum.okta.com).
+#### Android
 
-## Add an OpenID Connect Client in Okta
+1. Open up `android/app/src/main/java/[...]/MainApplication.java`
+  - Add `import com.reactlibrary.OktaSdkBridgePackage;` to the imports at the top of the file
+  - Add `new OktaSdkBridgePackage()` to the list returned by the `getPackages()` method
+2. Append the following lines to `android/settings.gradle`:
+  	```
+  	include ':react-native-okta-sdk-bridge'
+  	project(':react-native-okta-sdk-bridge').projectDir = new File(rootProject.projectDir, 	'../node_modules/react-native-okta-sdk-bridge/android')
+  	```
+3. Insert the following lines inside the dependencies block in `android/app/build.gradle`:
+  	```
+      compile project(':react-native-okta-sdk-bridge')
+  	```
 
-In Okta, applications are OpenID Connect clients that can use Okta Authorization servers to authenticate users.  Your Okta Org already has a default authorization server, so you just need to create an OIDC client that will use it.
-
-* Log into the Okta Developer Dashboard, click **Applications** then **Add Application**.
-* Choose **Native** as the platform, then submit the form the default values, which should look like this:
-
-| Setting             | Value                                        |
-| ------------------- | -------------------------------------------- |
-| App Name            | My Native App                                |
-| Login redirect URIs | com.oktapreview.{yourOrg}:/+expo-auth-session|
-|                     | exp://localhost:19000/+expo-auth-session     |
-| Grant Types Allowed | Authorization Code, Refresh Token            |
-
-**Note:** *Login redirect URIs will depend on your scheme. For setting up a scheme on Android and iOS, refer to [configuration](#configuration).*
-
-After you have created the application there are two more values you will need to gather:
-
-| Setting       | Where to Find                                                                  |
-| ------------- | ------------------------------------------------------------------------------ |
-| Client ID     | In the applications list, or on the "General" tab of a specific application.   |
-| Org URL       | On the home screen of the developer dashboard, in the upper right.             |
-
-**Note:** *As with any Okta application, make sure you assign Users or Groups to the OpenID Connect Client. Otherwise, no one can use it.*
-
-These values will be used in your React application to setup the OpenID Connect flow with Okta.
-
-## Installation
-
-This library is available through [npm](https://www.npmjs.com/package/@okta/okta-react-native). To install it, simply add it to your project:
-
-```bash
-# npm
-npm install --save @okta/okta-react-native
-
-# yarn
-yarn add @okta/okta-react-native
-```
-
-If you're building a native application, do the following after installation:
-
-```bash
-cd ios
-
-pod install
-```
-
-## Configuration
-
-### Native Users
-
-You will need to configure a scheme for Android and iOS in order for Okta to redirect back to your app. Here are the steps:
-
-#### Configuring iOS
-
-1. Open the iOS folder in Xcode
-2. Open `info.plist`, and create a new row called `URL types`
-3. Expand `URL types`, and expand `Item 0`, then choose `URL Schemes`
-4. Under `URL Schemes`, add your scheme to `Item 0`
-
-#### Configuring Android
-
-1. In `android/app/src/main`, open `AndroidManifest.xml`
-2. Add the following intent filter below the last intent filter that is already listed:
-```
-<intent-filter android:label="filter_react_native">
-  <action android:name="android.intent.action.VIEW" />
-  <category android:name="android.intent.category.DEFAULT" />
-  <category android:name="android.intent.category.BROWSABLE" />
-  <data android:scheme="yourScheme"/>
-</intent-filter>
-```
-
-#### [Optional] Routing
-
-If you would like to configure routing and navigation, you will need to install and configure [React Navigation](https://reactnavigation.org/en/)
-
-### Expo Users
-
-Assuming you're using an app created with `create-react-native-app`, modify your `app.json` to add a `scheme`:
-
-```javascript
-{
-  "expo": {
-    "sdkVersion": "25.0.0",
-    "scheme": "com.oktapreview.{yourOrg}"
-  }
-}
-```
-
-### Testing on Android Devices
-
-There is a [known issue](https://github.com/okta/okta-sdk-appauth-android/issues/8) when redirecting back to a URI scheme from the browser via Chrome Custom Tabs. This is due to Chrome **not supporting** JavaScript initiated redirects back to native applications.
-
-To handle this, please refer to the workaround recorded in [this issue](https://github.com/okta/okta-sdk-appauth-android/issues/8).
 
 ## Usage
-
-You will need the values from the OIDC client that you created in the previous step to instantiate the client. You will also need to know your Okta Org URL, which you can see on the home page of the Okta Developer console.
-
-In your application's controller, create a new instance of the `TokenClient`:
-
 ```javascript
-import TokenClient from '@okta/okta-react-native';
+import OktaSdkBridge from 'react-native-okta-sdk-bridge';
 
-const tokenClient = new TokenClient({
-  issuer: 'https://{yourOktaDomain}.com/oauth2/default',
-  client_id: '{clientId}',
-  redirect_uri: __DEV__ ?
-    'exp://localhost:19000/+expo-auth-session' :
-    'com.oktapreview.{yourOrg}:/+expo-auth-session'
-});
-```
-**Note:** *redirect_uri will need to match the ones you configured in Okta*
-
-There are additional configuration options you can provide for specialized use cases:
-
-* `authorization_endpoint` - override the authorization endpoint from the well-known endpoint
-* `storageKey` - Unique key used to store/retrieve secure data
-* `keychainService` - See [Expo - keychainService](https://docs.expo.io/versions/latest/sdk/securestore.html#keychainservice-string-)
-* `keychainAccessible` - (iOS only) Specify when the stored item is accessible. See [Expo - keychainAccessible](https://docs.expo.io/versions/latest/sdk/securestore.html#keychainaccessible-enum-)
-
-### `signInWithRedirect`
-
-This method will automatically redirect users to your Okta organziation for authentication.
-
-```javascript
-await tokenClient.signInWithRedirect();
-```
-
-### `isAuthenticated`
-
-Returns a promise that resolves `true` if there is a valid access token or ID token.
-
-```javascript
-await tokenClient.isAuthenticated();
-```
-
-### `getAccessToken`
-
-This method returns a promise that will return the access token as a string. It ensures the access token is up-to-date and will automatically refresh expired tokens if a refresh token is available. To ensure your app receives a refresh token, request `offline_access`.
-
-```javascript
-await tokenClient.getAccessToken();
-```
-
-### `getIdToken`
-
-This method returns a promise that will return the identity token as a string.
-
-```javascript
-await tokenClient.getIdToken();
-```
-
-### `getUser`
-
-Returns a promise that will fetch the most up-to-date user claims from the [OpenID Connect `/userinfo`](https://developer.okta.com/docs/api/resources/oidc#userinfo) endpoint or parses the identity token claims if an access token isn't provided.
-
-```javascript
-await tokenClient.getUser();
-```
-
-### `signOut`
-
-Terminates the tokens stored inside of [`SecureStore`](https://docs.expo.io/versions/latest/sdk/securestore.html) to clear the user session.
-
-```javascript
-await tokenClient.signOut();
+// TODO: What to do with the module?
+OktaSdkBridge;
 ```
