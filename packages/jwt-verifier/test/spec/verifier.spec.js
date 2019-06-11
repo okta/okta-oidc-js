@@ -142,9 +142,15 @@ describe('Jwt Verifier', () => {
       return getAccessToken(issuer1AccessTokenParams)
       .then(accessToken =>
         verifier.verifyAccessToken(accessToken)
-        .catch(err => expect(err.message).toBe(
-          `claim 'cid' value '${CLIENT_ID}' does not match expected value 'baz', claim 'foo' value 'undefined' does not match expected value 'bar'`
-        )));
+        .catch(err => {
+          // Extra debugging for an intermittent issue
+          const result = typeof accessToken === 'string' ? 'accessToken is a string' : accessToken;
+          expect(result).toBe('accessToken is a string');
+          expect(err.message).toBe(
+            `claim 'cid' value '${CLIENT_ID}' does not match expected value 'baz', claim 'foo' value 'undefined' does not match expected value 'bar'`
+          );
+        })
+      );
     });
   
     it('should cache the jwks for the configured amount of time', () => {
