@@ -1,17 +1,20 @@
 {
-  "name": "react-native-okta-sdk-bridge",
+  "name": "@okta/okta-react-native",
   "title": "React Native Okta Sdk Bridge",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\"",
+    "test:debug": "echo \"Error: no test specified\""
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/github_account/react-native-okta-sdk-bridge.git",
-    "baseUrl": "https://github.com/github_account/react-native-okta-sdk-bridge"
+    "url": "git+https://github.com/okta/okta-oidc-js.git"
   },
+  "files": [
+    "index.js"
+  ],
   "keywords": [
     "react-native"
   ],
@@ -20,7 +23,6 @@
     "email": "yourname@email.com"
   },
   "license": "Apache-2.0",
-  "licenseFilename": "LICENSE",
   "readmeFilename": "README.md",
   "peerDependencies": {
     "react": "^16.5.0",
@@ -29,5 +31,9 @@
   "devDependencies": {
     "react": "^16.5.0",
     "react-native": "^0.59.9"
+  },
+  "dependencies": {
+    "@okta/configuration-validation": "^0.3.0",
+    "jwt-lite": "^1.1.2"
   }
 }
