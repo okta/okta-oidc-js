@@ -13,7 +13,9 @@
     "url": "git+https://github.com/okta/okta-oidc-js.git"
   },
   "files": [
-    "index.js"
+    "index.js",
+    "android",
+    "ios"
   ],
   "keywords": [
     "react-native"

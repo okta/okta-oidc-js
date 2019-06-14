@@ -50,3 +50,9 @@ export const getUser = async () => {
 export const isAuthenticated = async () => {
     return NativeModules.OktaSdkBridge.isAuthenticated();
 }
+
+export const sampleMethod = async () => {
+    return NativeModules.OktaSdkBridge.sampleMethod();
+}
+
+export const NativeModules;
