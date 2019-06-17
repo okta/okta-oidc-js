@@ -47,7 +47,6 @@ const rsaKeyPair = {
 describe('Jwt Verifier', () => {
   describe('tests with api calls', () => {
     const verifier = new OktaJwtVerifier({
-      clientId: CLIENT_ID,
       issuer: ISSUER,
       testing: {
         disableHttpsCheck: OKTA_TESTING_DISABLEHTTPSCHECK
@@ -59,7 +58,6 @@ describe('Jwt Verifier', () => {
       .then(accessToken => verifier.verifyAccessToken(accessToken))
       .then(jwt => {
         expect(jwt.claims.iss).toBe(ISSUER);
-        expect(jwt.claims.cid).toBe(CLIENT_ID);
       });
     });
   
@@ -130,7 +128,6 @@ describe('Jwt Verifier', () => {
     it('should allow me to assert custom claims', () => {
       const verifier = new OktaJwtVerifier({
         issuer: ISSUER,
-        clientId: CLIENT_ID,
         assertClaims: {
           cid: 'baz',
           foo: 'bar'
@@ -155,7 +152,6 @@ describe('Jwt Verifier', () => {
   
     it('should cache the jwks for the configured amount of time', () => {
       const verifier = new OktaJwtVerifier({
-        clientId: CLIENT_ID,
         issuer: ISSUER,
         cacheMaxAge: 500,
         testing: {
@@ -192,7 +188,6 @@ describe('Jwt Verifier', () => {
   
     it('should rate limit jwks endpoint requests on cache misses', () => {
       const verifier = new OktaJwtVerifier({
-        clientId: CLIENT_ID,
         issuer: ISSUER,
         jwksRequestsPerMinute: 2,
         testing: {
@@ -226,7 +221,6 @@ describe('Jwt Verifier', () => {
 
     const verifier = new OktaJwtVerifier({
       issuer: ISSUER,
-      clientId: CLIENT_ID,
       testing: {
         disableHttpsCheck: OKTA_TESTING_DISABLEHTTPSCHECK
       }

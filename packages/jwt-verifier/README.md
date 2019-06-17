@@ -25,14 +25,13 @@ npm install --save @okta/jwt-verifier
 yarn add @okta/jwt-verifier
 ```
 
-Create a verifier instance, bound to the issuer (authorization server URL) and the client ID (the Okta application that will use this authorization server):
+Create a verifier instance, bound to the issuer (authorization server URL):
 
 ```javascript
 const OktaJwtVerifier = require('@okta/jwt-verifier');
 
 const oktaJwtVerifier = new OktaJwtVerifier({
-  issuer: 'https://{yourOktaDomain}/oauth2/default', // required
-  clientId: '{clientId}' // required
+  issuer: 'https://{yourOktaDomain}/oauth2/default' // required
 });
 ```
 

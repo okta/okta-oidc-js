@@ -63,9 +63,10 @@ class OktaJwtVerifier {
   constructor(options = {}) {
     // Assert configuration
     assertIssuer(options.issuer, options.testing);
-    assertClientId(options.clientId);
+    if( options.clientId ) { 
+      assertClientId(options.clientId);
+    }
 
-    this.clientId = options.clientId;
     this.claimsToAssert = options.assertClaims || {};
     this.jwksClient = jwksClient({
       jwksUri: options.issuer + '/v1/keys',
