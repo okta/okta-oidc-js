@@ -55,4 +55,4 @@ export const sampleMethod = async () => {
     return NativeModules.OktaSdkBridge.sampleMethod();
 }
 
-export const NativeModules;
+// export const NativeModules;

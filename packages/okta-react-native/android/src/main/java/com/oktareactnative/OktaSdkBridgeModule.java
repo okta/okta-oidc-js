@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Intent;
 
 import androidx.annotation.NonNull;
+import androidx.fragment.app.Fragment;
 
 import com.facebook.react.ReactActivity;
 import com.facebook.react.bridge.ActivityEventListener;
@@ -35,6 +36,7 @@ public class OktaSdkBridgeModule extends ReactContextBaseJavaModule implements A
     public OktaSdkBridgeModule(ReactApplicationContext reactContext) {
         super(reactContext);
         this.reactContext = reactContext;
+        this.reactContext.addActivityEventListener(this);
     }
 
     @Override
@@ -82,7 +84,7 @@ public class OktaSdkBridgeModule extends ReactContextBaseJavaModule implements A
     @ReactMethod
     public void signIn(final Promise promise) {
         try {
-            ReactActivity currentActivity = (ReactActivity) getCurrentActivity();
+            Activity currentActivity = getCurrentActivity();
 
             if (currentActivity == null) {
                 promise.reject("1000","No activity is available");
@@ -209,7 +211,7 @@ public class OktaSdkBridgeModule extends ReactContextBaseJavaModule implements A
     @ReactMethod
     public void signOut(final Promise promise) {
         try {
-            ReactActivity currentActivity = (ReactActivity) getCurrentActivity();
+            Activity currentActivity = getCurrentActivity();
 
             if (currentActivity == null) {
                 promise.reject("1000","No activity is available");
@@ -272,6 +274,7 @@ public class OktaSdkBridgeModule extends ReactContextBaseJavaModule implements A
 
     @Override
     public void onActivityResult(Activity activity, int requestCode, int resultCode, Intent data) {
+        webClient.handleActivityResult(requestCode & 0xffff, resultCode, data);
     }
 
     @Override
