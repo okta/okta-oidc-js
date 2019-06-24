@@ -2,7 +2,7 @@
   "name": "@okta/okta-react-native",
   "title": "React Native Okta Sdk Bridge",
   "version": "1.0.0",
-  "description": "",
+  "description": "Okta OIDC for React Native",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\"",
@@ -15,15 +15,18 @@
   "files": [
     "index.js",
     "android",
-    "ios"
+    "ios",
+    "LICENSE",
+    "CHANGELOG.md",
+    "package.json"
   ],
   "keywords": [
-    "react-native"
+    "react",
+    "react-native",
+    "authentication",
+    "okta",
+    "oidc"
   ],
-  "author": {
-    "name": "Your Name",
-    "email": "yourname@email.com"
-  },
   "license": "Apache-2.0",
   "readmeFilename": "README.md",
   "peerDependencies": {
