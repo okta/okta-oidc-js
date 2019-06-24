@@ -4,7 +4,7 @@ import {
     assertClientId,
     assertRedirectUri
   } from '@okta/configuration-validation';
-
+import jwt from 'jwt-lite';
 
 export const createConfig = async (
     clientId,
@@ -47,12 +47,27 @@ export const getUser = async () => {
     return NativeModules.OktaSdkBridge.getUser();
 }
 
+export const getUserFromIdToken = async() => {
+    try {
+        let idTokenResponse = await getIdToken();
+        return jwt.decode(idTokenResponse.idToken).claimsSet;
+    } catch(error) {
+        throw error;
+    } 
+}
+
 export const isAuthenticated = async () => {
     return NativeModules.OktaSdkBridge.isAuthenticated();
 }
 
-export const sampleMethod = async () => {
-    return NativeModules.OktaSdkBridge.sampleMethod();
+export const revokeAccessToken = async() => {
+    return NativeModules.OktaSdkBridge.revokeAccessToken();
 }
 
-// export const NativeModules;
+export const revokeIdToken = async() => {
+    return NativeModules.OktaSdkBridge.revokeIdToken();
+}
+
+export const revokeRefreshToken = async() => {
+    return NativeModules.OktaSdkBridge.revokeRefreshToken();
+}
