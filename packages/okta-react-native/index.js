@@ -1,4 +1,4 @@
-import { NativeModules } from 'react-native';
+import { NativeModules, Platform } from 'react-native';
 import {
     assertIssuer,
     assertClientId,
@@ -17,6 +17,11 @@ export const createConfig = async (
     assertClientId(clientId);
     assertRedirectUri(redirectUri);
     assertRedirectUri(endSessionRedirectUri);
+
+    if (Platform.OS === 'ios') {
+        scopes = scopes.join();
+        scopes = scopes.replace(/,/g, ' ');
+    }
     
     return NativeModules.OktaSdkBridge.createConfig(
         clientId,
