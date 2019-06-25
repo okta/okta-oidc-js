@@ -88,14 +88,14 @@ There are three ways to add Okta OIDC iOS to your dependencies:
    With [CocoaPods](https://guides.cocoapods.org/using/getting-started.html), add the following line to
    your `Podfile`:
        
-			 pod 'OktaOidc'
+		pod 'OktaOidc'
 			 
    Then run `pod install`.
 
 2. **Carthage**
 	 To integrate this SDK into your Xcode project using [Carthage](https://github.com/Carthage/Carthage), specify it in your `Cartfile`:
  		 
-				github "okta/okta-oidc-ios"		 
+		github "okta/okta-oidc-ios"		 
 
 	 Then run `carthage update --platform iOS`.
 
@@ -136,11 +136,9 @@ This library depends on the native [Okta OIDC Android](https://github.com/okta/o
 
 1. Add this line to `android/build.gradle`, under `allprojects` -> `repositories`.
 
-		```
 		maven {
 			url  "https://dl.bintray.com/okta/com.okta.android"
     }
-		```
 		
 2. Make sure your `minSdkVersion` is `19` in `android/build.gradle`.
 
