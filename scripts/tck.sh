@@ -1,6 +1,12 @@
 #!/bin/bash
 
-TCK_VERSION=0.5.4-SNAPSHOT
+if [ -z "$1" ]
+  then
+    TCK_VERSION=0.5.4-SNAPSHOT
+  else
+    TCK_VERSION=$1
+fi
+
 TCK_JAR_URL="https://oss.sonatype.org/service/local/artifact/maven/redirect?r=public&g=com.okta.oidc.tck&a=okta-oidc-tck&v=${TCK_VERSION}&e=jar&c=shaded"
 TCK_FILE="./okta-oidc-tck-${TCK_VERSION}-shaded.jar"
 TCK_PEM="./tck-keystore.pem"
@@ -9,8 +15,6 @@ function runTest() {
     test_runner_yml=$1; #"./test/integration-test/resources/testRunner.yml"
     test_output_dir=$2; #"target/cli-test-output"
     testng_xml=$3; #"./test/integration-test/resources/testng.xml"
-
-    echo "test_output_dir: " $2
 
     echo "TCK_FILE:"
 
