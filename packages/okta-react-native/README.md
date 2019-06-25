@@ -144,7 +144,7 @@ This library depends on the native [Okta OIDC Android](https://github.com/okta/o
 
 #### Add redirect scheme
 
-Defining a redirect scheme to capture the authorization redirect. In `android/app/build.gradle`, under `android` -> `defaultConfig, add:
+Defining a redirect scheme to capture the authorization redirect. In `android/app/build.gradle`, under `android` -> `defaultConfig`, add:
 ```
 manifestPlaceholders = [
   appAuthRedirectScheme: '{YOUR_REDIRECT_SCHEME}'

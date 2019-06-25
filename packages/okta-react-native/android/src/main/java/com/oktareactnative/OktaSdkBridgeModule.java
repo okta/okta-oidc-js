@@ -15,7 +15,7 @@ package com.oktareactnative;
 import android.app.Activity;
 import android.content.Intent;
 
-import androidx.annotation.NonNull;
+import android.support.annotation.NonNull;
 import com.facebook.react.bridge.ActivityEventListener;
 import com.facebook.react.bridge.Arguments;
 import com.facebook.react.bridge.Promise;

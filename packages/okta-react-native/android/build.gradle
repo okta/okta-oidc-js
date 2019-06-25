@@ -72,7 +72,7 @@ repositories {
 
 dependencies {
     implementation 'com.facebook.react:react-native:+'
-    implementation 'com.okta.android:oidc-android:1.0.0'
+    implementation 'com.okta.android:oidc-android:1.0.1'
 }
 
 def configureReactNativePom(def pom) {
@@ -91,13 +91,6 @@ def configureReactNativePom(def pom) {
                 name packageJson.license
                 url packageJson.repository.baseUrl + '/blob/master/' + packageJson.licenseFilename
                 distribution 'repo'
-            }
-        }
-
-        developers {
-            developer {
-                id packageJson.author.username
-                name packageJson.author.name
             }
         }
     }
