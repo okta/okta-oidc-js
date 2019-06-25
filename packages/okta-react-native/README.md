@@ -44,8 +44,10 @@ These values will be used in your React application to setup the OpenID Connect 
 
 This library is available through [npm](https://www.npmjs.com/package/@okta/okta-react-native). To install it, simply add it to your project:
 
-`$ npm install @okta/okta-react-native --save`
-`$ react-native link @okta/okta-react-native`
+```
+$ npm install @okta/okta-react-native --save
+$ react-native link @okta/okta-react-native
+```
 
 Perform the following Manual installation steps if you're not using `react-native link`.
 
@@ -66,7 +68,7 @@ Perform the following Manual installation steps if you're not using `react-nativ
 2. Append the following lines to `android/settings.gradle`:
   	```
   	include ':@okta/okta-react-native'
-  	project(':@okta/okta-react-native').projectDir = new File(rootProject.projectDir, 	'../node_modules/@okta/okta-react-native/android')
+  	project(':@okta/okta-react-native').projectDir = new File(rootProject.projectDir, '../node_modules/@okta/okta-react-native/android')
   	```
 3. Insert the following lines inside the dependencies block in `android/app/build.gradle`:
   	```
@@ -85,19 +87,15 @@ There are three ways to add Okta OIDC iOS to your dependencies:
 1. **CocoaPods**
    With [CocoaPods](https://guides.cocoapods.org/using/getting-started.html), add the following line to
    your `Podfile`:
-
-       ```
+       
 			 pod 'OktaOidc'
-			 ```
-
+			 
    Then run `pod install`.
 
 2. **Carthage**
 	 To integrate this SDK into your Xcode project using [Carthage](https://github.com/Carthage/Carthage), specify it in your `Cartfile`:
-
-	 		 ```
-				github "okta/okta-oidc-ios"
-			 ```
+ 		 
+				github "okta/okta-oidc-ios"		 
 
 	 Then run `carthage update --platform iOS`.
 
@@ -137,11 +135,13 @@ If you intend to support iOS 10 and older, you must specify a unique URI to your
 This library depends on the native [Okta OIDC Android](https://github.com/okta/okta-oidc-android) library. You have to add this library through Gradle. Follow the following steps:
 
 1. Add this line to `android/build.gradle`, under `allprojects` -> `repositories`.
+
 		```
 		maven {
 			url  "https://dl.bintray.com/okta/com.okta.android"
     }
 		```
+		
 2. Make sure your `minSdkVersion` is `19` in `android/build.gradle`.
 
 #### Add redirect scheme
@@ -191,7 +191,7 @@ await signIn();
 Returns a promise that resolves `true` if there is a valid access token or ID token.
 
 ```javascript
-await tokenClient.isAuthenticated();
+await isAuthenticated();
 ```
 
 ### `getAccessToken`
@@ -199,7 +199,7 @@ await tokenClient.isAuthenticated();
 This method returns a promise that will return the access token as a string. It ensures the access token is up-to-date and will automatically refresh expired tokens if a refresh token is available. To ensure your app receives a refresh token, request `offline_access`.
 
 ```javascript
-await tokenClient.getAccessToken();
+await getAccessToken();
 ```
 
 ### `getIdToken`
@@ -207,7 +207,7 @@ await tokenClient.getAccessToken();
 This method returns a promise that will return the identity token as a string.
 
 ```javascript
-await tokenClient.getIdToken();
+await getIdToken();
 ```
 
 ### `getUser`
@@ -215,7 +215,7 @@ await tokenClient.getIdToken();
 Returns a promise that will fetch the most up-to-date user claims from the [OpenID Connect `/userinfo`](https://developer.okta.com/docs/api/resources/oidc#userinfo) endpoint.
 
 ```javascript
-await tokenClient.getUser();
+await getUser();
 ```
 
 ### `getUserFromIdToken`
@@ -223,7 +223,7 @@ await tokenClient.getUser();
 Returns the user claims decoded from the identity token.
 
 ```javascript
-await tokenClient.getUserFromIdToken();
+await getUserFromIdToken();
 ```
 
 ### `signOut`
@@ -231,7 +231,7 @@ await tokenClient.getUserFromIdToken();
 Clear the browser session and clear the app session (stored tokens) in memory. 
 
 ```javascript
-await tokenClient.signOut();
+await signOut();
 ```
 
 ### `revokeAccessToken`
@@ -239,7 +239,7 @@ await tokenClient.signOut();
 Revoke the access token to make it inactive.
 
 ```javascript
-await tokenClient.revokeAccessToken();
+await revokeAccessToken();
 ```
 
 ### `revokeIdToken`
@@ -247,7 +247,7 @@ await tokenClient.revokeAccessToken();
 Revoke the identity token to make it inactive.
 
 ```javascript
-await tokenClient.revokeIdToken();
+await revokeIdToken();
 ```
 
 ### `revokeRefreshToken`
@@ -255,5 +255,5 @@ await tokenClient.revokeIdToken();
 Revoke the refresh token to make it inactive.
 
 ```javascript
-await tokenClient.revokeRefreshToken();
+await revokeRefreshToken();
 ```
