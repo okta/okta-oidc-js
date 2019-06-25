@@ -138,7 +138,7 @@ This library depends on the native [Okta OIDC Android](https://github.com/okta/o
 
 		maven {
 			url  "https://dl.bintray.com/okta/com.okta.android"
-    }
+			}
 		
 2. Make sure your `minSdkVersion` is `19` in `android/build.gradle`.
 
