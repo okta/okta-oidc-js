@@ -24,6 +24,7 @@ export interface OktaConfig {
   clientId?: string;
   scope?: string;
   responseType?: string;
+  grantType?: string;
   onAuthRequired?: AuthRequiredFunction;
   testing?: TestingObject;
 }

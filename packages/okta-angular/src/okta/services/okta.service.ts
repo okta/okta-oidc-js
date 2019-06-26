@@ -140,8 +140,19 @@ export class OktaAuthService {
         this.setFromUri(fromUri);
       }
 
+      const responseType = (this.config.responseType || 'id_token token').split(' ');
+      let grantType = this.config.grantType;
+      if (!grantType) {
+          if (responseType.includes('code')) {
+              grantType = 'authorization_code';
+          } else {
+              grantType = 'implicit';
+          }
+      }
+
       this.oktaAuth.token.getWithRedirect({
-        responseType: (this.config.responseType || 'id_token token').split(' '),
+        responseType,
+        grantType,
         // Convert scopes to list of strings
         scopes: this.config.scope.split(' '),
         ...additionalParams
