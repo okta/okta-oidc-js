@@ -13,51 +13,51 @@
 
 package com.oktareactnative;
 
-public final class OktaSdkConstant {
+final class OktaSdkConstant {
 
-    public static final String RESOLVE_TYPE_KEY = "resolve_type";
+    static final String RESOLVE_TYPE_KEY = "resolve_type";
 
-    public static final String ACCESS_TOKEN_KEY = "access_token";
+    static final String ACCESS_TOKEN_KEY = "access_token";
 
-    public static final String ID_TOKEN_KEY = "id_token";
+    static final String ID_TOKEN_KEY = "id_token";
 
-    public static final String REFRESH_TOKEN_KEY = "refresh_token";
+    static final String REFRESH_TOKEN_KEY = "refresh_token";
 
-    public static final String AUTHENTICATED_KEY = "authenticated";
+    static final String AUTHENTICATED_KEY = "authenticated";
 
-    public static final String AUTHORIZED = "authorized";
+    static final String AUTHORIZED = "authorized";
 
-    public static final String SIGNED_OUT = "signed_out";
+    static final String SIGNED_OUT = "signed_out";
 
-    public static final String CANCELLED = "cancelled";
+    static final String CANCELLED = "cancelled";
 
-    public static final String ACTIVE_KEY = "active";
+    static final String ACTIVE_KEY = "active";
 
-    public static final String TOKEN_TYPE_KEY = "token_type";
+    static final String TOKEN_TYPE_KEY = "token_type";
 
-    public static final String SCOPE_KEY = "scope";
+    static final String SCOPE_KEY = "scope";
 
-    public static final String CLIENT_ID_KEY = "client_id";
+    static final String CLIENT_ID_KEY = "client_id";
 
-    public static final String DEVICE_ID_KEY = "device_id";
+    static final String DEVICE_ID_KEY = "device_id";
 
-    public static final String USERNAME_KEY = "username";
+    static final String USERNAME_KEY = "username";
 
-    public static final String NBF_KEY = "nbf";
+    static final String NBF_KEY = "nbf";
 
-    public static final String EXP_KEY = "exp";
+    static final String EXP_KEY = "exp";
 
-    public static final String IAT_KEY = "iat";
+    static final String IAT_KEY = "iat";
 
-    public static final String SUB_KEY = "sub";
+    static final String SUB_KEY = "sub";
 
-    public static final String AUD_KEY = "aud";
+    static final String AUD_KEY = "aud";
 
-    public static final String ISS_KEY = "iss";
+    static final String ISS_KEY = "iss";
 
-    public static final String JTI_KEY = "jti";
+    static final String JTI_KEY = "jti";
 
-    public static final String UID_KEY = "uid";
+    static final String UID_KEY = "uid";
 
     private OktaSdkConstant() {
         throw new AssertionError();
