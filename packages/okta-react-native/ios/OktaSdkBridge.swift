@@ -133,41 +133,33 @@ class OktaSdkBridge: NSObject {
             return
         }
         
-        stateManager.introspect(token: stateManager.accessToken, callback: { payload, error in
-            guard let payload = payload, let isValid = payload["active"] as? Bool else {
-                //TODO :ERROR
-                let error = OktaReactNativeError.unauthenticated
-                promiseRejecter(error.errorCode, error.errorDescription, error)
+        guard let currentAccessToken = stateManager.accessToken else {
+            stateManager.renew { newAccessToken, error in
+                if let error = error {
+                    promiseRejecter(OktaReactNativeError.oktaOidcError.errorCode, error.localizedDescription, error)
+                    return
+                }
+                
+                guard let newStateManager = newAccessToken else {
+                    let error = OktaReactNativeError.noStateManager
+                    promiseRejecter(error.errorCode, error.errorDescription, error)
+                    return
+                }
+                
+                let dic = [
+                    "access_token": newStateManager.accessToken
+                ]
+                
+                promiseResolver(dic)
                 return
             }
-            
-            var dic = [
-                "access_token": stateManager.accessToken
-            ]
-            
-            if !isValid {
-                stateManager.renew { newAccessToken, error in
-                    if let error = error {
-                        promiseRejecter(OktaReactNativeError.oktaOidcError.errorCode, error.localizedDescription, error)
-                        return
-                    }
-                    
-                    guard let newStateManager = newAccessToken else {
-                        let error = OktaReactNativeError.noStateManager
-                        promiseRejecter(error.errorCode, error.errorDescription, error)
-                        return
-                    }
-                    
-                    dic = [
-                        "access_token": newStateManager.accessToken
-                    ]
-                    
-                    promiseResolver(dic)
-                }
-            } else {
-                promiseResolver(dic)
-            }
-        })
+        }
+        
+        let dic = [
+            "access_token": currentAccessToken
+        ]
+        
+        promiseResolver(dic)
     }
     
     @objc(getIdToken:promiseRejecter:)
@@ -253,19 +245,67 @@ class OktaSdkBridge: NSObject {
     @objc(revokeAccessToken:promiseRejecter:)
     func revokeAccessToken(promiseResolver: @escaping RCTPromiseResolveBlock, promiseRejecter: @escaping RCTPromiseRejectBlock) {
         revokeToken(tokenName: "access", promiseResolver: promiseResolver, promiseRejecter: promiseRejecter)
-        return
     }
     
     @objc(revokeIdToken:promiseRejecter:)
     func revokeIdToken(promiseResolver: @escaping RCTPromiseResolveBlock, promiseRejecter: @escaping RCTPromiseRejectBlock) {
         revokeToken(tokenName: "id", promiseResolver: promiseResolver, promiseRejecter: promiseRejecter)
-        return
     }
     
     @objc(revokeRefreshToken:promiseRejecter:)
     func revokeRefreshToken(promiseResolver: @escaping RCTPromiseResolveBlock, promiseRejecter: @escaping RCTPromiseRejectBlock) {
         revokeToken(tokenName: "refresh", promiseResolver: promiseResolver, promiseRejecter: promiseRejecter)
-        return
+    }
+    
+    @objc(introspectAccessToken:promiseRejecter:)
+    func introspectAccessToken(promiseResolver: @escaping RCTPromiseResolveBlock, promiseRejecter: @escaping RCTPromiseRejectBlock) {
+        introspectToken(tokenName: "refresh", promiseResolver: promiseResolver, promiseRejecter: promiseRejecter)
+    }
+    
+    func introspectToken(tokenName: String, promiseResolver: @escaping RCTPromiseResolveBlock, promiseRejecter: @escaping RCTPromiseRejectBlock) {
+        
+        guard let oidcConfig = config else {
+            let error = OktaReactNativeError.notConfigured
+            promiseRejecter(error.errorCode, error.errorDescription, error)
+            return
+        }
+        
+        guard let stateManager = OktaOidcStateManager.readFromSecureStorage(for: oidcConfig) else {
+            let error = OktaReactNativeError.unauthenticated
+            promiseRejecter(error.errorCode, error.errorDescription, error)
+            return
+        }
+        
+        var token: String?
+        
+        switch tokenName {
+        case "access":
+            token = stateManager.accessToken
+        case "id":
+            token = stateManager.idToken
+        case "refresh":
+            token = stateManager.refreshToken
+        default:
+            let error = OktaReactNativeError.errorTokenType
+            promiseRejecter(error.errorCode, error.errorDescription, error)
+            return
+        }
+        
+        stateManager.introspect(token: token, callback: { payload, error in
+            if let error = error {
+                promiseRejecter(OktaReactNativeError.oktaOidcError.errorCode, error.localizedDescription, error)
+                return
+            }
+            
+            guard let payload = payload else {
+                //TODO :ERROR
+                let error = OktaReactNativeError.unauthenticated
+                promiseRejecter(error.errorCode, error.errorDescription, error)
+                return
+            }
+            
+            promiseResolver(payload)
+        })
     }
     
     func revokeToken(tokenName: String, promiseResolver: @escaping RCTPromiseResolveBlock, promiseRejecter: @escaping RCTPromiseRejectBlock) {
@@ -305,6 +345,5 @@ class OktaSdkBridge: NSObject {
             
             promiseResolver(true)
         }
-        return
     }
 }

@@ -1,0 +1,65 @@
+/*
+ * Copyright (c) 2019, Okta, Inc. and/or its affiliates. All rights reserved.
+ * The Okta software accompanied by this notice is provided pursuant to the Apache License, Version 2.0 (the "License.")
+ *
+ * You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0.
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+ * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *
+ * See the License for the specific language governing permissions and limitations under the License.
+ */
+
+
+package com.oktareactnative;
+
+public final class OktaSdkConstant {
+
+    public static final String RESOLVE_TYPE_KEY = "resolve_type";
+
+    public static final String ACCESS_TOKEN_KEY = "access_token";
+
+    public static final String ID_TOKEN_KEY = "id_token";
+
+    public static final String REFRESH_TOKEN_KEY = "refresh_token";
+
+    public static final String AUTHENTICATED_KEY = "authenticated";
+
+    public static final String AUTHORIZED = "authorized";
+
+    public static final String SIGNED_OUT = "signed_out";
+
+    public static final String CANCELLED = "cancelled";
+
+    public static final String ACTIVE_KEY = "active";
+
+    public static final String TOKEN_TYPE_KEY = "token_type";
+
+    public static final String SCOPE_KEY = "scope";
+
+    public static final String CLIENT_ID_KEY = "client_id";
+
+    public static final String DEVICE_ID_KEY = "device_id";
+
+    public static final String USERNAME_KEY = "username";
+
+    public static final String NBF_KEY = "nbf";
+
+    public static final String EXP_KEY = "exp";
+
+    public static final String IAT_KEY = "iat";
+
+    public static final String SUB_KEY = "sub";
+
+    public static final String AUD_KEY = "aud";
+
+    public static final String ISS_KEY = "iss";
+
+    public static final String JTI_KEY = "jti";
+
+    public static final String UID_KEY = "uid";
+
+    private OktaSdkConstant() {
+        throw new AssertionError();
+    }
+}

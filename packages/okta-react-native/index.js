@@ -76,3 +76,19 @@ export const revokeIdToken = async() => {
 export const revokeRefreshToken = async() => {
     return NativeModules.OktaSdkBridge.revokeRefreshToken();
 }
+
+export const introspectAccessToken = async() => {
+    return NativeModules.OktaSdkBridge.introspectAccessToken(); 
+}
+
+export const introspectIdToken = async() => {
+    return NativeModules.OktaSdkBridge.introspectIdToken(); 
+}
+
+export const introspectRefreshToken = async() => {
+    return NativeModules.OktaSdkBridge.introspectRefreshToken(); 
+}
+
+export const refreshTokens = async() => {
+    return NativeModules.OktaSdkBridge.refreshTokens(); 
+}

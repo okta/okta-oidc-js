@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2017, Okta, Inc. and/or its affiliates. All rights reserved.
+ * Copyright (c) 2019, Okta, Inc. and/or its affiliates. All rights reserved.
  * The Okta software accompanied by this notice is provided pursuant to the Apache License, Version 2.0 (the "License.")
  *
  * You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0.
@@ -32,6 +32,8 @@ import com.okta.oidc.ResultCallback;
 import com.okta.oidc.Tokens;
 import com.okta.oidc.clients.sessions.SessionClient;
 import com.okta.oidc.clients.web.WebAuthClient;
+import com.okta.oidc.net.params.TokenTypeHint;
+import com.okta.oidc.net.response.IntrospectInfo;
 import com.okta.oidc.net.response.UserInfo;
 import com.okta.oidc.storage.SharedPreferenceStorage;
 import com.okta.oidc.util.AuthorizationException;
@@ -84,7 +86,7 @@ public class OktaSdkBridgeModule extends ReactContextBaseJavaModule implements A
                     .setRequireHardwareBackedKeyStore(false) // TODO: remember to set it to true when releasing SDK
                     .create();
 
-            promise.resolve("Config has been set up successfully.");
+            promise.resolve(true);
         } catch (Exception e) {
             promise.reject(OktaSdkError.OKTA_OIDC_ERROR.getErrorCode(), e.getLocalizedMessage(), e);
         }
@@ -114,21 +116,21 @@ public class OktaSdkBridgeModule extends ReactContextBaseJavaModule implements A
                     if (status == AuthorizationStatus.AUTHORIZED) {
                         try {
                             Tokens tokens = sessionClient.getTokens();
-                            params.putString("resolve_type", "authorized");
-                            params.putString("access_token", tokens.getAccessToken());
+                            params.putString(OktaSdkConstant.RESOLVE_TYPE_KEY, OktaSdkConstant.AUTHORIZED);
+                            params.putString(OktaSdkConstant.ACCESS_TOKEN_KEY, tokens.getAccessToken());
                             promise.resolve(params);
                         } catch (AuthorizationException e) {
                             promise.reject(OktaSdkError.OKTA_OIDC_ERROR.getErrorCode(), e.getLocalizedMessage(), e);
                         }
                     } else if (status == AuthorizationStatus.SIGNED_OUT) {
-                        params.putString("resolve_type", "signedOut");
+                        params.putString(OktaSdkConstant.RESOLVE_TYPE_KEY, OktaSdkConstant.SIGNED_OUT);
                         promise.resolve(params);
                     }
                 }
 
                 @Override
                 public void onCancel() {
-                    params.putString("resolve_type", "cancelled");
+                    params.putString(OktaSdkConstant.RESOLVE_TYPE_KEY, OktaSdkConstant.CANCELLED);
                     promise.resolve(params);
                 }
 
@@ -160,7 +162,7 @@ public class OktaSdkBridgeModule extends ReactContextBaseJavaModule implements A
                 webClient.getSessionClient().refreshToken(new RequestCallback<Tokens, AuthorizationException>() {
                     @Override
                     public void onSuccess(@NonNull Tokens result) {
-                        params.putString("access_token", tokens.getAccessToken());
+                        params.putString(OktaSdkConstant.ACCESS_TOKEN_KEY, tokens.getAccessToken());
                         promise.resolve(params);
                     }
 
@@ -170,7 +172,7 @@ public class OktaSdkBridgeModule extends ReactContextBaseJavaModule implements A
                     }
                 });
             } else {
-                params.putString("access_token", tokens.getAccessToken());
+                params.putString(OktaSdkConstant.ACCESS_TOKEN_KEY, tokens.getAccessToken());
                 promise.resolve(params);
             }
         } catch (Exception e) {
@@ -191,7 +193,7 @@ public class OktaSdkBridgeModule extends ReactContextBaseJavaModule implements A
             Tokens tokens = sessionClient.getTokens();
             String idToken = tokens.getIdToken();
             if (idToken != null) {
-                params.putString("id_token", idToken);
+                params.putString(OktaSdkConstant.ID_TOKEN_KEY, idToken);
                 promise.resolve(params);
             } else {
                 promise.reject(OktaSdkError.NO_ID_TOKEN.getErrorCode(), OktaSdkError.NO_ID_TOKEN.getErrorMessage());
@@ -233,9 +235,9 @@ public class OktaSdkBridgeModule extends ReactContextBaseJavaModule implements A
             final WritableMap params = Arguments.createMap();
             SessionClient sessionClient = webClient.getSessionClient();
             if (sessionClient.isAuthenticated()) {
-                params.putBoolean("authenticated", true);
+                params.putBoolean(OktaSdkConstant.AUTHENTICATED_KEY, true);
             } else {
-                params.putBoolean("authenticated", false);
+                params.putBoolean(OktaSdkConstant.AUTHENTICATED_KEY, false);
             }
             promise.resolve(params);
         } catch (Exception e) {
@@ -267,22 +269,22 @@ public class OktaSdkBridgeModule extends ReactContextBaseJavaModule implements A
                     if (status == AuthorizationStatus.AUTHORIZED) {
                         try {
                             Tokens tokens = sessionClient.getTokens();
-                            params.putString("resolve_type", "authorized");
-                            params.putString("access_token", tokens.getAccessToken());
+                            params.putString(OktaSdkConstant.RESOLVE_TYPE_KEY, OktaSdkConstant.AUTHORIZED);
+                            params.putString(OktaSdkConstant.ACCESS_TOKEN_KEY, tokens.getAccessToken());
                             promise.resolve(params);
                         } catch (AuthorizationException e) {
                             promise.reject(OktaSdkError.OKTA_OIDC_ERROR.getErrorCode(), e.getLocalizedMessage(), e);
                         }
                     } else if (status == AuthorizationStatus.SIGNED_OUT) {
                         sessionClient.clear();
-                        params.putString("resolve_type", "signedOut");
+                        params.putString(OktaSdkConstant.RESOLVE_TYPE_KEY, OktaSdkConstant.SIGNED_OUT);
                         promise.resolve(params);
                     }
                 }
 
                 @Override
                 public void onCancel() {
-                    params.putString("resolve_type", "cancelled");
+                    params.putString(OktaSdkConstant.RESOLVE_TYPE_KEY, OktaSdkConstant.CANCELLED);
                     promise.resolve(params);
                 }
 
@@ -300,43 +302,62 @@ public class OktaSdkBridgeModule extends ReactContextBaseJavaModule implements A
 
     @ReactMethod
     public void revokeAccessToken(Promise promise) {
-        revokeToken("access", promise);
+        revokeToken(TokenTypeHint.ACCESS_TOKEN, promise);
     }
 
     @ReactMethod
     public void revokeIdToken(Promise promise) {
-        revokeToken("id", promise);
+        revokeToken(TokenTypeHint.ID_TOKEN, promise);
     }
 
     @ReactMethod
     public void revokeRefreshToken(Promise promise) {
-        revokeToken("refresh", promise);
+        revokeToken(TokenTypeHint.REFRESH_TOKEN, promise);
     }
 
-//    @ReactMethod
-//    public void introspectToken(Promise promise) {
-//        try {
-//            if (webClient == null) {
-//                promise.reject(OktaSdkError.NOT_CONFIGURED.getErrorCode(), OktaSdkError.NOT_CONFIGURED.getErrorMessage());
-//            }
-//
-//            webClient.getSessionClient().introspectToken(webClient.getTokens().getRefreshToken(),
-//                    TokenTypeHint.REFRESH_TOKEN, new RequestCallback<IntrospectInfo, AuthorizationException>() {
-//                        @Override
-//                        public void onSuccess(@NonNull IntrospectInfo result) {
-//                            //handle introspect response.
-//                        }
-//
-//                        @Override
-//                        public void onError(String error, AuthorizationException exception) {
-//                            //handle request error
-//                        }
-//                    }
-//            );
-//        } catch (AuthorizationException e) {
-//            //handle error
-//        }
-//    }
+    @ReactMethod
+    public void introspectAccessToken(Promise promise) {
+        introspectToken(TokenTypeHint.ACCESS_TOKEN, promise);
+    }
+
+    @ReactMethod
+    public void introspectIdToken(Promise promise) {
+        introspectToken(TokenTypeHint.ID_TOKEN, promise);
+    }
+
+    @ReactMethod
+    public void introspectRefreshToken(Promise promise) {
+        introspectToken(TokenTypeHint.REFRESH_TOKEN, promise);
+    }
+
+    @ReactMethod
+    public void refreshTokens(final Promise promise) {
+        try {
+
+            if (webClient == null) {
+                promise.reject(OktaSdkError.NOT_CONFIGURED.getErrorCode(), OktaSdkError.NOT_CONFIGURED.getErrorMessage());
+                return;
+            }
+
+            webClient.getSessionClient().refreshToken(new RequestCallback<Tokens, AuthorizationException>() {
+                @Override
+                public void onSuccess(@NonNull Tokens result) {
+                    WritableMap params = Arguments.createMap();
+                    params.putString(OktaSdkConstant.ACCESS_TOKEN_KEY, result.getAccessToken());
+                    params.putString(OktaSdkConstant.ID_TOKEN_KEY, result.getIdToken());
+                    params.putString(OktaSdkConstant.REFRESH_TOKEN_KEY, result.getRefreshToken());
+                    promise.resolve(params);
+                }
+
+                @Override
+                public void onError(String e, AuthorizationException error) {
+                    promise.reject(OktaSdkError.OKTA_OIDC_ERROR.getErrorCode(), error.getLocalizedMessage(), error);
+                }
+            });
+        } catch (Error e) {
+            promise.reject(OktaSdkError.OKTA_OIDC_ERROR.getErrorCode(), e.getLocalizedMessage(), e);
+        }
+    }
 
     @Override
     public void onActivityResult(Activity activity, int requestCode, int resultCode, Intent data) {
@@ -360,13 +381,13 @@ public class OktaSdkBridgeModule extends ReactContextBaseJavaModule implements A
             String token;
 
             switch (tokenName) {
-                case "access":
+                case TokenTypeHint.ACCESS_TOKEN:
                     token = tokens.getAccessToken();
                     break;
-                case "id":
+                case TokenTypeHint.ID_TOKEN:
                     token = tokens.getIdToken();
                     break;
-                case "refresh":
+                case TokenTypeHint.REFRESH_TOKEN:
                     token = tokens.getRefreshToken();
                     break;
                 default:
@@ -386,6 +407,64 @@ public class OktaSdkBridgeModule extends ReactContextBaseJavaModule implements A
                         }
                     });
         } catch (Exception e) {
+            promise.reject(OktaSdkError.OKTA_OIDC_ERROR.getErrorCode(), e.getLocalizedMessage(), e);
+        }
+    }
+
+    private void introspectToken(String tokenName, final Promise promise) {
+        try {
+            if (webClient == null) {
+                promise.reject(OktaSdkError.NOT_CONFIGURED.getErrorCode(), OktaSdkError.NOT_CONFIGURED.getErrorMessage());
+            }
+
+            final SessionClient sessionClient = webClient.getSessionClient();
+            Tokens tokens = sessionClient.getTokens();
+            String token;
+
+            switch (tokenName) {
+                case TokenTypeHint.ACCESS_TOKEN:
+                    token = tokens.getAccessToken();
+                    break;
+                case TokenTypeHint.ID_TOKEN:
+                    token = tokens.getIdToken();
+                    break;
+                case TokenTypeHint.REFRESH_TOKEN:
+                    token = tokens.getRefreshToken();
+                    break;
+                default:
+                    promise.reject(OktaSdkError.ERROR_TOKEN_TYPE.getErrorCode(), OktaSdkError.ERROR_TOKEN_TYPE.getErrorMessage());
+                    return;
+            }
+
+            webClient.getSessionClient().introspectToken(token,
+                    tokenName, new RequestCallback<IntrospectInfo, AuthorizationException>() {
+                        @Override
+                        public void onSuccess(@NonNull IntrospectInfo result) {
+                            WritableMap params = Arguments.createMap();
+                            params.putBoolean(OktaSdkConstant.ACTIVE_KEY, result.isActive());
+                            params.putString(OktaSdkConstant.TOKEN_TYPE_KEY, result.getTokenType());
+                            params.putString(OktaSdkConstant.SCOPE_KEY, result.getScope());
+                            params.putString(OktaSdkConstant.CLIENT_ID_KEY, result.getClientId());
+                            params.putString(OktaSdkConstant.DEVICE_ID_KEY, result.getDeviceId());
+                            params.putString(OktaSdkConstant.USERNAME_KEY, result.getUsername());
+                            params.putInt(OktaSdkConstant.NBF_KEY, result.getNbf());
+                            params.putInt(OktaSdkConstant.EXP_KEY, result.getExp());
+                            params.putInt(OktaSdkConstant.IAT_KEY, result.getIat());
+                            params.putString(OktaSdkConstant.SUB_KEY, result.getSub());
+                            params.putString(OktaSdkConstant.AUD_KEY, result.getAud());
+                            params.putString(OktaSdkConstant.ISS_KEY, result.getIss());
+                            params.putString(OktaSdkConstant.JTI_KEY, result.getJti());
+                            params.putString(OktaSdkConstant.UID_KEY, result.getUid());
+                            promise.resolve(params);
+                        }
+
+                        @Override
+                        public void onError(String e, AuthorizationException error) {
+                            promise.reject(OktaSdkError.OKTA_OIDC_ERROR.getErrorCode(), error.getLocalizedMessage(), error);
+                        }
+                    }
+            );
+        } catch (AuthorizationException e) {
             promise.reject(OktaSdkError.OKTA_OIDC_ERROR.getErrorCode(), e.getLocalizedMessage(), e);
         }
     }

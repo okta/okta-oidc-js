@@ -20,6 +20,7 @@ public enum OktaReactNativeError: Error {
     case noIdToken
     case oktaOidcError
     case errorTokenType
+    case errorPayload
 }
 
 extension OktaReactNativeError: LocalizedError {
@@ -39,6 +40,8 @@ extension OktaReactNativeError: LocalizedError {
             return NSLocalizedString("Okta Oidc error", comment: "")
         case .errorTokenType:
             return NSLocalizedString("Token type not found", comment: "")
+        case .errorPayload:
+            return NSLocalizedString("Error in retrieving payload", comment: "")
         }
     }
     public var errorCode: String? {
@@ -57,6 +60,8 @@ extension OktaReactNativeError: LocalizedError {
             return "-600"
         case .errorTokenType:
             return "-700"
+        case .errorPayload:
+            return "-800"
         }
     }
 }
