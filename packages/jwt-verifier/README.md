@@ -10,8 +10,8 @@ This library verifies Okta access tokens (issued by Okta Custom Authorization se
 For any access token to be valid, the following are asserted:
 * Signature is valid (the token was signed by a private key which has a corresponding public key in the JWKS response from the authorization server).
 * Access token is not expired (requires local system time to be in sync with Okta, checks the `exp` claim of the access token).
-* The `aud` claim matches any expected `aud` claim passed to `verifyAccessToken()`
-* The `iss` claim matches the issuer the verifier is constructed with
+* The `aud` claim matches any expected `aud` claim passed to `verifyAccessToken()`.
+* The `iss` claim matches the issuer the verifier is constructed with.
 * Any custom claim assertions that have been configured.
 
 > This library is for Node.js applications and will not compile into a front-end application.  If you need to work with tokens in front-end applications, please see [okta-auth-js](https://github.com/okta/okta-auth-js).
@@ -51,6 +51,19 @@ oktaJwtVerifier.verifyAccessToken(accessTokenString, expectedAud)
 .catch(err => {
   // a validation failed, inspect the error
 });
+```
+
+The expected audience passed to `verifyAccessToken()` is required, and can be either a string (direct match) or an array strings (the actual `aud` claim in the token must match one of the strings).
+
+```javascript
+// Passing a string for expectedAud
+oktaJwtVerifier.verifyAccessToken(accessTokenString, 'api://default')
+.then(jwt => console.log('token is valid') )
+.catch(err => console.warn('token failed validation') );
+
+oktaJwtVerifier.verifyAccessToken(accessTokenString, [ 'api://special', 'api://default'] )
+.then(jwt => console.log('token is valid') )
+.catch(err => console.warn('token failed validation') );
 ```
 
 ## Custom Claims Assertions

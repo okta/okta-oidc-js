@@ -77,7 +77,7 @@ function verifyAssertedClaims(verifier, claims) {
 
 function verifyAudience(expected, aud) {
   if( !expected ) {
-    return; // Legacy behavior - don't validate if no audience expectation given
+    throw new Error('expected audience is required');
   }
 
   if ( Array.isArray(expected) && !expected.includes(aud) ) {

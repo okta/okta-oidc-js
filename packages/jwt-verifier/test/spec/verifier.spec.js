@@ -48,6 +48,7 @@ const rsaKeyPair = {
 
 describe('Jwt Verifier', () => {
   describe('Access token tests with api calls', () => {
+    const expectedAud = 'api://default';
     const verifier = new OktaJwtVerifier({
       issuer: ISSUER,
       testing: {
@@ -57,7 +58,7 @@ describe('Jwt Verifier', () => {
 
     it('should allow me to verify Okta access tokens', () => {
       return getAccessToken(issuer1AccessTokenParams)
-      .then(accessToken => verifier.verifyAccessToken(accessToken))
+      .then(accessToken => verifier.verifyAccessToken(accessToken, expectedAud))
       .then(jwt => {
         expect(jwt.claims.iss).toBe(ISSUER);
       });
@@ -65,7 +66,7 @@ describe('Jwt Verifier', () => {
 
     it('should fail if the signature is invalid', () => {
       return getAccessToken(issuer1AccessTokenParams)
-      .then(accessToken => verifier.verifyAccessToken(accessToken))
+      .then(accessToken => verifier.verifyAccessToken(accessToken, expectedAud))
       .then(jwt => {
         // Create an access token with the same claims and kid, then re-sign it with another RSA private key - this should fail
         const token = new njwt.Jwt(jwt.claims)
@@ -74,14 +75,14 @@ describe('Jwt Verifier', () => {
           .setIssuer(ISSUER)
           .setHeader('kid', jwt.header.kid)
           .compact();
-        return verifier.verifyAccessToken(token)
+        return verifier.verifyAccessToken(token, expectedAud)
         .catch(err => expect(err.message).toBe('Signature verification failed'));
       });
     });
 
     it('should fail if no kid is present in the JWT header', () => {
       return getAccessToken(issuer1AccessTokenParams)
-      .then(accessToken => verifier.verifyAccessToken(accessToken))
+      .then(accessToken => verifier.verifyAccessToken(accessToken, expectedAud))
       .then(jwt => {
         // Create an access token that does not have a kid
         const token = new njwt.Jwt(jwt.claims)
@@ -89,14 +90,14 @@ describe('Jwt Verifier', () => {
           .setSigningAlgorithm('RS256')
           .setSigningKey(rsaKeyPair.private)
           .compact();
-        return verifier.verifyAccessToken(token)
+        return verifier.verifyAccessToken(token, expectedAud)
         .catch(err => expect(err.message).toBe('Error while resolving signing key for kid "undefined"'));
       });
     });
 
     it('should fail if the kid cannot be found', () => {
       return getAccessToken(issuer1AccessTokenParams)
-      .then(accessToken => verifier.verifyAccessToken(accessToken))
+      .then(accessToken => verifier.verifyAccessToken(accessToken, expectedAud))
       .then(jwt => {
         // Create an access token with the same claims but a kid that will not resolve
         const token = new njwt.Jwt(jwt.claims)
@@ -104,7 +105,7 @@ describe('Jwt Verifier', () => {
           .setSigningKey(rsaKeyPair.private)
           .setHeader('kid', 'foo')
           .compact();
-        return verifier.verifyAccessToken(token)
+        return verifier.verifyAccessToken(token, expectedAud)
         .catch(err => expect(err.message).toBe('Error while resolving signing key for kid "foo"'));
       });
     });
@@ -112,13 +113,13 @@ describe('Jwt Verifier', () => {
     it('should fail if the token is expired (exp)', () => {
       return getAccessToken(issuer1AccessTokenParams)
       .then(accessToken =>
-        verifier.verifyAccessToken(accessToken)
+        verifier.verifyAccessToken(accessToken, expectedAud)
         .then(jwt => {
           // Now advance time past the exp claim
           const now = new Date();
           const then = new Date((jwt.claims.exp * 1000) + 1000);
           tk.travel(then);
-          return verifier.verifyAccessToken(accessToken)
+          return verifier.verifyAccessToken(accessToken, expectedAud)
           .then(() => {
             throw new Error('Should have errored');
           })
@@ -142,7 +143,7 @@ describe('Jwt Verifier', () => {
       });
       return getAccessToken(issuer1AccessTokenParams)
       .then(accessToken =>
-        verifier.verifyAccessToken(accessToken)
+        verifier.verifyAccessToken(accessToken, expectedAud)
         .catch(err => {
           // Extra debugging for an intermittent issue
           const result = typeof accessToken === 'string' ? 'accessToken is a string' : accessToken;
@@ -169,16 +170,16 @@ describe('Jwt Verifier', () => {
           dont_print: true
         });
         const nockCallObjects = nock.recorder.play();
-        return verifier.verifyAccessToken(accessToken)
+        return verifier.verifyAccessToken(accessToken, expectedAud)
         .then(jwt => {
           expect(nockCallObjects.length).toBe(1);
-          return verifier.verifyAccessToken(accessToken);
+          return verifier.verifyAccessToken(accessToken, expectedAud);
         })
         .then(jwt => {
           expect(nockCallObjects.length).toBe(1);
           return new Promise((resolve, reject) => {
             setTimeout(() => {
-              verifier.verifyAccessToken(accessToken)
+              verifier.verifyAccessToken(accessToken, expectedAud)
               .then(jwt => {
                 expect(nockCallObjects.length).toBe(2);
                 resolve();
@@ -201,7 +202,7 @@ describe('Jwt Verifier', () => {
       return getAccessToken(issuer1AccessTokenParams)
       .then((accessToken => {
         nock.recorder.clear();
-        return verifier.verifyAccessToken(accessToken)
+        return verifier.verifyAccessToken(accessToken, expectedAud)
         .then(jwt => {
           // Create an access token with the same claims but a kid that will not resolve
           const token = new njwt.Jwt(jwt.claims)
@@ -209,8 +210,8 @@ describe('Jwt Verifier', () => {
             .setSigningKey(rsaKeyPair.private)
             .setHeader('kid', 'foo')
             .compact();
-          return verifier.verifyAccessToken(token)
-          .catch(err => verifier.verifyAccessToken(token))
+          return verifier.verifyAccessToken(token, expectedAud)
+          .catch(err => verifier.verifyAccessToken(token, expectedAud))
           .catch(err => {
             const nockCallObjects = nock.recorder.play();
             // Expect 1 request for the valid kid, and 1 request for the 2 attempts with an invalid kid
@@ -278,6 +279,7 @@ describe('Jwt Verifier', () => {
 
     it('fails if iss claim does not match verifier issuer', () => {
       const claims = {
+        aud: 'http://myapp.com/',
         iss: 'not-the-issuer',
       };
 
@@ -295,15 +297,16 @@ describe('Jwt Verifier', () => {
       });
       mockKidAsKeyFetch(verifier);
 
-      return verifier.verifyAccessToken(token)
+      return verifier.verifyAccessToken(token, claims.aud)
+        .then( () => { throw new Error('invalid issuer did not throw an error'); } )
         .catch( err => {
           expect(err.message).toBe(`issuer not-the-issuer does not match expected issuer: ${ISSUER}`);
         });
     });
 
-    it('passes when no audience expectation is passed (Legacy)', () => {
+    it('fails when no audience expectation is passed', () => {
       const claims = {
-        aud: 'http://wrong-aud.com/',
+        aud: 'http://any-aud.com/',
         iss: ISSUER,
       };
 
@@ -321,7 +324,11 @@ describe('Jwt Verifier', () => {
       });
       mockKidAsKeyFetch(verifier);
 
-      return verifier.verifyAccessToken(token);
+      return verifier.verifyAccessToken(token)
+        .then( () => { throw new Error('expected audience should be required, but was not'); } )
+        .catch( err => {
+          expect(err.message).toBe(`expected audience is required`);
+        });
     });
 
     it('passes when given an audience matching expectation string', () => {
@@ -423,10 +430,42 @@ describe('Jwt Verifier', () => {
           expect(err.message).toBe(`audience claim http://wrong-aud.com/ does not match one of the expected audiences: one, http://myapp.com/, three`);
         });
     });
+
+    it('fails when given an empty array of audience expectations', () => {
+      const claims = {
+        aud: 'http://any-aud.com/',
+        iss: ISSUER,
+      };
+
+      const token = new njwt.Jwt(claims)
+        .setSigningAlgorithm('RS256')
+        .setSigningKey(rsaKeyPair.private)
+        .setHeader('kid', rsaKeyPair.public) // For override of key retrieval below
+        .compact();
+
+      const verifier = new OktaJwtVerifier({
+        issuer: ISSUER,
+        testing: {
+          disableHttpsCheck: OKTA_TESTING_DISABLEHTTPSCHECK
+        }
+      });
+      mockKidAsKeyFetch(verifier);
+
+      return verifier.verifyAccessToken(token, [])
+        .then( () => { throw new Error('Invalid audience claim was accepted') } )
+        .catch(err => {
+          expect(err.message).toBe(`audience claim http://any-aud.com/ does not match one of the expected audiences: `);
+        });
+    });
   });
 
 
   describe('Access Token custom claim tests with stubs', () => {
+
+    const otherClaims = { 
+      iss: ISSUER,
+      aud: 'http://myapp.com/',
+    };
 
     const verifier = new OktaJwtVerifier({
       issuer: ISSUER,
@@ -441,14 +480,14 @@ describe('Jwt Verifier', () => {
         verify: function(jwt, cb) {
           cb(null, {
             body: {
-              iss: ISSUER,
+              ...otherClaims,
               groups: ['Everyone', 'Another']
             }
           })
         }
       };
 
-      return verifier.verifyAccessToken('anything')
+      return verifier.verifyAccessToken('anything', otherClaims.aud)
       .catch(err => expect(err.message).toBe(
         `operator: 'blarg' invalid. Supported operators: 'includes'.`
       ));
@@ -460,14 +499,14 @@ describe('Jwt Verifier', () => {
         verify: function(jwt, cb) {
           cb(null, {
             body: {
-              iss: ISSUER,
+              ...otherClaims,
               groups: ['Everyone', 'Another']
             }
           })
         }
       };
 
-      return verifier.verifyAccessToken('anything')
+      return verifier.verifyAccessToken('anything', otherClaims.aud)
       .then(jwt => expect(jwt.claims.groups).toEqual(['Everyone', 'Another']));
     });
 
@@ -477,14 +516,14 @@ describe('Jwt Verifier', () => {
         verify: function(jwt, cb) {
           cb(null, {
             body: {
-              iss: ISSUER,
+              ...otherClaims,
               scp: 'promos:read promos:write'
             }
           })
         }
       };
 
-      return verifier.verifyAccessToken('anything')
+      return verifier.verifyAccessToken('anything', otherClaims.aud)
       .then(jwt => expect(jwt.claims.scp).toBe('promos:read promos:write'));
     });
 
@@ -494,33 +533,34 @@ describe('Jwt Verifier', () => {
         verify: function(jwt, cb) {
           cb(null, {
             body: {
-              iss: ISSUER,
+              ...otherClaims,
               groups: ['Everyone', 'Another']
             }
           })
         }
       };
 
-      return verifier.verifyAccessToken('anything')
+      return verifier.verifyAccessToken('anything', otherClaims.aud)
       .catch(err => expect(err.message).toBe(
         `claim 'groups' value 'Everyone,Another' does not include expected value 'Yet Another'`
       ));
     });
 
     it('should fail in asserting claims where includes is flat, claim is flat', () => {
+      const expectedAud = 'http://myapp.com/';
       verifier.claimsToAssert = {'scp.includes': 'promos:delete'};
       verifier.verifier = {
         verify: function(jwt, cb) {
           cb(null, {
             body: {
-              iss: ISSUER,
+              ...otherClaims,
               scp: 'promos:read promos:write'
             }
           })
         }
       };
 
-      return verifier.verifyAccessToken('anything')
+      return verifier.verifyAccessToken('anything', otherClaims.aud)
       .catch(err => expect(err.message).toBe(
         `claim 'scp' value 'promos:read promos:write' does not include expected value 'promos:delete'`
       ));
@@ -532,14 +572,14 @@ describe('Jwt Verifier', () => {
         verify: function(jwt, cb) {
           cb(null, {
             body: {
-              iss: ISSUER,
+              ...otherClaims,
               groups: ['Everyone', 'Another', 'Yet Another']
             }
           })
         }
       };
 
-      return verifier.verifyAccessToken('anything')
+      return verifier.verifyAccessToken('anything', otherClaims.aud)
       .then(jwt => expect(jwt.claims.groups).toEqual(['Everyone', 'Another', 'Yet Another']));
     });
 
@@ -549,14 +589,14 @@ describe('Jwt Verifier', () => {
         verify: function(jwt, cb) {
           cb(null, {
             body: {
-              iss: ISSUER,
+              ...otherClaims,
               scp: 'promos:read promos:write promos:delete'
             }
           })
         }
       };
 
-      return verifier.verifyAccessToken('anything')
+      return verifier.verifyAccessToken('anything', otherClaims.aud)
       .then(jwt => expect(jwt.claims.scp).toBe('promos:read promos:write promos:delete'));
     });
 
@@ -566,14 +606,14 @@ describe('Jwt Verifier', () => {
         verify: function(jwt, cb) {
           cb(null, {
             body: {
-              iss: ISSUER,
+              ...otherClaims,
               groups: ['Everyone', 'Another']
             }
           })
         }
       };
 
-      return verifier.verifyAccessToken('anything')
+      return verifier.verifyAccessToken('anything', otherClaims.aud)
       .catch(err => expect(err.message).toBe(
         `claim 'groups' value 'Everyone,Another' does not include expected value 'Yet Another'`
       ));
@@ -585,14 +625,14 @@ describe('Jwt Verifier', () => {
         verify: function(jwt, cb) {
           cb(null, {
             body: {
-              iss: ISSUER,
+              ...otherClaims,
               scp: 'promos:read promos:write'
             }
           })
         }
       };
 
-      return verifier.verifyAccessToken('anything')
+      return verifier.verifyAccessToken('anything', otherClaims.aud)
       .catch(err => expect(err.message).toBe(
         `claim 'scp' value 'promos:read promos:write' does not include expected value 'promos:delete'`
       ));
