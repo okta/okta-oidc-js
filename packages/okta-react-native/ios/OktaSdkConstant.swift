@@ -10,7 +10,15 @@
  * See the License for the specific language governing permissions and limitations under the License.
  */
 
-#import <Foundation/Foundation.h>
-#import <React/RCTBridgeModule.h>
-#import <React/RCTUtils.h>
+import Foundation
 
+struct OktaSdkConstant {
+    static let RESOLVE_TYPE_KEY = "resolve_type"
+    static let ACCESS_TOKEN_KEY = "access_token"
+    static let ID_TOKEN_KEY = "id_token"
+    static let REFRESH_TOKEN_KEY = "refresh_token"
+    static let AUTHENTICATED_KEY = "authenticated"
+    static let AUTHORIZED = "authorized"
+    static let SIGNED_OUT = "signed_out"
+    static let CANCELLED = "cancelled"
+}

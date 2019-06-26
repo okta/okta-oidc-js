@@ -8,6 +8,8 @@
 
 /* Begin PBXBuildFile section */
 		A997533A22BAC05800503B21 /* OktaSdkBridge.swift in Sources */ = {isa = PBXBuildFile; fileRef = A997533922BAC05800503B21 /* OktaSdkBridge.swift */; };
+		A99754E022C124B400503B21 /* OktaSDKError.swift in Sources */ = {isa = PBXBuildFile; fileRef = A99754DF22C124B400503B21 /* OktaSDKError.swift */; };
+		A99754E222C3FC5800503B21 /* OktaSdkConstant.swift in Sources */ = {isa = PBXBuildFile; fileRef = A99754E122C3FC5800503B21 /* OktaSdkConstant.swift */; };
 		B3E7B58A1CC2AC0600A0062D /* ReactNativeOktaSdkBridge.m in Sources */ = {isa = PBXBuildFile; fileRef = B3E7B5891CC2AC0600A0062D /* ReactNativeOktaSdkBridge.m */; };
 /* End PBXBuildFile section */
 
@@ -27,6 +29,8 @@
 		134814201AA4EA6300B7C361 /* libReactNativeOktaSdkBridge.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libReactNativeOktaSdkBridge.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		A997533822BAC05700503B21 /* ReactNativeOktaSdkBridge-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "ReactNativeOktaSdkBridge-Bridging-Header.h"; sourceTree = "<group>"; };
 		A997533922BAC05800503B21 /* OktaSdkBridge.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OktaSdkBridge.swift; sourceTree = "<group>"; };
+		A99754DF22C124B400503B21 /* OktaSDKError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OktaSDKError.swift; sourceTree = "<group>"; };
+		A99754E122C3FC5800503B21 /* OktaSdkConstant.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OktaSdkConstant.swift; sourceTree = "<group>"; };
 		B3E7B5891CC2AC0600A0062D /* ReactNativeOktaSdkBridge.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ReactNativeOktaSdkBridge.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -52,6 +56,8 @@
 		58B511D21A9E6C8500147676 = {
 			isa = PBXGroup;
 			children = (
+				A99754E122C3FC5800503B21 /* OktaSdkConstant.swift */,
+				A99754DF22C124B400503B21 /* OktaSDKError.swift */,
 				A997533922BAC05800503B21 /* OktaSdkBridge.swift */,
 				B3E7B5891CC2AC0600A0062D /* ReactNativeOktaSdkBridge.m */,
 				A997533822BAC05700503B21 /* ReactNativeOktaSdkBridge-Bridging-Header.h */,
@@ -118,7 +124,9 @@
 			buildActionMask = 2147483647;
 			files = (
 				A997533A22BAC05800503B21 /* OktaSdkBridge.swift in Sources */,
+				A99754E022C124B400503B21 /* OktaSDKError.swift in Sources */,
 				B3E7B58A1CC2AC0600A0062D /* ReactNativeOktaSdkBridge.m in Sources */,
+				A99754E222C3FC5800503B21 /* OktaSdkConstant.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
