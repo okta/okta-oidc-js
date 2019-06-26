@@ -83,7 +83,7 @@ public class OktaSdkBridgeModule extends ReactContextBaseJavaModule implements A
                     .withConfig(config)
                     .withContext(reactContext)
                     .withStorage(new SharedPreferenceStorage(reactContext))
-                    .setRequireHardwareBackedKeyStore(false) // TODO: remember to set it to true when releasing SDK
+                    .setRequireHardwareBackedKeyStore(true) // TODO: remember to set it to true when releasing SDK
                     .create();
 
             promise.resolve(true);
