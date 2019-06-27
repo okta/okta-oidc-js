@@ -10,10 +10,10 @@ Pod::Spec.new do |s|
 
   s.authors      = package['author']
   s.homepage     = package['homepage']
-  s.platform     = :ios, "9.0"
+  s.platform     = :ios, "11.0"
 
-  s.source       = { :git => "https://github.com/FormidableLabs/react-native-app-auth.git" }
-  s.source_files  = "ios/**/*.{h,m}"
+  s.source       = { :git => "https://github.com/okta/okta-oidc-js/tree/master/packages/okta-react-native" }
+  s.source_files  = "ios/**/*.{h,m,swift}"
 
   s.dependency 'React'
 end
