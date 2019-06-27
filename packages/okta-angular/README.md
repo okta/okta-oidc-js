@@ -9,7 +9,7 @@ This library currently supports:
 
 - [OAuth 2.0 Implicit Flow](https://tools.ietf.org/html/rfc6749#section-1.3.2)
 
-This library is tested against the latest version of Angular (currently 6), and is currently known to be compatible with Angular 4, 5, and 6.
+This library has been tested for compatibility with the following Angular versions: 4, 5, 6, 7, 8
 
 `okta-angular` works directly with [`@angular/router`](https://angular.io/guide/router). 
 
