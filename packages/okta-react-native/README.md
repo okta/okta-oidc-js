@@ -168,12 +168,13 @@ import { createConfig, signIn, signOut, getAccessToken } from '@okta/okta-react-
 This method will create a configured client on the native modules.
 
 ```javascript
-await createConfig(
-	'<YOUR_CLIENT_ID>', 
-	'<YOUR_REDIRECT_URL>', 
-	'<YOUR_END_SESSION_REDIRECT_URL>', 
-	'<YOUR_ISSUER_URL>', 
-	['<YOUR_SCOPES_ARRAY>']);
+await createConfig({
+	clientId: "{clientId}",
+	redirectUri: "{redirectUri}",
+	endSessionRedirectUri: "{endSessionRedirectUri}",
+	discoveryUri: "https://{yourOktaDomain}",
+	scopes: ["openid", "profile", "offline_access"]
+});
 ``` 
 
 ### `signIn`

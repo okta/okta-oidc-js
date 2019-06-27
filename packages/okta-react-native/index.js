@@ -1,17 +1,14 @@
 import { NativeModules, Platform } from 'react-native';
-import {
-	assertIssuer,
-  assertClientId,
-	assertRedirectUri
-} from '@okta/configuration-validation';
+import { assertIssuer, assertClientId, assertRedirectUri } from '@okta/configuration-validation';
 import jwt from 'jwt-lite';
 
-export const createConfig = async (
+export const createConfig = async ({
   clientId,
   redirectUri, 
   endSessionRedirectUri, 
   discoveryUri,
-  scopes) => {
+	scopes
+}) => {
 
   assertIssuer(discoveryUri);
   assertClientId(clientId);
@@ -19,9 +16,8 @@ export const createConfig = async (
   assertRedirectUri(endSessionRedirectUri);
 
   if (Platform.OS === 'ios') {
-		scopes = scopes.join();
-		scopes = scopes.replace(/,/g, ' ');
-  }
+		scopes = scopes.join(' ');
+	}
     
   return NativeModules.OktaSdkBridge.createConfig(
     clientId,
