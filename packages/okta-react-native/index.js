@@ -2,7 +2,7 @@ import { NativeModules, Platform } from 'react-native';
 import { assertIssuer, assertClientId, assertRedirectUri } from '@okta/configuration-validation';
 import jwt from 'jwt-lite';
 
-export const createConfig = async ({
+export const createConfig = async({
   clientId,
   redirectUri, 
   endSessionRedirectUri, 
@@ -28,23 +28,23 @@ export const createConfig = async ({
   );
 } 
 
-export const signIn = async () => {
+export const signIn = async() => {
   return NativeModules.OktaSdkBridge.signIn();
 }
 
-export const signOut = async () => {
+export const signOut = async() => {
   return NativeModules.OktaSdkBridge.signOut();
 }
 
-export const getAccessToken = async () => {
+export const getAccessToken = async() => {
   return NativeModules.OktaSdkBridge.getAccessToken();
 }
 
-export const getIdToken = async () => {
+export const getIdToken = async() => {
   return NativeModules.OktaSdkBridge.getIdToken();
 }
 
-export const getUser = async () => {
+export const getUser = async() => {
   return NativeModules.OktaSdkBridge.getUser();
 }
 
@@ -53,7 +53,7 @@ export const getUserFromIdToken = async() => {
   return jwt.decode(idTokenResponse.id_token).claimsSet;
 }
 
-export const isAuthenticated = async () => {
+export const isAuthenticated = async() => {
   return NativeModules.OktaSdkBridge.isAuthenticated();
 }
 
