@@ -19,6 +19,8 @@
     "nohoist": [
       "**/jest",
       "**/jest/**",
+      "**/jest-junit",
+      "**/jest-junit/**",
       "**/jest-expo",
       "**/jest-expo/**",
       "**/babel-jest",
