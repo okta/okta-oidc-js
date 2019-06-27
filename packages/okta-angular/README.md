@@ -8,6 +8,7 @@ An Angular wrapper around [Okta Auth JS](https://github.com/okta/okta-auth-js), 
 This library currently supports:
 
 - [OAuth 2.0 Implicit Flow](https://tools.ietf.org/html/rfc6749#section-1.3.2)
+- [OAuth 2.0 Authorization Code Flow](https://tools.ietf.org/html/rfc6749#section-1.3.1)
 
 This library has been tested for compatibility with the following Angular versions: 4, 5, 6, 7, 8
 
@@ -49,14 +50,15 @@ Create a configuration object and provide this as [`OKTA_CONFIG`](#okta_config).
 // myApp.module.ts
 
 import {
+  OktaConfig,
   OKTA_CONFIG,
   OktaAuthModule
 } from '@okta/okta-angular';
 
-const oktaConfig = {
+const oktaConfig: OktaConfig = {
   issuer: 'https://{yourOktaDomain}.com/oauth2/default',
   clientId: '{clientId}',
-  redirectUri: 'http://localhost:{port}/implicit/callback'
+  redirectUri: 'http://localhost:{port}/callback'
 }
 
 @NgModule({
@@ -79,7 +81,8 @@ An Angular InjectionToken used to configure the OktaAuthService. This value must
 - `clientId` **(required)**: The OpenID Connect `client_id`
 - `redirectUri` **(required)**: Where the callback is hosted
 - `scope` *(optional)*: Reserved for custom claims to be returned in the tokens
-- `responseType` *(optional)*: Desired token grant types
+- `responseType` *(optional)*: Desired token response types. Supported types are `code`, `id_token` or `token`.
+- `grantType` *(optional)*: Desired application grant types. Supported types are `implicit` and `authorization_code`.
 - `onAuthRequired` *(optional)*: Accepts a callback to make a decision when authentication is required. If not supplied, `okta-angular` will redirect directly to Okta for authentication.
 - `storage` *(optional)*:
   Specify the type of storage for tokens.
@@ -97,7 +100,7 @@ An Angular InjectionToken used to configure the OktaAuthService. This value must
 The top-level Angular module which provides these components and services:
 
 - [`OktaAuthGuard`](#oktaauthguard) - A navigation guard using [CanActivate](https://angular.io/api/router/CanActivate) to grant access to a page only after successful authentication.
-- [`OktaCallbackComponent`](#oktacallbackcomponent) - Handles the implicit flow callback by parsing tokens from the URL and storing them automatically.
+- [`OktaCallbackComponent`](#oktacallbackcomponent) - Handles the OAuth flow callback by parsing tokens from the URL and storing them automatically.
 - [`OktaLoginRedirectComponent`](#oktaloginredirectcomponent) - Redirects users to the Okta Hosted Login Page for authentication.
 - [`OktaAuthService`](#oktaauthservice) - Highest-level service containing the `okta-angular` public methods.
 
@@ -127,7 +130,7 @@ If a user does not have a valid session, they will be redirected to the Okta Log
 
 ### `OktaCallbackComponent`
 
-In order to handle the redirect back from Okta, you need to capture the token values from the URL. You'll use `/implicit/callback` as the callback URL, and specify the default `OktaCallbackComponent` and declare it in your `NgModule`.
+In order to handle the redirect back from Okta, you need to capture the token values from the URL. You'll use `/callback` as the callback URL, and specify the default `OktaCallbackComponent` and declare it in your `NgModule`.
 
 ```typescript
 // myApp.module.ts
@@ -138,7 +141,7 @@ import {
 
 const appRoutes: Routes = [
   {
-    path: 'implicit/callback',
+    path: 'callback',
     component: OktaCallbackComponent
   },
   ...
