@@ -59,15 +59,52 @@ class AssertedClaimsVerifier {
   }
 }
 
+function verifyAssertedClaims(verifier, claims) {
+  const assertedClaimsVerifier = new AssertedClaimsVerifier();
+  for (let [claimName, expectedValue] of Object.entries(verifier.claimsToAssert)) {
+    const operator = assertedClaimsVerifier.extractOperator(claimName);
+    if (!assertedClaimsVerifier.isValidOperator(operator)) {
+      throw new Error(`operator: '${operator}' invalid. Supported operators: 'includes'.`);
+    }
+    const claim = assertedClaimsVerifier.extractClaim(claimName);
+    const actualValue = claims[claim];
+    assertedClaimsVerifier.checkAssertions(operator, claim, expectedValue, actualValue)
+  }
+  if (assertedClaimsVerifier.errors.length) {
+    throw new Error(assertedClaimsVerifier.errors.join(', '));
+  }
+}
+
+function verifyAudience(expected, aud) {
+  if( !expected ) {
+    throw new Error('expected audience is required');
+  }
+
+  if ( Array.isArray(expected) && !expected.includes(aud) ) {
+    throw new Error(`audience claim ${aud} does not match one of the expected audiences: ${ expected.join(', ') }`);
+  }
+
+  if ( !Array.isArray(expected) && aud !== expected ) {
+    throw new Error(`audience claim ${aud} does not match expected audience: ${expected}`);
+  }
+}
+
+function verifyIssuer(expected, issuer) {
+  if( issuer !== expected ) {
+    throw new Error(`issuer ${issuer} does not match expected issuer: ${expected}`);
+  }
+}
+
 class OktaJwtVerifier {
   constructor(options = {}) {
-    // Assert configuration
+    // Assert configuration options exist and are well-formed (not necessarily correct!)
     assertIssuer(options.issuer, options.testing);
-    if( options.clientId ) { 
+    if( options.clientId ) {
       assertClientId(options.clientId);
     }
 
     this.claimsToAssert = options.assertClaims || {};
+    this.issuer = options.issuer;
     this.jwksClient = jwksClient({
       jwksUri: options.issuer + '/v1/keys',
       cache: true,
@@ -83,31 +120,36 @@ class OktaJwtVerifier {
     });
   }
 
-  verifyAccessToken(accessTokenString) {
+  async verifyAsPromise(accessTokenString) {
     return new Promise((resolve, reject) => {
+      // Convert to a promise
       this.verifier.verify(accessTokenString, (err, jwt) => {
         if (err) {
           return reject(err);
         }
+
         jwt.claims = jwt.body;
         delete jwt.body;
-        let assertedClaimsVerifier = new AssertedClaimsVerifier();
-        for (let key of Object.keys(this.claimsToAssert)) {
-          const expectedValue = this.claimsToAssert[key];
-          let operator = assertedClaimsVerifier.extractOperator(key);
-          if (!assertedClaimsVerifier.isValidOperator(operator)) {
-            return reject(new Error(`operator: '${operator}' invalid. Supported operators: 'includes'.`));
-          }
-          let claim = assertedClaimsVerifier.extractClaim(key);
-          const actualValue = jwt.claims[claim];
-          assertedClaimsVerifier.checkAssertions(operator, claim, expectedValue, actualValue)
-        }
-        if (assertedClaimsVerifier.errors.length) {
-          return reject(new Error(assertedClaimsVerifier.errors.join(', ')));
-        }
+
         resolve(jwt);
       });
     });
+  }
+
+  async verifyAccessToken(accessTokenString, expectedAudience) {
+    // njwt verifies expiration and signature.
+    // We require RS256 in the base verifier.
+    // Remaining to verify:
+    // - audience claim
+    // - issuer claim
+    // - any custom claims passed in
+
+    const jwt = await this.verifyAsPromise(accessTokenString);
+    verifyAudience(expectedAudience, jwt.claims.aud);
+    verifyIssuer(this.issuer, jwt.claims.iss);
+    verifyAssertedClaims(this, jwt.claims);
+
+    return jwt;
   }
 }
 

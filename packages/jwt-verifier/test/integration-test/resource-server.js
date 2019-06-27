@@ -35,6 +35,7 @@ const oktaJwtVerifier = new OktaJwtVerifier({
  */
 function authenticationRequired(req, res, next) {
   const authHeader = req.headers.authorization || '';
+
   const match = authHeader.match(/Bearer (.+)/);
 
   if (!match) {
@@ -43,8 +44,9 @@ function authenticationRequired(req, res, next) {
   }
 
   const accessToken = match[1];
+  const expectedAud = 'api://default';
 
-  return oktaJwtVerifier.verifyAccessToken(accessToken)
+  return oktaJwtVerifier.verifyAccessToken(accessToken, expectedAud)
     .then((jwt) => {
       req.jwt = jwt;
       next();
@@ -94,7 +96,7 @@ app.get('/api/messages', authenticationRequired, (req, res) => {
       },
       {
         date:  new Date(new Date().getTime() - 1000 * 60 * 60),
-        text: 'Hello, word!'
+        text: 'Hello, world!'
       }
     ]
   });
