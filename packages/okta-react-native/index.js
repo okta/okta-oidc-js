@@ -6,7 +6,7 @@ export const createConfig = async ({
   clientId,
   redirectUri, 
   endSessionRedirectUri, 
-  discoveryUri,
+	discoveryUri, 
 	scopes
 }) => {
 
@@ -15,7 +15,7 @@ export const createConfig = async ({
   assertRedirectUri(redirectUri);
   assertRedirectUri(endSessionRedirectUri);
 
-  if (Platform.OS === 'ios') {
+	if (Platform.OS === 'ios') {
 		scopes = scopes.join(' ');
 	}
     
