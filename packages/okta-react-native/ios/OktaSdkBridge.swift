@@ -45,21 +45,19 @@ class OktaSdkBridge: NSObject {
     @objc(signIn:promiseRejecter:)
     func signIn(_ promiseResolver: @escaping RCTPromiseResolveBlock, promiseRejecter: @escaping RCTPromiseRejectBlock) {
         
-        let view = RCTPresentedViewController();
-        
         guard let currOktaOidc = oktaOidc else {
             let error = OktaReactNativeError.notConfigured
             promiseRejecter(error.errorCode, error.errorDescription, error)
             return
         }
         
-        guard let currView = view else {
+        guard let view = RCTPresentedViewController else {
             let error = OktaReactNativeError.noView
             promiseRejecter(error.errorCode, error.errorDescription, error)
             return
         }
         
-        currOktaOidc.signInWithBrowser(from: currView) { stateManager, error in
+        currOktaOidc.signInWithBrowser(from: view) { stateManager, error in
             if let error = error {
                 promiseRejecter(OktaReactNativeError.oktaOidcError.errorCode, error.localizedDescription, error)
                 return
@@ -84,15 +82,13 @@ class OktaSdkBridge: NSObject {
     @objc(signOut:promiseRejecter:)
     func signOut(_ promiseResolver: @escaping RCTPromiseResolveBlock, promiseRejecter: @escaping RCTPromiseRejectBlock) {
         
-        let view = RCTPresentedViewController();
-        
         guard let oidcConfig = config, let currOktaOidc = oktaOidc else {
             let error = OktaReactNativeError.notConfigured
             promiseRejecter(error.errorCode, error.errorDescription, error)
             return
         }
         
-        guard let currView = view else {
+        guard let view = RCTPresentedViewController else {
             let error = OktaReactNativeError.noView
             promiseRejecter(error.errorCode, error.errorDescription, error)
             return
@@ -104,7 +100,7 @@ class OktaSdkBridge: NSObject {
             return
         }
         
-        currOktaOidc.signOutOfOkta(stateManager, from: currView) { error in
+        currOktaOidc.signOutOfOkta(stateManager, from: view) { error in
             if let error = error {
                 promiseRejecter(OktaReactNativeError.oktaOidcError.errorCode, error.localizedDescription, error)
                 return
