@@ -49,12 +49,8 @@ export const getUser = async () => {
 }
 
 export const getUserFromIdToken = async() => {
-  try {
-    let idTokenResponse = await getIdToken();
-    return jwt.decode(idTokenResponse.id_token).claimsSet;
-  } catch(error) {
-    throw error;
-  } 
+  let idTokenResponse = await getIdToken();
+  return jwt.decode(idTokenResponse.id_token).claimsSet;
 }
 
 export const isAuthenticated = async () => {
