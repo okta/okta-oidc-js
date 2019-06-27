@@ -21,13 +21,13 @@ This library follows the current best practice for native apps using:
 In Okta, applications are OpenID Connect clients that can use Okta Authorization servers to authenticate users.  Your Okta Org already has a default authorization server, so you just need to create an OIDC client that will use it.
 
 * Log into the Okta Developer Dashboard, click **Applications** then **Add Application**.
-* Choose **Native** as the platform, then submit the form the default values, which should look like this:
+* Choose **Native** as the platform, then submit the form the default values, which should look similar to this:
 
 | Setting             | Value                                        |
 | ------------------- | -------------------------------------------- |
-| App Name            | {YOUR APP NAME}                              |
-| Login redirect URIs | {YOUR_REDIRECT_URL}                          |
-| Grant Types Allowed | {PICK_YOUR_SCOPES}                           |
+| App Name            | My Native App                                |
+| Login redirect URIs | com.mynativeapp:/                            |
+| Grant Types Allowed | Authorization Code, Refresh Token            |
 
 After you have created the application there are two more values you will need to gather:
 
