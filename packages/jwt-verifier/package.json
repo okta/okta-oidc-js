@@ -41,8 +41,8 @@
     "cors": "^2.8.4",
     "cross-env": "^5.1.1",
     "express": "^4.15.4",
-    "jest": "^23.6.0",
-    "jest-junit": "^5.2.0",
+    "jest": "^24.8.0",
+    "jest-junit": "^6.4.0",
     "nock": "^9.0.14",
     "request": "^2.81.0",
     "timekeeper": "^1.0.0"
