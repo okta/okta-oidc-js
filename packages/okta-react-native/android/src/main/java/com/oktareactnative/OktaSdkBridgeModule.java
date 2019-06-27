@@ -158,6 +158,11 @@ public class OktaSdkBridgeModule extends ReactContextBaseJavaModule implements A
             final SessionClient sessionClient = webClient.getSessionClient();
             final Tokens tokens = sessionClient.getTokens();
 
+            if (tokens.getAccessToken() == null) {
+                promise.reject(OktaSdkError.NO_ACCESS_TOKEN.getErrorCode(), OktaSdkError.NO_ACCESS_TOKEN.getErrorMessage());
+                return;
+            }
+
             params.putString(OktaSdkConstant.ACCESS_TOKEN_KEY, tokens.getAccessToken());
             promise.resolve(params);
 
