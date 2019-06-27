@@ -12,7 +12,7 @@ Pod::Spec.new do |s|
   s.homepage     = package['homepage']
   s.platform     = :ios, "11.0"
 
-  s.source       = { :git => "https://github.com/okta/okta-oidc-js/tree/master/packages/okta-react-native" }
+  s.source       = { :git => "https://github.com/okta/okta-oidc-js.git" }
   s.source_files  = "ios/**/*.{h,m,swift}"
 
   s.dependency 'React'
