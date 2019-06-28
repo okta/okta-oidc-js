@@ -1,10 +1,10 @@
 # 1.0.0
 ### Features
-- https://github.com/okta/okta-oidc-js/commit/9d76c9f952506d3a51bb912a87a8da592dd7201d - Adds verifications to verifyAccessToken() (#481)
+- [`9d76c9f`](https://github.com/okta/okta-oidc-js/commit/9d76c9f952506d3a51bb912a87a8da592dd7201d) - Adds verifications to verifyAccessToken() [#481](https://github.com/okta/okta-oidc-js/pull/481)
 
 ### Fixes
-- https://github.com/okta/okta-oidc-js/commit/2f2d39fd27f88f43c20e5f0e568e428ce7e7ea74 - Removes check of client_id from access tokens (#477)
-- https://github.com/okta/okta-oidc-js/commit/0d5afa7854d0d5653b8541ebe68de6099a841c12 - Updates dev deps to remove vulns (#484)
+- [`2f2d39f`](https://github.com/okta/okta-oidc-js/commit/2f2d39fd27f88f43c20e5f0e568e428ce7e7ea74) - Removes check of client_id from access tokens [#477](https://github.com/okta/okta-oidc-js/pull/477)
+- [`0d5afa7`](https://github.com/okta/okta-oidc-js/commit/0d5afa7854d0d5653b8541ebe68de6099a841c12) - Updates dev deps to remove vulns [#484](https://github.com/okta/okta-oidc-js/pull/484)
 
 # 0.0.16
 
