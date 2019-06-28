@@ -51,16 +51,16 @@ $ react-native link @okta/okta-react-native
 
 Perform the following Manual installation steps if you're not using `react-native link`.
 
-### Manual installation
+#### Manual installation (Optional)
 
-#### iOS
+##### iOS
 
 1. In XCode, in the project navigator, right click `Libraries` ➜ `Add Files to [your project's name]`
 2. Go to `node_modules` ➜ `@okta/okta-react-native` and add `ReactNativeOktaSdkBridge.xcodeproj`
 3. In XCode, in the project navigator, select your project. Add `libReactNativeOktaSdkBridge.a` to your project's `Build Phases` ➜ `Link Binary With Libraries`
 4. Run your project (`Cmd+R`)<
 
-#### Android
+##### Android
 
 1. Open up `android/app/src/main/java/[...]/MainApplication.java`
   - Add `import com.oktareactnative.OktaSdkBridgePackage;` to the imports at the top of the file
@@ -75,9 +75,17 @@ Perform the following Manual installation steps if you're not using `react-nativ
       compile project(':@okta_okta-react-native')
   	```
 
-## Setup
-
 ### iOS Setup
+
+To setup iOS, there are three steps that you must take.
+
+1. [Make sure your iOS app's deployment target is `11.0` and above.](set-ios-deployment-target)
+2. [Install Okta Open ID Connect iOS.](install-okta-open-id-connect-ios)
+3. [Make sure you also configure Swift.](swift-configuration)
+
+#### Set iOS Deployment Target
+
+This library supports iOS version `11.0` and above. Go to your project -> `Build settings` -> `iOS Deployment Target`, and set it to at least version `11.0`.  
 
 #### Install Okta Open ID Connect iOS
 This library depends on the native [Okta OIDC iOS](https://github.com/okta/okta-oidc-ios) library. This library is not distributed as part of the React Native library to keep your dependency management consistent. 
@@ -101,7 +109,7 @@ There are three ways to add Okta OIDC iOS to your dependencies:
 
    Drag and drop `OktaOidc.framework` from `ios/Carthage/Build/iOS` to `Frameworks` in Xcode.
 
-   Add a copy files build step for `OktaOidc.framework`: open Build Phases on Xcode, add a new "Cope Files" phase, choose "Frameworks" as destination, add `OktaOidc.framework` and ensure "Code Sign on Copy" is checked.			
+   Add a copy files build step for `OktaOidc.framework`: open Build Phases on Xcode, add a new "Cope Files" phase, choose "Frameworks" as destination, add `OktaOidc.framework` and ensure "Code Sign on Copy" is checked.
 
 3. **Static Library**
  	 This requires linking the Okta OIDC iOS and your project, and including the headers. 
@@ -111,25 +119,20 @@ There are three ways to add Okta OIDC iOS to your dependencies:
    2. Add `okta-oidc.xcodeproj` to your Workspace.
    3. Include `OktaOidc.framework` as a linked framework for your target (in the "General -> Linked Framework and
       Libraries" section of your target).
-   4. Add `okta-oidc/okta-oidc/Okta` to your search paths of your target ("Build Settings -> "Header Search
-      Paths").
+   4. Add `okta-oidc/okta-oidc/Okta` to your search paths of your target ("Build Settings -> "Header Search Paths").
 
 #### Swift Configuration
-Since React Native uses Objective-C, and Okta React Native library is a swift wrapper, you will need to have at least one Swift file in your iOS project for the project to compile. To do this, follow the following steps:
+Since React Native uses Objective-C, and Okta React Native library is a Swift wrapper, you will need to have at least one Swift file in your iOS project for the project to compile. To do this, follow the following steps:
 
 1. Right click on your project, then `New file`.
 2. Select `Swift file`, enter a title, and save.
 3. Go to `Build Settings`, look for `Swift Compiler - Language`, set `Swift Language Version` to `4.2`.
 
-<!-- #### Register redirect URL scheme
-If you intend to support iOS 10 and older, you must specify a unique URI to your app:
-
-1. Open the iOS folder in Xcode
-2. Open `info.plist`, and create a new row called `URL types`
-3. Expand `URL types`, and expand `Item 0`, then choose `URL Schemes`
-4. Under `URL Schemes`, add your scheme to `Item 0` -->
-
 ### Android Setup
+
+For Android, there are two steps that you must take:
+1. [Installing Okta Open Id Connect Android.](install-okta-open-id-connect-android)
+2. [Add a redirect scheme to your project.](add-redirect-scheme)
 
 #### Install Okta Open ID Connect Android
 This library depends on the native [Okta OIDC Android](https://github.com/okta/okta-oidc-android) library. You have to add this library through Gradle. Follow the following steps:
@@ -147,13 +150,13 @@ This library depends on the native [Okta OIDC Android](https://github.com/okta/o
 Defining a redirect scheme to capture the authorization redirect. In `android/app/build.gradle`, under `android` -> `defaultConfig`, add:
 ```
 manifestPlaceholders = [
-  appAuthRedirectScheme: '{YOUR_REDIRECT_SCHEME}'
+  appAuthRedirectScheme: 'com.sampleapplication'
 ]
 ```
 
 ## Usage
 
-You will need the values from the OIDC client that you created in the previous step to instantiate the client. You will also need to know your Okta Org URL, which you can see on the home page of the Okta Developer console.
+You will need the values from the OIDC client that you created in the previous step to set up. You will also need to know your Okta Org URL, which you can see on the home page of the Okta Developer console.
 
 Before calling any other method, it is important that you call `createConfig` to set up the configuration properly on the native modules.
 
@@ -165,7 +168,7 @@ import { createConfig, signIn, signOut, getAccessToken } from '@okta/okta-react-
 
 ### `createConfig`
 
-This method will create a configured client on the native modules.
+This method will create a configured client on the native modules. Resolves `true` if successfully configures a client. 
 
 ```javascript
 await createConfig({
@@ -179,34 +182,89 @@ await createConfig({
 
 ### `signIn`
 
-This method will automatically redirect users to your Okta organziation for authentication.
+This method will automatically redirect users to your Okta organziation for authentication. 
 
 ```javascript
 await signIn();
 ```
 
+##### Sample Response
+
+It resolves with the following value on performing sign in successfully:
+```javascript
+{
+	"resolve_type": "authorized",
+	"access_token": "{accessToken}"
+}
+```
+
+Resolves with the following value on a cancelled sign in operation:
+```javascript
+{
+	"resolve_type": "cancelled"
+}
+``` 
+
 ### `isAuthenticated`
 
-Returns a promise that resolves `true` if there is a valid access token or ID token.
+Returns a promise that resolves to `true` if there is a valid access token or ID token. Otherwise `false`.
 
 ```javascript
 await isAuthenticated();
 ```
 
+##### Sample Response
+
+If authenticated: 
+
+```javascript
+{
+	"authenticated": true
+}
+```
+
+Else:
+```javascript
+{
+	"authenticated": false
+}
+```
+
+
 ### `getAccessToken`
 
-This method returns a promise that will return the access token as a string. It ensures the access token is up-to-date and will automatically refresh expired tokens if a refresh token is available. To ensure your app receives a refresh token, request `offline_access`.
+This method returns a promise that will return the access token as a string. If no access token is available (either does not exist, or expired), then the promise will be rejected.
 
 ```javascript
 await getAccessToken();
 ```
 
+##### Sample Response
+
+If an access token is available:
+
+```javascript
+{
+	"access_token": "{accessToken}"
+}
+```
+
 ### `getIdToken`
 
-This method returns a promise that will return the identity token as a string.
+This method returns a promise that will return the identity token as a string. The promise will be rejected if no id token is available. 
 
 ```javascript
 await getIdToken();
+```
+
+##### Sample Response
+
+If an id token is available:
+
+```javascript
+{
+	"id_token": "{idToken}"
+}
 ```
 
 ### `getUser`
@@ -217,6 +275,29 @@ Returns a promise that will fetch the most up-to-date user claims from the [Open
 await getUser();
 ```
 
+##### Sample Response
+
+If a user is available:
+
+```javascript
+{
+  "sub": "00uid4BxXw6I6TV4m0g3",
+  "name" :"John Doe",
+  "nickname":"Jimmy",
+  "given_name":"John",
+  "middle_name":"James",
+  "family_name":"Doe",
+  "profile":"https://example.com/john.doe",
+  "zoneinfo":"America/Los_Angeles",
+  "locale":"en-US",
+  "updated_at":1311280970,
+  "email":"john.doe@example.com",
+  "email_verified":true,
+  "address" : { "street_address":"123 Hollywood Blvd.", "locality":"Los Angeles", "region":"CA", "postal_code":"90210", "country":"US" },
+  "phone_number":"+1 (425) 555-1212"
+}
+```
+
 ### `getUserFromIdToken`
 
 Returns the user claims decoded from the identity token.
@@ -225,17 +306,46 @@ Returns the user claims decoded from the identity token.
 await getUserFromIdToken();
 ```
 
+##### Sample Response
+
+Sample user claims:
+
+```javascript
+{
+	"sub": "00uid4BxXw6I6TV4m0g3", 
+	"name": "John Doe", 
+	"preferred_username": "john.doe@example.com"
+	"ver": 1, 
+	"iss": "https://dev-example.okta.com", 
+	"aud": "00uid4BxXw6I6TV4m0g3",
+	"auth_time": 1561679776,
+	"exp": 1561683377,
+	"iat": 1561679777,
+	"idp": "00uid4BxXw6I6TV4m0g3"
+}
+```
+
 ### `signOut`
 
-Clear the browser session and clear the app session (stored tokens) in memory. 
+Clear the browser session and clear the app session (stored tokens) in memory.
 
 ```javascript
 await signOut();
 ```
 
+##### Sample Response
+
+Resolves with the following if a user signs out successfully:
+
+```javascript
+{
+	"resolve_type": "signed_out"
+}
+```
+
 ### `revokeAccessToken`
 
-Revoke the access token to make it inactive.
+Revoke the access token to make it inactive. Resolves `true` if access token has been successfully revoked.
 
 ```javascript
 await revokeAccessToken();
@@ -243,7 +353,7 @@ await revokeAccessToken();
 
 ### `revokeIdToken`
 
-Revoke the identity token to make it inactive.
+Revoke the identity token to make it inactive. Resolves `true` if id token has been successfully revoked.
 
 ```javascript
 await revokeIdToken();
@@ -251,8 +361,63 @@ await revokeIdToken();
 
 ### `revokeRefreshToken`
 
-Revoke the refresh token to make it inactive.
+Revoke the refresh token to make it inactive. Resolves `true` if refresh token has been successfully revoked.
 
 ```javascript
 await revokeRefreshToken();
+```
+
+### `introspectAccessToken`
+
+Introspect the access token. 
+
+```javascript
+await introspectAccessToken();
+```
+
+##### Sample Response
+
+Sample responses can be found [here](https://developer.okta.com/docs/reference/api/oidc/#response-properties-3)
+
+### `introspectIdToken`
+
+Introspect the id token. 
+
+```javascript
+await introspectIdToken();
+```
+
+##### Sample Response
+
+Sample responses can be found [here](https://developer.okta.com/docs/reference/api/oidc/#response-properties-3)
+
+### `introspectRefreshToken`
+
+Introspect the id token. 
+
+```javascript
+await introspectRefreshToken();
+```
+
+##### Sample Response
+
+Sample responses can be found [here](https://developer.okta.com/docs/reference/api/oidc/#response-properties-3)
+
+
+### `refreshTokens`
+
+Refreshes all tokens. Resolves with the refreshed tokens. 
+
+```javascript
+await refreshTokens();
+```
+
+##### Sample Response
+
+```javascript
+{
+	"access_token": "{accessToken}",
+	"id_token": "{idToken}",
+	"refresh_token": "refreshToken"
+}
 ```
