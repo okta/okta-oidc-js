@@ -20,6 +20,10 @@ Using Express?  Our [Express Resource Server Example](https://github.com/okta/sa
 
 To learn more about verification cases and Okta's tokens please read [Working With OAuth 2.0 Tokens](https://developer.okta.com/authentication-guide/tokens/)
 
+## Upgrading
+
+For information on how to upgrade between versions of the library, see UPGRADING.md
+
 ## How to use
 
 ```bash
