@@ -51,7 +51,7 @@ class OktaSdkBridge: NSObject {
             return
         }
         
-        guard let view = RCTPresentedViewController else {
+        guard let view = RCTPresentedViewController() else {
             let error = OktaReactNativeError.noView
             promiseRejecter(error.errorCode, error.errorDescription, error)
             return
@@ -88,7 +88,7 @@ class OktaSdkBridge: NSObject {
             return
         }
         
-        guard let view = RCTPresentedViewController else {
+        guard let view = RCTPresentedViewController() else {
             let error = OktaReactNativeError.noView
             promiseRejecter(error.errorCode, error.errorDescription, error)
             return
