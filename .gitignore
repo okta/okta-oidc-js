@@ -28,3 +28,13 @@ coverage
 
 # test reports
 packages/*/reports/
+
+# android/ios related for react native
+.gradle/
+gradle/
+gradlew
+gradlew.bat
+build/
+local.properties
+*.iml
+xcuserdata/
