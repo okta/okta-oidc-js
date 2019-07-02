@@ -12,13 +12,13 @@
 
 #import "ReactNativeOktaSdkBridge-Bridging-Header.h"
 
-@interface RCT_EXTERN_MODULE(OktaSdkBridge, NSObject)
+@interface RCT_EXTERN_MODULE(OktaSdkBridge, RCTEventEmitter)
 
 RCT_EXTERN_METHOD(createConfig:(NSString *)clientId redirectUrl:(NSString *)redirectUrl endSessionRedirectUri:(NSString *)endSessionRedirectUri discoveryUri:(NSString *)discoveryUri scopes:(NSString *)scopes promiseResolver:(RCTPromiseResolveBlock *)promiseResolver promiseRejecter:(RCTPromiseRejectBlock *)promiseRejecter)
 
-RCT_EXTERN_METHOD(signIn:(RCTPromiseResolveBlock *)promiseResolver promiseRejecter:(RCTPromiseRejectBlock *)promiseRejecter)
+RCT_EXTERN_METHOD(signIn)
 
-RCT_EXTERN_METHOD(signOut:(RCTPromiseResolveBlock *)promiseResolver promiseRejecter:(RCTPromiseRejectBlock *)promiseRejecter)
+RCT_EXTERN_METHOD(signOut)
 
 RCT_EXTERN_METHOD(getAccessToken:(RCTPromiseResolveBlock *)promiseResolver promiseRejecter:(RCTPromiseRejectBlock *)promiseRejecter)
 

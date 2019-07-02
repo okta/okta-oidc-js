@@ -1,4 +1,4 @@
-import { NativeModules, Platform } from 'react-native';
+import { NativeModules, Platform, DeviceEventEmitter, NativeEventEmitter } from 'react-native';
 import { assertIssuer, assertClientId, assertRedirectUri } from '@okta/configuration-validation';
 import jwt from 'jwt-lite';
 
@@ -84,3 +84,8 @@ export const introspectRefreshToken = async() => {
 export const refreshTokens = async() => {
   return NativeModules.OktaSdkBridge.refreshTokens(); 
 }
+
+export const EventEmitter = Platform.select({
+	ios: new NativeEventEmitter(NativeModules.OktaSdkBridge),
+  android: DeviceEventEmitter
+})

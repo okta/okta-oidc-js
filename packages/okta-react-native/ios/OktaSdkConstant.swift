@@ -13,12 +13,23 @@
 import Foundation
 
 struct OktaSdkConstant {
+    /** ======== Keys ======== **/
     static let RESOLVE_TYPE_KEY = "resolve_type"
     static let ACCESS_TOKEN_KEY = "access_token"
     static let ID_TOKEN_KEY = "id_token"
     static let REFRESH_TOKEN_KEY = "refresh_token"
     static let AUTHENTICATED_KEY = "authenticated"
+    static let ERROR_CODE_KEY = "error_code";
+    static let ERROR_MSG_KEY = "error_message";
+    
+    /** ======== Values ======== **/
     static let AUTHORIZED = "authorized"
     static let SIGNED_OUT = "signed_out"
     static let CANCELLED = "cancelled"
+    
+    /** ======== Event names ======== **/
+    static let SIGN_IN_SUCCESS = "signInSuccess";
+    static let ON_ERROR = "onError";
+    static let SIGN_OUT_SUCCESS = "signOutSuccess";
+    static let ON_CANCELLED = "onCancelled";
 }
