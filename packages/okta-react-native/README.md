@@ -96,7 +96,7 @@ There are three ways to add Okta OIDC iOS to your dependencies:
    With [CocoaPods](https://guides.cocoapods.org/using/getting-started.html), add the following line to
    your `Podfile`:
        
-		pod 'OktaOidc'
+		pod 'OktaOidc', '~> 3.0'
 			 
    Then run `pod install`.
 
