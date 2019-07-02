@@ -6,8 +6,8 @@ export const createConfig = async({
   clientId,
   redirectUri, 
   endSessionRedirectUri, 
-	discoveryUri, 
-	scopes
+  discoveryUri, 
+  scopes
 }) => {
 
   assertIssuer(discoveryUri);
@@ -15,9 +15,9 @@ export const createConfig = async({
   assertRedirectUri(redirectUri);
   assertRedirectUri(endSessionRedirectUri);
 
-	if (Platform.OS === 'ios') {
-		scopes = scopes.join(' ');
-	}
+  if (Platform.OS === 'ios') {
+    scopes = scopes.join(' ');
+  }
     
   return NativeModules.OktaSdkBridge.createConfig(
     clientId,
@@ -86,6 +86,6 @@ export const refreshTokens = async() => {
 }
 
 export const EventEmitter = Platform.select({
-	ios: new NativeEventEmitter(NativeModules.OktaSdkBridge),
+  ios: new NativeEventEmitter(NativeModules.OktaSdkBridge),
   android: DeviceEventEmitter
 })
