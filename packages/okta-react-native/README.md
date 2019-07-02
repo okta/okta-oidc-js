@@ -182,28 +182,49 @@ await createConfig({
 
 ### `signIn`
 
-This method will automatically redirect users to your Okta organziation for authentication. 
+This async method will automatically redirect users to your Okta organziation for authentication. It will an event once a user successfully signs in. Make sure your event listeners are mounted and unmounted.
 
 ```javascript
-await signIn();
+signIn();
 ```
 
-##### Sample Response
+##### Sample Usage
 
-It resolves with the following value on performing sign in successfully:
 ```javascript
-{
-	"resolve_type": "authorized",
-	"access_token": "{accessToken}"
-}
-```
+import { signIn, EventEmitter } from '@okta/okta-react-native';
 
-Resolves with the following value on a cancelled sign in operation:
-```javascript
-{
-	"resolve_type": "cancelled"
+componentDidMount() {
+	this.signInSuccess = EventEmitter.addListener('signInSuccess', function(e: Event) {
+		console.log(e.access_token);
+		// Do something ...
+	});
+	this.signOutSuccess = EventEmitter.addListener('signOutSuccess', function(e: Event) {
+		//...
+	});
+	this.onError = EventEmitter.addListener('onError', function(e: Event) {
+		//...
+	});
+	this.onCancelled = EventEmitter.addListener('onCancelled', function(e: Event) {
+		//...
+	});
 }
+
+componentWillUnmount() {
+	this.signInSuccess.remove();
+	this.signOutSuccess.remove();
+	this.onError.remove();
+	this.onCancelled.remove();
+}
+
 ``` 
+
+### `signOut`
+
+Clear the browser session and clear the app session (stored tokens) in memory. Fires an event once a user successfully logs out. For sample usage, refer to `signIn`.
+
+```javascript
+signOut();
+```
 
 ### `isAuthenticated`
 
@@ -322,24 +343,6 @@ Sample user claims:
 	"exp": 1561683377,
 	"iat": 1561679777,
 	"idp": "00uid4BxXw6I6TV4m0g3"
-}
-```
-
-### `signOut`
-
-Clear the browser session and clear the app session (stored tokens) in memory.
-
-```javascript
-await signOut();
-```
-
-##### Sample Response
-
-Resolves with the following if a user signs out successfully:
-
-```javascript
-{
-	"resolve_type": "signed_out"
 }
 ```
 
