@@ -15,6 +15,8 @@ package com.oktareactnative;
 
 final class OktaSdkConstant {
 
+    /** ======== Keys ======== **/
+
     static final String RESOLVE_TYPE_KEY = "resolve_type";
 
     static final String ACCESS_TOKEN_KEY = "access_token";
@@ -25,11 +27,9 @@ final class OktaSdkConstant {
 
     static final String AUTHENTICATED_KEY = "authenticated";
 
-    static final String AUTHORIZED = "authorized";
+    static final String ERROR_CODE_KEY = "error_code";
 
-    static final String SIGNED_OUT = "signed_out";
-
-    static final String CANCELLED = "cancelled";
+    static final String ERROR_MSG_KEY = "error_message";
 
     static final String ACTIVE_KEY = "active";
 
@@ -58,6 +58,24 @@ final class OktaSdkConstant {
     static final String JTI_KEY = "jti";
 
     static final String UID_KEY = "uid";
+
+    /** ======== Values ======== **/
+
+    static final String AUTHORIZED = "authorized";
+
+    static final String SIGNED_OUT = "signed_out";
+
+    static final String CANCELLED = "cancelled";
+
+    /** ======== Event names ======== **/
+
+    static final String SIGN_IN_SUCCESS = "signInSuccess";
+
+    static final String ON_ERROR = "onError";
+
+    static final String SIGN_OUT_SUCCESS = "signOutSuccess";
+
+    static final String ON_CANCELLED = "onCancelled";
 
     private OktaSdkConstant() {
         throw new AssertionError();

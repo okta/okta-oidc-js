@@ -16,14 +16,18 @@ import android.app.Activity;
 import android.content.Intent;
 
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+
 import com.facebook.react.bridge.ActivityEventListener;
 import com.facebook.react.bridge.Arguments;
 import com.facebook.react.bridge.Promise;
 import com.facebook.react.bridge.ReactApplicationContext;
+import com.facebook.react.bridge.ReactContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
 import com.facebook.react.bridge.ReadableArray;
 import com.facebook.react.bridge.WritableMap;
+import com.facebook.react.modules.core.DeviceEventManagerModule;
 import com.okta.oidc.AuthorizationStatus;
 import com.okta.oidc.OIDCConfig;
 import com.okta.oidc.Okta;
@@ -38,7 +42,7 @@ import com.okta.oidc.net.response.UserInfo;
 import com.okta.oidc.storage.SharedPreferenceStorage;
 import com.okta.oidc.util.AuthorizationException;
 
-public class OktaSdkBridgeModule extends ReactContextBaseJavaModule implements ActivityEventListener {
+public class OktaSdkBridgeModule extends ReactContextBaseJavaModule implements ActivityEventListener{
 
     private final ReactApplicationContext reactContext;
     private OIDCConfig config;
@@ -83,7 +87,7 @@ public class OktaSdkBridgeModule extends ReactContextBaseJavaModule implements A
                     .withConfig(config)
                     .withContext(reactContext)
                     .withStorage(new SharedPreferenceStorage(reactContext))
-                    .setRequireHardwareBackedKeyStore(true) // TODO: remember to set it to true when releasing SDK
+                    .setRequireHardwareBackedKeyStore(true)
                     .create();
 
             promise.resolve(true);
@@ -93,57 +97,26 @@ public class OktaSdkBridgeModule extends ReactContextBaseJavaModule implements A
     }
 
     @ReactMethod
-    public void signIn(final Promise promise) {
-        try {
-            Activity currentActivity = getCurrentActivity();
+    public void signIn() {
+        Activity currentActivity = getCurrentActivity();
 
-            if (currentActivity == null) {
-                promise.reject(OktaSdkError.NO_VIEW.getErrorCode(), OktaSdkError.NO_VIEW.getErrorMessage());
-                return;
-            }
-
-            if (webClient == null) {
-                promise.reject(OktaSdkError.NOT_CONFIGURED.getErrorCode(), OktaSdkError.NOT_CONFIGURED.getErrorMessage());
-                return;
-            }
-
-            final SessionClient sessionClient = webClient.getSessionClient();
+        if (currentActivity == null) {
             final WritableMap params = Arguments.createMap();
-
-            webClient.registerCallback(new ResultCallback<AuthorizationStatus, AuthorizationException>() {
-                @Override
-                public void onSuccess(@NonNull AuthorizationStatus status) {
-                    if (status == AuthorizationStatus.AUTHORIZED) {
-                        try {
-                            Tokens tokens = sessionClient.getTokens();
-                            params.putString(OktaSdkConstant.RESOLVE_TYPE_KEY, OktaSdkConstant.AUTHORIZED);
-                            params.putString(OktaSdkConstant.ACCESS_TOKEN_KEY, tokens.getAccessToken());
-                            promise.resolve(params);
-                        } catch (AuthorizationException e) {
-                            promise.reject(OktaSdkError.OKTA_OIDC_ERROR.getErrorCode(), e.getLocalizedMessage(), e);
-                        }
-                    } else if (status == AuthorizationStatus.SIGNED_OUT) {
-                        params.putString(OktaSdkConstant.RESOLVE_TYPE_KEY, OktaSdkConstant.SIGNED_OUT);
-                        promise.resolve(params);
-                    }
-                }
-
-                @Override
-                public void onCancel() {
-                    params.putString(OktaSdkConstant.RESOLVE_TYPE_KEY, OktaSdkConstant.CANCELLED);
-                    promise.resolve(params);
-                }
-
-                @Override
-                public void onError(@NonNull String msg, AuthorizationException error) {
-                    promise.reject(OktaSdkError.OKTA_OIDC_ERROR.getErrorCode(), error.getLocalizedMessage(), error);
-                }
-            }, currentActivity);
-
-            webClient.signIn(currentActivity, null);
-        } catch (Error e) {
-            promise.reject(OktaSdkError.OKTA_OIDC_ERROR.getErrorCode(), e.getLocalizedMessage(), e);
+            params.putString(OktaSdkConstant.ERROR_CODE_KEY, OktaSdkError.NO_VIEW.getErrorCode());
+            params.putString(OktaSdkConstant.ERROR_MSG_KEY, OktaSdkError.NO_VIEW.getErrorMessage());
+            sendEvent(reactContext, OktaSdkConstant.ON_ERROR, params);
+            return;
         }
+
+        if (webClient == null) {
+            final WritableMap params = Arguments.createMap();
+            params.putString(OktaSdkConstant.ERROR_CODE_KEY, OktaSdkError.NOT_CONFIGURED.getErrorCode());
+            params.putString(OktaSdkConstant.ERROR_MSG_KEY, OktaSdkError.NOT_CONFIGURED.getErrorMessage());
+            sendEvent(reactContext, OktaSdkConstant.ON_ERROR, params);
+            return;
+        }
+
+        webClient.signIn(currentActivity, null);
     }
 
     @ReactMethod
@@ -237,58 +210,26 @@ public class OktaSdkBridgeModule extends ReactContextBaseJavaModule implements A
     }
 
     @ReactMethod
-    public void signOut(final Promise promise) {
-        try {
-            Activity currentActivity = getCurrentActivity();
+    public void signOut() {
+        Activity currentActivity = getCurrentActivity();
 
-            if (currentActivity == null) {
-                promise.reject(OktaSdkError.NO_VIEW.getErrorCode(), OktaSdkError.NO_VIEW.getErrorMessage());
-                return;
-            }
-
-            if (webClient == null) {
-                promise.reject(OktaSdkError.NOT_CONFIGURED.getErrorCode(), OktaSdkError.NOT_CONFIGURED.getErrorMessage());
-                return;
-            }
-
-            final SessionClient sessionClient = webClient.getSessionClient();
+        if (currentActivity == null) {
             final WritableMap params = Arguments.createMap();
-
-            webClient.registerCallback(new ResultCallback<AuthorizationStatus, AuthorizationException>() {
-                @Override
-                public void onSuccess(@NonNull AuthorizationStatus status) {
-                    if (status == AuthorizationStatus.AUTHORIZED) {
-                        try {
-                            Tokens tokens = sessionClient.getTokens();
-                            params.putString(OktaSdkConstant.RESOLVE_TYPE_KEY, OktaSdkConstant.AUTHORIZED);
-                            params.putString(OktaSdkConstant.ACCESS_TOKEN_KEY, tokens.getAccessToken());
-                            promise.resolve(params);
-                        } catch (AuthorizationException e) {
-                            promise.reject(OktaSdkError.OKTA_OIDC_ERROR.getErrorCode(), e.getLocalizedMessage(), e);
-                        }
-                    } else if (status == AuthorizationStatus.SIGNED_OUT) {
-                        sessionClient.clear();
-                        params.putString(OktaSdkConstant.RESOLVE_TYPE_KEY, OktaSdkConstant.SIGNED_OUT);
-                        promise.resolve(params);
-                    }
-                }
-
-                @Override
-                public void onCancel() {
-                    params.putString(OktaSdkConstant.RESOLVE_TYPE_KEY, OktaSdkConstant.CANCELLED);
-                    promise.resolve(params);
-                }
-
-                @Override
-                public void onError(@NonNull String msg, AuthorizationException error) {
-                    promise.reject(OktaSdkError.OKTA_OIDC_ERROR.getErrorCode(), error.getLocalizedMessage(), error);
-                }
-            }, currentActivity);
-
-            webClient.signOutOfOkta(currentActivity);
-        } catch (Error e) {
-            promise.reject(OktaSdkError.OKTA_OIDC_ERROR.getErrorCode(), e.getLocalizedMessage(), e);
+            params.putString(OktaSdkConstant.ERROR_CODE_KEY, OktaSdkError.NO_VIEW.getErrorCode());
+            params.putString(OktaSdkConstant.ERROR_MSG_KEY, OktaSdkError.NO_VIEW.getErrorMessage());
+            sendEvent(reactContext, OktaSdkConstant.ON_ERROR, params);
+            return;
         }
+
+        if (webClient == null) {
+            final WritableMap params = Arguments.createMap();
+            params.putString(OktaSdkConstant.ERROR_CODE_KEY, OktaSdkError.NOT_CONFIGURED.getErrorCode());
+            params.putString(OktaSdkConstant.ERROR_MSG_KEY, OktaSdkError.NOT_CONFIGURED.getErrorMessage());
+            sendEvent(reactContext, OktaSdkConstant.ON_ERROR, params);
+            return;
+        }
+
+        webClient.signOutOfOkta(currentActivity);
     }
 
     @ReactMethod
@@ -353,11 +294,66 @@ public class OktaSdkBridgeModule extends ReactContextBaseJavaModule implements A
     @Override
     public void onActivityResult(Activity activity, int requestCode, int resultCode, Intent data) {
         webClient.handleActivityResult(requestCode & 0xffff, resultCode, data);
+        Activity currentActivity = getCurrentActivity();
+        registerCallback(currentActivity);
     }
 
     @Override
     public void onNewIntent(Intent intent) {
 
+    }
+
+    /** ================= Private Methods ================= **/
+
+    private void sendEvent(ReactContext reactContext,
+                           String eventName,
+                           @Nullable WritableMap params) {
+        reactContext
+                .getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class)
+                .emit(eventName, params);
+    }
+
+    private void registerCallback(Activity activity) {
+        final SessionClient sessionClient = webClient.getSessionClient();
+
+        webClient.registerCallback(new ResultCallback<AuthorizationStatus, AuthorizationException>() {
+            @Override
+            public void onSuccess(@NonNull AuthorizationStatus status) {
+                if (status == AuthorizationStatus.AUTHORIZED) {
+                    try {
+                        WritableMap params = Arguments.createMap();
+                        Tokens tokens = sessionClient.getTokens();
+                        params.putString(OktaSdkConstant.RESOLVE_TYPE_KEY, OktaSdkConstant.AUTHORIZED);
+                        params.putString(OktaSdkConstant.ACCESS_TOKEN_KEY, tokens.getAccessToken());
+                        sendEvent(reactContext, OktaSdkConstant.SIGN_IN_SUCCESS, params);
+                    } catch (AuthorizationException e) {
+                        WritableMap params = Arguments.createMap();
+                        params.putString(OktaSdkConstant.ERROR_CODE_KEY, OktaSdkError.SIGN_IN_FAILED.getErrorCode());
+                        params.putString(OktaSdkConstant.ERROR_MSG_KEY, OktaSdkError.SIGN_IN_FAILED.getErrorMessage());
+                        sendEvent(reactContext, OktaSdkConstant.ON_ERROR, params);
+                    }
+                } else if (status == AuthorizationStatus.SIGNED_OUT) {
+                    WritableMap params = Arguments.createMap();
+                    params.putString(OktaSdkConstant.RESOLVE_TYPE_KEY, OktaSdkConstant.SIGNED_OUT);
+                    sendEvent(reactContext, OktaSdkConstant.SIGN_OUT_SUCCESS, params);
+                }
+            }
+
+            @Override
+            public void onCancel() {
+                WritableMap params = Arguments.createMap();
+                params.putString(OktaSdkConstant.RESOLVE_TYPE_KEY, OktaSdkConstant.CANCELLED);
+                sendEvent(reactContext, OktaSdkConstant.ON_CANCELLED, params);
+            }
+
+            @Override
+            public void onError(@NonNull String msg, AuthorizationException error) {
+                WritableMap params = Arguments.createMap();
+                params.putString(OktaSdkConstant.ERROR_CODE_KEY, OktaSdkError.OKTA_OIDC_ERROR.getErrorCode());
+                params.putString(OktaSdkConstant.ERROR_MSG_KEY, msg);
+                sendEvent(reactContext, OktaSdkConstant.ON_ERROR, params);
+            }
+        }, activity);
     }
 
     private void revokeToken(String tokenName, final Promise promise) {
