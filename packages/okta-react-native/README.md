@@ -79,9 +79,9 @@ Perform the following Manual installation steps if you're not using `react-nativ
 
 To setup iOS, there are three steps that you must take.
 
-1. [Make sure your iOS app's deployment target is `11.0` and above.](set-ios-deployment-target)
-2. [Install Okta Open ID Connect iOS.](install-okta-open-id-connect-ios)
-3. [Make sure you also configure Swift.](swift-configuration)
+1. [Make sure your iOS app's deployment target is `11.0` and above.](#set-ios-deployment-target)
+2. [Install Okta Open ID Connect iOS.](#install-okta-open-id-connect-ios)
+3. [Make sure you also configure Swift.](#swift-configuration)
 
 #### Set iOS Deployment Target
 
@@ -103,7 +103,7 @@ There are three ways to add Okta OIDC iOS to your dependencies:
 2. **Carthage**
 	 To integrate this SDK into your Xcode project using [Carthage](https://github.com/Carthage/Carthage), specify it in your `Cartfile`:
  		 
-		github "okta/okta-oidc-ios"		 
+		github "okta/okta-oidc-ios"
 
 	 Then run `carthage update --platform iOS`.
 
@@ -131,8 +131,8 @@ Since React Native uses Objective-C, and Okta React Native library is a Swift wr
 ### Android Setup
 
 For Android, there are two steps that you must take:
-1. [Installing Okta Open Id Connect Android.](install-okta-open-id-connect-android)
-2. [Add a redirect scheme to your project.](add-redirect-scheme)
+1. [Installing Okta Open Id Connect Android.](#install-okta-open-id-connect-android)
+2. [Add a redirect scheme to your project.](#add-redirect-scheme)
 
 #### Install Okta Open ID Connect Android
 This library depends on the native [Okta OIDC Android](https://github.com/okta/okta-oidc-android) library. You have to add this library through Gradle. Follow the following steps:
@@ -141,7 +141,7 @@ This library depends on the native [Okta OIDC Android](https://github.com/okta/o
 
 		maven {
 			url  "https://dl.bintray.com/okta/com.okta.android"
-			}
+		}
 		
 2. Make sure your `minSdkVersion` is `19` in `android/build.gradle`.
 
