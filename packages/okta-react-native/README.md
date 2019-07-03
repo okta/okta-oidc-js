@@ -98,7 +98,7 @@ There are two ways to add Okta OIDC iOS to your dependencies:
     ```   
     platform :ios, '11.0'
 
-    target 'Test9OldVersion' do
+    target '{YourTargetName}' do
       use_frameworks!
 
       pod 'OktaOidc', '~> 3.0'
