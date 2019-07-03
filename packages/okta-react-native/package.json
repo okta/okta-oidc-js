@@ -18,7 +18,8 @@
     "ios",
     "LICENSE",
     "CHANGELOG.md",
-    "package.json"
+    "package.json",
+    "OktaSdkBridgeReactNative.podspec"
   ],
   "keywords": [
     "react",
@@ -31,7 +32,7 @@
   "readmeFilename": "README.md",
   "peerDependencies": {
     "react": "^16.5.0",
-    "react-native": ">=0.57.0"
+    "react-native": ">=0.57.0 <=0.59.9"
   },
   "devDependencies": {
     "react": "^16.5.0",
