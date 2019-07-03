@@ -28,6 +28,7 @@
     "okta",
     "oidc"
   ],
+  "author": "kayciwang@okta.com",
   "license": "Apache-2.0",
   "readmeFilename": "README.md",
   "peerDependencies": {
