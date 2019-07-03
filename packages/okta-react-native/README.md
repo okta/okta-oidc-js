@@ -132,6 +132,11 @@ Since React Native uses Objective-C, and Okta React Native library is a Swift wr
 2. Select `Swift file`, enter a title, and save.
 3. Go to `Build Settings`, look for `Swift Compiler - Language`, set `Swift Language Version` to `4.2`.
 
+If you're getting Swift linker issues, try adding this line to your project's library search path:
+```
+  $(TOOLCHAIN_DIR)/usr/lib/swift/$(PLATFORM_NAME)
+```
+
 ### Android Setup
 
 For Android, there are two steps that you must take:
