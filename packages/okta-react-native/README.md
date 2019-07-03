@@ -90,7 +90,7 @@ This library supports iOS version `11.0` and above. Go to your project -> `Build
 #### Install Okta Open ID Connect iOS
 This library depends on the native [Okta OIDC iOS](https://github.com/okta/okta-oidc-ios) library. This library is not distributed as part of the React Native library to keep your dependency management consistent. 
 
-There are three ways to add Okta OIDC iOS to your dependencies:
+There are two ways to add Okta OIDC iOS to your dependencies:
 
 1. **CocoaPods**
    With [CocoaPods](https://guides.cocoapods.org/using/getting-started.html), make sure your `Podfile` looks like this:
