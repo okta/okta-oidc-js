@@ -132,11 +132,12 @@ There are two ways to add Okta OIDC iOS to your dependencies:
    4. Add `okta-oidc/okta-oidc/Okta` to your search paths of your target ("Build Settings -> "Header Search Paths").
 
 #### Swift Configuration
-Since React Native uses Objective-C, and Okta React Native library is a Swift wrapper, you will need to have at least one Swift file in your iOS project for the project to compile. To do this, follow the following steps:
+Since React Native uses Objective-C, and Okta React Native library is a Swift wrapper, you will need to have at least one Swift file in your iOS project for the project to compile. To add a dummy Swift file, follow the following steps:
 
 1. Right click on your project, then `New file`.
 2. Select `Swift file`, enter a title, and save.
-3. Go to `Build Settings`, look for `Swift Compiler - Language`, set `Swift Language Version` to `4.2`.
+3. If prompted for a header file, it is not required to create one.
+4. Go to `Build Settings`, look for `Swift Compiler - Language`, set `Swift Language Version` to `4.2`.
 
 If you're getting Swift linker issues, try adding this line to your project's library search path:
 ```
