@@ -93,16 +93,22 @@ This library depends on the native [Okta OIDC iOS](https://github.com/okta/okta-
 There are three ways to add Okta OIDC iOS to your dependencies:
 
 1. **CocoaPods**
-   With [CocoaPods](https://guides.cocoapods.org/using/getting-started.html), add the following line to
-   your `Podfile`:
+   With [CocoaPods](https://guides.cocoapods.org/using/getting-started.html), make sure your `Podfile` looks like this:
 
     ```   
-    pod 'OktaOidc', '~> 3.0'
+    platform :ios, '11.0'
+
+    target 'Test9OldVersion' do
+      use_frameworks!
+
+      pod 'OktaOidc', '~> 3.0'
+
+    end
     ```
 
    Then run `pod install`.
 
-2. **Carthage**
+<!-- 2. **Carthage**
    To integrate this SDK into your Xcode project using [Carthage](https://github.com/Carthage/Carthage), specify it in your `Cartfile`:
 
     ``` 
@@ -113,9 +119,9 @@ There are three ways to add Okta OIDC iOS to your dependencies:
 
    Drag and drop `OktaOidc.framework` from `ios/Carthage/Build/iOS` to `Frameworks` in Xcode.
 
-   Add a copy files build step for `OktaOidc.framework`: open Build Phases on Xcode, add a new "Cope Files" phase, choose "Frameworks" as destination, add `OktaOidc.framework` and ensure "Code Sign on Copy" is checked.
+   Add a copy files build step for `OktaOidc.framework`: open Build Phases on Xcode, add a new "Cope Files" phase, choose "Frameworks" as destination, add `OktaOidc.framework` and ensure "Code Sign on Copy" is checked. -->
 
-3. **Static Library**
+2. **Static Library**
    This requires linking the Okta OIDC iOS and your project, and including the headers. 
    Suggested configuration:
 
