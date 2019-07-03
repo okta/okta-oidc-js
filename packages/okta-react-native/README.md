@@ -183,7 +183,7 @@ await createConfig({
 
 ### `signIn`
 
-This async method will automatically redirect users to your Okta organziation for authentication. It will an event once a user successfully signs in. Make sure your event listeners are mounted and unmounted.
+This async method will automatically redirect users to your Okta organziation for authentication. It will an event once a user successfully signs in. Make sure your event listeners are mounted and unmounted. Note: on iOS there isn't a `onCancelled` event. If the sign in process is cancelled, `onError` will be triggered. 
 
 ```javascript
 signIn();
