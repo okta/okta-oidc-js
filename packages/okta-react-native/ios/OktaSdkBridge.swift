@@ -398,6 +398,11 @@ class OktaSdkBridge: RCTEventEmitter {
         }
     }
     
+    override
+    static func requiresMainQueueSetup() -> Bool {
+        return true;
+    }
+    
     override func supportedEvents() -> [String]! {
         return [
             OktaSdkConstant.SIGN_IN_SUCCESS,
