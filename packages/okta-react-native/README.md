@@ -138,10 +138,11 @@ For Android, there are two steps that you must take:
 This library depends on the native [Okta OIDC Android](https://github.com/okta/okta-oidc-android) library. You have to add this library through Gradle. Follow the following steps:
 
 1. Add this line to `android/build.gradle`, under `allprojects` -> `repositories`.
-
+    ```
     maven {
       url  "https://dl.bintray.com/okta/com.okta.android"
     }
+    ```
     
 2. Make sure your `minSdkVersion` is `19` in `android/build.gradle`.
 
