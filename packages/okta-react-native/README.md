@@ -66,14 +66,14 @@ Perform the following Manual installation steps if you're not using `react-nativ
   - Add `import com.oktareactnative.OktaSdkBridgePackage;` to the imports at the top of the file
   - Add `new OktaSdkBridgePackage()` to the list returned by the `getPackages()` method
 2. Append the following lines to `android/settings.gradle`:
-  	```
-  	include ':@okta/okta-react-native'
-  	project(':@okta/okta-react-native').projectDir = new File(rootProject.projectDir, '../node_modules/@okta/okta-react-native/android')
-  	```
+    ```
+    include ':@okta/okta-react-native'
+    project(':@okta/okta-react-native').projectDir = new File(rootProject.projectDir, '../node_modules/@okta/okta-react-native/android')
+    ```
 3. Insert the following lines inside the dependencies block in `android/app/build.gradle`:
-  	```
+    ```
       compile project(':@okta_okta-react-native')
-  	```
+    ```
 
 ### iOS Setup
 
@@ -96,24 +96,24 @@ There are three ways to add Okta OIDC iOS to your dependencies:
    With [CocoaPods](https://guides.cocoapods.org/using/getting-started.html), add the following line to
    your `Podfile`:
        
-		pod 'OktaOidc', '~> 3.0'
-			 
+    pod 'OktaOidc', '~> 3.0'
+       
    Then run `pod install`.
 
 2. **Carthage**
-	 To integrate this SDK into your Xcode project using [Carthage](https://github.com/Carthage/Carthage), specify it in your `Cartfile`:
- 		 
-		github "okta/okta-oidc-ios"
+   To integrate this SDK into your Xcode project using [Carthage](https://github.com/Carthage/Carthage), specify it in your `Cartfile`:
+     
+    github "okta/okta-oidc-ios"
 
-	 Then run `carthage update --platform iOS`.
+   Then run `carthage update --platform iOS`.
 
    Drag and drop `OktaOidc.framework` from `ios/Carthage/Build/iOS` to `Frameworks` in Xcode.
 
    Add a copy files build step for `OktaOidc.framework`: open Build Phases on Xcode, add a new "Cope Files" phase, choose "Frameworks" as destination, add `OktaOidc.framework` and ensure "Code Sign on Copy" is checked.
 
 3. **Static Library**
- 	 This requires linking the Okta OIDC iOS and your project, and including the headers. 
-	 Suggested configuration:
+   This requires linking the Okta OIDC iOS and your project, and including the headers. 
+   Suggested configuration:
 
    1. Create an XCode Workspace.
    2. Add `okta-oidc.xcodeproj` to your Workspace.
@@ -139,10 +139,10 @@ This library depends on the native [Okta OIDC Android](https://github.com/okta/o
 
 1. Add this line to `android/build.gradle`, under `allprojects` -> `repositories`.
 
-		maven {
-			url  "https://dl.bintray.com/okta/com.okta.android"
-		}
-		
+    maven {
+      url  "https://dl.bintray.com/okta/com.okta.android"
+    }
+    
 2. Make sure your `minSdkVersion` is `19` in `android/build.gradle`.
 
 #### Add redirect scheme
@@ -172,11 +172,11 @@ This method will create a configured client on the native modules. Resolves `tru
 
 ```javascript
 await createConfig({
-	clientId: "{clientId}",
-	redirectUri: "{redirectUri}",
-	endSessionRedirectUri: "{endSessionRedirectUri}",
-	discoveryUri: "https://{yourOktaDomain}",
-	scopes: ["openid", "profile", "offline_access"]
+  clientId: "{clientId}",
+  redirectUri: "{redirectUri}",
+  endSessionRedirectUri: "{endSessionRedirectUri}",
+  discoveryUri: "https://{yourOktaDomain}",
+  scopes: ["openid", "profile", "offline_access"]
 });
 ``` 
 
@@ -194,26 +194,26 @@ signIn();
 import { signIn, EventEmitter } from '@okta/okta-react-native';
 
 componentDidMount() {
-	this.signInSuccess = EventEmitter.addListener('signInSuccess', function(e: Event) {
-		console.log(e.access_token);
-		// Do something ...
-	});
-	this.signOutSuccess = EventEmitter.addListener('signOutSuccess', function(e: Event) {
-		//...
-	});
-	this.onError = EventEmitter.addListener('onError', function(e: Event) {
-		//...
-	});
-	this.onCancelled = EventEmitter.addListener('onCancelled', function(e: Event) {
-		//...
-	});
+  this.signInSuccess = EventEmitter.addListener('signInSuccess', function(e: Event) {
+    console.log(e.access_token);
+    // Do something ...
+  });
+  this.signOutSuccess = EventEmitter.addListener('signOutSuccess', function(e: Event) {
+    //...
+  });
+  this.onError = EventEmitter.addListener('onError', function(e: Event) {
+    //...
+  });
+  this.onCancelled = EventEmitter.addListener('onCancelled', function(e: Event) {
+    //...
+  });
 }
 
 componentWillUnmount() {
-	this.signInSuccess.remove();
-	this.signOutSuccess.remove();
-	this.onError.remove();
-	this.onCancelled.remove();
+  this.signInSuccess.remove();
+  this.signOutSuccess.remove();
+  this.onError.remove();
+  this.onCancelled.remove();
 }
 
 ``` 
@@ -240,14 +240,14 @@ If authenticated:
 
 ```javascript
 {
-	"authenticated": true
+  "authenticated": true
 }
 ```
 
 Else:
 ```javascript
 {
-	"authenticated": false
+  "authenticated": false
 }
 ```
 
@@ -266,7 +266,7 @@ If an access token is available:
 
 ```javascript
 {
-	"access_token": "{accessToken}"
+  "access_token": "{accessToken}"
 }
 ```
 
@@ -284,7 +284,7 @@ If an id token is available:
 
 ```javascript
 {
-	"id_token": "{idToken}"
+  "id_token": "{idToken}"
 }
 ```
 
@@ -333,16 +333,16 @@ Sample user claims:
 
 ```javascript
 {
-	"sub": "00uid4BxXw6I6TV4m0g3", 
-	"name": "John Doe", 
-	"preferred_username": "john.doe@example.com"
-	"ver": 1, 
-	"iss": "https://dev-example.okta.com", 
-	"aud": "00uid4BxXw6I6TV4m0g3",
-	"auth_time": 1561679776,
-	"exp": 1561683377,
-	"iat": 1561679777,
-	"idp": "00uid4BxXw6I6TV4m0g3"
+  "sub": "00uid4BxXw6I6TV4m0g3", 
+  "name": "John Doe", 
+  "preferred_username": "john.doe@example.com"
+  "ver": 1, 
+  "iss": "https://dev-example.okta.com", 
+  "aud": "00uid4BxXw6I6TV4m0g3",
+  "auth_time": 1561679776,
+  "exp": 1561683377,
+  "iat": 1561679777,
+  "idp": "00uid4BxXw6I6TV4m0g3"
 }
 ```
 
@@ -418,9 +418,9 @@ await refreshTokens();
 ##### Sample Response
 
 ```javascript
-{
-	"access_token": "{accessToken}",
-	"id_token": "{idToken}",
-	"refresh_token": "refreshToken"
+{ 
+  "access_token": "{accessToken}", 
+  "id_token": "{idToken}", 
+  "refresh_token": "refreshToken" 
 }
 ```
