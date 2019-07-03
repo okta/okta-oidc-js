@@ -95,15 +95,19 @@ There are three ways to add Okta OIDC iOS to your dependencies:
 1. **CocoaPods**
    With [CocoaPods](https://guides.cocoapods.org/using/getting-started.html), add the following line to
    your `Podfile`:
-       
+
+    ```   
     pod 'OktaOidc', '~> 3.0'
-       
+    ```
+
    Then run `pod install`.
 
 2. **Carthage**
    To integrate this SDK into your Xcode project using [Carthage](https://github.com/Carthage/Carthage), specify it in your `Cartfile`:
-     
+
+    ``` 
     github "okta/okta-oidc-ios"
+    ```
 
    Then run `carthage update --platform iOS`.
 
