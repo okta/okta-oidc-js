@@ -88,9 +88,9 @@ To setup iOS, there are three steps that you must take.
 This library supports iOS version `11.0` and above. Go to your project -> `Build settings` -> `iOS Deployment Target`, and set it to at least version `11.0`.  
 
 #### Install Okta Open ID Connect iOS
-This library depends on the native [Okta OIDC iOS](https://github.com/okta/okta-oidc-ios) library. This library is not distributed as part of the React Native library to keep your dependency management consistent. 
+This library depends on the native [Okta OIDC iOS](https://github.com/okta/okta-oidc-ios) library. It is not distributed as part of the React Native library to keep your dependency management consistent. 
 
-There are two ways to add Okta OIDC iOS to your dependencies:
+You can currently add Okta OIDC iOS through CocoaPods:
 
 1. **CocoaPods**
    With [CocoaPods](https://guides.cocoapods.org/using/getting-started.html), make sure your `Podfile` looks like this:
@@ -107,29 +107,6 @@ There are two ways to add Okta OIDC iOS to your dependencies:
     ```
 
    Then run `pod install`.
-
-<!-- 2. **Carthage**
-   To integrate this SDK into your Xcode project using [Carthage](https://github.com/Carthage/Carthage), specify it in your `Cartfile`:
-
-    ``` 
-    github "okta/okta-oidc-ios"
-    ```
-
-   Then run `carthage update --platform iOS`.
-
-   Drag and drop `OktaOidc.framework` from `ios/Carthage/Build/iOS` to `Frameworks` in Xcode.
-
-   Add a copy files build step for `OktaOidc.framework`: open Build Phases on Xcode, add a new "Cope Files" phase, choose "Frameworks" as destination, add `OktaOidc.framework` and ensure "Code Sign on Copy" is checked. -->
-
-2. **Static Library**
-   This requires linking the Okta OIDC iOS and your project, and including the headers. 
-   Suggested configuration:
-
-   1. Create an XCode Workspace.
-   2. Add `okta-oidc.xcodeproj` to your Workspace.
-   3. Include `OktaOidc.framework` as a linked framework for your target (in the "General -> Linked Framework and
-      Libraries" section of your target).
-   4. Add `okta-oidc/okta-oidc/Okta` to your search paths of your target ("Build Settings -> "Header Search Paths").
 
 #### Swift Configuration
 Since React Native uses Objective-C, and Okta React Native library is a Swift wrapper, you will need to have at least one Swift file in your iOS project for the project to compile. To add a dummy Swift file, follow the following steps:
