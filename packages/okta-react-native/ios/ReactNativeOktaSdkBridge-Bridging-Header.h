@@ -1,5 +1,5 @@
-/*!
- * Copyright (c) 2018-Present, Okta, Inc. and/or its affiliates. All rights reserved.
+/*
+ * Copyright (c) 2019, Okta, Inc. and/or its affiliates. All rights reserved.
  * The Okta software accompanied by this notice is provided pursuant to the Apache License, Version 2.0 (the "License.")
  *
  * You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0.
@@ -10,12 +10,8 @@
  * See the License for the specific language governing permissions and limitations under the License.
  */
 
-import TokenClient from './token-client';
-import { ApiError, OidcError } from './errors';
+#import <Foundation/Foundation.h>
+#import <React/RCTBridgeModule.h>
+#import <React/RCTUtils.h>
+#import <React/RCTEventEmitter.h>
 
-export default TokenClient;
-export {
-  TokenClient,
-  ApiError,
-  OidcError
-};

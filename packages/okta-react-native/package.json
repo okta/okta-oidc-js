@@ -1,59 +1,46 @@
 {
   "name": "@okta/okta-react-native",
-  "version": "0.1.2",
-  "description": "React Native support for OpenID Connect",
-  "main": "src/token-client.js",
+  "title": "React Native Okta Sdk Bridge",
+  "version": "1.0.0",
+  "description": "Okta OIDC for React Native",
+  "main": "index.js",
   "scripts": {
-    "test": "yarn test:unit",
-    "test:unit": "jest --coverage --verbose --testPathPattern __tests__/.*.test.js"
-  },
-  "jest": {
-    "browser": true,
-    "preset": "jest-expo",
-    "automock": false,
-    "setupFiles": [
-      "./setupJest.js"
-    ],
-    "transformIgnorePatterns": [
-      "node_modules/(?!(jest-)?react-native|react-clone-referenced-element|@react-native-community|expo(nent)?|react-navigation|@react-navigation/.*|@unimodules/.*|sentry-expo|native-base)"
-    ]
+    "test": "echo \"Error: no test specified\"",
+    "test:debug": "echo \"Error: no test specified\""
   },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/okta/okta-oidc-js.git"
   },
-  "license": "Apache-2.0",
   "files": [
-    "src/"
+    "index.js",
+    "android",
+    "ios",
+    "LICENSE",
+    "CHANGELOG.md",
+    "package.json",
+    "OktaSdkBridgeReactNative.podspec"
   ],
-  "dependencies": {
-    "@okta/configuration-validation": "^0.3.0",
-    "b64u-lite": "^1.0.1",
-    "dlv": "^1.1.2",
-    "expo-constants": "^4.0.0",
-    "expo-secure-store": "^4.0.0",
-    "expo-web-browser": "^4.0.0",
-    "isomorphic-webcrypto": "^1.6.1",
-    "jwt-lite": "^1.1.2",
-    "str2buf": "^1.3.0"
-  },
+  "keywords": [
+    "react",
+    "react-native",
+    "authentication",
+    "okta",
+    "oidc"
+  ],
+  "author": "kayci.wang@okta.com",
+  "license": "Apache-2.0",
+  "readmeFilename": "README.md",
   "peerDependencies": {
-    "react-native": "*",
-    "react-native-securerandom": "^0.1.1",
-    "react-native-unimodules": "0.3.1"
+    "react": "^16.5.0",
+    "react-native": ">=0.57.0 <=0.59.9"
   },
   "devDependencies": {
-    "@babel/core": "^7.4.5",
-    "@babel/preset-env": "^7.4.5",
-    "babel-jest": "^24.8.0",
-    "expo-react-native-adapter": "^3.0.1",
-    "jest": "^24.1.0",
-    "jest-expo": "^32.0.1",
-    "jest-fetch-mock": "^2.1.2",
-    "metro-react-native-babel-preset": "0.52.0",
-    "react": "*",
-    "react-native": "0.58.6",
-    "react-native-unimodules": "0.3.1",
-    "react-native-gesture-handler": "^1.2.2"
+    "react": "^16.5.0",
+    "react-native": "^0.59.9"
+  },
+  "dependencies": {
+    "@okta/configuration-validation": "^0.3.0",
+    "jwt-lite": "^1.1.2"
   }
 }
