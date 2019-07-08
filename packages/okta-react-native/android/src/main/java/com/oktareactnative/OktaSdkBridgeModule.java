@@ -65,6 +65,7 @@ public class OktaSdkBridgeModule extends ReactContextBaseJavaModule implements A
                              String endSessionRedirectUri,
                              String discoveryUri,
                              ReadableArray scopes,
+                             Boolean requireHardwareBackedKeyStore,
                              Promise promise
     ) {
 
@@ -87,7 +88,7 @@ public class OktaSdkBridgeModule extends ReactContextBaseJavaModule implements A
                     .withConfig(config)
                     .withContext(reactContext)
                     .withStorage(new SharedPreferenceStorage(reactContext))
-                    .setRequireHardwareBackedKeyStore(true)
+                    .setRequireHardwareBackedKeyStore(requireHardwareBackedKeyStore)
                     .create();
 
             promise.resolve(true);
