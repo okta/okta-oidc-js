@@ -334,6 +334,7 @@ public class OktaSdkBridgeModule extends ReactContextBaseJavaModule implements A
                         sendEvent(reactContext, OktaSdkConstant.ON_ERROR, params);
                     }
                 } else if (status == AuthorizationStatus.SIGNED_OUT) {
+                    sessionClient.clear();
                     WritableMap params = Arguments.createMap();
                     params.putString(OktaSdkConstant.RESOLVE_TYPE_KEY, OktaSdkConstant.SIGNED_OUT);
                     sendEvent(reactContext, OktaSdkConstant.SIGN_OUT_SUCCESS, params);
