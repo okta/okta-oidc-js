@@ -162,7 +162,7 @@ import { createConfig, signIn, signOut, getAccessToken } from '@okta/okta-react-
 
 ### `createConfig`
 
-This method will create a configured client on the native modules. Resolves `true` if successfully configures a client. 
+This method will create a configured client on the native modules. Resolves `true` if successfully configures a client. Note: `requireHardwareBackedKeyStore` is a configurable setting only on android devices. If you're a developer testing on android emulators, set this field to `false`. 
 
 ```javascript
 await createConfig({
@@ -170,7 +170,8 @@ await createConfig({
   redirectUri: "{redirectUri}",
   endSessionRedirectUri: "{endSessionRedirectUri}",
   discoveryUri: "https://{yourOktaDomain}",
-  scopes: ["openid", "profile", "offline_access"]
+  scopes: ["openid", "profile", "offline_access"],
+  requireHardwareBackedKeyStore: true
 });
 ``` 
 
