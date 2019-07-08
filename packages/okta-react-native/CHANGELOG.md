@@ -4,7 +4,16 @@
 - [`138f068`](https://github.com/okta/okta-oidc-js/commit/138f068a64c62f754567919d79da2c67bbdb8969#diff-2c20101038faa8ceda1dda5c3cde79d8) - Make hardware backed key store configurable on android devices 
 
 ### Other
+<<<<<<< HEAD
 - [`773bc9f`](https://github.com/okta/okta-oidc-js/commit/773bc9ff6bb2a440fb43439d17798224e57c0333#diff-2c20101038faa8ceda1dda5c3cde79d8) - Clears session client on android after user signs out
+=======
+- [`773bc9f`](https://github.com/okta/okta-oidc-js/commit/773bc9ff6bb2a440fb43439d17798224e57c0333#diff-2c20101038faa8ceda1dda5c3cde79d8) - Clears session client on android 
+
+# 1.0.0
+
+### Features
+- [`e8948a8`](https://github.com/okta/okta-oidc-js/commit/e8948a83ce5b0f0213c96739760c219eda250598#diff-2c20101038faa8ceda1dda5c3cde79d8) - Reworks the React Native SDK
+>>>>>>> Adds new entries to CHANGELOG, update pacakge.json version to 1.0.1
 
 # 1.0.0
 
