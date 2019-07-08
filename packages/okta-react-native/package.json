@@ -1,7 +1,7 @@
 {
   "name": "@okta/okta-react-native",
   "title": "React Native Okta Sdk Bridge",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Okta OIDC for React Native",
   "main": "index.js",
   "scripts": {
