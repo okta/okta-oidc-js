@@ -19,7 +19,8 @@ export const createConfig = async({
   redirectUri, 
   endSessionRedirectUri, 
   discoveryUri, 
-  scopes
+	scopes,
+	requireHardwareBackedKeyStore
 }) => {
 
   assertIssuer(discoveryUri);
@@ -28,7 +29,14 @@ export const createConfig = async({
   assertRedirectUri(endSessionRedirectUri);
 
   if (Platform.OS === 'ios') {
-    scopes = scopes.join(' ');
+		scopes = scopes.join(' ');
+		return NativeModules.OktaSdkBridge.createConfig(
+			clientId,
+			redirectUri,
+			endSessionRedirectUri,
+			discoveryUri,
+			scopes
+		);
   }
     
   return NativeModules.OktaSdkBridge.createConfig(
@@ -36,7 +44,8 @@ export const createConfig = async({
     redirectUri,
     endSessionRedirectUri,
     discoveryUri,
-    scopes
+		scopes,
+		requireHardwareBackedKeyStore
   );
 } 
 
