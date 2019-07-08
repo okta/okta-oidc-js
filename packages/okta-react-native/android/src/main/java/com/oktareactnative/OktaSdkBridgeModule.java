@@ -65,7 +65,7 @@ public class OktaSdkBridgeModule extends ReactContextBaseJavaModule implements A
                              String endSessionRedirectUri,
                              String discoveryUri,
                              ReadableArray scopes,
-														 Boolean requireHardwareBackedKeyStore,
+                             Boolean requireHardwareBackedKeyStore,
                              Promise promise
     ) {
 
