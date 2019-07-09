@@ -5,19 +5,26 @@
 
 ### Other
 <<<<<<< HEAD
+<<<<<<< HEAD
 - [`773bc9f`](https://github.com/okta/okta-oidc-js/commit/773bc9ff6bb2a440fb43439d17798224e57c0333#diff-2c20101038faa8ceda1dda5c3cde79d8) - Clears session client on android after user signs out
 =======
 - [`773bc9f`](https://github.com/okta/okta-oidc-js/commit/773bc9ff6bb2a440fb43439d17798224e57c0333#diff-2c20101038faa8ceda1dda5c3cde79d8) - Clears session client on android 
+=======
+- [`773bc9f`](https://github.com/okta/okta-oidc-js/commit/773bc9ff6bb2a440fb43439d17798224e57c0333#diff-2c20101038faa8ceda1dda5c3cde79d8) - Clears session client on android after user signs out
+>>>>>>> Updates CHANGELOG with more details for version 1.0.0
 
 # 1.0.0
 
 ### Features
+<<<<<<< HEAD
 - [`e8948a8`](https://github.com/okta/okta-oidc-js/commit/e8948a83ce5b0f0213c96739760c219eda250598#diff-2c20101038faa8ceda1dda5c3cde79d8) - Reworks the React Native SDK
 >>>>>>> Adds new entries to CHANGELOG, update pacakge.json version to 1.0.1
 
 # 1.0.0
 
 ### Features
+=======
+>>>>>>> Updates CHANGELOG with more details for version 1.0.0
 - [`e8948a8`](https://github.com/okta/okta-oidc-js/commit/e8948a83ce5b0f0213c96739760c219eda250598#diff-2c20101038faa8ceda1dda5c3cde79d8) - Reworks the React Native SDK. This major version upgrade removes Expo/Unimodules dependencies, replaces with Native Modules acting as wrappers around [okta-oidc-android](https://github.com/okta/okta-oidc-android) and [okta-oidc-ios](https://github.com/okta/okta-oidc-ios), and introduces new usages. For more details, refer to the commit. 
 
 # 0.1.2
