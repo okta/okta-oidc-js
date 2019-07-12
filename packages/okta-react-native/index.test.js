@@ -12,75 +12,75 @@
 
 const {
   createConfig,
-	signIn,
-	signOut,
-	getAccessToken,
-	getIdToken,
-	getUser,
-	getUserFromIdToken,
-	isAuthenticated,
-	revokeAccessToken,
-	revokeIdToken,
-	revokeRefreshToken,
-	introspectAccessToken,
-	introspectIdToken,
-	introspectRefreshToken,
-	refreshTokens,
+  signIn,
+  signOut,
+  getAccessToken,
+  getIdToken,
+  getUser,
+  getUserFromIdToken,
+  isAuthenticated,
+  revokeAccessToken,
+  revokeIdToken,
+  revokeRefreshToken,
+  introspectAccessToken,
+  introspectIdToken,
+  introspectRefreshToken,
+  refreshTokens,
 } = jest.requireActual('./');
 
 import { Platform } from 'react-native';
 
 jest.mock('react-native', () => {
-	return ({
-		NativeModules: {
-			OktaSdkBridge: {
-				createConfig: jest.fn(),
-				signIn: jest.fn(),
-				signOut: jest.fn(),
-				getAccessToken: jest.fn(),
-				getIdToken: jest.fn(),
-				getUser: jest.fn(),
-				isAuthenticated: jest.fn(),
-				revokeAccessToken: jest.fn(),
-				revokeIdToken: jest.fn(),
-				revokeRefreshToken: jest.fn(),
-				introspectAccessToken: jest.fn(),
-				introspectIdToken: jest.fn(),
-				introspectRefreshToken: jest.fn(),
-				refreshTokens: jest.fn(),
-			},
-		},
-		Platform: {
-			OS: 'ios',
-			select: jest.fn()
-		},
-		NativeEventEmitter: jest.fn(),
-		DeviceEventEmitter: jest.fn(),
-	});
+  return ({
+    NativeModules: {
+      OktaSdkBridge: {
+        createConfig: jest.fn(),
+        signIn: jest.fn(),
+        signOut: jest.fn(),
+        getAccessToken: jest.fn(),
+        getIdToken: jest.fn(),
+        getUser: jest.fn(),
+        isAuthenticated: jest.fn(),
+        revokeAccessToken: jest.fn(),
+        revokeIdToken: jest.fn(),
+        revokeRefreshToken: jest.fn(),
+        introspectAccessToken: jest.fn(),
+        introspectIdToken: jest.fn(),
+        introspectRefreshToken: jest.fn(),
+        refreshTokens: jest.fn(),
+      },
+    },
+    Platform: {
+      OS: 'ios',
+      select: jest.fn()
+    },
+    NativeEventEmitter: jest.fn(),
+    DeviceEventEmitter: jest.fn(),
+  });
 });
 
 jest.mock('NativeEventEmitter');
 
 describe('OktaReactNative', () => {
 
-	beforeAll(() => {
-	});
+  beforeAll(() => {
+  });
 
-	describe('createConfigTest', () => {
+  describe('createConfigTest', () => {
     let mockCreateConfig;
 
-		const config = {
-			clientId: 'dummy_client_id',
-  		redirectUri: 'dummy://redirect', 
-  		endSessionRedirectUri: 'dummy://endSessionRedirect', 
-  		discoveryUri: 'https://dummy_issuer',
-			scopes: ['scope1'],
-  		requireHardwareBackedKeyStore: true
+    const config = {
+      clientId: 'dummy_client_id',
+      redirectUri: 'dummy://redirect', 
+      endSessionRedirectUri: 'dummy://endSessionRedirect', 
+      discoveryUri: 'https://dummy_issuer',
+      scopes: ['scope1'],
+      requireHardwareBackedKeyStore: true
     };
 
-		beforeEach(() => {
+    beforeEach(() => {
       mockCreateConfig = require('react-native').NativeModules.OktaSdkBridge.createConfig;
-		});
+    });
     
     it('passes in correct parameters on ios device', () => {
       Platform.OS = 'ios';
@@ -114,7 +114,7 @@ describe('OktaReactNative', () => {
 
     beforeEach(() => {
       mockSignIn = require('react-native').NativeModules.OktaSdkBridge.signIn;
-		});
+    });
 
     it('calls native sign in method', () => {
       signIn();
@@ -127,7 +127,7 @@ describe('OktaReactNative', () => {
 
     beforeEach(() => {
       mockSignOut = require('react-native').NativeModules.OktaSdkBridge.signOut;
-		});
+    });
 
     it('calls native sign out method', () => {
       signOut();
@@ -140,7 +140,7 @@ describe('OktaReactNative', () => {
 
     beforeEach(() => {
       mockGetAccessToken = require('react-native').NativeModules.OktaSdkBridge.getAccessToken;
-		});
+    });
 
     it('gets access token successfully', async () => {
       mockGetAccessToken.mockReturnValueOnce('dummy_access_token');
@@ -155,7 +155,7 @@ describe('OktaReactNative', () => {
 
     beforeEach(() => {
       mockGetIdToken = require('react-native').NativeModules.OktaSdkBridge.getIdToken;
-		});
+    });
 
     it('gets id token successfully', async () => {
       mockGetIdToken.mockReturnValueOnce('dummy_id_token');
@@ -170,7 +170,7 @@ describe('OktaReactNative', () => {
 
     beforeEach(() => {
       mockGetUser = require('react-native').NativeModules.OktaSdkBridge.getUser;
-		});
+    });
 
     it('gets id token successfully', async () => {
       mockGetUser.mockReturnValueOnce({
@@ -192,7 +192,7 @@ describe('OktaReactNative', () => {
 
     beforeEach(() => {
       mockGetIdToken = require('react-native').NativeModules.OktaSdkBridge.getIdToken;
-		});
+    });
 
     it('gets user from id token successfully', async () => {
       mockGetIdToken.mockReturnValueOnce({
@@ -211,7 +211,7 @@ describe('OktaReactNative', () => {
 
     beforeEach(() => {
       mockIsAuthenticated = require('react-native').NativeModules.OktaSdkBridge.isAuthenticated;
-		});
+    });
 
     it('is authenticated', async () => {
       mockIsAuthenticated.mockReturnValueOnce(true);
@@ -226,7 +226,7 @@ describe('OktaReactNative', () => {
 
     beforeEach(() => {
       mockRevokeAccessToken = require('react-native').NativeModules.OktaSdkBridge.revokeAccessToken;
-		});
+    });
 
     it('successfully revokes access token', async () => {
       mockRevokeAccessToken.mockReturnValueOnce(true);
@@ -241,7 +241,7 @@ describe('OktaReactNative', () => {
 
     beforeEach(() => {
       mockRevokeIdToken = require('react-native').NativeModules.OktaSdkBridge.revokeIdToken;
-		});
+    });
 
     it('successfully revokes id token', async () => {
       mockRevokeIdToken.mockReturnValueOnce(true);
@@ -256,7 +256,7 @@ describe('OktaReactNative', () => {
 
     beforeEach(() => {
       mockRevokeIdToken = require('react-native').NativeModules.OktaSdkBridge.revokeRefreshToken;
-		});
+    });
 
     it('successfully revokes id token', async () => {
       mockRevokeIdToken.mockReturnValueOnce(true);
@@ -271,7 +271,7 @@ describe('OktaReactNative', () => {
 
     beforeEach(() => {
       mockIntrospectAccessToken = require('react-native').NativeModules.OktaSdkBridge.introspectAccessToken;
-		});
+    });
 
     it('introspects the access token', async () => {
       mockIntrospectAccessToken.mockReturnValueOnce({
@@ -294,7 +294,7 @@ describe('OktaReactNative', () => {
 
     beforeEach(() => {
       mockIntrospectIdToken = require('react-native').NativeModules.OktaSdkBridge.introspectIdToken;
-		});
+    });
 
     it('introspects the id token', async () => {
       mockIntrospectIdToken.mockReturnValueOnce({
@@ -315,7 +315,7 @@ describe('OktaReactNative', () => {
 
     beforeEach(() => {
       mockIntrospectRefreshToken = require('react-native').NativeModules.OktaSdkBridge.introspectRefreshToken;
-		});
+    });
 
     it('introspects the refresh token', async () => {
       mockIntrospectRefreshToken.mockReturnValueOnce({
@@ -336,7 +336,7 @@ describe('OktaReactNative', () => {
 
     beforeEach(() => {
       mockRefreshTokens = require('react-native').NativeModules.OktaSdkBridge.refreshTokens;
-		});
+    });
 
     it('refreshes tokens', async () => {
       mockRefreshTokens.mockReturnValueOnce(true);
