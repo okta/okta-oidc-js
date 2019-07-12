@@ -32,8 +32,8 @@ import { Observable, Observer } from 'rxjs';
 
 @Injectable()
 export class OktaAuthService {
-    private oktaAuth: OktaAuth;
-    private config: OktaConfig;
+    protected oktaAuth: OktaAuth;
+    private _config: OktaConfig;
     private observers: Observer<boolean>[];
     $authenticationState: Observable<boolean>;
 
@@ -45,19 +45,14 @@ export class OktaAuthService {
 
       this.observers = [];
 
-      this.oktaAuth = new OktaAuth(buildConfigObject(auth));
-
-      this.oktaAuth.userAgent = `${packageInfo.name}/${packageInfo.version} ${this.oktaAuth.userAgent}`;
-
-      /**
-       * Scrub scopes to ensure 'openid' is included
-       */
-      auth.scope = this.scrubScopes(auth.scope);
-
       /**
        * Cache the auth config.
        */
       this.config = auth;
+
+      this.oktaAuth = new OktaAuth(buildConfigObject(this.config));
+
+      this.oktaAuth.userAgent = `${packageInfo.name}/${packageInfo.version} ${this.oktaAuth.userAgent}`;
 
       this.$authenticationState = new Observable((observer: Observer<boolean>) => {this.observers.push(observer)})
     }
@@ -124,6 +119,35 @@ export class OktaAuthService {
     }
 
     /**
+     * Getter for the configuration object.
+     */
+    get config(): OktaConfig {
+      return this._config;
+    }
+
+    /**
+     * Setter for the configuration object.
+     */
+    set config(value: OktaConfig) {
+      /**
+       * Scrub configuration to ensure default values are set
+       */
+      value.scope = this.scrubScopes(value.scope);
+      if (!value.responseType) {
+        value.responseType = 'id_token token';
+      }
+
+      if (!value.grantType) {
+        if (value.responseType.includes('code')) {
+          value.grantType = 'authorization_code';
+        } else {
+          value.grantType = 'implicit';
+        }
+      }
+      this._config = value;
+    }
+
+    /**
      * Returns the configuration object used.
      */
     getOktaConfig(): OktaConfig {
@@ -140,19 +164,9 @@ export class OktaAuthService {
         this.setFromUri(fromUri);
       }
 
-      const responseType = (this.config.responseType || 'id_token token').split(' ');
-      let grantType = this.config.grantType;
-      if (!grantType) {
-          if (responseType.includes('code')) {
-              grantType = 'authorization_code';
-          } else {
-              grantType = 'implicit';
-          }
-      }
-
       this.oktaAuth.token.getWithRedirect({
-        responseType,
-        grantType,
+        responseType: this.config.responseType.split(' '),
+        grantType: this.config.grantType,
         // Convert scopes to list of strings
         scopes: this.config.scope.split(' '),
         ...additionalParams
