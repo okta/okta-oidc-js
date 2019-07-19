@@ -59,12 +59,7 @@ jest.mock('react-native', () => {
   });
 });
 
-jest.mock('NativeEventEmitter');
-
 describe('OktaReactNative', () => {
-
-  beforeAll(() => {
-  });
 
   describe('createConfigTest', () => {
     let mockCreateConfig;
