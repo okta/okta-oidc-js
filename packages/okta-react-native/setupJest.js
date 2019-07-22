@@ -9,7 +9,7 @@
  *
  * See the License for the specific language governing permissions and limitations under the License.
  */
-global.XMLHttpRequest = global.XMLHttpRequest || function() {};
+global.XMLHttpRequest = jest.fn();
 global.fetch = jest.fn();
 
 if (typeof window !== 'object') {
