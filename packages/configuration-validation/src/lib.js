@@ -27,17 +27,18 @@ const hasDomainAdmin = /-admin.(okta|oktapreview|okta-emea).com/;
 const hasDomainTypo = new RegExp('(.com.com)|(://.*){2,}');
 const endsInPath = new RegExp('/$');
 
-configUtil.buildConfigObject = (config) => {
-  return {
-    clientId: config.clientId || config.client_id,
-    issuer: config.issuer,
-    redirectUri: config.redirectUri || config.redirect_uri,
-    tokenManager: {
-      storage: config.storage,
-      autoRenew: config.autoRenew || config.auto_renew
-    }
+configUtil.buildConfigObject = (config) => ({
+  authorizeUrl: config.authorizeUrl,
+  userinfoUrl: config.userinfoUrl,
+  tokenUrl: config.tokenUrl,
+  clientId: config.clientId || config.client_id,
+  issuer: config.issuer,
+  redirectUri: config.redirectUri || config.redirect_uri,
+  tokenManager: {
+    storage: config.storage,
+    autoRenew: config.autoRenew || config.auto_renew
   }
-}
+});
 
 configUtil.assertIssuer = (issuer, testing = {}) => {
   const copyMessage = 'You can copy your domain from the Okta Developer ' +
