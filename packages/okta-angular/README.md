@@ -11,12 +11,12 @@ This library currently supports:
 
 This library has been tested for compatibility with the following Angular versions: 4, 5, 6, 7, 8
 
-`okta-angular` works directly with [`@angular/router`](https://angular.io/guide/router). 
+`okta-angular` works directly with [`@angular/router`](https://angular.io/guide/router).
 
 ## Getting Started
 
 - If you do not already have a **Developer Edition Account**, you can create one at [https://developer.okta.com/signup/](https://developer.okta.com/signup/).
-- An Okta Application, configured for Singe-Page App (SPA) mode. This is done from the Okta Developer Console and you can find instructions [here](https://developer.okta.com/authentication-guide/implementing-authentication/implicit#1-setting-up-your-application). When following the wizard, use the default properties. They are are designed to work with our sample applications.
+- An Okta Application, configured for Single-Page App (SPA) mode. This is done from the Okta Developer Console and you can find instructions [here](https://developer.okta.com/authentication-guide/implementing-authentication/implicit#1-setting-up-your-application). When following the wizard, use the default properties. They are are designed to work with our sample applications.
 
 ### Helpful Links
 
@@ -24,7 +24,7 @@ This library has been tested for compatibility with the following Angular versio
   - If you don't have an Angular app, or are new to Angular, please start with this guide. It will walk you through the creation of an Angular app, creating routes, and other application development essentials.
 - [Okta Sample Application](https://github.com/okta/samples-js-angular)
   - A fully functional sample application.
-- [Okta Angular Quickstart](https://okta.github.io/quickstart/#/angular/nodejs/generic)
+- [Okta Angular Quickstart](https://developer.okta.com/quickstart/#/angular/nodejs/express)
   - Helpful resource for integrating an existing Angular application into Okta.
 
 ## Installation
