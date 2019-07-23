@@ -32,6 +32,7 @@ configUtil.buildConfigObject = (config) => {
     clientId: config.clientId || config.client_id,
     issuer: config.issuer,
     redirectUri: config.redirectUri || config.redirect_uri,
+    grantType: config.grantType,
     tokenManager: {
       storage: config.storage,
       autoRenew: config.autoRenew || config.auto_renew
