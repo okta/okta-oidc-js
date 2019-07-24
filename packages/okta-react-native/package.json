@@ -5,8 +5,8 @@
   "description": "Okta OIDC for React Native",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\"",
-    "test:debug": "echo \"Error: no test specified\""
+    "test": "node_modules/.bin/jest",
+    "test:debug": "node --inspect-brk node_modules/jest/bin/jest.js --runInBand"
   },
   "repository": {
     "type": "git",
@@ -36,11 +36,23 @@
     "react-native": ">=0.57.0 <=0.59.9"
   },
   "devDependencies": {
+    "@babel/core": "^7.5.4",
+    "@babel/preset-env": "^7.5.4",
+    "babel-jest": "^24.8.0",
+    "jest": "^24.8.0",
+    "metro-react-native-babel-preset": "^0.55.0",
     "react": "^16.5.0",
     "react-native": "^0.59.9"
   },
   "dependencies": {
     "@okta/configuration-validation": "^0.3.0",
     "jwt-lite": "^1.1.2"
+  },
+  "jest": {
+    "automock": false,
+    "preset": "react-native",
+    "setupFiles": [
+      "./setupJest.js"
+    ]
   }
 }
