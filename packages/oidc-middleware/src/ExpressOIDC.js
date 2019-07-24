@@ -39,8 +39,8 @@ module.exports = class ExpressOIDC extends EventEmitter {
    * @param {string} options.issuer The OpenId Connect issuer
    * @param {string} options.client_id This app's OpenId Connect client id
    * @param {string} options.client_secret This app's OpenId Connect client secret
-   * @param {string} options.loginRedirectUri The location of the login authorization callback if not redirecting to this app
-   * @param {string} options.logoutRedirectUri The location of the logout callback if not redirecting to this app 
+   * @param {string} options.loginRedirectUri The location of the login authorization callback if not redirecting to this app 
+   * @param {string} options.logoutRedirectUri The location of the logout callback if not redirecting to this app
    * @param {string} [options.scope=openid] The scopes that will determine the claims on the tokens
    * @param {string} [options.response_type=code] The OpenId Connect response type
    * @param {number} [options.maxClockSkew=120] The maximum discrepancy allowed between server clocks in seconds
