@@ -12,30 +12,16 @@ This library currently supports:
 ## Getting Started
 
 - If you do not already have a **Developer Edition Account**, you can create one at [https://developer.okta.com/signup/](https://developer.okta.com/signup/).
-- If you don't have a Vue app, or are new to Vue, please start with the [Vue CLI](https://github.com/vuejs/vue-cli) guide. It will walk you through the creation of a Vue app, creating [routers](https://router.vuejs.org/en/essentials/getting-started.html), and other application development essentials.
+- An Okta Application, configured for Single-Page App (SPA) mode. This is done from the Okta Developer Console and you can find instructions [here](https://developer.okta.com/authentication-guide/implementing-authentication/implicit#1-setting-up-your-application). When following the wizard, use the default properties. They are are designed to work with our sample applications.
 
-### Add an OpenID Connect Client in Okta
+### Helpful Links
 
-In Okta, applications are OpenID Connect clients that can use Okta Authorization servers to authenticate users.  Your Okta Org already has a default authorization server, so you just need to create an OIDC client that will use it.
-
-- Log into the Okta Developer Dashboard, click **Applications** > **Add Application**.
-- Choose **Single Page App (SPA)** as the platform, then submit the form the default values, which should look like this:
-
-| Setting             | Value                                          |
-| ------------------- | ---------------------------------------------- |
-| App Name            | My SPA App                                     |
-| Base URIs           | http://localhost:{port}                        |
-| Login redirect URIs | http://localhost:{port}/implicit/callback      |
-| Grant Types Allowed | Implicit                                       |
-
-After you have created the application there are two more values you will need to gather:
-
-| Setting       | Where to Find                                                                  |
-| ------------- | ------------------------------------------------------------------------------ |
-| Client ID     | In the applications list, or on the "General" tab of a specific application.   |
-| Org URL       | On the home screen of the developer dashboard, in the upper right.             |
-
-These values will be used in your Vue application to setup the OpenID Connect flow with Okta.
+- [Vue CLI](https://github.com/vuejs/vue-cli)
+  - If you don't have a Vue app, or are new to Vue, please start with this guide. It will walk you through the creation of a Vue app, creating [routers](https://router.vuejs.org/en/essentials/getting-started.html), and other application development essentials.
+- [Okta Sample Application](https://github.com/okta/samples-js-vue)
+  - A fully functional sample application.
+- [Okta Vue Quickstart](https://developer.okta.com/quickstart/#/vue/nodejs/express)
+  - Helpful resource for integrating an existing Vue application into Okta.
 
 ## Installation
 
