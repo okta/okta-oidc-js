@@ -193,10 +193,11 @@ Security is the top-most component of okta-react. This is where most of the conf
 - **issuer** (required) - The OpenId Connect `issuer`
 - **client_id** (required) - The OpenId Connect `client_id`
 - **redirect_uri** (required) - Where the callback handler is hosted
-- **scope** *(optional)*: Reserved or custom claims to be returned in the tokens
-- **response_type** *(optional)*: Desired token grant types
-- **onAuthRequired** (optional)
-- **auth** (optional) - Provide an Auth object instead of the options above. This is helpful when integrating `okta-react` with external libraries that need access to the tokens.
+- **scope** *(optional)* - Reserved or custom claims to be returned in the tokens. Default: `['openid', 'email', 'profile']`
+- **response_type** *(optional)* - Desired token types. Default: `['id_token', 'token']`
+- **grantType** *(optional)* - Can be `implicit` (default) or `authorization_code` (for PKCE flow)
+- **onAuthRequired** *(optional)* - callback function
+- **auth** *(optional)* - Provide an Auth object instead of the options above. This is helpful when integrating `okta-react` with external libraries that need access to the tokens.
 
   Accepts a callback to make a decision when authentication is required. If this is not supplied, `okta-react` redirects to Okta. This callback will receive `auth` and `history` parameters. This is triggered when:
     1. `auth.login` is called
