@@ -8,30 +8,19 @@ Okta React SDK makes it easy to integrate [react-router](https://github.com/Reac
 This library currently supports:
   - [OAuth 2.0 Implicit Flow](https://tools.ietf.org/html/rfc6749#section-1.3.2)
 
-## Prerequisites
-* If you do not already have a **Developer Edition Account**, you can create one at [https://developer.okta.com/signup/](https://developer.okta.com/signup/).
-* If you don't have a React app, or are new to React, please continue with the [React Quickstart](https://facebook.github.io/react/docs/installation.html#creating-a-new-application) guide. It will walk you through the creation of a React app, creating routes, and other application development essentials.
+## Getting Started
 
-## Add an OpenID Connect Client in Okta
-In Okta, applications are OpenID Connect clients that can use Okta Authorization servers to authenticate users.  Your Okta Org already has a default authorization server, so you just need to create an OIDC client that will use it.
-* Log into the Okta Developer Dashboard, click **Applications** then **Add Application**.
-* Choose **Single Page App (SPA)** as the platform, then submit the form the default values, which should look like this:
+- If you do not already have a **Developer Edition Account**, you can create one at [https://developer.okta.com/signup/](https://developer.okta.com/signup/).
+- An Okta Application, configured for Single-Page App (SPA) mode. This is done from the Okta Developer Console and you can find instructions [here](https://developer.okta.com/authentication-guide/implementing-authentication/implicit#1-setting-up-your-application). When following the wizard, use the default properties. They are are designed to work with our sample applications.
 
-| Setting             | Value                                     |
-|---------------------|-------------------------------------------|
-| App Name            | My SPA App                                |
-| Base URIs           | http://localhost:{port}                   |
-| Login redirect URIs | http://localhost:{port}/implicit/callback |
-| Grant Types Allowed | Implicit                                  |
+### Helpful Links
 
-After you have created the application there are two more values you will need to gather:
-
-| Setting   | Where to Find                                                                |
-|-----------|------------------------------------------------------------------------------|
-| Client ID | In the applications list, or on the "General" tab of a specific application. |
-| Org URL   | On the home screen of the developer dashboard, in the upper right.           |
-
-These values will be used in your React application to setup the OpenID Connect flow with Okta.
+- [React Quickstart](https://facebook.github.io/react/docs/installation.html#creating-a-new-application)
+  - If you don't have a React app, or are new to React, please start with this guide. It will walk you through the creation of a React app, creating routes, and other application development essentials.
+- [Okta Sample Application](https://github.com/okta/samples-js-react)
+  - A fully functional sample application.
+- [Okta React Quickstart](https://developer.okta.com/quickstart/#/react/nodejs/express)
+  - Helpful resource for integrating an existing React application into Okta.
 
 ## Installation
 
