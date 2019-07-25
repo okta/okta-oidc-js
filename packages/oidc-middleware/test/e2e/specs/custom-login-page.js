@@ -20,7 +20,7 @@ browser.waitForAngularEnabled(false);
 describe('Custom login page', () => {
 
   beforeEach(async () => {
-    let cdnUrl='https://ok1static.oktacdn.com/assets/js/sdk/okta-signin-widget/3.0.6';
+    let cdnUrl='https://ok1static.oktacdn.com/assets/js/sdk/okta-signin-widget/3.0.0';
 
     if(process.env.NPM_TARBALL_URL) {
       // Extract the version of sign-in widget from the NPM_TARBALL_URL variable
