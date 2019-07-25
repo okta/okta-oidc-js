@@ -25,8 +25,8 @@ describe('Custom login page', () => {
     if(process.env.NPM_TARBALL_URL) {
       // Extract the version of sign-in widget from the NPM_TARBALL_URL variable
       // The variable is of the format https:<artifactory_url>/@okta/okta-signin-widget-3.0.6.tgz
-      let url = process.env.NPM_TARBALL_URL;
-      let i = url.lastIndexOf('-');
+      const url = process.env.NPM_TARBALL_URL;
+      const i = url.lastIndexOf('-');
       const version = url.substring(i + 1, url.length - 4);
       cdnUrl=`https://global.oktacdn.com/okta-signin-widget/${version}`;
     }
