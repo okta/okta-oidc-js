@@ -28,10 +28,12 @@ export default class Auth {
       disableHttpsCheck: !!config.disableHttpsCheck
     };
 
-    assertIssuer(config.issuer, testing);
-    assertClientId(config.client_id);
-    assertRedirectUri(config.redirect_uri);
-    this._oktaAuth = new OktaAuth(buildConfigObject(config));
+    // normalize authJS config. In this SDK, we allow underscore on certain properties, but AuthJS consistently uses camel case.
+    const authConfig = buildConfigObject(config);
+    assertIssuer(authConfig.issuer, testing);
+    assertClientId(authConfig.clientId);
+    assertRedirectUri(authConfig.redirectUri);
+    this._oktaAuth = new OktaAuth(authConfig);
     this._oktaAuth.userAgent = `${packageInfo.name}/${packageInfo.version} ${this._oktaAuth.userAgent}`;
     this._config = config;
     this._history = config.history;

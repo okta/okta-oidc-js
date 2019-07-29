@@ -182,14 +182,15 @@ Security is the top-most component of okta-react. This is where most of the conf
 - **issuer** (required) - The OpenId Connect `issuer`
 - **client_id** (required) - The OpenId Connect `client_id`
 - **redirect_uri** (required) - Where the callback handler is hosted
-- **scope** *(optional)*: Reserved or custom claims to be returned in the tokens
-- **response_type** *(optional)*: Desired token grant types
-- **onAuthRequired** (optional)
-- **auth** (optional) - Provide an Auth object instead of the options above. This is helpful when integrating `okta-react` with external libraries that need access to the tokens.
+- **scope** *(optional)* - Reserved or custom claims to be returned in the tokens. Default: `['openid', 'email', 'profile']`
+- **response_type** *(optional)* - Desired token types. Default: `['id_token', 'token']`
+- **grantType** *(optional)* - Can be `implicit` (default) or `authorization_code` (for PKCE flow)
+- **onAuthRequired** *(optional)* - callback function
 
   Accepts a callback to make a decision when authentication is required. If this is not supplied, `okta-react` redirects to Okta. This callback will receive `auth` and `history` parameters. This is triggered when:
     1. `auth.login` is called
     2. SecureRoute is accessed without authentication
+
 - **storage** *(optional)*:
   Specify the type of storage for tokens. The types are:
   - [`localStorage`](https://developer.mozilla.org/en-US/docs/Web/API/Window/localStorage)
@@ -199,6 +200,8 @@ Security is the top-most component of okta-react. This is where most of the conf
   Defaults to `localStorage`. If [local storage](https://developer.mozilla.org/en-US/docs/Web/API/Web_Storage_API/Local_storage) is not available, falls back to `sessionStorage` or `cookie`.
 - **auto_renew** *(optional)*:
   By default, the library will attempt to renew expired tokens. When an expired token is requested by the library, a renewal request is executed to update the token. If you wish to  to disable auto renewal of tokens, set `auto_renew` to `false`.
+
+- **auth** *(optional)* - Provide an [Auth](https://github.com/okta/okta-auth-js) object instead of the options above. This is helpful when integrating `okta-react` with external libraries that need access to the tokens.
 
 #### Example
 

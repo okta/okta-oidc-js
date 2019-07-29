@@ -158,6 +158,35 @@ describe('Auth configuration', () => {
     }
     expect(createInstance).toThrow();
   });
+
+  it('accepts options in camel case', () => {
+    function createInstance () {
+      return new Auth({
+        issuer: 'https://foo/oauth2/default',
+        clientId: 'foo',
+        redirectUri: 'https://foo/redirect'
+      });
+    }
+    expect(createInstance).not.toThrow();
+  });
+
+  it('accepts the grantType option', () => {
+    jest.spyOn(AuthJS.prototype, 'constructor');
+    const options = {
+      clientId: 'foo',
+      issuer: 'https://foo/oauth2/default',
+      redirectUri: 'foo',
+      tokenManager: {
+        autoRenew: undefined,
+        storage: undefined,
+      },
+      grantType: 'authorization_code',
+    }
+
+    new Auth(options);
+    expect(AuthJS.prototype.constructor).toHaveBeenCalledWith(options);
+  });
+
 });
 
 describe('Auth component', () => {
@@ -166,6 +195,7 @@ describe('Auth component', () => {
       return mockAuthJsInstance
     });
   });
+
   test('sets the right user agent on AuthJS', () => {
     const auth = new Auth({
       issuer: 'https://foo/oauth2/default',
