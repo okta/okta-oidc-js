@@ -1,13 +1,9 @@
 language: node_js
 node_js:
 - '8.10'
-addons:
-  chrome: stable
-  apt:
-    packages:
-      - oracle-java9-set-default
 
 script:
+- java -version
 - yarn install
 - sh ./scripts/runTests.sh
 - bash ./scripts/snyk.sh
