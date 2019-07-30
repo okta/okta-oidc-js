@@ -5,7 +5,7 @@ addons:
   chrome: stable
   apt:
     packages:
-      - oracle-java9-set-default
+      - oracle-java11-installer-local
 
 script:
 - yarn install
