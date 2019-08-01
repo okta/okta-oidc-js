@@ -24,19 +24,24 @@ if (!Auth) {
 
 class App extends Component {
   render() {
+     /* global process */
+    const { REACT_APP_ISSUER, REACT_APP_CLIENT_ID } = process.env;
+    const { pkce, redirectUri } = this.props;
     return (
       <React.StrictMode>
         <Router>
-          <Security issuer={process.env.REACT_APP_ISSUER}
-                    client_id={process.env.REACT_APP_CLIENT_ID}
+          <Security issuer={REACT_APP_ISSUER}
+                    clientId={REACT_APP_CLIENT_ID}
                     disableHttpsCheck={true}
-                    redirect_uri={window.location.origin + '/implicit/callback'}
-                    onAuthRequired={({history}) => history.push('/login')}>
+                    redirectUri={redirectUri}
+                    onAuthRequired={({history}) => history.push('/login')}
+                    pkce={pkce}>
             <Route path='/' component={Home}/>
             <Route path='/login' component={CustomLogin}/>
             <Route path='/sessionToken-login' component={SessionTokenLogin}/>
             <SecureRoute exact path='/protected' component={Protected}/>
             <Route path='/implicit/callback' component={ImplicitCallback} />
+            <Route path='/pkce/callback' component={ImplicitCallback} />
           </Security>
         </Router>
       </React.StrictMode>

@@ -170,7 +170,7 @@ describe('Auth configuration', () => {
     expect(createInstance).not.toThrow();
   });
 
-  it('accepts the grantType option', () => {
+  it('accepts the `pkce` option', () => {
     jest.spyOn(AuthJS.prototype, 'constructor');
     const options = {
       clientId: 'foo',
@@ -180,7 +180,7 @@ describe('Auth configuration', () => {
         autoRenew: undefined,
         storage: undefined,
       },
-      grantType: 'authorization_code',
+      pkce: true,
     }
 
     new Auth(options);

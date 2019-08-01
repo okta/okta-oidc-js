@@ -44,7 +44,7 @@ yarn add @okta/okta-react
 
 ## Create Routes
 
-Here are the minimum requirements for a working example:
+Here is a minimal working example. This example defines 3 routes:
 
 * **/** - Anyone can access the home page
 * **/protected** - Protected is only visible to authenticated users
@@ -64,8 +64,8 @@ class App extends Component {
     return (
       <Router>
         <Security issuer='https://{yourOktaDomain}.com/oauth2/default'
-                  client_id='{clientId}'
-                  redirect_uri={window.location.origin + '/implicit/callback'} >
+                  clientId='{clientId}'
+                  redirectUri={window.location.origin + '/implicit/callback'} >
           <Route path='/' exact={true} component={Home}/>
           <SecureRoute path='/protected' component={Protected}/>
           <Route path='/implicit/callback' component={ImplicitCallback} />
@@ -179,29 +179,20 @@ Security is the top-most component of okta-react. This is where most of the conf
 
 #### Configuration options
 
+These options are used to configure the internal [Auth](https://github.com/okta/okta-auth-js) object. The most commonly used options are shown here. For the full set of supported options, see [Auth Configuration Reference](https://github.com/okta/okta-auth-js#configuration-reference).
+
 - **issuer** (required) - The OpenId Connect `issuer`
-- **client_id** (required) - The OpenId Connect `client_id`
-- **redirect_uri** (required) - Where the callback handler is hosted
+- **clientId** (required) - The OpenId Connect `client_id`
+- **redirectUri** (required) - Where the callback handler is hosted
 - **scope** *(optional)* - Reserved or custom claims to be returned in the tokens. Default: `['openid', 'email', 'profile']`
-- **response_type** *(optional)* - Desired token types. Default: `['id_token', 'token']`
-- **grantType** *(optional)* - Can be `implicit` (default) or `authorization_code` (for PKCE flow)
+- **responseType** *(optional)* - Desired token types. Default: `['id_token', 'token']`.
+For PKCE flow, this should be left undefined or set to `['code']`.
+- **pkce** *(optional)* - If `true`, PKCE flow will be used
 - **onAuthRequired** *(optional)* - callback function
 
   Accepts a callback to make a decision when authentication is required. If this is not supplied, `okta-react` redirects to Okta. This callback will receive `auth` and `history` parameters. This is triggered when:
     1. `auth.login` is called
     2. SecureRoute is accessed without authentication
-
-- **storage** *(optional)*:
-  Specify the type of storage for tokens. The types are:
-  - [`localStorage`](https://developer.mozilla.org/en-US/docs/Web/API/Window/localStorage)
-  - [`sessionStorage`](https://developer.mozilla.org/en-US/docs/Web/API/Window/sessionStorage)
-  - [`cookie`](https://developer.mozilla.org/en-US/docs/Web/API/Document/cookie)
-
-  Defaults to `localStorage`. If [local storage](https://developer.mozilla.org/en-US/docs/Web/API/Web_Storage_API/Local_storage) is not available, falls back to `sessionStorage` or `cookie`.
-- **auto_renew** *(optional)*:
-  By default, the library will attempt to renew expired tokens. When an expired token is requested by the library, a renewal request is executed to update the token. If you wish to  to disable auto renewal of tokens, set `auto_renew` to `false`.
-
-- **auth** *(optional)* - Provide an [Auth](https://github.com/okta/okta-auth-js) object instead of the options above. This is helpful when integrating `okta-react` with external libraries that need access to the tokens.
 
 #### Example
 
@@ -216,8 +207,8 @@ class App extends Component {
     return (
       <Router>
         <Security issuer='https://{yourOktaDomain}.com/oauth2/default'
-                  client_id='{clientId}'
-                  redirect_uri={window.location.origin + '/implicit/callback'}
+                  clientId='{clientId}'
+                  redirectUri={window.location.origin + '/implicit/callback'}
                   onAuthRequired={customAuthHandler} >
           <Router path='/login' component={CustomLoginComponent}>
           {/* some routes here */}
@@ -228,7 +219,16 @@ class App extends Component {
 }
 ```
 
+#### Alternate configuration using `Auth` object
+
+When the `auth` option is passed, all other configuration options passed to `Security` will be ignored. The `Auth` object should be configured directly before being passed to `Security`. See [Auth Configuration Reference](https://github.com/okta/okta-auth-js#configuration-reference).
+
+- **auth** *(optional)* - Provide an [Auth](https://github.com/okta/okta-auth-js) object instead of the options above. This is the most direct way to use methods on the `Auth` object outside of your components and is helpful when integrating `okta-react` with external libraries that need access to the tokens.
+
+
 #### Example with Auth object
+
+Configure an instance of the `Auth` object and pass it to the `Security` component.
 
 ```typescript
 // src/App.js
@@ -245,8 +245,8 @@ const history = createBrowserHistory();
 const auth = new Auth({
   history,
   issuer: 'https://{yourOktaDomain}.com/oauth2/default',
-  client_id: '{clientId}',
-  redirect_uri: window.location.origin + '/implicit/callback',
+  clientId: '{clientId}',
+  redirectUri: window.location.origin + '/implicit/callback',
   onAuthRequired: ({history}) => history.push('/login')
 });
 
@@ -265,6 +265,55 @@ class App extends Component {
 }
 
 export default App;
+```
+
+#### PKCE Example
+
+Assuming you have configured your application to allow the `Authorization code` grant type, simply pass `pkce=true` to the `Security` component. This will configure the auth object to perform PKCE flow for both login and token refresh.
+
+```typescript
+
+class App extends Component {
+  render() {
+    return (
+      <Router>
+        <Security issuer='https://{yourOktaDomain}.com/oauth2/default'
+                  clientId='{clientId}'
+                  pkce=true
+                  redirectUri={window.location.origin + '/implicit/callback'}>
+          <Router path='/login' component={CustomLoginComponent}>
+          {/* some routes here */}
+        </Security>
+      </Router>
+    );
+  }
+}
+```
+
+You may also configure an `Auth` object directly and pass it to the Security component.
+
+```typescript
+
+const auth = new Auth({
+  issuer: 'https://{yourOktaDomain}.com/oauth2/default',
+  clientId: '{clientId}',
+  pkce: true,
+  redirectUri: window.location.origin + '/implicit/callback',
+});
+
+class App extends Component {
+  render() {
+    return (
+      <Router history={history}>
+        <Security auth={auth} >
+          <Route path='/' exact={true} component={Home}/>
+          <Route path='/implicit/callback' component={ImplicitCallback} />
+        </Security>
+      </Router>
+    );
+  }
+}
+
 ```
 
 ### `SecureRoute`
@@ -335,6 +384,7 @@ See the [getting started](/README.md#getting-started) section for step-by-step i
 
 | Command      | Description                        |
 |--------------|------------------------------------|
+| `yarn install`| Install dependencies |
 | `yarn start` | Start the sample app using the SDK |
 | `yarn test`  | Run unit and integration tests     |
 | `yarn lint`  | Run eslint linting tests           |
