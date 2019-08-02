@@ -12,21 +12,6 @@
     "publish": "lerna publish --skip-npm",
     "test": "sh ./scripts/runTests.sh",
     "clean": "lerna clean",
-    "postinstall": "lerna run prepare"
-  },
-  "workspaces": {
-    "packages": ["packages/*"],
-    "nohoist": [
-      "**/jest",
-      "**/jest/**",
-      "**/jest-junit",
-      "**/jest-junit/**",
-      "**/jest-expo",
-      "**/jest-expo/**",
-      "**/babel-jest",
-      "**/babel-jest/**",
-      "**/react-native",
-      "**/react-native/**"
-    ]
+    "postinstall": "sh ./scripts/installPackages.sh"
   }
 }

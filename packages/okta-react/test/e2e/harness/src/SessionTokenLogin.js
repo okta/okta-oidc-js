@@ -43,7 +43,8 @@ export default withAuth(class SessionTokenLogin extends Component {
     .then(res => {
       this.setState({
         sessionToken: res.sessionToken
-      })
+      });
+      this.props.auth.redirect({sessionToken: res.sessionToken});
     })
     .catch(err => {
       console.log('Found an error', err);
@@ -62,7 +63,6 @@ export default withAuth(class SessionTokenLogin extends Component {
 
   render() {
     if (this.state.sessionToken) {
-      this.props.auth.redirect({sessionToken: this.state.sessionToken});
       return null;
     }
 
