@@ -37,8 +37,9 @@ const issuer1AccessTokenParams = {
   REDIRECT_URI
 };
 
-const publicKeyPath = path.normalize(path.join(__dirname, '../../../../node_modules/njwt/test/rsa.pub'));
-const privateKeyPath = path.normalize(path.join(__dirname, '../../../../node_modules/njwt/test/rsa.priv'));
+const NODE_MODULES = path.resolve(__dirname, '../../node_modules');
+const publicKeyPath = path.normalize(path.join(NODE_MODULES, '/njwt/test/rsa.pub'));
+const privateKeyPath = path.normalize(path.join(NODE_MODULES, '/njwt/test/rsa.priv'));
 const wrongPublicKeyPath = path.normalize(path.join(__dirname, '../keys/rsa-fake.pub'));
 const rsaKeyPair = {
   public: fs.readFileSync(publicKeyPath, 'utf8'),

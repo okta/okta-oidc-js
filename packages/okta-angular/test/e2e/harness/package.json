@@ -24,7 +24,7 @@
     "@angular/platform-browser": "^6.0.7",
     "@angular/platform-browser-dynamic": "^6.0.7",
     "@angular/router": "^6.0.7",
-    "@okta/okta-angular": "../../../",
+    "@okta/okta-angular": "file:../../..",
     "core-js": "^2.4.1",
     "rxjs": "^6.2.1",
     "zone.js": "^0.8.14"
