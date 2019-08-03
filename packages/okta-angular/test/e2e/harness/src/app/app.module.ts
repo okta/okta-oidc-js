@@ -14,8 +14,6 @@ import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule, Router } from '@angular/router';
 
-import { environment } from './../environments/environment';
-
 /**
  * Okta Library
  */
@@ -41,6 +39,8 @@ export function onNeedsAuthenticationGuard(oktaAuth: OktaAuthService, router: Ro
 export function onNeedsGlobalAuthenticationGuard(oktaAuth: OktaAuthService, router: Router) {
   router.navigate(['/login']);
 }
+
+const { ISSUER, REDIRECT_URI, CLIENT_ID, OKTA_TESTING_DISABLEHTTPSCHECK } = process.env;
 
 const appRoutes: Routes = [
   {
@@ -78,9 +78,9 @@ const appRoutes: Routes = [
 ];
 
 const config = {
-  issuer: environment.ISSUER,
-  redirectUri: environment.REDIRECT_URI,
-  clientId: environment.CLIENT_ID,
+  issuer: ISSUER,
+  redirectUri: REDIRECT_URI,
+  clientId: CLIENT_ID,
   scope: 'email',
   responseType: 'id_token token',
   onAuthRequired: onNeedsGlobalAuthenticationGuard,
@@ -89,7 +89,7 @@ const config = {
   }
 };
 
-if (environment.OKTA_TESTING_DISABLEHTTPSCHECK) {
+if (OKTA_TESTING_DISABLEHTTPSCHECK) {
   config.testing = {
     disableHttpsCheck: true
   };

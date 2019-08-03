@@ -13,9 +13,9 @@
 import { Component } from '@angular/core';
 import { OktaAuthService } from '@okta/okta-angular';
 
-import { environment } from './../environments/environment';
-
 import OktaAuth from '@okta/okta-auth-js';
+
+const { ISSUER } = process.env;
 
 @Component({
   selector: 'app-session-login',
@@ -38,7 +38,7 @@ export class SessionTokenLoginComponent {
   oktaAuth: OktaAuth;
 
   constructor(private okta: OktaAuthService) {
-    const baseUrl = environment.ISSUER.split('/oauth2')[0];
+    const baseUrl = ISSUER.split('/oauth2')[0];
     this.oktaAuth = new OktaAuth({
       url: baseUrl
     });

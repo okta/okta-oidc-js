@@ -1,12 +1,13 @@
 import { TestBed, async, ComponentFixture } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { AppComponent } from './app.component';
-import { environment } from './../environments/environment';
 
 import {
   OktaAuthModule,
   OktaAuthService,
 } from '@okta/okta-angular';
+
+const { ISSUER, REDIRECT_URI, CLIENT_ID, OKTA_TESTING_DISABLEHTTPSCHECK } = process.env;
 
 const mockAccessToken = 'eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJ2ZXIiOj' +
                         'EsImp0aSI6IkFULnJ2Ym5TNGlXdTJhRE5jYTNid1RmMEg5Z' +
@@ -27,8 +28,8 @@ const standardAccessTokenParsed = {
   expiresAt: new Date().getTime() + 100, // ensure token is active
   scopes: ['openid', 'email'],
   tokenType: 'Bearer',
-  authorizeUrl: environment.ISSUER + '/oauth2/v1/authorize',
-  userinfoUrl: environment.ISSUER + '/oauth2/v1/userinfo'
+  authorizeUrl: ISSUER + '/oauth2/v1/authorize',
+  userinfoUrl: ISSUER + '/oauth2/v1/userinfo'
 };
 
 describe('Module configuration', () => {
@@ -90,9 +91,9 @@ describe('Unit Tests', () => {
 
   beforeEach(() => {
     const config = {
-      issuer: environment.ISSUER,
-      redirectUri: environment.REDIRECT_URI,
-      clientId: environment.CLIENT_ID,
+      issuer: ISSUER,
+      redirectUri: REDIRECT_URI,
+      clientId: CLIENT_ID,
       scope: 'email',
       responseType: 'id_token',
       testing: {
@@ -100,7 +101,7 @@ describe('Unit Tests', () => {
       }
     };
 
-    if (environment.OKTA_TESTING_DISABLEHTTPSCHECK) {
+    if (OKTA_TESTING_DISABLEHTTPSCHECK) {
       config.testing = {
         disableHttpsCheck: true
       };
@@ -127,9 +128,9 @@ describe('Unit Tests', () => {
 
   it('should instantiate the OktaAuth object', async(() => {
     const config = component.oktaAuth.getOktaConfig();
-    expect(config.issuer).toBe(environment.ISSUER);
-    expect(config.redirectUri).toBe(environment.REDIRECT_URI);
-    expect(config.clientId).toBe(environment.CLIENT_ID);
+    expect(config.issuer).toBe(ISSUER);
+    expect(config.redirectUri).toBe(REDIRECT_URI);
+    expect(config.clientId).toBe(CLIENT_ID);
     expect(config.scope).toBe('email openid');
     expect(config.responseType).toBe('id_token');
   }));
