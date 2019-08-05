@@ -11,7 +11,8 @@
   "scripts": {
     "test": "yarn test:unit && yarn test:integration",
     "test:integration": "../../scripts/tck.sh",
-    "test:unit": "JEST_JUNIT_OUTPUT=./reports/junit/results.xml jest test/spec"
+    "test:unit": "JEST_JUNIT_OUTPUT=./reports/junit/results.xml jest test/spec",
+    "test:ci": "JEST_JUNIT_OUTPUT=./reports/junit/results.xml jest test/internal-ci"
   },
   "keywords": [
     "okta",
