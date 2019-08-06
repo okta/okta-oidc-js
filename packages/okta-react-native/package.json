@@ -4,6 +4,8 @@
   "version": "1.0.1",
   "description": "Okta OIDC for React Native",
   "main": "index.js",
+  "podname": "OktaSdkBridgeReactNative",
+  "homepage": "https://github.com/okta/okta-oidc-js/tree/master/packages/okta-react-native",
   "scripts": {
     "test": "node_modules/.bin/jest",
     "test:debug": "node --inspect-brk node_modules/jest/bin/jest.js --runInBand"
