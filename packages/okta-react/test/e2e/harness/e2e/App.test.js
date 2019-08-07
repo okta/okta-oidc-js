@@ -77,7 +77,8 @@ describe('React + Okta App', () => {
     appPage.waitUntilLoggedOut();
   });
 
-  it('should allow passing sessionToken to skip Okta login', () => {
+  // TODO: Enable after fixing https://oktainc.atlassian.net/browse/OKTA-243052
+  xit('should allow passing sessionToken to skip Okta login', () => {
     sessionTokenSignInPage.navigateTo();
 
     sessionTokenSignInPage.waitUntilVisible();
