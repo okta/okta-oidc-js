@@ -4,6 +4,7 @@ node_js:
 
 addons:
   chrome: stable
+  sauce_connect: true
 
 services:
   - xvfb

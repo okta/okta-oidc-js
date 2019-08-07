@@ -18,14 +18,20 @@ exports.config = {
   specs: [
     './e2e/dist/*.test.js'
   ],
+  sauceUser: process.env.SAUCE_USERNAME,
+  sauceKey: process.env.SAUCE_ACCESS_KEY,
+  port: 4723,
   capabilities: {
     'browserName': 'chrome',
-    chromeOptions: {
-      args: ['headless', 'disable-gpu', 'window-size=1600x1200', 'no-sandbox']
-    }
+    // chromeOptions: {
+    //   args: ['headless', 'disable-gpu', 'window-size=1600x1200', 'no-sandbox']
+    // }
+    'tunnel-identifier': process.env.TRAVIS_JOB_NUMBER,
+    'build': process.env.TRAVIS_BUILD_NUMBER,
+    'screenResolution': '1600x1200'
   },
-  directConnect: true,
-  baseUrl: 'http://localhost:8080/',
+  // directConnect: true,
+  // baseUrl: 'http://localhost:8080/',
   framework: 'jasmine',
   jasmineNodeOpts: {
     showColors: true,
