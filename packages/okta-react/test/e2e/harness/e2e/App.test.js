@@ -78,7 +78,7 @@ describe('React + Okta App', () => {
   });
 
   // TODO: Enable after fixing https://oktainc.atlassian.net/browse/OKTA-243052
-  xit('should allow passing sessionToken to skip Okta login', () => {
+  it('should allow passing sessionToken to skip Okta login', () => {
     sessionTokenSignInPage.navigateTo();
 
     sessionTokenSignInPage.waitUntilVisible();
@@ -88,7 +88,16 @@ describe('React + Okta App', () => {
       password: process.env.PASSWORD
     });
 
+    browser.sleep(2000);
+
+    browser.getCurrentUrl().then((url) => {
+      console.log("URL is: "+url);
+    })
+
     appPage.waitUntilLoggedIn();
+    browser.getCurrentUrl().then((url) => {
+      console.log("URL is: "+url);
+    })
     expect(appPage.getLogoutButton().isPresent()).toBeTruthy();
 
     // Logout
