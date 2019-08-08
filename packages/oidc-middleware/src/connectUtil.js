@@ -86,8 +86,9 @@ connectUtil.createLoginHandler = context => {
 connectUtil.createLoginCallbackHandler = context => {
   const routes = context.options.routes;
   const customHandler = routes.loginCallback.handler;
+
   if (customHandler) {
-    var customHandlerArity = customHandler.length;
+    const customHandlerArity = customHandler.length;
     if (customHandlerArity < 3 || 4 < customHandlerArity) {
       throw new OIDCMiddlewareError('Your custom callback handler must request "next"');
     }
@@ -95,6 +96,7 @@ connectUtil.createLoginCallbackHandler = context => {
     var successReturnToOrRedirect = routes.loginCallback.afterCallback;
     var failureRedirect = routes.loginCallback.failureRedirect;
   }
+
   return (req, res, next) => {
     const nextHandler = err => {
       if (customHandler && customHandlerArity === 4) {
