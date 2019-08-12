@@ -1,6 +1,6 @@
 /* global __dirname, module */
 
-var path = require('path');
+const path = require('path');
 const MAIN_ENTRY = path.resolve(__dirname, '../../../dist/index.js');
 
 module.exports = {
