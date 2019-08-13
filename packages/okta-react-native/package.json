@@ -30,12 +30,12 @@
     "okta",
     "oidc"
   ],
-  "author": "kayci.wang@okta.com",
+  "author": "developer@okta.com",
   "license": "Apache-2.0",
   "readmeFilename": "README.md",
   "peerDependencies": {
     "react": "^16.5.0",
-    "react-native": ">=0.57.0 <=0.59.9"
+    "react-native": ">=0.57.0"
   },
   "devDependencies": {
     "@babel/core": "^7.5.4",
