@@ -33,6 +33,8 @@
   "homepage": "https://github.com/okta/okta-oidc-js#readme",
   "devDependencies": {
     "babel-cli": "^6.26.0",
+    "babel-eslint": "^8.1.1",
+    "babel-preset-env": "^1.7.0",
     "eslint": "^4.7.1",
     "jest": "^23.6.0"
   },

@@ -36,9 +36,9 @@ yarn install
 
 ### Monorepo
 
-The okta-oidc-js repo is managed as a **monorepo** using [Yarn Workspaces](https://yarnpkg.com/blog/2017/08/02/introducing-workspaces/) for managing dependencies and [Lerna](https://lernajs.io/) for everything else. You can think of each package as a separate npm module - each must list out its own dependencies, have its own package name, and be versioned.
+The okta-oidc-js repo is managed as a **monorepo** using [Lerna](https://lernajs.io/). Each package within the **monorepo** is a separate npm module, each with its own `package.json` and `node_modules` directory.
 
-Packages are parsed from the `workspaces` property in [package.json](package.json), and adhere to this structure:
+Packages are parsed from the `packages` property in [lerna.json](lerna.json), and adhere to this structure:
 
 ```bash
 packages/
