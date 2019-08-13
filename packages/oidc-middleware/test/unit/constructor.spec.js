@@ -6,7 +6,7 @@ const rpt = require ('read-package-tree');
 
 const { ExpressOIDC } = require('../../index.js');
 const pkg = require('../../package.json');
-const modulesRoot = path.join(__dirname, '../../../..');
+const modulesRoot = path.resolve(__dirname, '../../');
 
 describe('new ExpressOIDC()', () => {
   const findDomainMessage = 'You can copy your domain from the Okta Developer ' +

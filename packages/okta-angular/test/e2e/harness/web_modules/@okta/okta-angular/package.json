@@ -1,0 +1,7 @@
+{
+  "name": "@okta/okta-angular",
+  "version": "1.0.0",
+  "description": "Temporary web module. Replace with webpack config when upgrade to Angular 8",
+  "main": "../../../../../../dist/index.js",
+  "types": "../../../../../../dist/index.d.ts"
+}

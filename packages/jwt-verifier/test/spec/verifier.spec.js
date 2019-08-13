@@ -28,6 +28,9 @@ const PASSWORD = constants.PASSWORD;
 const REDIRECT_URI = constants.REDIRECT_URI
 const OKTA_TESTING_DISABLEHTTPSCHECK = constants.OKTA_TESTING_DISABLEHTTPSCHECK
 
+// Some tests makes LIVE requests using getAccessToken(). These may take much longer than normal tests
+const LONG_TIMEOUT = 20000;
+
 // Used to get an access token from the AS
 const issuer1AccessTokenParams = {
   ISSUER,
@@ -37,8 +40,9 @@ const issuer1AccessTokenParams = {
   REDIRECT_URI
 };
 
-const publicKeyPath = path.normalize(path.join(__dirname, '../../../../node_modules/njwt/test/rsa.pub'));
-const privateKeyPath = path.normalize(path.join(__dirname, '../../../../node_modules/njwt/test/rsa.priv'));
+const NODE_MODULES = path.resolve(__dirname, '../../node_modules');
+const publicKeyPath = path.normalize(path.join(NODE_MODULES, '/njwt/test/rsa.pub'));
+const privateKeyPath = path.normalize(path.join(NODE_MODULES, '/njwt/test/rsa.priv'));
 const wrongPublicKeyPath = path.normalize(path.join(__dirname, '../keys/rsa-fake.pub'));
 const rsaKeyPair = {
   public: fs.readFileSync(publicKeyPath, 'utf8'),
@@ -62,7 +66,7 @@ describe('Jwt Verifier', () => {
       .then(jwt => {
         expect(jwt.claims.iss).toBe(ISSUER);
       });
-    });
+    }, LONG_TIMEOUT);
 
     it('should fail if the signature is invalid', () => {
       return getAccessToken(issuer1AccessTokenParams)
@@ -78,7 +82,7 @@ describe('Jwt Verifier', () => {
         return verifier.verifyAccessToken(token, expectedAud)
         .catch(err => expect(err.message).toBe('Signature verification failed'));
       });
-    });
+    }, LONG_TIMEOUT);
 
     it('should fail if no kid is present in the JWT header', () => {
       return getAccessToken(issuer1AccessTokenParams)
@@ -93,7 +97,7 @@ describe('Jwt Verifier', () => {
         return verifier.verifyAccessToken(token, expectedAud)
         .catch(err => expect(err.message).toBe('Error while resolving signing key for kid "undefined"'));
       });
-    });
+    }, LONG_TIMEOUT);
 
     it('should fail if the kid cannot be found', () => {
       return getAccessToken(issuer1AccessTokenParams)
@@ -108,7 +112,7 @@ describe('Jwt Verifier', () => {
         return verifier.verifyAccessToken(token, expectedAud)
         .catch(err => expect(err.message).toBe('Error while resolving signing key for kid "foo"'));
       });
-    });
+    }, LONG_TIMEOUT);
 
     it('should fail if the token is expired (exp)', () => {
       return getAccessToken(issuer1AccessTokenParams)
@@ -128,7 +132,7 @@ describe('Jwt Verifier', () => {
             expect(err.message).toBe('Jwt is expired');
           });
         }));
-    });
+    }, LONG_TIMEOUT);
 
     it('should allow me to assert custom claims', () => {
       const verifier = new OktaJwtVerifier({
@@ -153,7 +157,7 @@ describe('Jwt Verifier', () => {
           );
         })
       );
-    });
+    }, LONG_TIMEOUT);
 
     it('should cache the jwks for the configured amount of time', () => {
       const verifier = new OktaJwtVerifier({
@@ -189,7 +193,7 @@ describe('Jwt Verifier', () => {
           });
         })
       });
-    });
+    }, LONG_TIMEOUT);
 
     it('should rate limit jwks endpoint requests on cache misses', () => {
       const verifier = new OktaJwtVerifier({
@@ -220,7 +224,7 @@ describe('Jwt Verifier', () => {
         })
       }));
     });
-  });
+  }, LONG_TIMEOUT);
 
   describe('Access Token basic validation', () => {
     const mockKidAsKeyFetch = (verifier) => {

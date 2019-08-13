@@ -1,5 +1,5 @@
 {
-  "name": "harness",
+  "name": "@okta/okta-angular-test-harness",
   "version": "0.0.0",
   "license": "MIT",
   "scripts": {
@@ -24,7 +24,7 @@
     "@angular/platform-browser": "^6.0.7",
     "@angular/platform-browser-dynamic": "^6.0.7",
     "@angular/router": "^6.0.7",
-    "@okta/okta-angular": "../../../",
+    "@okta/okta-angular": "file:./web_modules/@okta/okta-angular",
     "core-js": "^2.4.1",
     "rxjs": "^6.2.1",
     "zone.js": "^0.8.14"
@@ -50,7 +50,7 @@
     "protractor": "^5.4.2",
     "ts-node": "~3.2.0",
     "tslint": "~5.5.0",
-    "typescript": "~2.7.2",
+    "typescript": "~2.8",
     "webdriver-manager": "^12.1.4"
   },
   "resolutions": {

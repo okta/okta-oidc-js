@@ -1,5 +1,5 @@
 {
-  "name": "test-harness",
+  "name": "@okta/okta-vue-test-harness",
   "version": "1.0.0",
   "description": "A Vue.js project",
   "author": "developers@okta.com",
