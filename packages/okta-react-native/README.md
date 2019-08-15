@@ -107,7 +107,17 @@ You can currently add Okta OIDC iOS through CocoaPods:
     ```
 
    Then run `pod install`.
+   
+2. **Carthage**
+   With [Carthage](https://github.com/Carthage/Carthage), add the following line to your Cartfile:
 
+    ```
+    github "okta/okta-oidc-ios" ~> 3.5.0
+    ```
+   Then run `carthage update --platform iOS`.
+
+   Open project settings and choose your application target. Then open `Build Phases` and add `OktaOidc.framework` from `ios/Carthage/Build/iOS` into `Embed Frameworks` section
+   
 #### Swift Configuration
 Since React Native uses Objective-C, and Okta React Native library is a Swift wrapper, you will need to have at least one Swift file in your iOS project for the project to compile. To add a dummy Swift file, follow the following steps:
 
