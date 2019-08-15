@@ -10,8 +10,7 @@
  * See the License for the specific language governing permissions and limitations under the License.
  */
 
-const deepExtend = require('deep-extend');
-
+const merge = require('lodash/merge');
 class ConfigurationValidationError extends Error {}
 
 const configUtil = module.exports;
@@ -33,7 +32,7 @@ configUtil.buildConfigObject = (config) => {
   // See all supported options: https://github.com/okta/okta-auth-js#configuration-reference
   // Support for parameters with an underscore will be deprecated in a future release
   
-  return deepExtend({
+  return merge({
     clientId: config.clientId || config.client_id,
     redirectUri: config.redirectUri || config.redirect_uri,
     tokenManager: {
