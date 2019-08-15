@@ -1,4 +1,4 @@
-#! /bin/bash
+#! /bin/bash -xe
 
 # Creates symlinks between internal dependencies.
 lerna link

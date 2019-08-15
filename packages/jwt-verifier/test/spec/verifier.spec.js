@@ -62,8 +62,12 @@ describe('Jwt Verifier', () => {
 
     it('should allow me to verify Okta access tokens', () => {
       return getAccessToken(issuer1AccessTokenParams)
-      .then(accessToken => verifier.verifyAccessToken(accessToken, expectedAud))
+      .then(accessToken => {
+        console.log('GOT ACCESS TOKEN');
+        return verifier.verifyAccessToken(accessToken, expectedAud);
+      })
       .then(jwt => {
+        console.log('GOT THE JWT', jwt.claims, ISSUER);
         expect(jwt.claims.iss).toBe(ISSUER);
       });
     }, LONG_TIMEOUT);

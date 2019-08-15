@@ -1,6 +1,9 @@
-#!/bin/bash
+#!/bin/bash -xe
 
-for package in `ls $PWD/packages`;
+#for package in `ls $PWD/packages`;
+array=( "okta-angular" "jwt-verifier" )
+
+for package in "${array[@]}";
 do
     cd $PWD/packages/$package
     yarn test

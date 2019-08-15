@@ -10,7 +10,7 @@
   "scripts": {
     "banners": "util/maintain-banners.js",
     "publish": "lerna publish --skip-npm",
-    "test": "sh ./scripts/runTests.sh",
+    "test": "./scripts/runTests.sh",
     "clean": "lerna clean",
     "postinstall": "sh ./scripts/installPackages.sh"
   }
