@@ -10,6 +10,8 @@
  * See the License for the specific language governing permissions and limitations under the License.
  */
 
+const deepExtend = require('deep-extend');
+
 class ConfigurationValidationError extends Error {}
 
 const configUtil = module.exports;
@@ -28,16 +30,17 @@ const hasDomainTypo = new RegExp('(.com.com)|(://.*){2,}');
 const endsInPath = new RegExp('/$');
 
 configUtil.buildConfigObject = (config) => {
-  return {
+  // See all supported options: https://github.com/okta/okta-auth-js#configuration-reference
+  // Support for parameters with an underscore will be deprecated in a future release
+  
+  return deepExtend({
     clientId: config.clientId || config.client_id,
-    issuer: config.issuer,
     redirectUri: config.redirectUri || config.redirect_uri,
-    grantType: config.grantType,
     tokenManager: {
-      storage: config.storage,
-      autoRenew: config.autoRenew || config.auto_renew
+      autoRenew: config.autoRenew || config.auto_renew,
+      storage: config.storage
     }
-  }
+  }, config);
 }
 
 configUtil.assertIssuer = (issuer, testing = {}) => {
