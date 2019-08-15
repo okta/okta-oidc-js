@@ -6,11 +6,13 @@
   "private": true,
   "scripts": {
     "dev": "webpack-dev-server --inline --progress --config build/webpack.dev.conf.js",
+    "kill:port": "kill -s TERM $(lsof -t -i:8080 -sTCP:LISTEN) || true",
     "start": "yarn env && yarn dev",
     "env": "node ./scripts/prebuild.js",
     "pree2e": "../../../../../scripts/updateSeDrivers.sh",
     "e2e": "node test/e2e/runner.js",
     "test": "yarn env && yarn e2e",
+    "posttest": "yarn kill:port",
     "lint": "eslint --ext .js,.vue src test/e2e/specs",
     "build": "node build/build.js"
   },

@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/bash -xe
 
 for package in `ls $PWD/packages`;
 do

@@ -15,6 +15,7 @@
 
 const SpecReporter = require('jasmine-spec-reporter').SpecReporter;
 const JUnitXmlReporter = require('jasmine-reporters').JUnitXmlReporter;
+const { ProtractorBrowserLogReporter } = require('jasmine-protractor-browser-log-reporter');
 
 exports.config = {
   allScriptsTimeout: 11000,
@@ -23,9 +24,13 @@ exports.config = {
   ],
   capabilities: {
     'browserName': 'chrome',
+    loggingPrefs: { "driver": "INFO", "browser": "INFO" }, // for webdriver
     chromeOptions: {
       args: ['--headless', '--disable-gpu', '--window-size=1600x1200', '--no-sandbox']
     }
+  },
+  loggingPrefs: {
+    'browser': 'ALL' // for reporter
   },
   directConnect: true,
   baseUrl: 'http://localhost:3000/',
@@ -39,6 +44,7 @@ exports.config = {
     require('ts-node').register({
       project: 'e2e/tsconfig.e2e.json'
     });
+    jasmine.getEnv().addReporter(new ProtractorBrowserLogReporter());
     jasmine.getEnv().addReporter(new SpecReporter({
       spec: {
         displayStacktrace: true

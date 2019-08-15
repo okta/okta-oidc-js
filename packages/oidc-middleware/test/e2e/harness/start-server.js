@@ -10,32 +10,17 @@
  * See the License for the specific language governing permissions and limitations under the License.
  */
 
-import { browser, element, by } from 'protractor';
-import { Util } from '../util'
+const constants = require('../util/constants');
+const util = require('../util/util');
 
-export class ProtectedPage {
-  navigateTo(path) {
-    return browser.get('/protected' + path);
-  }
+const mockServerOptions = {
+    issuer: constants.ISSUER,
+    client_id: constants.WEB_CLIENT_ID || constants.CLIENT_ID,
+    client_secret: constants.CLIENT_SECRET,
+    testing: {
+        disableHttpsCheck: true
+    }
+};
 
-  waitUntilVisible(path) {
-    Util.waitUrlContains('/protected' + path, 20000);
-  }
-
-  waitForElement(id) {
-    const el = element(by.id(id));
-    Util.waitElement(el);
-  }
-
-  getLogoutButton() {
-    return element(by.id('logout-button'));
-  }
-
-  getLoginButton() {
-    return element(by.id('login-button'));
-  }
-
-  getUserInfo() {
-    return element(by.id('userinfo-container'));
-  }
-}
+let server = util.createDemoServer(mockServerOptions);
+server.start();
