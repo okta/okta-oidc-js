@@ -3395,6 +3395,13 @@ jasmine-diff@^0.1.3:
   dependencies:
     diff "^3.2.0"
 
+jasmine-protractor-browser-log-reporter@^1.0.0:
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/jasmine-protractor-browser-log-reporter/-/jasmine-protractor-browser-log-reporter-1.0.0.tgz#78e16fc0290e9d2a7d73dad2b46ad4d805166b80"
+  integrity sha1-eOFvwCkOnSp9c9rStGrU2AUWa4A=
+  dependencies:
+    moment "^2.18.1"
+
 jasmine-reporters@^2.2.0:
   version "2.3.2"
   resolved "https://registry.yarnpkg.com/jasmine-reporters/-/jasmine-reporters-2.3.2.tgz#898818ffc234eb8b3f635d693de4586f95548d43"
@@ -4044,6 +4051,11 @@ mkdirp@0.5.x, "mkdirp@>=0.5 0", mkdirp@^0.5.0, mkdirp@^0.5.1, mkdirp@~0.5.0:
   resolved "https://registry.yarnpkg.com/mkdirp/-/mkdirp-0.5.1.tgz#30057438eac6cf7f8c4767f38648d6697d75c903"
   dependencies:
     minimist "0.0.8"
+
+moment@^2.18.1:
+  version "2.24.0"
+  resolved "https://registry.yarnpkg.com/moment/-/moment-2.24.0.tgz#0d055d53f5052aa653c9f6eb68bb5d12bf5c2b5b"
+  integrity sha512-bV7f+6l2QigeBBZSM/6yTNq4P2fNpSWj/0e7jQcy87A8e7o2nAfP/34/2ky5Vw4B9S446EtIhodAzkFCcR4dQg==
 
 move-concurrently@^1.0.1:
   version "1.0.1"

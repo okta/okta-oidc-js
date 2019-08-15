@@ -11,7 +11,7 @@
     "test": "ng test --watch=false",
     "lint": "ng lint",
     "pree2e": "../../../../../scripts/updateSeDrivers.sh 0",
-    "e2e": "yarn env && ng e2e --port 3000 --no-webdriver-update"
+    "e2e": "ng version && yarn env && ng e2e --port 3000 --no-webdriver-update"
   },
   "private": true,
   "dependencies": {
@@ -39,6 +39,7 @@
     "@types/node": "~6.0.60",
     "codelyzer": "^4.4.2",
     "jasmine-core": "~2.6.2",
+    "jasmine-protractor-browser-log-reporter": "^1.0.0",
     "jasmine-reporters": "^2.2.0",
     "jasmine-spec-reporter": "^4.1.0",
     "karma": "~1.7.0",

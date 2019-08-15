@@ -173,6 +173,7 @@ describe('Jwt Verifier', () => {
     }, LONG_TIMEOUT);
 
     it('should cache the jwks for the configured amount of time', () => {
+      console.log('CACHING TEST');
       const verifier = new OktaJwtVerifier({
         issuer: ISSUER,
         cacheMaxAge: 500,
@@ -182,6 +183,7 @@ describe('Jwt Verifier', () => {
       });
       return getAccessToken(issuer1AccessTokenParams)
       .then(accessToken => {
+        console.log('STARTING UP NOCK RECORDER');
         nock.recorder.rec({
           output_objects: true,
           dont_print: true
@@ -196,6 +198,7 @@ describe('Jwt Verifier', () => {
           expect(nockCallObjects.length).toBe(1);
           return new Promise((resolve, reject) => {
             setTimeout(() => {
+              console.log('HERE WE ARE IN THE TIMEOUT');
               verifier.verifyAccessToken(accessToken, expectedAud)
               .then(jwt => {
                 expect(nockCallObjects.length).toBe(2);
@@ -209,6 +212,7 @@ describe('Jwt Verifier', () => {
     }, LONG_TIMEOUT);
 
     it('should rate limit jwks endpoint requests on cache misses', () => {
+      console.log('RATE LIMIT TEST');
       const verifier = new OktaJwtVerifier({
         issuer: ISSUER,
         jwksRequestsPerMinute: 2,
