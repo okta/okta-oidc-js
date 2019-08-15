@@ -61,6 +61,8 @@ describe('Jwt Verifier', () => {
     });
 
     it('should allow me to verify Okta access tokens', () => {
+      console.log('TEST 1');
+      try {
       return getAccessToken(issuer1AccessTokenParams)
       .then(accessToken => {
         console.log('GOT ACCESS TOKEN');
@@ -70,9 +72,13 @@ describe('Jwt Verifier', () => {
         console.log('GOT THE JWT', jwt.claims, ISSUER);
         expect(jwt.claims.iss).toBe(ISSUER);
       });
+    } catch (e) {
+      console.error('CAUGHT AN ERROR!', e);
+    }
     }, LONG_TIMEOUT);
 
     it('should fail if the signature is invalid', () => {
+      console.log('TEST 2');
       return getAccessToken(issuer1AccessTokenParams)
       .then(accessToken => verifier.verifyAccessToken(accessToken, expectedAud))
       .then(jwt => {
@@ -89,6 +95,7 @@ describe('Jwt Verifier', () => {
     }, LONG_TIMEOUT);
 
     it('should fail if no kid is present in the JWT header', () => {
+      console.log('TEST 3');
       return getAccessToken(issuer1AccessTokenParams)
       .then(accessToken => verifier.verifyAccessToken(accessToken, expectedAud))
       .then(jwt => {
@@ -104,6 +111,7 @@ describe('Jwt Verifier', () => {
     }, LONG_TIMEOUT);
 
     it('should fail if the kid cannot be found', () => {
+      console.log('TEST 4');
       return getAccessToken(issuer1AccessTokenParams)
       .then(accessToken => verifier.verifyAccessToken(accessToken, expectedAud))
       .then(jwt => {
@@ -119,6 +127,7 @@ describe('Jwt Verifier', () => {
     }, LONG_TIMEOUT);
 
     it('should fail if the token is expired (exp)', () => {
+      console.log('TEST 5');
       return getAccessToken(issuer1AccessTokenParams)
       .then(accessToken =>
         verifier.verifyAccessToken(accessToken, expectedAud)

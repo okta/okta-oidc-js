@@ -15,6 +15,7 @@ const request = require('request');
 const url = require('url');
 
 function getAccessToken(options = {}) {
+  console.log('getAccessToken', options);
   const {
     ISSUER,
     CLIENT_ID,
@@ -27,6 +28,7 @@ function getAccessToken(options = {}) {
     const urlProperties = url.parse(ISSUER);
     const domain = urlProperties.protocol + '//' + urlProperties.host;
     const postUrl = domain + '/api/v1/authn';
+    console.log('posting TO', postUrl);
     request.post(postUrl, {
       json: true,
       body: {
@@ -35,6 +37,7 @@ function getAccessToken(options = {}) {
       }
     }, function (err, resp, body) {
       if (err || resp.statusCode >= 400) {
+        console.log('ERROR, ', resp.statusCode, err || body);
         return resolve(err || body);
       }
       const authorizeParams = {
@@ -47,14 +50,18 @@ function getAccessToken(options = {}) {
         state: 'foo'
       }
       const authorizeUrl = ISSUER + '/v1/authorize?' + qs.stringify(authorizeParams);
+      console.log('GETTING: ', authorizeUrl);
       request.get(authorizeUrl, {followRedirect: false}, function(err, resp, body) {
+        console.log('RESPONSE FROM AUTHORIZE', resp.statusCode, err)
         const parsedUrl = url.parse(resp.headers.location, true);
         if (parsedUrl.query.error) {
+          console.log('Rejecting with error: ', parsedUrl.query.error);
           return reject(parsedUrl.query.error);
         }
         const match = resp.headers.location.match(/access_token=([^&]+)/);
         const accessToken = match && match[1];
         if (!accessToken){
+          console.log('no access token');
           return reject(new Error('Could not parse access token from URI'));
         }
         resolve(accessToken);
