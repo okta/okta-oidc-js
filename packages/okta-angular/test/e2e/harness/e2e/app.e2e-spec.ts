@@ -79,7 +79,7 @@ describe('Angular + Okta App', () => {
     protectedPage.waitForElement('login-button');
     expect(protectedPage.getLoginButton().isPresent()).toBeTruthy();
 
-    console.log('We have logged out. this test should pass, ya?')
+    console.log('We have logged out. this test should pass, ya?');
   });
 
   /**
@@ -90,6 +90,7 @@ describe('Angular + Okta App', () => {
   // util.slowDown(100);
 
   it('should preserve query paramaters after redirecting to Okta', () => {
+    console.log('Starting test 2');
     protectedPage.navigateToWithQuery();
 
     oktaLoginPage.waitUntilVisible(environment.ISSUER);
@@ -106,10 +107,11 @@ describe('Angular + Okta App', () => {
     protectedPage.waitForElement('login-button');
     expect(protectedPage.getLoginButton().isPresent()).toBeTruthy();
 
-    console.log('AT the end of test 2')
+    console.log('AT the end of test 2');
   });
 
   it('should redirect to Okta for login', () => {
+    console.log('starting test 3');
     loginPage.navigateTo();
 
     oktaLoginPage.waitUntilVisible(environment.ISSUER);

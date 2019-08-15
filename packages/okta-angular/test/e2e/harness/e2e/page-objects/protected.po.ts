@@ -23,7 +23,7 @@ export class ProtectedPage {
   }
 
   waitUntilVisible() {
-    browser.wait(ExpectedConditions.urlContains('/protected'), 5000);
+    browser.wait(ExpectedConditions.urlContains('/protected'), 20000);
   }
 
   waitUntilQueryVisible() {
