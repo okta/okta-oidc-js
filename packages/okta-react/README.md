@@ -257,7 +257,7 @@ class App extends Component {
         <Security auth={auth} >
           <Route path='/' exact={true} component={Home}/>
           <SecureRoute path='/protected' component={Protected}/>
-          <Route path='/implicit/callback' component={ImplicitCallback} />
+          <Route path='/implicit/callback' component={() => <ImplicitCallback pathname='/custom/path' />} />
         </Security>
       </Router>
     );
@@ -273,7 +273,7 @@ export default App;
 
 ### `ImplicitCallback`
 
-`ImplicitCallback` handles the callback after the redirect. By default, it parses the tokens from the uri, stores them, then redirects to `/`. If a `SecureRoute` caused the redirect, then the callback redirects to the secured route.
+`ImplicitCallback` handles the callback after the redirect. By default, it parses the tokens from the uri, stores them, then redirects to `/` or the specified default pathname. If a `SecureRoute` caused the redirect, then the callback redirects to the secured route.
 
 ### `withAuth`
 
