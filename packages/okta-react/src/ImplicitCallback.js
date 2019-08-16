@@ -15,6 +15,10 @@ import { Redirect } from 'react-router';
 import withAuth from './withAuth';
 
 export default withAuth(class ImplicitCallback extends Component {
+  static defaultProps = {
+    pathname: "/"
+  };
+
   constructor(props) {
     super(props);
 
@@ -36,7 +40,7 @@ export default withAuth(class ImplicitCallback extends Component {
     }
 
     const referrerKey = 'secureRouterReferrerPath';
-    const location = JSON.parse(localStorage.getItem(referrerKey) || '{ "pathname": "/" }');
+    const location = JSON.parse(localStorage.getItem(referrerKey) || JSON.stringify({ pathname: this.props.pathname }));
     localStorage.removeItem(referrerKey);
 
     return this.state.authenticated ?
