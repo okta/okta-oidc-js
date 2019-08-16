@@ -61,24 +61,16 @@ describe('Jwt Verifier', () => {
     });
 
     it('should allow me to verify Okta access tokens', () => {
-      console.log('TEST 1');
-      try {
       return getAccessToken(issuer1AccessTokenParams)
       .then(accessToken => {
-        console.log('GOT ACCESS TOKEN');
         return verifier.verifyAccessToken(accessToken, expectedAud);
       })
       .then(jwt => {
-        console.log('GOT THE JWT', jwt.claims, ISSUER);
         expect(jwt.claims.iss).toBe(ISSUER);
       });
-    } catch (e) {
-      console.error('CAUGHT AN ERROR!', e);
-    }
     }, LONG_TIMEOUT);
 
     it('should fail if the signature is invalid', () => {
-      console.log('TEST 2');
       return getAccessToken(issuer1AccessTokenParams)
       .then(accessToken => verifier.verifyAccessToken(accessToken, expectedAud))
       .then(jwt => {
@@ -95,7 +87,6 @@ describe('Jwt Verifier', () => {
     }, LONG_TIMEOUT);
 
     it('should fail if no kid is present in the JWT header', () => {
-      console.log('TEST 3');
       return getAccessToken(issuer1AccessTokenParams)
       .then(accessToken => verifier.verifyAccessToken(accessToken, expectedAud))
       .then(jwt => {
@@ -111,7 +102,6 @@ describe('Jwt Verifier', () => {
     }, LONG_TIMEOUT);
 
     it('should fail if the kid cannot be found', () => {
-      console.log('TEST 4');
       return getAccessToken(issuer1AccessTokenParams)
       .then(accessToken => verifier.verifyAccessToken(accessToken, expectedAud))
       .then(jwt => {
@@ -127,7 +117,6 @@ describe('Jwt Verifier', () => {
     }, LONG_TIMEOUT);
 
     it('should fail if the token is expired (exp)', () => {
-      console.log('TEST 5');
       return getAccessToken(issuer1AccessTokenParams)
       .then(accessToken =>
         verifier.verifyAccessToken(accessToken, expectedAud)
@@ -173,7 +162,6 @@ describe('Jwt Verifier', () => {
     }, LONG_TIMEOUT);
 
     it('should cache the jwks for the configured amount of time', () => {
-      console.log('CACHING TEST');
       const verifier = new OktaJwtVerifier({
         issuer: ISSUER,
         cacheMaxAge: 500,
@@ -183,7 +171,6 @@ describe('Jwt Verifier', () => {
       });
       return getAccessToken(issuer1AccessTokenParams)
       .then(accessToken => {
-        console.log('STARTING UP NOCK RECORDER');
         nock.recorder.rec({
           output_objects: true,
           dont_print: true
@@ -198,7 +185,6 @@ describe('Jwt Verifier', () => {
           expect(nockCallObjects.length).toBe(1);
           return new Promise((resolve, reject) => {
             setTimeout(() => {
-              console.log('HERE WE ARE IN THE TIMEOUT');
               verifier.verifyAccessToken(accessToken, expectedAud)
               .then(jwt => {
                 expect(nockCallObjects.length).toBe(2);
@@ -212,7 +198,6 @@ describe('Jwt Verifier', () => {
     }, LONG_TIMEOUT);
 
     it('should rate limit jwks endpoint requests on cache misses', () => {
-      console.log('RATE LIMIT TEST');
       const verifier = new OktaJwtVerifier({
         issuer: ISSUER,
         jwksRequestsPerMinute: 2,

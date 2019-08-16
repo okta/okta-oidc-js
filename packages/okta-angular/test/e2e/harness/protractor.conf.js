@@ -30,7 +30,7 @@ exports.config = {
     }
   },
   loggingPrefs: {
-    'browser': 'ALL'
+    'browser': 'ALL' // for reporter
   },
   directConnect: true,
   baseUrl: 'http://localhost:3000/',

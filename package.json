@@ -11,7 +11,7 @@
     "banners": "util/maintain-banners.js",
     "publish": "lerna publish --skip-npm",
     "test": "./scripts/runTests.sh",
-    "clean": "lerna clean",
-    "postinstall": "sh ./scripts/installPackages.sh"
+    "clean": "./scripts/clean.sh",
+    "postinstall": "./scripts/installPackages.sh"
   }
 }

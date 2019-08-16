@@ -33,7 +33,6 @@ describe('Angular + Okta App', () => {
   let sessionTokenSignInPage: SessionTokenSignInPage;
 
   beforeEach(() => {
-    console.log('beforeEach. jasmine.DEFAULT_TIMEOUT_INTERVAL: ', jasmine.DEFAULT_TIMEOUT_INTERVAL);
     page = new AppPage();
     loginPage = new LoginPage();
     oktaLoginPage = new OktaSignInPage();
@@ -41,30 +40,16 @@ describe('Angular + Okta App', () => {
     sessionTokenSignInPage = new SessionTokenSignInPage();
   });
 
-  afterEach(() => {
-    // console.log('afterEach. gathering logs');
-    // browser.manage().logs()
-    //   .get('browser').then(function(browserLog) {
-    //   console.log('log: ' +
-    //     require('util').inspect(browserLog));
-    // });
-    console.log('afterEach, we outta here');
-  });
-
   it('should redirect to Okta for login when trying to access a protected page', () => {
-    console.log('test 1 begins');
     protectedPage.navigateTo();
-    console.log('protected page is navigated');
     browser.executeScript('console.error("I am injecting a console log")');
     oktaLoginPage.waitUntilVisible(environment.ISSUER);
-    console.log('We see issuer now');
     oktaLoginPage.signIn({
       username: environment.USERNAME,
       password: environment.PASSWORD
     });
 
     protectedPage.waitUntilVisible();
-    console.log('protected page is visible');
     expect(protectedPage.getLogoutButton().isPresent()).toBeTruthy();
 
     // Verify the user object was returned
@@ -78,8 +63,6 @@ describe('Angular + Okta App', () => {
     protectedPage.getLogoutButton().click();
     protectedPage.waitForElement('login-button');
     expect(protectedPage.getLoginButton().isPresent()).toBeTruthy();
-
-    console.log('We have logged out. this test should pass, ya?');
   });
 
   /**
@@ -90,7 +73,6 @@ describe('Angular + Okta App', () => {
   // util.slowDown(100);
 
   it('should preserve query paramaters after redirecting to Okta', () => {
-    console.log('Starting test 2');
     protectedPage.navigateToWithQuery();
 
     oktaLoginPage.waitUntilVisible(environment.ISSUER);
@@ -106,12 +88,9 @@ describe('Angular + Okta App', () => {
     protectedPage.getLogoutButton().click();
     protectedPage.waitForElement('login-button');
     expect(protectedPage.getLoginButton().isPresent()).toBeTruthy();
-
-    console.log('AT the end of test 2');
   });
 
   it('should redirect to Okta for login', () => {
-    console.log('starting test 3');
     loginPage.navigateTo();
 
     oktaLoginPage.waitUntilVisible(environment.ISSUER);
