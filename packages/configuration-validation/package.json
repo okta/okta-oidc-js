@@ -1,6 +1,6 @@
 {
   "name": "@okta/configuration-validation",
-  "version": "0.3.0",
+  "version": "0.4.0",
   "description": "Configuration validation support for Okta JavaScript SDKs",
   "main": "./dist/lib.js",
   "files": [
@@ -35,8 +35,10 @@
     "babel-cli": "^6.26.0",
     "babel-eslint": "^8.1.1",
     "babel-preset-env": "^1.7.0",
+    "deep-extend": "^0.6.0",
     "eslint": "^4.7.1",
-    "jest": "^23.6.0"
+    "jest": "^23.6.0",
+    "lodash": "^4.17.15"
   },
   "jest": {
     "testEnvironment": "jsdom"

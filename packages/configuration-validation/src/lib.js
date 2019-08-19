@@ -10,6 +10,7 @@
  * See the License for the specific language governing permissions and limitations under the License.
  */
 
+const merge = require('lodash/merge');
 class ConfigurationValidationError extends Error {}
 
 const configUtil = module.exports;
@@ -28,16 +29,17 @@ const hasDomainTypo = new RegExp('(.com.com)|(://.*){2,}');
 const endsInPath = new RegExp('/$');
 
 configUtil.buildConfigObject = (config) => {
-  return {
+  // See all supported options: https://github.com/okta/okta-auth-js#configuration-reference
+  // Support for parameters with an underscore will be deprecated in a future release
+  // camelCase was added 2/11/2019: https://github.com/okta/okta-oidc-js/commit/9b04ada6a01c9d9aca391abf0de3e5ecc9811e64
+  return merge({
     clientId: config.clientId || config.client_id,
-    issuer: config.issuer,
     redirectUri: config.redirectUri || config.redirect_uri,
-    grantType: config.grantType,
     tokenManager: {
-      storage: config.storage,
-      autoRenew: config.autoRenew || config.auto_renew
+      autoRenew: config.autoRenew || config.auto_renew,
+      storage: config.storage
     }
-  }
+  }, config);
 }
 
 configUtil.assertIssuer = (issuer, testing = {}) => {
