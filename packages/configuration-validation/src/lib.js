@@ -31,7 +31,7 @@ const endsInPath = new RegExp('/$');
 configUtil.buildConfigObject = (config) => {
   // See all supported options: https://github.com/okta/okta-auth-js#configuration-reference
   // Support for parameters with an underscore will be deprecated in a future release
-  
+  // camelCase was added 2/11/2019: https://github.com/okta/okta-oidc-js/commit/9b04ada6a01c9d9aca391abf0de3e5ecc9811e64
   return merge({
     clientId: config.clientId || config.client_id,
     redirectUri: config.redirectUri || config.redirect_uri,
