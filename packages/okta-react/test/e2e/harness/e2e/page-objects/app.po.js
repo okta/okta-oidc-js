@@ -23,11 +23,11 @@ export class AppPage {
   }
 
   waitUntilLoggedOut() {
-    Util.waitElement(this.getLoginButton());
+    Util.waitElement(this.getLoginButton(), 20000);
   }
 
   waitUntilLoggedIn() {
-    Util.waitElement(this.getLogoutButton());
+    Util.waitElement(this.getLogoutButton(), 20000);
   }
 
   getLoginButton() {

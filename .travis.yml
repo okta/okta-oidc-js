@@ -12,8 +12,7 @@ jdk:
   - default-jdk
 
 script:
-- yarn install
-- sh ./scripts/runTests.sh
+- bash ./scripts/runTests.sh
 - bash ./scripts/snyk.sh
 
 install:
