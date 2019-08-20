@@ -1,6 +1,7 @@
 #! /bin/bash -xe
 
-if [ $CI ]
+# Detect if we are running on Travis or Bacon
+if [ $CI ] || [ $TASK_DEFINITION ]
 then
   echo "Running in a CI environment"
   YARN_ARGS="--frozen-lockfile"
