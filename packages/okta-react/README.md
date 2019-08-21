@@ -179,7 +179,7 @@ Security is the top-most component of okta-react. This is where most of the conf
 
 #### Configuration options
 
-These options are used to configure the internal [Auth](https://github.com/okta/okta-auth-js) object. The most commonly used options are shown here. For the full set of supported options, see [Auth Configuration Reference](https://github.com/okta/okta-auth-js#configuration-reference).
+These options are used by `Security` to configure the [Auth](https://github.com/okta/okta-oidc-js/blob/master/packages/okta-react/src/Auth.js) object. The most commonly used options are shown here. See [Configuration Reference](https://github.com/okta/okta-auth-js#configuration-reference) for an extended set of supported options.
 
 - **issuer** (required) - The OpenId Connect `issuer`
 - **clientId** (required) - The OpenId Connect `client_id`
@@ -221,9 +221,9 @@ class App extends Component {
 
 #### Alternate configuration using `Auth` object
 
-When the `auth` option is passed, all other configuration options passed to `Security` will be ignored. The `Auth` object should be configured directly before being passed to `Security`. See [Auth Configuration Reference](https://github.com/okta/okta-auth-js#configuration-reference).
+When the `auth` option is passed, all other configuration options passed to `Security` will be ignored. The `Auth` object should be configured directly before being passed to `Security`.
 
-- **auth** *(optional)* - Provide an [Auth](https://github.com/okta/okta-auth-js) object instead of the options above. This is the most direct way to use methods on the `Auth` object outside of your components and is helpful when integrating `okta-react` with external libraries that need access to the tokens.
+- **auth** *(optional)* - Provide an [Auth](https://github.com/okta/okta-oidc-js/blob/master/packages/okta-react/src/Auth.js) object instead of the options above. This is the most direct way to use methods on the `Auth` object outside of your components and is helpful when integrating `okta-react` with external libraries that need access to the tokens.
 
 
 #### Example with Auth object
@@ -247,7 +247,6 @@ const auth = new Auth({
   issuer: 'https://{yourOktaDomain}.com/oauth2/default',
   clientId: '{clientId}',
   redirectUri: window.location.origin + '/implicit/callback',
-  onAuthRequired: ({history}) => history.push('/login')
 });
 
 class App extends Component {
@@ -269,7 +268,7 @@ export default App;
 
 #### PKCE Example
 
-Assuming you have configured your application to allow the `Authorization code` grant type, simply pass `pkce=true` to the `Security` component. This will configure the auth object to perform PKCE flow for both login and token refresh.
+Assuming you have configured your application to allow the `Authorization code` grant type, simply pass `pkce=true` to the `Security` component. This will configure the `Auth` object to perform PKCE flow for both login and token refresh.
 
 ```typescript
 
