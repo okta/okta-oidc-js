@@ -50,7 +50,7 @@ Here is a minimal working example. This example defines 3 routes:
 * **/protected** - Protected is only visible to authenticated users
 * **/implicit/callback** - This is where auth is handled for you after redirection
 
-```typescript
+```jsx
 // src/App.js
 
 import React, { Component } from 'react';
@@ -81,7 +81,7 @@ export default App;
 ## Show Login and Logout Buttons
 In the relevant location in your application, you will want to provide `Login` and `Logout` buttons for the user. You can show/hide the correct button by using the `auth.isAuthenticated()` method. For example:
 
-```typescript
+```jsx
 // src/Home.js
 
 import React, { Component } from 'react';
@@ -134,7 +134,7 @@ When your users are authenticated, your React application has an access token th
 
 Here is what the React component could look like for this hypothetical example:
 
-```typescript
+```jsx
 import fetch from 'isomorphic-fetch';
 import React, { Component } from 'react';
 import { withAuth } from '@okta/okta-react';
@@ -196,7 +196,7 @@ For PKCE flow, this should be left undefined or set to `['code']`.
 
 #### Example
 
-```typescript
+```jsx
 function customAuthHandler({auth, history}) {
   // Redirect to the /login page that has a CustomLoginComponent
   history.push('/login');
@@ -230,7 +230,7 @@ When the `auth` option is passed, all other configuration options passed to `Sec
 
 Configure an instance of the `Auth` object and pass it to the `Security` component.
 
-```typescript
+```jsx
 // src/App.js
 
 import React, { Component } from 'react';
@@ -270,7 +270,7 @@ export default App;
 
 Assuming you have configured your application to allow the `Authorization code` grant type, simply pass `pkce=true` to the `Security` component. This will configure the `Auth` object to perform PKCE flow for both login and token refresh.
 
-```typescript
+```jsx
 
 class App extends Component {
   render() {
@@ -278,7 +278,7 @@ class App extends Component {
       <Router>
         <Security issuer='https://{yourOktaDomain}.com/oauth2/default'
                   clientId='{clientId}'
-                  pkce=true
+                  pkce={true}
                   redirectUri={window.location.origin + '/implicit/callback'}>
           <Router path='/login' component={CustomLoginComponent}>
           {/* some routes here */}
@@ -291,7 +291,7 @@ class App extends Component {
 
 You may also configure an `Auth` object directly and pass it to the Security component.
 
-```typescript
+```jsx
 
 const auth = new Auth({
   issuer: 'https://{yourOktaDomain}.com/oauth2/default',
@@ -363,7 +363,7 @@ Performs a full-page redirect to Okta with optional request parameters.
 
 The `additionalParams` are mapped to Okta's [`/authorize` request parameters](https://developer.okta.com/docs/api/resources/oidc#authorize). This will override any existing [configuration](#configuration-options). As an example, if you have an Okta `sessionToken`, you can bypass the full-page redirect by passing in this token. This is recommended when using the [Okta Sign-In Widget](https://github.com/okta/okta-signin-widget). Simply pass in a `sessionToken` into the `redirect` method as follows:
 
-```typescript
+```jsx
 auth.redirect({
   sessionToken: '{sampleSessionToken}'
 });
