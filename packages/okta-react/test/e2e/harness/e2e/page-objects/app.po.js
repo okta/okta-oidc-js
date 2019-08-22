@@ -14,8 +14,8 @@ import { browser, by, element } from 'protractor';
 import { Util } from '../util'
 
 export class AppPage {
-  navigateTo() {
-    return browser.get('/');
+  navigateTo(path = '/') {
+    return browser.get(path);
   }
 
   waitUntilVisible() {
@@ -40,5 +40,9 @@ export class AppPage {
 
   getProtectedButton() {
     return element(by.id('protected-button'));
+  }
+
+  getLoginFlow() {
+    return element(by.id('login-flow'));
   }
 }

@@ -53,7 +53,6 @@ configUtil.assertIssuer = (issuer, testing = {}) => {
     console.warn(httpsWarning);
   }
 
-
   if (!issuer) {
     throw new ConfigurationValidationError('Your Okta URL is missing. ' + copyMessage);
   } else if (!testing.disableHttpsCheck && !issuer.match(isHttps)) {
