@@ -80,6 +80,7 @@ An Angular InjectionToken used to configure the OktaAuthService. This value must
 - `redirectUri` **(required)**: Where the callback is hosted
 - `scope` *(optional)*: Reserved for custom claims to be returned in the tokens
 - `responseType` *(optional)*: Desired token grant types
+- `pkce` *(optional)*: If `true`, PKCE flow will be used
 - `onAuthRequired` *(optional)*: Accepts a callback to make a decision when authentication is required. If not supplied, `okta-angular` will redirect directly to Okta for authentication.
 - `storage` *(optional)*:
   Specify the type of storage for tokens.
