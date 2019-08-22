@@ -34,8 +34,10 @@ function getAccessToken(options = {}) {
         password: PASSWORD
       }
     }, function (err, resp, body) {
-      if (err || resp.statusCode >= 400) {
-        return resolve(err || body);
+      const statusCode = resp ? resp.statusCode : null;
+      if (err || (resp && resp.statusCode >= 400) || !resp) {
+        console.error('/api/v1/authn returned error: ', statusCode, err || body);
+        return reject(new Error('/api/v1/authn error: ' + (err || body)));
       }
       const authorizeParams = {
         sessionToken: body.sessionToken,
@@ -48,8 +50,15 @@ function getAccessToken(options = {}) {
       }
       const authorizeUrl = ISSUER + '/v1/authorize?' + qs.stringify(authorizeParams);
       request.get(authorizeUrl, {followRedirect: false}, function(err, resp, body) {
+        const statusCode = resp ? resp.statusCode : null;
+        if (err || (resp && resp.statusCode >= 400) || !resp) {
+          console.error('/api/v1/authorize returned error: ', statusCode, err || body);
+          return reject(new Error('/api/v1/authorize error: ' + statusCode, + ' ' + err || body));
+        }
+
         const parsedUrl = url.parse(resp.headers.location, true);
         if (parsedUrl.query.error) {
+          console.error('/api/v1/authorize error in query:', parsedUrl.query.error);
           return reject(parsedUrl.query.error);
         }
         const match = resp.headers.location.match(/access_token=([^&]+)/);

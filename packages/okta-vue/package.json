@@ -9,17 +9,12 @@
   ],
   "scripts": {
     "build": "rimraf dist/ && cross-env NODE_ENV=production webpack --config webpack.config.js --output-library-target=umd -p",
-    "build:harness": "yarn --cwd test/e2e/harness install",
     "build:package-info": "node ../../util/write-package-info.js . src/packageInfo.js",
-    "kill:port": "kill -9 $(lsof -t -i:8080 -sTCP:LISTEN) || true",
     "lint": "eslint --ext .js,.vue src",
     "prebuild": "yarn build:package-info",
-    "prestart": "yarn build && yarn build:harness",
-    "pretest": "yarn kill:port && yarn build && yarn build:harness",
     "prepare": "yarn build",
     "start": "yarn --cwd test/e2e/harness/ start",
     "test": "yarn lint && yarn test:unit && yarn test:e2e",
-    "pretest:e2e": "yarn kill:port && yarn build && yarn build:harness",
     "test:e2e": "yarn --cwd test/e2e/harness/ test",
     "test:unit": "jest src/"
   },

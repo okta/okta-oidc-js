@@ -1,20 +1,16 @@
 {
   "name": "@okta/okta-react",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "description": "React support for Okta",
   "main": "./dist/index.js",
   "scripts": {
     "build": "rimraf dist/ && yarn build:package-info && babel src -d dist",
-    "build:harness": "yarn --cwd test/e2e/harness install",
     "build:package-info": "node ../../util/write-package-info.js . src/packageInfo.js",
     "lint": "eslint src",
     "lint:watch": "esw -w lib/**",
     "prepare": "yarn build",
-    "prestart": "yarn build && yarn build:harness",
-    "pretest": "yarn build && yarn build:harness",
     "start": "yarn --cwd test/e2e/harness start",
     "test": "yarn lint && yarn test:unit && yarn test:e2e",
-    "pretest:e2e": "yarn build && yarn build:harness",
     "test:e2e": "yarn --cwd test/e2e/harness test",
     "test:unit": "jest test/jest/"
   },
@@ -36,8 +32,8 @@
   },
   "homepage": "https://github.com/okta/okta-oidc-js#readme",
   "dependencies": {
-    "@okta/configuration-validation": "^0.3.0",
-    "@okta/okta-auth-js": "^2.6.0",
+    "@okta/configuration-validation": "^0.4.0",
+    "@okta/okta-auth-js": "^2.6.3",
     "babel-runtime": "^6.26.0",
     "prop-types": "^15.5.10"
   },

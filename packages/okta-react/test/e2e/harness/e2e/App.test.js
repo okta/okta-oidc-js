@@ -30,77 +30,143 @@ describe('React + Okta App', () => {
     sessionTokenSignInPage = new SessionTokenSignInPage();
   });
 
-  it('should redirect to Okta for login when trying to access a protected page', () => {
-    protectedPage.navigateTo('?state=bar#baz');
+  describe('implicit flow', () => {
 
-    oktaLoginPage.waitUntilVisible();
-    oktaLoginPage.signIn({
-      username: process.env.USERNAME,
-      password: process.env.PASSWORD
+    it('should redirect to Okta for login when trying to access a protected page', () => {
+      protectedPage.navigateTo('?state=bar#baz');
+  
+      oktaLoginPage.waitUntilVisible();
+      oktaLoginPage.signIn({
+        username: process.env.USERNAME,
+        password: process.env.PASSWORD
+      });
+  
+      protectedPage.waitUntilVisible('?state=bar#baz');
+      expect(protectedPage.getLogoutButton().isPresent()).toBeTruthy();
+  
+      protectedPage.waitForElement('userinfo-container');
+      protectedPage.getUserInfo().getText()
+      .then(userInfo => {
+        expect(userInfo).toContain('email');
+      });
+  
+      expect(appPage.getLoginFlow().getText()).toBe('implicit');
+
+      // Logout
+      protectedPage.getLogoutButton().click();
+  
+      appPage.waitUntilLoggedOut();
+    });
+  
+    it('should redirect to Okta for login', () => {
+      appPage.navigateTo();
+  
+      appPage.waitUntilVisible();
+  
+      expect(appPage.getLoginFlow().getText()).toBe('implicit');
+      appPage.getLoginButton().click();
+  
+      oktaLoginPage.waitUntilVisible();
+  
+      oktaLoginPage.signIn({
+        username: process.env.USERNAME,
+        password: process.env.PASSWORD
+      });
+  
+      appPage.waitUntilVisible();
+      expect(protectedPage.getLogoutButton().isPresent()).toBeTruthy();
+  
+      // Logout
+      appPage.getLogoutButton().click();
+  
+      appPage.waitUntilLoggedOut();
     });
 
-    protectedPage.waitUntilVisible('?state=bar#baz');
-    expect(protectedPage.getLogoutButton().isPresent()).toBeTruthy();
 
-    protectedPage.waitForElement('userinfo-container');
-    protectedPage.getUserInfo().getText()
-    .then(userInfo => {
-      expect(userInfo).toContain('email');
+  });
+
+  describe('PKCE flow', () => {
+
+    it('should redirect to Okta for login when trying to access a protected page', () => {
+      protectedPage.navigateTo('?pkce=1&state=bar#baz');
+  
+      oktaLoginPage.waitUntilVisible();
+      oktaLoginPage.signIn({
+        username: process.env.USERNAME,
+        password: process.env.PASSWORD
+      });
+  
+      protectedPage.waitUntilVisible('?pkce=1&state=bar#baz');
+      expect(protectedPage.getLogoutButton().isPresent()).toBeTruthy();
+  
+      protectedPage.waitForElement('userinfo-container');
+      protectedPage.getUserInfo().getText()
+      .then(userInfo => {
+        expect(userInfo).toContain('email');
+      });
+  
+      expect(appPage.getLoginFlow().getText()).toBe('PKCE');
+
+      // Logout
+      protectedPage.getLogoutButton().click();
+  
+      appPage.waitUntilLoggedOut();
     });
-
-    // Logout
-    protectedPage.getLogoutButton().click();
-
-    appPage.waitUntilLoggedOut();
-  });
-
-  it('should redirect to Okta for login', () => {
-    appPage.navigateTo();
-
-    appPage.waitUntilVisible();
-
-    appPage.getLoginButton().click();
-
-    oktaLoginPage.waitUntilVisible();
-
-    oktaLoginPage.signIn({
-      username: process.env.USERNAME,
-      password: process.env.PASSWORD
+  
+    it('should redirect to Okta for login', () => {
+      appPage.navigateTo('/?pkce=1');
+  
+      appPage.waitUntilVisible();
+      expect(appPage.getLoginFlow().getText()).toBe('PKCE');
+      appPage.getLoginButton().click();
+  
+      oktaLoginPage.waitUntilVisible();
+  
+      oktaLoginPage.signIn({
+        username: process.env.USERNAME,
+        password: process.env.PASSWORD
+      });
+  
+      appPage.waitUntilVisible();
+      expect(protectedPage.getLogoutButton().isPresent()).toBeTruthy();
+  
+      // Logout
+      appPage.getLogoutButton().click();
+  
+      appPage.waitUntilLoggedOut();
     });
-
-    appPage.waitUntilVisible();
-    expect(protectedPage.getLogoutButton().isPresent()).toBeTruthy();
-
-    // Logout
-    appPage.getLogoutButton().click();
-
-    appPage.waitUntilLoggedOut();
   });
 
-  it('should allow passing sessionToken to skip Okta login', () => {
-    sessionTokenSignInPage.navigateTo();
+  describe('Okta session token flow', () => {
 
-    sessionTokenSignInPage.waitUntilVisible();
+    it('should allow passing sessionToken to skip Okta login', () => {
+      sessionTokenSignInPage.navigateTo();
 
-    sessionTokenSignInPage.signIn({
-      username: process.env.USERNAME,
-      password: process.env.PASSWORD
+      sessionTokenSignInPage.waitUntilVisible();
+
+      sessionTokenSignInPage.signIn({
+        username: process.env.USERNAME,
+        password: process.env.PASSWORD
+      });
+
+      appPage.waitUntilLoggedIn();
+      expect(appPage.getLogoutButton().isPresent()).toBeTruthy();
+
+      // Logout
+      appPage.getLogoutButton().click();
+
+      appPage.waitUntilLoggedOut();
     });
-
-    appPage.waitUntilLoggedIn();
-    expect(appPage.getLogoutButton().isPresent()).toBeTruthy();
-
-    // Logout
-    appPage.getLogoutButton().click();
-
-    appPage.waitUntilLoggedOut();
   });
 
-  it('should honor the "exact" route param by not triggering the secureRoute', () => {
-    protectedPage.navigateTo('/nested/');
-    protectedPage.waitUntilVisible('/nested');
+  describe('Router', () => {
+    it('should honor the "exact" route param by not triggering the secureRoute', () => {
+      protectedPage.navigateTo('/nested/');
+      protectedPage.waitUntilVisible('/nested');
 
-    // Assert the navigation guard wasn't triggered due to "exact" path
-    expect(appPage.getLoginButton().isPresent()).toBeTruthy();
+      // Assert the navigation guard wasn't triggered due to "exact" path
+      expect(appPage.getLoginButton().isPresent()).toBeTruthy();
+    });
   });
+
 });

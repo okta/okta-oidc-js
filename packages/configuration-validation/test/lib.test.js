@@ -29,6 +29,8 @@ describe('Configuration Validation', () => {
         clientId: '{clientId}',
         issuer: '{issuer}',
         redirectUri: '{redirectUri}',
+        storage: '{storage}',
+        autoRenew: '{autoRenew}',
         tokenManager: {
           storage: '{storage}',
           autoRenew: '{autoRenew}'
@@ -47,11 +49,15 @@ describe('Configuration Validation', () => {
 
       expect(buildConfigObject(passedConfig)).toEqual({
         clientId: '{client_id}',
+        client_id: '{client_id}',
         issuer: '{issuer}',
         redirectUri: '{redirect_uri}',
+        redirect_uri: '{redirect_uri}',
+        storage: '{storage}',
+        auto_renew: '{auto_renew}',
         tokenManager: {
           storage: '{storage}',
-          autoRenew: '{auto_renew}'
+          autoRenew: '{auto_renew}',
         }
       });
     });
@@ -70,14 +76,76 @@ describe('Configuration Validation', () => {
 
       expect(buildConfigObject(passedConfig)).toEqual({
         clientId: '{clientId}',
+        client_id: '{client_id}',
         issuer: '{issuer}',
         redirectUri: '{redirectUri}',
+        redirect_uri: '{redirect_uri}',
+        storage: '{storage}',
+        autoRenew: '{autoRenew}',
+        auto_renew: '{auto_renew}',
         tokenManager: {
           storage: '{storage}',
-          autoRenew: '{autoRenew}'
+          autoRenew: '{autoRenew}',
         }
       });
     });
+
+    it('Allows passing extra config to tokenManager', () => {
+      const passedConfig = {
+        storage: '{storage}',
+        autoRenew: '{autoRenew}',
+        tokenManager: {
+          secure: true
+        }
+      }
+
+      expect(buildConfigObject(passedConfig)).toEqual({
+        storage: '{storage}',
+        autoRenew: '{autoRenew}',
+        clientId: undefined,
+        redirectUri: undefined,
+        tokenManager: {
+          storage: '{storage}',
+          autoRenew: '{autoRenew}',
+          secure: true
+        }
+      });
+    });
+
+    it('Can override tokenManager config', () => {
+      const passedConfig = {
+        storage: '{storage}',
+        tokenManager: {
+          storage: '{overridden}'
+        }
+      }
+
+      expect(buildConfigObject(passedConfig)).toEqual({
+        storage: '{storage}',
+        clientId: undefined,
+        redirectUri: undefined,
+        tokenManager: {
+          storage: '{overridden}',
+        }
+      });
+    });
+
+    it('Allows passing extra config properties at top-level', () => {
+      function f() {}
+      const passedConfig = {
+        onAuthComplete: f
+      }
+
+      expect(buildConfigObject(passedConfig)).toEqual({
+        onAuthComplete: f,
+        clientId: undefined,
+        redirectUri: undefined,
+        tokenManager: {
+          storage: undefined,
+          autoRenew: undefined,
+        }
+      });
+    })
   });
 
   describe('assertIssuer', () => {
