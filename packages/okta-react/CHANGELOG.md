@@ -1,4 +1,5 @@
-# 1.2.1
+
+# 1.2.2
 
 ### Features
 
@@ -7,6 +8,10 @@
 ### Other
 
 - [`654550`](https://github.com/okta/okta-oidc-js/commit/6545506921cbe6e8f15076e45e908f285a6e2f1e) - All configuration options are now accepted. See [Configuration Reference](https://github.com/okta/okta-auth-js#configuration-reference). Camel-case (clientId) is now the preferred syntax for all Okta OIDC libraries. Underscore syntax (client_id) will be deprecated in a future release.
+
+# 1.2.1
+
+- internal version
 
 # 1.2.0
 
