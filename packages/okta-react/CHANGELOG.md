@@ -1,3 +1,13 @@
+# 1.2.1
+
+### Features
+
+- [`0453f1d`](https://github.com/okta/okta-oidc-js/commit/0453f1d2ec13695b3ad73b01f5336bb4d606eff5) - Adds support for PKCE flow
+
+### Other
+
+- [`654550`](https://github.com/okta/okta-oidc-js/commit/6545506921cbe6e8f15076e45e908f285a6e2f1e) - All configuration options are now accepted. See [Configuration Reference](https://github.com/okta/okta-auth-js#configuration-reference). Camel-case (clientId) is now the preferred syntax for all Okta OIDC libraries. Underscore syntax (client_id) will be deprecated in a future release.
+
 # 1.2.0
 
 ### Features
