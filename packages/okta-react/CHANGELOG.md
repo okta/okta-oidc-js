@@ -1,3 +1,6 @@
+# 1.2.2
+- no changes
+
 # 1.2.1
 
 ### Features
