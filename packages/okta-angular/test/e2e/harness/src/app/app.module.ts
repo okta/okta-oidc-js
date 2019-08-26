@@ -87,7 +87,7 @@ const appRoutes: Routes = [
 const url = new URL(window.location.href);
 const pkce = !!url.searchParams.get('pkce') || url.pathname.indexOf('pkce/callback') >= 0;
 const redirectUri = window.location.origin + (pkce ? '/pkce/callback' : '/implicit/callback');
-console.log('PKCE: ', pkce);
+
 const config = {
   issuer: environment.ISSUER,
   pkce,
