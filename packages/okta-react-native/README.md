@@ -72,7 +72,7 @@ Perform the following Manual installation steps if you're not using `react-nativ
     ```
 3. Insert the following lines inside the dependencies block in `android/app/build.gradle`:
     ```
-      compile project(':@okta_okta-react-native')
+    compile project(':@okta_okta-react-native')
     ```
 
 ### iOS Setup
@@ -92,19 +92,23 @@ This library depends on the native [Okta OIDC iOS](https://github.com/okta/okta-
 
 You can currently add Okta OIDC iOS through CocoaPods:
 
-1. **CocoaPods**
-   With [CocoaPods](https://guides.cocoapods.org/using/getting-started.html), make sure your `Podfile` looks like this:
+1. [**CocoaPods**]((https://guides.cocoapods.org/using/getting-started.html))
 
+   ***React Native >= 0.60***: With React Native 0.60 pods are added to podfile automatically. Run `pod install` command to install dependecies:
+   ```
+   cd ios
+   pod install
+   ```
+   ***React Native < 0.60***: Make sure your `Podfile` looks like this:
     ```   
-    platform :ios, '11.0'
+   platform :ios, '11.0'
 
-    target '{YourTargetName}' do
-      use_frameworks!
+   target '{YourTargetName}' do
 
-      pod 'OktaOidc', '~> 3.0'
+   pod 'OktaOidc', '~> 3.0'
 
-    end
-    ```
+   end
+   ```
 
    Then run `pod install`.
    
