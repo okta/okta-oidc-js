@@ -1,7 +1,7 @@
 {
   "name": "@okta/okta-react-native",
   "title": "React Native Okta Sdk Bridge",
-  "version": "1.0.2",
+  "version": "1.1.0",
   "description": "Okta OIDC for React Native",
   "main": "index.js",
   "podname": "OktaSdkBridgeReactNative",
@@ -35,7 +35,7 @@
   "readmeFilename": "README.md",
   "peerDependencies": {
     "react": "^16.5.0",
-    "react-native": ">=0.57.0 <=0.59.9"
+    "react-native": "^0.60.0"
   },
   "devDependencies": {
     "@babel/core": "^7.5.4",
@@ -44,7 +44,7 @@
     "jest": "^24.8.0",
     "metro-react-native-babel-preset": "^0.55.0",
     "react": "^16.5.0",
-    "react-native": "^0.59.9"
+    "react-native": "^0.60.0"
   },
   "dependencies": {
     "@okta/configuration-validation": "^0.3.0",
