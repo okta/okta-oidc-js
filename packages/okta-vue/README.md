@@ -218,7 +218,7 @@ he most commonly used options are shown here. See [Configuration Reference](http
 - `clientId` **(required)**: The OpenID Connect `client_id`
 - `redirectUri` **(required)**: Where the callback is hosted
 - `scope` *(optional)*: Reserved or custom claims to be returned in the tokens
-- `responseType` *(optional)*: Desired token grant types. For PKCE flow, this should be left undefined or set to `['code']`.
+- `responseType` *(optional)*: Desired token grant types. Default: `['id_token', 'token']`. For PKCE flow, this should be left undefined or set to `['code']`.
 - `pkce` *(optional)* - If `true`, PKCE flow will be used
 - `autoRenew` *(optional)*:
   By default, the library will attempt to renew expired tokens. When an expired token is requested by the library, a renewal request is executed to update the token. If you wish to  to disable auto renewal of tokens, set `autoRenew` to `false`.
