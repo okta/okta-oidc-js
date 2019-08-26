@@ -106,7 +106,4 @@ export const refreshTokens = async() => {
   return NativeModules.OktaSdkBridge.refreshTokens(); 
 }
 
-export const EventEmitter = Platform.select({
-  ios: new NativeEventEmitter(NativeModules.OktaSdkBridge),
-  android: DeviceEventEmitter
-})
+export const EventEmitter = new NativeEventEmitter(NativeModules.OktaSdkBridge);
