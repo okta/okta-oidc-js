@@ -1,3 +1,8 @@
+# 1.0.2
+
+### Features
+- [`c422f1d`](https://github.com/okta/okta-oidc-js/commit/c422f1d064acaa26f994564ffb2fa5585a83c4be#diff-2c20101038faa8ceda1dda5c3cde79d8) - Add Carthage support
+
 # 1.0.1
 
 ### Features

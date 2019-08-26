@@ -10,6 +10,8 @@
  * See the License for the specific language governing permissions and limitations under the License.
  */
 
+import { browser } from 'protractor';
+
 import {
   AppPage,
   OktaSignInPage,
@@ -38,7 +40,7 @@ describe('Angular + Okta App', () => {
 
   it('should redirect to Okta for login when trying to access a protected page', () => {
     protectedPage.navigateTo();
-
+    browser.executeScript('console.error("I am injecting a console log")');
     oktaLoginPage.waitUntilVisible(environment.ISSUER);
     oktaLoginPage.signIn({
       username: environment.USERNAME,
@@ -60,13 +62,6 @@ describe('Angular + Okta App', () => {
     protectedPage.waitForElement('login-button');
     expect(protectedPage.getLoginButton().isPresent()).toBeTruthy();
   });
-
-  /**
-   * Hack to slowdown the tests due to the Okta session
-   * not being removed in time for the second login call.
-   */
-  const util = new Utils();
-  util.slowDown(100);
 
   it('should preserve query paramaters after redirecting to Okta', () => {
     protectedPage.navigateToWithQuery();

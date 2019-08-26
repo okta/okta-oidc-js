@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/bash -xe
 
 # Install yarn
 curl -o- -L https://yarnpkg.com/install.sh | bash -s -- --rc

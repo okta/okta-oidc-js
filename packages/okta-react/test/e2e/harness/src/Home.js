@@ -23,8 +23,6 @@ export default withAuth(class Home extends Component {
     };
 
     this.checkAuthentication = this.checkAuthentication.bind(this);
-    this.checkAuthentication();
-
     this.login = this.login.bind(this);
     this.logout = this.logout.bind(this);
   }
@@ -44,6 +42,10 @@ export default withAuth(class Home extends Component {
     this.props.auth.logout('/');
   }
 
+  componentDidMount() {
+    this.checkAuthentication();
+  }
+
   componentDidUpdate() {
     this.checkAuthentication();
   }
@@ -57,11 +59,17 @@ export default withAuth(class Home extends Component {
       <button id="logout-button" onClick={this.logout}>Logout</button> :
       <button id="login-button" onClick={this.login}>Login</button>;
 
+    const pkce = this.props.auth._oktaAuth.options.pkce;
+
     return (
       <div>
+        <div id="login-flow">{ pkce ? 'PKCE' : 'implicit'}</div>
+        <hr/>
         <Link to='/'>Home</Link><br/>
         <Link to='/protected'>Protected</Link><br/>
+        <Link to='/sessionToken-login'>Session Token Login</Link><br/>
         {button}
+
       </div>
     );
   }

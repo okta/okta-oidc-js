@@ -8,17 +8,13 @@
     "dist"
   ],
   "scripts": {
-    "build:dependencies": "yarn ngc && cd test/e2e/harness && yarn install",
     "build:package-info": "node ../../util/write-package-info.js . src/okta/packageInfo.ts",
     "lint": "yarn --cwd test/e2e/harness/ lint",
     "ngc": "./node_modules/.bin/ngc -p tsconfig.json",
-    "pretest": "yarn build:dependencies",
-    "prestart": "yarn build:dependencies",
     "prepare": "yarn ngc",
     "prengc": "yarn build:package-info",
     "start": "yarn --cwd test/e2e/harness/ start",
     "test": "yarn lint && yarn test:e2e && yarn test:unit",
-    "pretest:e2e": "yarn build:dependencies",
     "test:e2e": "yarn --cwd test/e2e/harness/ e2e",
     "test:unit": "yarn --cwd test/e2e/harness/ test"
   },

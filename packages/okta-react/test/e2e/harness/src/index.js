@@ -16,5 +16,12 @@ import './index.css';
 import App from './App';
 import registerServiceWorker from './registerServiceWorker';
 
-ReactDOM.render(<App />, document.getElementById('root'));
+// To perform end-to-end PKCE flow we must be configured on both ends: when the login is initiated, and on the callback
+// The login page is loaded with a query param. This will select a unique callback url
+// On the callback load we detect PKCE by inspecting the pathname
+const url = new URL(window.location.href);
+const pkce = !!url.searchParams.get('pkce') || url.pathname.indexOf('pkce/callback') >= 0;
+const redirectUri = window.location.origin + (pkce ? '/pkce/callback' : '/implicit/callback');
+
+ReactDOM.render(<App pkce={pkce} redirectUri={redirectUri} />, document.getElementById('root'));
 registerServiceWorker();

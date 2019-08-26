@@ -5,7 +5,7 @@
   "dependencies": {
     "react": "^16.3.2",
     "react-dom": "^16.3.2",
-    "react-scripts": "2.1.3"
+    "react-scripts": "^2.1.8"
   },
   "devDependencies": {
     "babel-cli": "^6.26.0",
@@ -29,10 +29,11 @@
     "start": "REACT_APP_ISSUER=$ISSUER REACT_APP_CLIENT_ID=$SPA_CLIENT_ID PORT=8080 OKTA_TESTING_DISABLEHTTPSCHECK=$OKTA_TESTING_DISABLEHTTPSCHECK react-app-rewired start",
     "build": "REACT_APP_ISSUER=$ISSUER REACT_APP_CLIENT_ID=$SPA_CLIENT_ID PORT=8080 OKTA_TESTING_DISABLEHTTPSCHECK=$OKTA_TESTING_DISABLEHTTPSCHECK react-app-rewired build",
     "build:test": "rimraf e2e/dist && babel e2e/ -d e2e/dist",
-    "kill:port": "kill -9 $(lsof -t -i:8080 -sTCP:LISTEN) || true",
-    "pretest": "yarn kill:port && ../../../../../scripts/updateSeDrivers.sh 0 && yarn build:test",
+    "kill:port": "kill -s TERM $(lsof -t -i:8080 -sTCP:LISTEN) || true",
+    "pretest": "../../../../../scripts/updateSeDrivers.sh 0 && yarn build:test",
     "wait:server": "BROWSER=none yarn start & ./node_modules/.bin/wait-on http://localhost:8080",
-    "test": "yarn build && yarn wait:server && yarn protractor",
+    "test": "yarn wait:server && yarn protractor",
+    "posttest": "yarn kill:port",
     "eject": "react-scripts eject",
     "protractor": "babel-node ./node_modules/.bin/protractor protractor.conf.js"
   },

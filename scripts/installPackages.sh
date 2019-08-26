@@ -1,10 +1,18 @@
-#! /bin/bash
+#! /bin/bash -xe
 
-# Creates symlinks between internal dependencies.
-lerna link
+# Detect if we are running on Travis or Bacon
+if [ $CI ] || [ $TASK_DEFINITION ]
+then
+  echo "Running in a CI environment"
+  YARN_ARGS="--frozen-lockfile"
+else
+  echo "Running in a local dev environment"
+  YARN_ARGS=""
+fi
 
-# Run yarn install on each package individually
-lerna exec --concurrency 1 -- 'pwd && yarn install'
+# Creates symlinks between internal dependencies. Also runs the 'prepare' script
+npx lerna bootstrap --force-local -- $YARN_ARGS
 
-# Run prepare script on each package
-lerna run prepare
+# Calling 'yarn install' within a package directory may overwrite a symlink with a hard copy.
+npx lerna link --force-local
+
