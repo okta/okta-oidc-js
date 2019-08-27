@@ -79,7 +79,9 @@ An Angular InjectionToken used to configure the OktaAuthService. This value must
 - `clientId` **(required)**: The OpenID Connect `client_id`
 - `redirectUri` **(required)**: Where the callback is hosted
 - `scope` *(optional)*: Reserved for custom claims to be returned in the tokens
-- `responseType` *(optional)*: Desired token grant types
+- `responseType` *(optional)*: Desired token grant types. Default: `['id_token', 'token']`.
+For PKCE flow, this should be left undefined or set to `['code']`.
+- `pkce` *(optional)*: If `true`, PKCE flow will be used
 - `onAuthRequired` *(optional)*: Accepts a callback to make a decision when authentication is required. If not supplied, `okta-angular` will redirect directly to Okta for authentication.
 - `storage` *(optional)*:
   Specify the type of storage for tokens.
