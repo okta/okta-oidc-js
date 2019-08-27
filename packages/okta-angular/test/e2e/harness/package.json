@@ -4,14 +4,14 @@
   "license": "MIT",
   "scripts": {
     "ng": "ng",
-    "start": "yarn env && ng serve --port=3000",
+    "start": "yarn env && ng serve --port=8080",
     "env": "node ./scripts/prebuild.js",
     "build": "ng build",
     "pretest": "../../../../../scripts/updateSeDrivers.sh 0",
     "test": "ng test --watch=false",
     "lint": "ng lint",
     "pree2e": "../../../../../scripts/updateSeDrivers.sh 0",
-    "e2e": "yarn env && ng e2e --port 3000 --no-webdriver-update"
+    "e2e": "yarn env && ng e2e --port 8080 --no-webdriver-update"
   },
   "private": true,
   "dependencies": {

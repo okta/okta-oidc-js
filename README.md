@@ -98,7 +98,7 @@ Since the workspace contains libraries for Single-Page and Web Applications, you
 2. Select SPA
 3. Add the following **login redirect URI**:
     - `http://localhost:8080/implicit/callback`
-    - `http://localhost:3000/implicit/callback`
+    - `http://localhost:8080/pkce/callback`
 4. Click Done
 5. Users > Add Person
 6. Create and activate user

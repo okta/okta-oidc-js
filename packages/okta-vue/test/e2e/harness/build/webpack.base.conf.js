@@ -48,6 +48,11 @@ module.exports = {
       },
       {
         test: /\.js$/,
+        use: ['source-map-loader'],
+        enforce: 'pre'
+      },
+      {
+        test: /\.js$/,
         loader: 'babel-loader',
         include: [resolve('src'), resolve('test'), resolve('../../../src')]
       },
