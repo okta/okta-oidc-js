@@ -48,8 +48,8 @@ import Auth from '@okta/okta-vue'
 
 Vue.use(Auth, {
   issuer: 'https://{yourOktaDomain}.com/oauth2/default',
-  client_id: '{clientId}',
-  redirect_uri: 'http://localhost:{port}/implicit/callback',
+  clientId: '{clientId}',
+  redirectUri: 'http://localhost:{port}/implicit/callback',
   scope: 'openid profile email'
 })
 
@@ -212,21 +212,16 @@ router.beforeEach((to, from, next) {
 
 #### Configuration Options
 
-- `issuer` **(required)**: The OpenID Connect `issuer`
-- `client_id` **(required)**: The OpenID Connect `client_id`
-- `redirect_uri` **(required)**: Where the callback is hosted
-- `scope` *(optional)*: Reserved or custom claims to be returned in the tokens
-- `response_type` *(optional)*: Desired token grant types
-- `storage` *(optional)*:
-  Specify the type of storage for tokens.
-  The types are:
-  - [`localStorage`](https://developer.mozilla.org/en-US/docs/Web/API/Window/localStorage)
-  - [`sessionStorage`](https://developer.mozilla.org/en-US/docs/Web/API/Window/sessionStorage)
-  - [`cookie`](https://developer.mozilla.org/en-US/docs/Web/API/Document/cookie)
+he most commonly used options are shown here. See [Configuration Reference](https://github.com/okta/okta-auth-js#configuration-reference) for an extended set of supported options.
 
-  Defaults to `localStorage`. If [local storage](https://developer.mozilla.org/en-US/docs/Web/API/Web_Storage_API/Local_storage) is not available, falls back to `sessionStorage` or `cookie`.
-- `auto_renew` *(optional)*:
-  By default, the library will attempt to renew expired tokens. When an expired token is requested by the library, a renewal request is executed to update the token. If you wish to  to disable auto renewal of tokens, set `auto_renew` to `false`.
+- `issuer` **(required)**: The OpenID Connect `issuer`
+- `clientId` **(required)**: The OpenID Connect `client_id`
+- `redirectUri` **(required)**: Where the callback is hosted
+- `scope` *(optional)*: Reserved or custom claims to be returned in the tokens
+- `responseType` *(optional)*: Desired token grant types. Default: `['id_token', 'token']`. For PKCE flow, this should be left undefined or set to `['code']`.
+- `pkce` *(optional)* - If `true`, PKCE flow will be used
+- `autoRenew` *(optional)*:
+  By default, the library will attempt to renew expired tokens. When an expired token is requested by the library, a renewal request is executed to update the token. If you wish to  to disable auto renewal of tokens, set `autoRenew` to `false`.
 
 #### `$auth.loginRedirect(fromUri, additionalParams)`
 
@@ -270,6 +265,7 @@ See the [getting started](/README.md#getting-started) section for step-by-step i
 
 | Command        | Description                        |
 | -------------- | ---------------------------------- |
+| `yarn install` | Install all dependencies           |
 | `yarn start`   | Start the sample app using the SDK |
 | `yarn test`    | Run integration tests              |
 | `yarn lint`    | Run eslint linting tests           |

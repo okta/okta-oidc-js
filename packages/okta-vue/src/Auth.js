@@ -10,7 +10,7 @@ import ImplicitCallback from './components/ImplicitCallback'
 
 function install (Vue, options) {
   const authConfig = initConfig(options)
-  const oktaAuth = new AuthJS(buildConfigObject(authConfig))
+  const oktaAuth = new AuthJS(authConfig)
   oktaAuth.userAgent = `${packageInfo.name}/${packageInfo.version} ${oktaAuth.userAgent}`
 
   Vue.prototype.$auth = {
@@ -19,7 +19,7 @@ function install (Vue, options) {
         localStorage.setItem('referrerPath', fromUri)
       }
       return oktaAuth.token.getWithRedirect({
-        responseType: authConfig.response_type,
+        responseType: authConfig.responseType,
         scopes: authConfig.scope.split(' '),
         ...additionalParams
       })
@@ -92,16 +92,18 @@ function install (Vue, options) {
 
 function handleCallback () { return ImplicitCallback }
 
-const initConfig = auth => {
+const initConfig = options => {
+  let auth = buildConfigObject(options)
+
   // Assert configuration
   assertIssuer(auth.issuer, auth.testing)
-  assertClientId(auth.client_id)
-  assertRedirectUri(auth.redirect_uri)
+  assertClientId(auth.clientId)
+  assertRedirectUri(auth.redirectUri)
 
   if (!auth.scope) auth.scope = 'openid'
 
   // Use space separated response_type or default value
-  auth.response_type = (auth.response_type || 'id_token token').split(' ')
+  auth.responseType = (auth.responseType || 'id_token token').split(' ')
   return auth
 }
 
