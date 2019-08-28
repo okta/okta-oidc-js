@@ -93,7 +93,7 @@ describe('Unit Tests', () => {
       issuer: environment.ISSUER,
       redirectUri: environment.REDIRECT_URI,
       clientId: environment.CLIENT_ID,
-      scope: 'email',
+      scopes: ['email'],
       responseType: 'id_token',
       testing: {
         disableHttpsCheck: false
@@ -130,7 +130,7 @@ describe('Unit Tests', () => {
     expect(config.issuer).toBe(environment.ISSUER);
     expect(config.redirectUri).toBe(environment.REDIRECT_URI);
     expect(config.clientId).toBe(environment.CLIENT_ID);
-    expect(config.scope).toBe('email openid');
+    expect(config.scopes.join(' ')).toBe('openid email');
     expect(config.responseType).toBe('id_token');
   }));
 
