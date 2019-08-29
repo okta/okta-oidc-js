@@ -38,10 +38,10 @@ configUtil.buildConfigObject = (config) => {
   // Legacy support: allow a property named 'scope' to be either an array or a string.
   let scopes = config.scopes;
   if (!scopes && config.scope) {
-    if (config.scope instanceof Array) {
+    if (Array.isArray(config.scope)) {
       scopes = config.scope;
     } else {
-      scopes = config.scope.split(' ');
+      scopes = config.scope.split(/\s+/);
     }
   }
 
@@ -60,7 +60,7 @@ configUtil.buildConfigObject = (config) => {
   // Legacy support: allow 'responseType' to be a string or an array
   let responseType = config.responseType || config.response_type;
   if (typeof responseType === 'string' && responseType.indexOf(' ') >= 0) {
-    responseType = responseType.split(' ');
+    responseType = responseType.split(/\s+/);
   }
 
   const normalizedConfig = merge({}, config, {

@@ -78,6 +78,7 @@ An Angular InjectionToken used to configure the OktaAuthService. This value must
 - `issuer` **(required)**: The OpenID Connect `issuer`
 - `clientId` **(required)**: The OpenID Connect `client_id`
 - `redirectUri` **(required)**: Where the callback is hosted
+- `scope` *(deprecated in v1.2.2)*: Use `scopes` instead
 - `scopes` *(optional)*: Reserved for custom claims to be returned in the tokens. Defaults to `['openid']`, which will only return the `sub` claim. To obtain more information about the user, use `openid profile`. For a list of scopes and claims, please see [Scope-dependent claims](https://developer.okta.com/standards/OIDC/index.html#scope-dependent-claims-not-always-returned) for more information.
 - `responseType` *(optional)*: Desired token grant types. Default: `['id_token', 'token']`.
 For PKCE flow, this should be left undefined or set to `['code']`.

@@ -218,6 +218,18 @@ describe('Configuration Validation', () => {
       });
     });
 
+    it('Converts "scope" (string) to "scopes" (array) (multiple spaces)', () => {
+      const scope = 'a  b  c';
+      const passedConfig = {
+        scope
+      };
+
+      expect(buildConfigObject(passedConfig)).toEqual({
+        scopes: ['a', 'b', 'c'],
+        scope,
+      });
+    });
+
 
     it('Accepts "scope" (as an array)', () => {
       const scope = ['a', 'b', 'c'];
@@ -253,6 +265,19 @@ describe('Configuration Validation', () => {
         responseType: ['a', 'b']
       });
     });
+
+
+    it('Accepts multiple "responseType" (as a string) and converts to array (multi space)', () => {
+      const responseType = 'a   b   x';
+      const passedConfig = {
+        responseType
+      };
+
+      expect(buildConfigObject(passedConfig)).toEqual({
+        responseType: ['a', 'b', 'x']
+      });
+    });
+
 
     it('Accepts multiple "responseType" (as an array)', () => {
       const responseType = ['a', 'b'];
