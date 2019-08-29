@@ -46,10 +46,10 @@
   dependencies:
     tsickle "^0.21.0"
 
-"@okta/configuration-validation@^0.4.0":
-  version "0.4.0"
-  resolved "https://registry.yarnpkg.com/@okta/configuration-validation/-/configuration-validation-0.4.0.tgz#797cb7cabd61d792f8fb1cc42d9eed2115dc3fd9"
-  integrity sha512-gEtGld0eKP+Ikl7dWju/cU9bCtrwTCYD+glO9RchnxDFAn39WWT5+FaIGF3E+ZXLhyChfrUH2SZp0uaddeqsEQ==
+"@okta/configuration-validation@^0.4.1":
+  version "0.4.1"
+  resolved "https://registry.yarnpkg.com/@okta/configuration-validation/-/configuration-validation-0.4.1.tgz#6fa4520bc96c27b3d7aedcb0523de1fbceee9105"
+  integrity sha512-p8QcApCSyAXtlyB7p7jXkAkcTedvK9WFkmEduVA3XxQQVs3njxD9vTooFj4+AF6WNRIuGOis/utL7m0BzYkyVw==
 
 "@okta/okta-auth-js@^2.6.3":
   version "2.7.0"
