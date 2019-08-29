@@ -50,7 +50,7 @@ Vue.use(Auth, {
   issuer: 'https://{yourOktaDomain}.com/oauth2/default',
   clientId: '{clientId}',
   redirectUri: 'http://localhost:{port}/implicit/callback',
-  scope: 'openid profile email'
+  scopes: ['openid', 'profile', 'email']
 })
 
 ```
@@ -217,7 +217,8 @@ he most commonly used options are shown here. See [Configuration Reference](http
 - `issuer` **(required)**: The OpenID Connect `issuer`
 - `clientId` **(required)**: The OpenID Connect `client_id`
 - `redirectUri` **(required)**: Where the callback is hosted
-- `scope` *(optional)*: Reserved or custom claims to be returned in the tokens
+- `scope` *(deprecated in v1.1.1)*: Use `scopes` instead
+- `scopes` *(optional)*: Reserved or custom claims to be returned in the tokens. Defaults to `openid`, which will only return the `sub` claim. To obtain more information about the user, use `openid profile`. For a list of scopes and claims, please see [Scope-dependent claims](https://developer.okta.com/standards/OIDC/index.html#scope-dependent-claims-not-always-returned) for more information.
 - `responseType` *(optional)*: Desired token grant types. Default: `['id_token', 'token']`. For PKCE flow, this should be left undefined or set to `['code']`.
 - `pkce` *(optional)* - If `true`, PKCE flow will be used
 - `autoRenew` *(optional)*:

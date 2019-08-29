@@ -32,14 +32,46 @@ configUtil.buildConfigObject = (config) => {
   // See all supported options: https://github.com/okta/okta-auth-js#configuration-reference
   // Support for parameters with an underscore will be deprecated in a future release
   // camelCase was added 2/11/2019: https://github.com/okta/okta-oidc-js/commit/9b04ada6a01c9d9aca391abf0de3e5ecc9811e64
-  return merge({
+  
+  config = config || {}; // accept empty
+
+  // Legacy support: allow a property named 'scope' to be either an array or a string.
+  let scopes = config.scopes;
+  if (!scopes && config.scope) {
+    if (Array.isArray(config.scope)) {
+      scopes = config.scope;
+    } else {
+      scopes = config.scope.split(/\s+/);
+    }
+  }
+
+  // Legacy support: allow TokenManager config 'autoRenew' and 'storage' to be defined at top-level
+  let tokenManager = config.tokenManager;
+  const autoRenew = config.autoRenew || config.auto_renew;
+  const storage = config.storage;
+  if (storage || autoRenew) {
+    // Properties already defined within the "tokenManager" section will not be overwritten
+    tokenManager = merge({
+      autoRenew: autoRenew,
+      storage: storage,
+    }, tokenManager || {});
+  }
+
+  // Legacy support: allow 'responseType' to be a string or an array
+  let responseType = config.responseType || config.response_type;
+  if (typeof responseType === 'string' && responseType.indexOf(' ') >= 0) {
+    responseType = responseType.split(/\s+/);
+  }
+
+  const normalizedConfig = merge({}, config, {
     clientId: config.clientId || config.client_id,
     redirectUri: config.redirectUri || config.redirect_uri,
-    tokenManager: {
-      autoRenew: config.autoRenew || config.auto_renew,
-      storage: config.storage
-    }
-  }, config);
+    responseType: responseType,
+    scopes: scopes,
+    tokenManager: tokenManager,
+  });
+
+  return normalizedConfig;
 }
 
 configUtil.assertIssuer = (issuer, testing = {}) => {

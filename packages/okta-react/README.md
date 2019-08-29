@@ -184,7 +184,8 @@ These options are used by `Security` to configure the [Auth](https://github.com/
 - **issuer** (required) - The OpenId Connect `issuer`
 - **clientId** (required) - The OpenId Connect `client_id`
 - **redirectUri** (required) - Where the callback handler is hosted
-- **scope** *(optional)* - Reserved or custom claims to be returned in the tokens. Default: `['openid', 'email', 'profile']`
+- **scope** *(deprecated in v1.2.3)*: Use `scopes` instead
+- **scopes** *(optional)* - Reserved for custom claims to be returned in the tokens. Default: `['openid', 'email', 'profile']`. For a list of scopes and claims, please see [Scope-dependent claims](https://developer.okta.com/standards/OIDC/index.html#scope-dependent-claims-not-always-returned) for more information.
 - **responseType** *(optional)* - Desired token types. Default: `['id_token', 'token']`.
 For PKCE flow, this should be left undefined or set to `['code']`.
 - **pkce** *(optional)* - If `true`, PKCE flow will be used

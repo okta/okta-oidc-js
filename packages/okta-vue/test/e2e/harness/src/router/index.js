@@ -17,7 +17,7 @@ let config = {
   redirectUri,
   pkce,
   clientId: process.env.CLIENT_ID,
-  scope: 'openid profile email',
+  scopes: ['openid', 'profile', 'email'],
   testing: {
     disableHttpsCheck: false
   }

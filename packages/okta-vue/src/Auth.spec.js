@@ -29,28 +29,6 @@ const standardAccessTokenParsed = {
   userinfoUrl: 'https://foo/oauth2/v1/userinfo'
 }
 
-const mockAuthJsInstance = {
-  userAgent: 'foo',
-  token: {
-    getWithRedirect: jest.fn()
-  },
-  tokenManager: {
-    get: jest.fn().mockReturnValue(Promise.resolve(standardAccessTokenParsed))
-  }
-}
-
-const mockAuthJsInstanceWithError = {
-  userAgent: 'foo',
-  token: {
-    getWithRedirect: jest.fn()
-  },
-  tokenManager: {
-    get: jest.fn().mockImplementation(() => {
-      throw new Error()
-    })
-  }
-}
-
 describe('Auth configuration', () => {
   it('should throw if no issuer is provided', () => {
     function createInstance () {
@@ -174,8 +152,61 @@ describe('Auth configuration', () => {
   })
 })
 
-describe('Auth component', () => {
+describe('Auth component: error handling', () => {
+  let mockAuthJsInstanceWithError
+
   beforeEach(() => {
+    mockAuthJsInstanceWithError = {
+      userAgent: 'foo',
+      token: {
+        getWithRedirect: jest.fn()
+      },
+      tokenManager: {
+        get: jest.fn().mockImplementation(() => {
+          throw new Error()
+        })
+      }
+    }
+
+    AuthJS.mockImplementation(() => {
+      return mockAuthJsInstanceWithError
+    })
+  })
+
+  test('isAuthenticated() returns false when the TokenManager does not return an access token', async () => {
+    const localVue = createLocalVue()
+    localVue.use(Auth, {
+      issuer: 'https://foo',
+      client_id: 'foo',
+      redirect_uri: 'foo',
+      scope: 'foo bar',
+      response_type: 'token'
+    })
+    const authenticated = await localVue.prototype.$auth.isAuthenticated()
+    expect(authenticated).toBeFalsy()
+  })
+})
+
+describe('Auth component', () => {
+  let mockAuthJsInstance
+  let baseConfig
+
+  beforeEach(() => {
+    baseConfig = {
+      issuer: 'https://foo',
+      clientId: 'foo',
+      redirectUri: 'foo'
+    }
+    mockAuthJsInstance = {
+      userAgent: 'foo',
+      token: {
+        getWithRedirect: jest.fn()
+      },
+      tokenManager: {
+        get: jest.fn().mockReturnValue(Promise.resolve(standardAccessTokenParsed))
+      }
+    }
+
     AuthJS.mockImplementation(() => {
       return mockAuthJsInstance
     })
@@ -186,39 +217,69 @@ describe('Auth component', () => {
   test('sets the right user agent on AuthJS', () => {
     const expectedUserAgent = `${pkg.name}/${pkg.version} foo`
     const localVue = createLocalVue()
-    localVue.use(Auth, {
-      issuer: 'https://foo',
-      client_id: 'foo',
-      redirect_uri: 'foo'
-    })
+    localVue.use(Auth, baseConfig)
     expect(mockAuthJsInstance.userAgent).toMatch(expectedUserAgent)
   })
-  test('sets the right scope and response_type when redirecting to Okta', () => {
+
+  it('sets the right scope and response_type when constructing AuthJS instance', () => {
     const localVue = createLocalVue()
-    localVue.use(Auth, {
-      issuer: 'https://foo',
-      client_id: 'foo',
-      redirect_uri: 'foo'
-    })
-    localVue.prototype.$auth.loginRedirect()
-    const mockCallValues = mockAuthJsInstance.token.getWithRedirect.mock.calls[0][0]
-    expect(mockCallValues.responseType).toEqual(expect.arrayContaining(['id_token', 'token']))
-    expect(mockCallValues.scopes).toEqual(expect.arrayContaining(['openid']))
+    localVue.use(Auth, baseConfig)
+    expect(AuthJS).toHaveBeenCalledWith(Object.assign({}, baseConfig, {
+      scopes: ['openid'],
+      responseType: ['id_token', 'token']
+    }))
   })
-  test('sets the right scope and response_type overrides when redirecting to Okta', () => {
+
+  test('sets the right scope and response_type overrides (legacy config)', async () => {
     const localVue = createLocalVue()
-    localVue.use(Auth, {
+    const legacyConfig = {
       issuer: 'https://foo',
       client_id: 'foo',
       redirect_uri: 'foo',
       scope: 'foo bar',
-      response_type: 'token'
-    })
-    localVue.prototype.$auth.loginRedirect()
-    const mockCallValues = mockAuthJsInstance.token.getWithRedirect.mock.calls[1][0]
-    expect(mockCallValues.responseType).toEqual(expect.arrayContaining(['token']))
-    expect(mockCallValues.scopes).toEqual(expect.arrayContaining(['foo', 'bar']))
+      response_type: 'token foo'
+    }
+    localVue.use(Auth, legacyConfig)
+    expect(AuthJS).toHaveBeenCalledWith(Object.assign({}, legacyConfig, {
+      clientId: 'foo',
+      redirectUri: 'foo',
+      scopes: ['openid', 'foo', 'bar'],
+      responseType: ['token', 'foo']
+    }))
   })
+
+  it('loginRedirect: calls oktaAuth.token.getWithRedirect when redirecting to Okta', () => {
+    const localVue = createLocalVue()
+    localVue.use(Auth, baseConfig)
+    localVue.prototype.$auth.loginRedirect()
+    expect(mockAuthJsInstance.token.getWithRedirect).toHaveBeenCalled()
+  })
+
+  it('loginRedirect: can override params', () => {
+    const localVue = createLocalVue()
+    localVue.use(Auth, baseConfig)
+    const params = {
+      scopes: ['foo', 'bar', 'biz'],
+      responseType: 'excellent'
+    }
+    localVue.prototype.$auth.loginRedirect('/', params)
+    expect(mockAuthJsInstance.token.getWithRedirect).toHaveBeenCalledWith(params)
+  })
+
+  it('loginRedirect: can override params (legacy format)', () => {
+    const localVue = createLocalVue()
+    localVue.use(Auth, baseConfig)
+    const params = {
+      scope: 'a b c',
+      response_type: 'fake type'
+    }
+    localVue.prototype.$auth.loginRedirect('/', params)
+    expect(mockAuthJsInstance.token.getWithRedirect).toHaveBeenCalledWith(Object.assign({}, params, {
+      scopes: ['a', 'b', 'c'],
+      responseType: ['fake', 'type']
+    }))
+  })
+
   test('can retrieve an accessToken from the tokenManager', async (done) => {
     const localVue = createLocalVue()
     localVue.use(Auth, {
@@ -244,20 +305,5 @@ describe('Auth component', () => {
     const authenticated = await localVue.prototype.$auth.isAuthenticated()
     expect(mockAuthJsInstance.tokenManager.get).toHaveBeenCalledWith('accessToken')
     expect(authenticated).toBeTruthy()
-  })
-  test('isAuthenticated() returns false when the TokenManager does not return an access token', async () => {
-    AuthJS.mockImplementation(() => {
-      return mockAuthJsInstanceWithError
-    })
-    const localVue = createLocalVue()
-    localVue.use(Auth, {
-      issuer: 'https://foo',
-      client_id: 'foo',
-      redirect_uri: 'foo',
-      scope: 'foo bar',
-      response_type: 'token'
-    })
-    const authenticated = await localVue.prototype.$auth.isAuthenticated()
-    expect(authenticated).toBeFalsy()
   })
 })
