@@ -151,6 +151,41 @@ export class OktaAuthService {
     }
 
     /**
+     * Silently retrieve token.
+     * @param additionalParams
+     */
+    async loginSilent(additionalParams?: object) {
+      try {
+        var tokens = await this.oktaAuth.token.getWithoutPrompt({
+          responseType: (this.config.responseType || 'id_token token').split(' '),
+          // Convert scopes to list of strings
+          scopes: this.config.scope.split(' '),
+          ...additionalParams
+        });
+
+        for (var a = 0; a < tokens.length; a++) {
+          if (tokens[a].idToken) {
+            this.oktaAuth.tokenManager.add('idToken', tokens[a]);
+          }
+          if (tokens[a].accessToken) {
+            this.oktaAuth.tokenManager.add('accessToken', tokens[a]);
+          }
+        }
+
+        if (await this.isAuthenticated()) {
+          this.emitAuthenticationState(true)
+        }
+
+        return tokens;
+      } catch (err) {
+        // The user no longer has an existing SSO session in the browser.
+        // (OIDC error `login_required`)
+        // Ask the user to authenticate again.
+        return undefined;
+      }
+    }
+
+    /**
      * Stores the intended path to redirect after successful login.
      * @param uri
      * @param queryParams
