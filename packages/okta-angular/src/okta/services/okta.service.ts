@@ -45,20 +45,20 @@ export class OktaAuthService {
 
       this.observers = [];
 
-      this.oktaAuth = new OktaAuth(buildConfigObject(auth));
-
-      this.oktaAuth.userAgent = `${packageInfo.name}/${packageInfo.version} ${this.oktaAuth.userAgent}`;
+      /**
+       * Cache the auth config.
+       */
+      this.config = buildConfigObject(auth); // use normalized config object
+      this.config.scopes = this.config.scopes || [];
 
       /**
        * Scrub scopes to ensure 'openid' is included
        */
-      auth.scope = this.scrubScopes(auth.scope);
 
-      /**
-       * Cache the auth config.
-       */
-      this.config = auth;
+      this.scrubScopes(this.config.scopes);
 
+      this.oktaAuth = new OktaAuth(this.config);
+      this.oktaAuth.userAgent = `${packageInfo.name}/${packageInfo.version} ${this.oktaAuth.userAgent}`;
       this.$authenticationState = new Observable((observer: Observer<boolean>) => {this.observers.push(observer)})
     }
 
@@ -140,12 +140,14 @@ export class OktaAuthService {
         this.setFromUri(fromUri);
       }
 
-      this.oktaAuth.token.getWithRedirect({
-        responseType: (this.config.responseType || 'id_token token').split(' '),
-        // Convert scopes to list of strings
-        scopes: this.config.scope.split(' '),
-        ...additionalParams
-      });
+      // Normalize params, set defaults
+      const params = buildConfigObject(additionalParams);
+      params.scopes = params.scopes || this.config.scopes;
+      params.responseType = params.responseType
+        || this.config.responseType
+        || ['id_token', 'token'];
+
+      this.oktaAuth.token.getWithRedirect(params);
     }
 
     /**
@@ -218,13 +220,10 @@ export class OktaAuthService {
      * Scrub scopes to ensure 'openid' is included
      * @param scopes
      */
-    scrubScopes(scopes: string): string {
-      if (!scopes) {
-        return 'openid email';
+    scrubScopes(scopes: string[]): void {
+      if (scopes.indexOf('openid') >= 0) {
+        return;
       }
-      if (scopes.indexOf('openid') === -1) {
-        return scopes + ' openid';
-      }
-      return scopes;
+      scopes.unshift('openid');
     }
 }

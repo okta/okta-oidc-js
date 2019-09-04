@@ -13,8 +13,8 @@
 import { browser, by, element, ExpectedConditions } from 'protractor';
 
 export class AppPage {
-  navigateTo() {
-    return browser.get('/');
+  navigateTo(query: string = '') {
+    return browser.get('/' + query);
   }
 
   waitUntilVisible() {

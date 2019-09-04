@@ -176,10 +176,6 @@ describe('Auth configuration', () => {
       clientId: 'foo',
       issuer: 'https://foo/oauth2/default',
       redirectUri: 'foo',
-      tokenManager: {
-        autoRenew: undefined,
-        storage: undefined,
-      },
       pkce: true,
     }
 
@@ -259,12 +255,48 @@ describe('Auth component', () => {
       client_id: 'foo',
       redirect_uri: 'foo'
     });
-    auth.redirect({scope: ['openid', 'foo']});
-    expect(mockAuthJsInstance.token.getWithRedirect).toHaveBeenCalledWith({
-      responseType: ['id_token', 'token'],
-      scopes: ['openid', 'foo']
-    });
+    const overrides = {
+      scopes: ['openid', 'foo'],
+      responseType: ['fake'],
+    };
+    auth.redirect(overrides);
+    expect(mockAuthJsInstance.token.getWithRedirect).toHaveBeenCalledWith(overrides);
   });
+
+  test('redirect params: can use legacy param format (scope string)', () => {
+    const auth = new Auth({
+      issuer: 'https://foo/oauth2/default',
+      client_id: 'foo',
+      redirect_uri: 'foo'
+    });
+    const overrides = {
+      scope: 'openid foo',
+      response_type: ['fake']
+    };
+    auth.redirect(overrides);
+    expect(mockAuthJsInstance.token.getWithRedirect).toHaveBeenCalledWith(Object.assign(overrides, {
+      scopes: ['openid', 'foo'],
+      responseType: ['fake'],
+    }));
+  });
+
+  test('redirect params: can use legacy param format (scope array)', () => {
+    const auth = new Auth({
+      issuer: 'https://foo/oauth2/default',
+      client_id: 'foo',
+      redirect_uri: 'foo'
+    });
+    const overrides = {
+      scope: ['openid', 'foo'],
+      response_type: ['fake']
+    };
+    auth.redirect(overrides);
+    expect(mockAuthJsInstance.token.getWithRedirect).toHaveBeenCalledWith(Object.assign(overrides, {
+      scopes: ['openid', 'foo'],
+      responseType: ['fake'],
+    }));
+  });
+
   test('can append the authorize request builder with additionalParams through auth.redirect', () => {
     const auth = new Auth({
       issuer: 'https://foo/oauth2/default',

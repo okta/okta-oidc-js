@@ -15,8 +15,8 @@ package com.oktareactnative;
 import android.app.Activity;
 import android.content.Intent;
 
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import com.facebook.react.bridge.ActivityEventListener;
 import com.facebook.react.bridge.Arguments;
@@ -27,7 +27,7 @@ import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
 import com.facebook.react.bridge.ReadableArray;
 import com.facebook.react.bridge.WritableMap;
-import com.facebook.react.modules.core.DeviceEventManagerModule;
+import com.facebook.react.modules.core.RCTNativeAppEventEmitter;
 import com.okta.oidc.AuthorizationStatus;
 import com.okta.oidc.OIDCConfig;
 import com.okta.oidc.Okta;
@@ -310,7 +310,7 @@ public class OktaSdkBridgeModule extends ReactContextBaseJavaModule implements A
                            String eventName,
                            @Nullable WritableMap params) {
         reactContext
-                .getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class)
+                .getJSModule(RCTNativeAppEventEmitter.class)
                 .emit(eventName, params);
     }
 

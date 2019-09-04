@@ -14,20 +14,12 @@ import { browser, element, by, ExpectedConditions } from 'protractor';
 
 export class ProtectedPage {
 
-  navigateTo() {
-    return browser.get('/protected');
+  navigateTo(query: string = '') {
+    return browser.get('/protected' + query);
   }
 
-  navigateToWithQuery() {
-    return browser.get('/protected/foo?state=bar');
-  }
-
-  waitUntilVisible() {
-    browser.wait(ExpectedConditions.urlContains('/protected'), 20000);
-  }
-
-  waitUntilQueryVisible() {
-    browser.wait(ExpectedConditions.urlContains('/protected/foo?state=bar'), 5000);
+  waitUntilVisible(query: string = '') {
+    browser.wait(ExpectedConditions.urlContains('/protected' + query), 20000);
   }
 
   waitUntilTextVisible(id: string, text: string) {
