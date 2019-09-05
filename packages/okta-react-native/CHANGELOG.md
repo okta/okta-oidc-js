@@ -1,3 +1,8 @@
+# 1.1.0
+
+### Features
+- [`58618c8`](https://github.com/okta/okta-oidc-js/commit/58618c8a3f519c82a41f1cce58918bc98a459a2b) - Added support for React Native 0.60.x
+
 # 1.0.2
 
 ### Features
