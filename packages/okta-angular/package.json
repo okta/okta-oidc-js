@@ -40,7 +40,7 @@
     "license": "Apache-2.0",
     "dependencies": {
         "@okta/configuration-validation": "^0.4.1",
-        "@okta/okta-auth-js": "^2.11.0",
+        "@okta/okta-auth-js": "^2.11.2",
         "tslib": "^1.9.0"
     },
     "devDependencies": {
@@ -92,6 +92,7 @@
         "rxjs": ">=5.4.3"
     },
     "jest": {
+        "restoreMocks": true,
         "transform": {
             "^.+\\.(ts|html)$": "ts-jest"
         },

@@ -19,7 +19,7 @@ import {
 } from '@angular/router';
 
 import { OktaAuthService } from './services/okta.service';
-import { AuthRequiredFunction } from './models/auth-required-function';
+import { AuthRequiredFunction } from './models/okta.config';
 
 @Injectable()
 export class OktaAuthGuard implements CanActivate {

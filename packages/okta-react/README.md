@@ -204,17 +204,17 @@ These options are used by `Security` to configure the [Auth service][]. The most
 - **issuer** (required) - The OpenId Connect `issuer`
 - **clientId** (required) - The OpenId Connect `client_id`
 - **redirectUri** (required) - Where the callback handler is hosted
+- **postLogoutRedirectUri** | Specify the url where the browser should be redirected after [logout](#authlogouturi). This url must be added to the list of `Logout redirect URIs` on the application's `General Settings` tab.
 - **scope** *(deprecated in v1.2.3)*: Use `scopes` instead
 - **scopes** *(optional)* - Reserved for custom claims to be returned in the tokens. Default: `['openid', 'email', 'profile']`. For a list of scopes and claims, please see [Scope-dependent claims](https://developer.okta.com/standards/OIDC/index.html#scope-dependent-claims-not-always-returned) for more information.
 - **responseType** *(optional)* - Desired token types. Default: `['id_token', 'token']`.
 For PKCE flow, this should be left undefined or set to `['code']`.
 - **pkce** *(optional)* - If `true`, PKCE flow will be used
-- **onAuthRequired** *(optional)* - callback function
-
-  Accepts a callback to make a decision when authentication is required. If this is not supplied, `okta-react` redirects to Okta. This callback will receive `auth` and `history` parameters. This is triggered when:
-    1. `auth.login` is called
-    2. SecureRoute is accessed without authentication
-
+- **onAuthRequired** *(optional)* - callback function. Called when authentication is required. If this is not supplied, `okta-react` redirects to Okta. This callback will receive `auth` and `history` parameters. This is triggered when:
+    1. [login](#authloginfromuri-additionalparams) is called
+    2. A `SecureRoute` is accessed without authentication
+- **onSessionExpired** *(optional)* - callback function. Called when the Okta SSO session has expired or was ended outside of the application. This SDK adds a default handler which will call [login](#authloginfromuri-additionalparams) to initiate a login flow. Passing a function here will disable the default handler.
+- **isAuthenticated** *(optional)* - callback function. By default, `auth.isAuthenticated()` will return true if both `getIdToken()` and `getAccessToken()` return a value. Setting a `isAuthenticated` function on the config will skip the default logic and call the supplied function instead. The function should return a Promise and resolve to either true or false.
 - **tokenManager** *(optional)*: An object containing additional properties used to configure the internal token manager. See [AuthJS TokenManager](https://github.com/okta/okta-auth-js#the-tokenmanager) for more detailed information.
   - `autoRenew` *(optional)*:
   By default, the library will attempt to renew expired tokens. When an expired token is requested by the library, a renewal request is executed to update the token. If you wish to  to disable auto renewal of tokens, set autoRenew to false.
@@ -408,9 +408,22 @@ auth.redirect({
 
 Parses tokens from the url and stores them.
 
+#### `auth.setFromUri(uri, queryParams)`
+
+Store the current URL state before a redirect occurs.
+
+#### `auth.getFromUri()`
+
+Returns the stored URI and query parameters stored by `setFromUri`
+
 ## Contributing
 
 We welcome contributions to all of our open-source packages. Please see the [contribution guide](https://github.com/okta/okta-oidc-js/blob/master/CONTRIBUTING.md) to understand how to structure a contribution.
+#### `auth.getTokenManager()`
+
+Returns the internal [TokenManager](https://github.com/okta/okta-auth-js#tokenmanager).
+
+## Development
 
 ### Installing dependencies for contributions
 

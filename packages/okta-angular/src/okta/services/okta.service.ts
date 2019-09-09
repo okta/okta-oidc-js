@@ -19,8 +19,9 @@ import {
   buildConfigObject
 } from '@okta/configuration-validation';
 
-import { OKTA_CONFIG, OktaConfig } from '../models/okta.config';
+import { OKTA_CONFIG, OktaConfig, AuthRequiredFunction } from '../models/okta.config';
 import { UserClaims } from '../models/user-claims';
+import { TokenManager } from '../models/token-manager';
 
 import packageInfo from '../packageInfo';
 
@@ -46,6 +47,12 @@ export class OktaAuthService {
       this.config = buildConfigObject(auth); // use normalized config object
       this.config.scopes = this.config.scopes || [];
 
+      // Automatically enter login flow if session has expired or was ended outside the application
+      // The default behavior can be overriden by setting your own `onSessionExpired` function on the OktaConfig
+      if (!this.config.onSessionExpired) {
+        this.config.onSessionExpired = this.login.bind(this);
+      }
+
       /**
        * Scrub scopes to ensure 'openid' is included
        */
@@ -62,10 +69,28 @@ export class OktaAuthService {
       this.$authenticationState = new Observable((observer: Observer<boolean>) => { this.observers.push(observer); });
     }
 
+    login(fromUri?: string, additionalParams?: object) {
+      this.setFromUri(fromUri || this.router.url);
+      const onAuthRequired: AuthRequiredFunction | undefined = this.getOktaConfig().onAuthRequired;
+      if (onAuthRequired) {
+        return onAuthRequired(this, this.router);
+      }
+      return this.loginRedirect(undefined, additionalParams);
+    }
+
+    getTokenManager(): TokenManager {
+      return this.oktaAuth.tokenManager;
+    }
+
     /**
      * Checks if there is an access token and id token
      */
     async isAuthenticated(): Promise<boolean> {
+      // Support a user-provided method to check authentication
+      if (this.config.isAuthenticated) {
+        return (this.config.isAuthenticated)();
+      }
+
       const accessToken = await this.getAccessToken();
       const idToken = await this.getIdToken();
       return !!(accessToken || idToken);
@@ -147,7 +172,7 @@ export class OktaAuthService {
         || this.config.responseType
         || ['id_token', 'token'];
 
-      this.oktaAuth.token.getWithRedirect(params);
+      return this.oktaAuth.token.getWithRedirect(params); // can throw
     }
 
     /**

@@ -1,7 +1,10 @@
 import { createLocalVue, mount } from '@vue/test-utils'
 import waitForExpect from 'wait-for-expect'
 import VueRouter from 'vue-router'
-import { default as Auth } from '../../src/Auth'
+import { default as OktaVue } from '../../src/okta-vue'
+import AuthJS from '@okta/okta-auth-js'
+
+jest.mock('@okta/okta-auth-js')
 
 describe('ImplicitCallback', () => {
   const baseConfig = {
@@ -13,9 +16,17 @@ describe('ImplicitCallback', () => {
   let localVue
   let wrapper
   function bootstrap (options = {}) {
+    AuthJS.mockImplementation(() => {
+      return {
+        tokenManager: {
+          on: jest.fn()
+        }
+      }
+    })
+
     localVue = createLocalVue()
     localVue.use(VueRouter)
-    localVue.use(Auth, baseConfig)
+    localVue.use(OktaVue, baseConfig)
     jest.spyOn(localVue.prototype.$auth, 'handleAuthentication').mockImplementation(async () => {
       return Promise.resolve(options.result)
     })
@@ -23,11 +34,11 @@ describe('ImplicitCallback', () => {
       return options.fromUri
     })
 
-    const routes = [{ path: '/foo', component: Auth.handleCallback() }]
+    const routes = [{ path: '/foo', component: OktaVue.handleCallback() }]
     const router = new VueRouter({
       routes
     })
-    wrapper = mount(Auth.handleCallback(), {
+    wrapper = mount(OktaVue.handleCallback(), {
       localVue,
       router
     })
