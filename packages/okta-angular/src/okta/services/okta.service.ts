@@ -19,7 +19,7 @@ import {
   buildConfigObject
 } from '@okta/configuration-validation';
 
-import { OKTA_CONFIG, OktaConfig } from '../models/okta.config';
+import { OKTA_CONFIG, OktaConfig, AuthRequiredFunction } from '../models/okta.config';
 import { UserClaims } from '../models/user-claims';
 
 import packageInfo from '../packageInfo';
@@ -29,6 +29,7 @@ import packageInfo from '../packageInfo';
  */
 import OktaAuth from '@okta/okta-auth-js';
 import { Observable, Observer } from 'rxjs';
+import { TokenManager } from '../models/token-manager';
 
 @Injectable()
 export class OktaAuthService {
@@ -60,12 +61,32 @@ export class OktaAuthService {
       this.oktaAuth = new OktaAuth(this.config);
       this.oktaAuth.userAgent = `${packageInfo.name}/${packageInfo.version} ${this.oktaAuth.userAgent}`;
       this.$authenticationState = new Observable((observer: Observer<boolean>) => { this.observers.push(observer); });
+
+      // Automatically enters login flow if token renew fails.
+      // The default behavior can be overriden by passing a function via config: `config.onTokenError`
+      this.getTokenManager().on('error', this.config.onTokenError || this._onTokenError.bind(this));
+    }
+
+    // Handle token manager errors: Default implementation
+    _onTokenError(error) {
+      if (error.errorCode === 'login_required') {
+        this.login();
+      }
+    }
+
+    getTokenManager(): TokenManager {
+      return this.oktaAuth.tokenManager;
     }
 
     /**
      * Checks if there is an access token and id token
      */
     async isAuthenticated(): Promise<boolean> {
+      // Support a user-provided method to check authentication
+      if (this.config.isAuthenticated) {
+        return (this.config.isAuthenticated)();
+      }
+
       const accessToken = await this.getAccessToken();
       const idToken = await this.getIdToken();
       return !!(accessToken || idToken);
@@ -131,6 +152,21 @@ export class OktaAuthService {
     }
 
     /**
+     * Launches a custom login flow, if configured with an `onAuthRequired` method. Defaults to login redirect.
+     * @param fromUri
+     * @param additionalParams
+     */
+    login(fromUri?: string, additionalParams?: OktaConfig) {
+      this.setFromUri(fromUri || window.location.pathname);
+
+      const onAuthRequired: AuthRequiredFunction = this.config.onAuthRequired;
+      if (onAuthRequired) {
+        return onAuthRequired(this, this.router);
+      }
+
+      return this.loginRedirect(fromUri, additionalParams); // can throw
+    }
+    /**
      * Launches the login redirect.
      * @param fromUri
      * @param additionalParams
@@ -147,7 +183,7 @@ export class OktaAuthService {
         || this.config.responseType
         || ['id_token', 'token'];
 
-      this.oktaAuth.token.getWithRedirect(params);
+      return this.oktaAuth.token.getWithRedirect(params); // can throw
     }
 
     /**

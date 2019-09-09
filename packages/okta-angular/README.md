@@ -98,6 +98,10 @@ For PKCE flow, this should be left undefined or set to `['code']`.
     - [`sessionStorage`](https://developer.mozilla.org/en-US/docs/Web/API/Window/sessionStorage)
     - [`cookie`](https://developer.mozilla.org/en-US/docs/Web/API/Document/cookie)
 
+- `onTokenError` *(optional)* - callback function. Handles errors emitted by the internal TokenManager. The default handler will initiate a login flow. Passing a function here will override the default handler.
+
+- `isAuthenticated` *(optional)* - callback function. By default, `OktaAuthService.isAuthenticated` will return true if both `getIdToken()` and `getAccessToken()` return a value. Setting a `isAuthenticated` function on the config will skip the default logic and call the supplied function instead. The function should return a Promise and resolve to either true or false.
+
 ### `OktaAuthModule`
 
 The top-level Angular module which provides these components and services:
@@ -259,6 +263,12 @@ export class MyComponent {
 }
 ```
 
+#### `oktaAuth.login(fromUri?, additionalParams?)`
+
+Calls `onAuthRequired` or redirects to Okta if `onAuthRequired` is undefined. This method accepts a `fromUri` parameter to push the user to after successful authentication, and an optional `additionalParams` object.
+
+For more information on `additionalParams`, see the `oktaAuth.loginRedirect`](#oktaauthloginredirectfromuriadditionalparams) method below.
+
 #### `oktaAuth.loginRedirect(fromUri?, additionalParams?)`
 
 Performs a full page redirect to Okta based on the initial configuration. This method accepts a `fromUri` parameter to push the user to after successful authentication.
@@ -311,6 +321,11 @@ Returns the stored URI and query parameters stored when the `OktaAuthGuard` and/
 
 ## Contributing
 We welcome contributions to all of our open-source packages. Please see the [contribution guide](https://github.com/okta/okta-oidc-js/blob/master/CONTRIBUTING.md) to understand how to structure a contribution.
+#### `oktaAuth.getTokenManager()`
+
+Returns the internal [TokenManager](https://github.com/okta/okta-auth-js#tokenmanager).
+
+## Development
 
 ### Installing dependencies for contributions
 We use [yarn](https://yarnpkg.com) for dependency management when developing this package:

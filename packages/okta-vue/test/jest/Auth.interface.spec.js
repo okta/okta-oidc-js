@@ -11,13 +11,24 @@ const baseConfig = {
   redirectUri: 'foo'
 }
 
+function extendMockAuthJS (mockAuthJS) {
+  mockAuthJS = mockAuthJS || {}
+  mockAuthJS.tokenManager = Object.assign({}, mockAuthJS.tokenManager, {
+    on: jest.fn()
+  })
+  mockAuthJS.token = Object.assign({}, mockAuthJS.token, {
+    getWithRedirect: jest.fn()
+  })
+  return mockAuthJS
+}
+
 describe('Auth constructor', () => {
   let mockAuthJsInstance
 
   beforeEach(() => {
-    mockAuthJsInstance = {
+    mockAuthJsInstance = extendMockAuthJS({
       userAgent: 'foo'
-    }
+    })
     AuthJS.mockImplementation(() => {
       return mockAuthJsInstance
     })
@@ -83,20 +94,82 @@ describe('Auth constructor', () => {
   })
 })
 
+describe('login', () => {
+  let mockAuthJsInstance
+  let localVue
+
+  function bootstrap (config) {
+    mockAuthJsInstance = extendMockAuthJS({})
+    AuthJS.mockImplementation(() => {
+      return mockAuthJsInstance
+    })
+    localVue = createLocalVue()
+    localVue.use(Auth, Object.assign({}, baseConfig, config))
+  }
+
+  it('Calls loginRedirect by default', () => {
+    const fromUri = 'https://fake'
+    const additionalParams = { foo: 'bar' }
+    bootstrap()
+    jest.spyOn(localVue.prototype.$auth, 'loginRedirect')
+    localVue.prototype.$auth.login(fromUri, additionalParams)
+    expect(localVue.prototype.$auth.loginRedirect).toHaveBeenCalledWith(fromUri, additionalParams)
+  })
+
+  it('Will call a custom callback "onAuthRequired" if provided', () => {
+    const onAuthRequired = jest.fn()
+    const fromUri = 'https://fake'
+    const additionalParams = { foo: 'bar' }
+    bootstrap({ onAuthRequired })
+    jest.spyOn(localVue.prototype.$auth, 'loginRedirect')
+    localVue.prototype.$auth.login(fromUri, additionalParams)
+    expect(onAuthRequired).toHaveBeenCalledWith({ fromUri, additionalParams })
+    expect(localVue.prototype.$auth.loginRedirect).not.toHaveBeenCalled()
+  })
+
+  it('calls setFromUri with fromUri if provided', () => {
+    const fromUri = 'notrandom'
+    jest.spyOn(localVue.prototype.$auth, 'setFromUri')
+    jest.spyOn(localVue.prototype.$auth, 'loginRedirect').mockReturnValue(null)
+    localVue.prototype.$auth.login(fromUri)
+    expect(localVue.prototype.$auth.setFromUri).toHaveBeenCalledWith(fromUri)
+  })
+
+  it('calls setFromUri with window.location.pathname by default', () => {
+    jest.spyOn(localVue.prototype.$auth, 'setFromUri')
+    jest.spyOn(localVue.prototype.$auth, 'loginRedirect').mockReturnValue(null)
+    localVue.prototype.$auth.login()
+    expect(localVue.prototype.$auth.setFromUri).toHaveBeenCalledWith(window.location.pathname)
+  })
+})
+
 describe('loginRedirect', () => {
   let mockAuthJsInstance
   let localVue
   beforeEach(() => {
-    mockAuthJsInstance = {
+    mockAuthJsInstance = extendMockAuthJS({
       token: {
         getWithRedirect: jest.fn()
       }
-    }
+    })
     AuthJS.mockImplementation(() => {
       return mockAuthJsInstance
     })
     localVue = createLocalVue()
     localVue.use(Auth, baseConfig)
+  })
+
+  it('calls setFromUri if fromUri is provided', () => {
+    const fromUri = 'notrandom'
+    jest.spyOn(localVue.prototype.$auth, 'setFromUri')
+    localVue.prototype.$auth.loginRedirect(fromUri)
+    expect(localVue.prototype.$auth.setFromUri).toHaveBeenCalledWith(fromUri)
+  })
+
+  it('does not call setFromUri if no fromUri is provided', () => {
+    jest.spyOn(localVue.prototype.$auth, 'setFromUri')
+    localVue.prototype.$auth.loginRedirect()
+    expect(localVue.prototype.$auth.setFromUri).not.toHaveBeenCalled()
   })
 
   it('loginRedirect: calls oktaAuth.token.getWithRedirect when redirecting to Okta', () => {
@@ -130,12 +203,12 @@ describe('logout', () => {
   let localVue
   let mockAuthJsInstance
   beforeEach(() => {
-    mockAuthJsInstance = {
+    mockAuthJsInstance = extendMockAuthJS({
       signOut: jest.fn().mockReturnValue(null),
       tokenManager: {
         clear: jest.fn().mockReturnValue(Promise.resolve())
       }
-    }
+    })
     AuthJS.mockImplementation(() => {
       return mockAuthJsInstance
     })
@@ -157,16 +230,16 @@ describe('isAuthenticated', () => {
   let mockAuthJsInstance
   let localVue
 
-  beforeEach(() => {
-    mockAuthJsInstance = {}
+  function bootstrap (config) {
+    mockAuthJsInstance = extendMockAuthJS({})
     AuthJS.mockImplementation(() => {
       return mockAuthJsInstance
     })
     localVue = createLocalVue()
-    localVue.use(Auth, baseConfig)
-  })
-
+    localVue.use(Auth, Object.assign({}, baseConfig, config))
+  }
   test('isAuthenticated() returns false when the TokenManager throws an error', async () => {
+    bootstrap()
     mockAuthJsInstance.tokenManager = {
       get: jest.fn().mockImplementation(() => {
         throw new Error()
@@ -178,6 +251,7 @@ describe('isAuthenticated', () => {
   })
 
   test('isAuthenticated() returns false when the TokenManager does not return an access token', async () => {
+    bootstrap()
     mockAuthJsInstance.tokenManager = {
       get: jest.fn().mockImplementation(() => {
         return null
@@ -188,12 +262,25 @@ describe('isAuthenticated', () => {
   })
 
   test('isAuthenticated() returns true when the TokenManager returns an access token', async () => {
+    bootstrap()
     mockAuthJsInstance.tokenManager = {
       get: jest.fn().mockReturnValue(Promise.resolve({ accessToken: 'fake' }))
     }
     const authenticated = await localVue.prototype.$auth.isAuthenticated()
     expect(mockAuthJsInstance.tokenManager.get).toHaveBeenCalledWith('accessToken')
     expect(authenticated).toBeTruthy()
+  })
+
+  it('Will call a custom function if "config.isAuthenticated" was set', async () => {
+    const isAuthenticated = jest.fn().mockReturnValue(Promise.resolve('foo'))
+    bootstrap({ isAuthenticated })
+    jest.spyOn(localVue.prototype.$auth, 'getAccessToken')
+    jest.spyOn(localVue.prototype.$auth, 'getIdToken')
+    const ret = await localVue.prototype.$auth.isAuthenticated()
+    expect(ret).toBe('foo')
+    expect(isAuthenticated).toHaveBeenCalled()
+    expect(localVue.prototype.$auth.getAccessToken).not.toHaveBeenCalled()
+    expect(localVue.prototype.$auth.getIdToken).not.toHaveBeenCalled()
   })
 })
 
@@ -202,14 +289,14 @@ describe('handleAuthentication', () => {
   let localVue
 
   function bootstrap (tokens) {
-    mockAuthJsInstance = {
+    mockAuthJsInstance = extendMockAuthJS({
       token: {
         parseFromUrl: jest.fn().mockReturnValue(Promise.resolve(tokens))
       },
       tokenManager: {
         add: jest.fn()
       }
-    }
+    })
     AuthJS.mockImplementation(() => {
       return mockAuthJsInstance
     })
@@ -230,6 +317,17 @@ describe('handleAuthentication', () => {
   })
 })
 
+describe('setFromUri', () => {
+  test('sets referrer in localStorage', () => {
+    const TEST_VALUE = 'foo-bar'
+    localStorage.setItem('referrerPath', '')
+    const localVue = createLocalVue()
+    localVue.use(Auth, baseConfig)
+    localVue.prototype.$auth.setFromUri(TEST_VALUE)
+    expect(localStorage.getItem('referrerPath')).toBe(TEST_VALUE)
+  })
+})
+
 describe('getFromUri', () => {
   test('cleares referrer from localStorage', () => {
     const TEST_VALUE = 'foo-bar'
@@ -247,11 +345,11 @@ describe('getAccessToken', () => {
   let localVue
 
   function bootstrap (token) {
-    mockAuthJsInstance = {
+    mockAuthJsInstance = extendMockAuthJS({
       tokenManager: {
         get: jest.fn().mockReturnValue(Promise.resolve(token))
       }
-    }
+    })
     AuthJS.mockImplementation(() => {
       return mockAuthJsInstance
     })
@@ -272,11 +370,11 @@ describe('getIdToken', () => {
   let localVue
 
   function bootstrap (token) {
-    mockAuthJsInstance = {
+    mockAuthJsInstance = extendMockAuthJS({
       tokenManager: {
         get: jest.fn().mockReturnValue(Promise.resolve(token))
       }
-    }
+    })
     AuthJS.mockImplementation(() => {
       return mockAuthJsInstance
     })
@@ -297,7 +395,7 @@ describe('getUser', () => {
   let localVue
 
   function bootstrap (options = {}) {
-    mockAuthJsInstance = {
+    mockAuthJsInstance = extendMockAuthJS({
       token: {
         getUserInfo: jest.fn().mockReturnValue(Promise.resolve(options.userInfo))
       },
@@ -310,7 +408,7 @@ describe('getUser', () => {
           }
         })
       }
-    }
+    })
     AuthJS.mockImplementation(() => {
       return mockAuthJsInstance
     })
@@ -367,5 +465,107 @@ describe('getUser', () => {
     })
     const val = await localVue.prototype.$auth.getUser()
     expect(val).toBe(claims)
+  })
+})
+
+describe('TokenManager', () => {
+  let mockAuthJsInstance
+  let localVue
+
+  function bootstrap (config) {
+    mockAuthJsInstance = extendMockAuthJS({})
+    AuthJS.mockImplementation(() => {
+      return mockAuthJsInstance
+    })
+    localVue = createLocalVue()
+    localVue.use(Auth, Object.assign({}, baseConfig, config))
+  }
+
+  it('Exposes the token manager', () => {
+    bootstrap()
+    const val = localVue.prototype.$auth.getTokenManager()
+    expect(val).toBeTruthy()
+    expect(val).toBe(localVue.prototype.$auth.oktaAuth.tokenManager)
+  })
+
+  it('Listens to errors from token manager', () => {
+    bootstrap()
+    const val = localVue.prototype.$auth.getTokenManager()
+    expect(val.on).toHaveBeenCalledWith('error', expect.any(Function))
+  })
+
+  it('_onTokenError: calls loginRedirect for error code "login_required"', () => {
+    bootstrap()
+    jest.spyOn(localVue.prototype.$auth, 'login').mockReturnValue(null)
+    localVue.prototype.$auth._onTokenError({ errorCode: 'login_required' })
+    expect(localVue.prototype.$auth.login).toHaveBeenCalled()
+  })
+
+  it('_onTokenError: ignores other errors', () => {
+    bootstrap()
+    jest.spyOn(localVue.prototype.$auth, 'login').mockReturnValue(null)
+    localVue.prototype.$auth._onTokenError({ errorCode: 'something' })
+    expect(localVue.prototype.$auth.login).not.toHaveBeenCalled()
+  })
+
+  it('Accepts custom function "onTokenError" via config', () => {
+    const onTokenError = jest.fn()
+    bootstrap({ onTokenError })
+    const val = localVue.prototype.$auth.getTokenManager()
+    expect(val.on).toHaveBeenCalledWith('error', onTokenError)
+  })
+})
+
+describe('authRedirectGuard', () => {
+  let localVue
+  let mockAuthJsInstance
+  beforeEach(() => {
+    mockAuthJsInstance = extendMockAuthJS()
+    AuthJS.mockImplementation(() => {
+      return mockAuthJsInstance
+    })
+    localVue = createLocalVue()
+    localVue.use(Auth, baseConfig)
+  })
+
+  it('does nothing if route does not requireAuth', async () => {
+    const route = {
+      meta: {
+        requiresAuth: false
+      }
+    }
+    const next = jest.fn()
+    jest.spyOn(localVue.prototype.$auth, 'isAuthenticated')
+    await localVue.prototype.$auth.authRedirectGuard()({ matched: [route] }, null, next)
+    expect(localVue.prototype.$auth.isAuthenticated).not.toHaveBeenCalled()
+    expect(next).toHaveBeenCalled()
+  })
+
+  it('calls next() if authenticated', async () => {
+    const route = {
+      meta: {
+        requiresAuth: true
+      }
+    }
+    const next = jest.fn()
+    jest.spyOn(localVue.prototype.$auth, 'isAuthenticated').mockReturnValue(Promise.resolve(true))
+    await localVue.prototype.$auth.authRedirectGuard()({ matched: [route] }, null, next)
+    expect(localVue.prototype.$auth.isAuthenticated).toHaveBeenCalled()
+    expect(next).toHaveBeenCalled()
+  })
+
+  it('calls login() if not authenticated', async () => {
+    const route = {
+      meta: {
+        requiresAuth: true
+      }
+    }
+    const next = jest.fn()
+    jest.spyOn(localVue.prototype.$auth, 'isAuthenticated').mockReturnValue(Promise.resolve(false))
+    jest.spyOn(localVue.prototype.$auth, 'login')
+    await localVue.prototype.$auth.authRedirectGuard()({ matched: [route] }, null, next)
+    expect(localVue.prototype.$auth.isAuthenticated).toHaveBeenCalled()
+    expect(next).not.toHaveBeenCalled()
+    expect(localVue.prototype.$auth.login).toHaveBeenCalled()
   })
 })

@@ -2,6 +2,9 @@ import { createLocalVue, mount } from '@vue/test-utils'
 import waitForExpect from 'wait-for-expect'
 import VueRouter from 'vue-router'
 import { default as Auth } from '../../src/Auth'
+import AuthJS from '@okta/okta-auth-js'
+
+jest.mock('@okta/okta-auth-js')
 
 describe('ImplicitCallback', () => {
   const baseConfig = {
@@ -13,6 +16,14 @@ describe('ImplicitCallback', () => {
   let localVue
   let wrapper
   function bootstrap (options = {}) {
+    AuthJS.mockImplementation(() => {
+      return {
+        tokenManager: {
+          on: jest.fn()
+        }
+      }
+    })
+
     localVue = createLocalVue()
     localVue.use(VueRouter)
     localVue.use(Auth, baseConfig)

@@ -235,6 +235,12 @@ he most commonly used options are shown here. See [Configuration Reference](http
     - [`sessionStorage`](https://developer.mozilla.org/en-US/docs/Web/API/Window/sessionStorage)
     - [`cookie`](https://developer.mozilla.org/en-US/docs/Web/API/Document/cookie)
 
+- `onAuthRequired` *(optional)*: Accepts a callback to make a decision when authentication is required. If not supplied, `okta-vue` will redirect directly to Okta for authentication.
+
+-`onTokenError` *(optional)* - callback function. If there is an error while renewing a token, the error will be passed to a handler function. The default handler calls `loginRedirect()` to initiate a login flow. Passing a function here will override the default handler.
+
+- `isAuthenticated` *(optional)* - callback function. By default, `$auth.isAuthenticated()` will return true if both `getIdToken()` and `getAccessToken()` return a value. Setting a `isAuthenticated` function on the config will skip the default logic and call the supplied function instead. The function should return a Promise and resolve to either true or false.
+
 #### `$auth.loginRedirect(fromUri, additionalParams)`
 
 Performs a full page redirect to Okta based on the initial configuration. This method accepts a `fromUri` parameter to push the user to after successful authentication.
@@ -269,8 +275,21 @@ Returns the result of the OpenID Connect `/userinfo` endpoint if an access token
 
 Parses the tokens returned as hash fragments in the OAuth 2.0 Redirect URI.
 
+#### `$auth.setFromUri(uri, queryParams)`
+
+Store the current URL state before a redirect occurs.
+
+#### `$auth.getFromUri()`
+
+Returns the stored URI and query parameters stored by `setFromUri`
+
 ## Contributing
 We welcome contributions to all of our open-source packages. Please see the [contribution guide](https://github.com/okta/okta-oidc-js/blob/master/CONTRIBUTING.md) to understand how to structure a contribution.
+#### `$auth.getTokenManager`
+
+Returns the internal [TokenManager](https://github.com/okta/okta-auth-js#tokenmanager).
+
+## Development
 
 ### Installing dependencies for contributions
 We use [yarn](https://yarnpkg.com) for dependency management when developing this package:
