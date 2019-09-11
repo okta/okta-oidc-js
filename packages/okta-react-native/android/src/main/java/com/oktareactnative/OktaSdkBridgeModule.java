@@ -34,8 +34,10 @@ import com.okta.oidc.Okta;
 import com.okta.oidc.RequestCallback;
 import com.okta.oidc.ResultCallback;
 import com.okta.oidc.Tokens;
+import com.okta.oidc.results.Result;
 import com.okta.oidc.clients.sessions.SessionClient;
 import com.okta.oidc.clients.web.WebAuthClient;
+import com.okta.oidc.clients.AuthClient;
 import com.okta.oidc.net.params.TokenTypeHint;
 import com.okta.oidc.net.response.IntrospectInfo;
 import com.okta.oidc.net.response.UserInfo;
@@ -91,6 +93,13 @@ public class OktaSdkBridgeModule extends ReactContextBaseJavaModule implements A
                     .setRequireHardwareBackedKeyStore(requireHardwareBackedKeyStore)
                     .create();
 
+            this.authClient = new Okta.AuthBuilder()
+                    .withConfig(config)
+                    .withContext(reactContext)
+                    .withStorage(new SharedPreferenceStorage(reactContext))
+                    .setRequireHardwareBackedKeyStore(requireHardwareBackedKeyStore)
+                    .create();
+
             promise.resolve(true);
         } catch (Exception e) {
             promise.reject(OktaSdkError.OKTA_OIDC_ERROR.getErrorCode(), e.getLocalizedMessage(), e);
@@ -118,6 +127,51 @@ public class OktaSdkBridgeModule extends ReactContextBaseJavaModule implements A
         }
 
         webClient.signIn(currentActivity, null);
+    }
+
+    @ReactMethod
+    public void authenticate(String sessionToken) {
+        if (authClient == null) {
+            final WritableMap params = Arguments.createMap();
+            params.putString(OktaSdkConstant.ERROR_CODE_KEY, OktaSdkError.NOT_CONFIGURED.getErrorCode());
+            params.putString(OktaSdkConstant.ERROR_MSG_KEY, OktaSdkError.NOT_CONFIGURED.getErrorMessage());
+            sendEvent(reactContext, OktaSdkConstant.ON_ERROR, params);
+            return;
+        }
+
+        authClient.signIn(sessionToken, null, new RequestCallback<Result, AuthorizationException>() {
+            @Override
+            public void onSuccess(@NonNull Result result) {
+                if (result.isSuccess()) {
+                    try {
+                        SessionClient sessionClient = authClient.getSessionClient();
+                        WritableMap params = Arguments.createMap();
+                        Tokens tokens = sessionClient.getTokens();
+                        params.putString(OktaSdkConstant.RESOLVE_TYPE_KEY, OktaSdkConstant.AUTHORIZED);
+                        params.putString(OktaSdkConstant.ACCESS_TOKEN_KEY, tokens.getAccessToken());
+                        sendEvent(reactContext, OktaSdkConstant.SIGN_IN_SUCCESS, params);
+                    } catch (AuthorizationException e) {
+                        WritableMap params = Arguments.createMap();
+                        params.putString(OktaSdkConstant.ERROR_CODE_KEY, OktaSdkError.SIGN_IN_FAILED.getErrorCode());
+                        params.putString(OktaSdkConstant.ERROR_MSG_KEY, OktaSdkError.SIGN_IN_FAILED.getErrorMessage());
+                        sendEvent(reactContext, OktaSdkConstant.ON_ERROR, params);
+                    }
+                } else {
+                    WritableMap params = Arguments.createMap();
+                    params.putString(OktaSdkConstant.ERROR_CODE_KEY, OktaSdkError.SIGN_IN_FAILED.getErrorCode());
+                    params.putString(OktaSdkConstant.ERROR_MSG_KEY, OktaSdkError.SIGN_IN_FAILED.getErrorMessage());
+                    sendEvent(reactContext, OktaSdkConstant.ON_ERROR, params);
+                }
+            }
+
+            @Override
+            public void onError(String error, AuthorizationException exception) {
+                WritableMap params = Arguments.createMap();
+                params.putString(OktaSdkConstant.ERROR_CODE_KEY, OktaSdkError.OKTA_OIDC_ERROR.getErrorCode());
+                params.putString(OktaSdkConstant.ERROR_MSG_KEY, error);
+                sendEvent(reactContext, OktaSdkConstant.ON_ERROR, params);
+            }
+        });
     }
 
     @ReactMethod
