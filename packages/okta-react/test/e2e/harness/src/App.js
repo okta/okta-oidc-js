@@ -25,13 +25,13 @@ if (!Auth) {
 class App extends Component {
   render() {
      /* global process */
-    const { REACT_APP_ISSUER, REACT_APP_CLIENT_ID } = process.env;
+    const { ISSUER, CLIENT_ID } = process.env;
     const { pkce, redirectUri } = this.props;
     return (
       <React.StrictMode>
         <Router>
-          <Security issuer={REACT_APP_ISSUER}
-                    clientId={REACT_APP_CLIENT_ID}
+          <Security issuer={ISSUER}
+                    clientId={CLIENT_ID}
                     disableHttpsCheck={true}
                     redirectUri={redirectUri}
                     onAuthRequired={({history}) => history.push('/login')}

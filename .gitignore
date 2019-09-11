@@ -1,7 +1,6 @@
 node_modules
 npm-debug.log
 .DS_STORE
-.vscode
 .envrc
 .yarnrc
 *.code-workspace
@@ -10,6 +9,7 @@ yarn-debug.log*
 yarn-error.log*
 package-lock.json
 dist
+testenv
 
 # Ignore TCK-related files in all folders
 okta-oidc-tck*
