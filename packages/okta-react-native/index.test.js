@@ -14,6 +14,7 @@ const {
   createConfig,
   signIn,
   signOut,
+  authenticate,
   getAccessToken,
   getIdToken,
   getUser,
@@ -36,6 +37,7 @@ jest.mock('react-native', () => {
       OktaSdkBridge: {
         createConfig: jest.fn(),
         signIn: jest.fn(),
+        authenticate: jest.fn(),
         signOut: jest.fn(),
         getAccessToken: jest.fn(),
         getIdToken: jest.fn(),
@@ -55,7 +57,6 @@ jest.mock('react-native', () => {
       select: jest.fn()
     },
     NativeEventEmitter: jest.fn(),
-    DeviceEventEmitter: jest.fn(),
   });
 });
 
@@ -114,6 +115,19 @@ describe('OktaReactNative', () => {
     it('calls native sign in method', () => {
       signIn();
       expect(mockSignIn).toHaveBeenCalledTimes(1);
+    });
+  });
+
+  describe('authenticateTest', () => {
+    let mockAuthenticate;
+
+    beforeEach(() => {
+      mockAuthenticate = require('react-native').NativeModules.OktaSdkBridge.authenticate;
+    });
+
+    it('calls native authenticate method', () => {
+      authenticate({sessionToken: 'sessionToken'});
+      expect(mockAuthenticate).toHaveBeenCalledTimes(1);
     });
   });
 
