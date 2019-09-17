@@ -109,9 +109,11 @@ Since the workspace contains libraries for Single-Page and Web Applications, you
 2. Select Web
 3. Add the following **login redirect URI**:
     - `http://localhost:8080/authorization-code/callback`
-4. Click Done
-5. Users > Add Person
-6. Create and activate user
+4. Add the following **logout redirect URI**:
+    - `http://localhost:8080/logout/callback`
+5. Click Done
+6. Users > Add Person
+7. Create and activate user
 
 ### Test an individual package
 
