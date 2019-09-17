@@ -1,3 +1,8 @@
+# 1.2.0
+
+### Features
+- [`58618c8`](https://github.com/okta/okta-oidc-js/commit/32b9a99e3065c34cdcc97018075697356403f11d) - Added `authenticate(withSessionToken:)` public method
+
 # 1.1.0
 
 ### Features
