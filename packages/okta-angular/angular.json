@@ -1,0 +1,27 @@
+{
+  "version": 1,
+  "projects": {
+    "okta-angular": {
+      "root": "",
+      "sourceRoot": "src",
+      "projectType": "library",
+      "architect": {
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": [
+              "tsconfig.json"
+            ],
+            "exclude": [
+              "**/node_modules/**",
+              "src/okta/packageInfo.ts",
+              "test",
+              "dist",
+              "reports"
+            ]
+          }
+        }
+      }
+    }
+  }
+}

@@ -31,59 +31,6 @@ const standardAccessTokenParsed = {
   userinfoUrl: environment.ISSUER + '/oauth2/v1/userinfo'
 };
 
-describe('Module configuration', () => {
-  const createInstance = (params = {}) => {
-    return () => new OktaAuthService(params, undefined);
-  };
-  it('should throw if no issuer is provided', () => {
-    expect(createInstance()).toThrow();
-  });
-  it('should throw if an issuer that does not contain https is provided', () => {
-    expect(createInstance({ issuer: 'http://foo.com' })).toThrow();
-  });
-  it('should throw if an issuer matching {yourOktaDomain} is provided', () => {
-    expect(createInstance({ issuer: 'https://{yourOktaDomain}' })).toThrow();
-  });
-  it('should throw if an issuer matching -admin.okta.com is provided', () => {
-    expect(createInstance({ issuer: 'https://foo-admin.okta.com' })).toThrow();
-  });
-  it('should throw if an issuer matching -admin.oktapreview.com is provided', () => {
-    expect(createInstance({ issuer: 'https://foo-admin.oktapreview.com' })).toThrow();
-  });
-  it('should throw if an issuer matching -admin.okta-emea.com is provided', () => {
-    expect(createInstance({ issuer: 'https://foo-admin.okta-emea.com' })).toThrow();
-  });
-  it('should throw if an issuer matching more than one ".com" is provided', () => {
-    expect(createInstance({ issuer: 'https://foo.okta.com.com' })).toThrow();
-  });
-  it('should throw if an issuer matching more than one sequential "://" is provided', () => {
-    expect(createInstance({ issuer: 'https://://foo.okta.com' })).toThrow();
-  });
-  it('should throw if an issuer matching more than one "://" is provided', () => {
-    expect(createInstance({ issuer: 'https://foo.okta://.com' })).toThrow();
-  });
-  it('should throw if the client_id is not provided', () => {
-    expect(createInstance({ issuer: 'https://foo' })).toThrow();
-  });
-  it('should throw if a client_id matching {clientId} is provided', () => {
-    expect(
-      createInstance({
-        clientId: '{clientId}',
-        issuer: 'https://foo'
-      })
-    ).toThrow();
-  });
-  it('should throw if a redirectUri matching {redirectUri} is provided', () => {
-    expect(
-      createInstance({
-        clientId: 'foo',
-        issuer: 'https://foo',
-        redirectUri: '{redirectUri}'
-      })
-    ).toThrow();
-  });
-});
-
 describe('Unit Tests', () => {
   let component: AppComponent;
   let fixture: ComponentFixture<AppComponent>;
