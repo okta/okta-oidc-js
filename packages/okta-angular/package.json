@@ -2,14 +2,14 @@
   "name": "@okta/okta-angular",
   "version": "1.2.2",
   "description": "Angular support for Okta",
-  "main": "./dist/index.js",
-  "types": "./dist/index.d.ts",
+  "main": "./dist/src/index.js",
+  "types": "./dist/src/index.d.ts",
   "files": [
     "dist"
   ],
   "scripts": {
     "build:package-info": "node ../../util/write-package-info.js . src/okta/packageInfo.ts",
-    "lint": "yarn --cwd test/e2e/harness/ lint",
+    "lint": "ng lint",
     "ngc": "./node_modules/.bin/ngc -p tsconfig.json",
     "prepare": "yarn ngc",
     "prengc": "yarn build:package-info",
@@ -34,14 +34,24 @@
     "@okta/okta-auth-js": "^2.6.3"
   },
   "devDependencies": {
-    "@angular/common": "^4.4.3",
-    "@angular/compiler": "^4.4.3",
-    "@angular/compiler-cli": "^4.4.3",
-    "@angular/core": "^4.4.3",
-    "@angular/platform-browser": "^4.4.3",
-    "@angular/router": "^4.4.3",
-    "rxjs": "^5.4.3",
-    "typescript": "^2.5.2"
+    "@angular-devkit/build-angular": "~0.8.1",
+    "@angular/cli": "^7.0.0",
+    "@angular/common": "^7.0.0",
+    "@angular/compiler": "^7.0.0",
+    "@angular/compiler-cli": "^7.0.0",
+    "@angular/core": "^7.0.0",
+    "@angular/http": "^7.0.0",
+    "@angular/platform-browser": "^7.0.0",
+    "@angular/platform-browser-dynamic": "7.0.0",
+    "@angular/router": "^7.0.0",
+    "@types/jest": "^24.0.18",
+    "jest": "^24.9.0",
+    "jest-preset-angular": "^7.1.1",
+    "core-js": "^2.4.1",
+    "rxjs": "^6.2.1",
+    "zone.js": "^0.8.14",
+    "tslint": "~5.5.0",
+    "typescript": "~3.1.6"
   },
   "peerDependencies": {
     "@angular/common": ">=4",
@@ -49,5 +59,24 @@
     "@angular/platform-browser": ">=4",
     "@angular/router": ">=4",
     "rxjs": ">=5.4.3"
-  }
+  },
+  "jest": {
+    "transform": {
+      "^.+\\.(ts|html)$": "ts-jest"
+    },
+    "transformIgnorePatterns": [
+      "node_modules",
+      "packages/(?!okta-angular)"
+    ],
+    "globals": {
+      "ts-jest": {
+        "tsConfig": "<rootDir>/tsconfig.spec.json"
+      }
+    },
+    "preset": "jest-preset-angular",
+    "rootDir": "./test/spec",
+    "setupFilesAfterEnv": [
+      "../support/setupJest.ts"
+    ]
+   }
 }
