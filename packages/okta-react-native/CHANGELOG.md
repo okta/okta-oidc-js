@@ -1,3 +1,8 @@
+# 1.2.1
+
+### Bug fix
+- [`05be754`](https://github.com/okta/okta-oidc-js/commit/05be7540a53e9c712cf108573451baa0124032f0) - Compilation error in Android bridge file
+
 # 1.2.0
 
 ### Features
