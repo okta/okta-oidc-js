@@ -49,6 +49,7 @@ public class OktaSdkBridgeModule extends ReactContextBaseJavaModule implements A
     private final ReactApplicationContext reactContext;
     private OIDCConfig config;
     private WebAuthClient webClient;
+    private AuthClient authClient;
 
     public OktaSdkBridgeModule(ReactApplicationContext reactContext) {
         super(reactContext);
