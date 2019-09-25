@@ -134,7 +134,7 @@ const oktaJwtVerifier = new OktaJwtVerifier({
 ## Contributing
 We welcome contributions to all of our open-source packages. Please see the [contribution guide](https://github.com/okta/okta-oidc-js/blob/master/CONTRIBUTING.md) to understand how to structure a contribution.
 
-### Insatalling dependencies for contributions
+### Installing dependencies for contributions
 We use [yarn](https://yarnpkg.com) for dependency management when developing this package:
 ```
 yarn install
