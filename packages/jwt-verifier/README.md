@@ -27,11 +27,7 @@ For information on how to upgrade between versions of the library, see UPGRADING
 ## How to use
 
 ```bash
-# npm
 npm install --save @okta/jwt-verifier
-
-# yarn
-yarn add @okta/jwt-verifier
 ```
 
 Create a verifier instance, bound to the issuer (authorization server URL):
@@ -133,4 +129,13 @@ const oktaJwtVerifier = new OktaJwtVerifier({
   cacheMaxAge: 60 * 60 * 1000, // 1 hour
   jwksRequestsPerMinute: 10
 });
+```
+
+## Contributing
+We welcome contributions to all of our open-source packages. Please see the [contribution guide](https://github.com/okta/okta-oidc-js/blob/master/CONTRIBUTING.md) to understand how to structure a contribution.
+
+### Installing dependencies for contributions
+We use [yarn](https://yarnpkg.com) for dependency management when developing this package:
+```
+yarn install
 ```

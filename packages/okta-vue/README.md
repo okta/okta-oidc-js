@@ -28,11 +28,7 @@ This library currently supports:
 This library is available through [npm](https://www.npmjs.com/package/@okta/okta-vue). To install it, simply add it to your project:
 
 ```bash
-# npm
 npm install --save @okta/okta-vue
-
-# yarn
-yarn add @okta/okta-vue
 ```
 
 ### Configuration
@@ -258,11 +254,16 @@ Returns the result of the OpenID Connect `/userinfo` endpoint if an access token
 
 Parses the tokens returned as hash fragments in the OAuth 2.0 Redirect URI.
 
-## Development
+## Contributing
+We welcome contributions to all of our open-source packages. Please see the [contribution guide](https://github.com/okta/okta-oidc-js/blob/master/CONTRIBUTING.md) to understand how to structure a contribution.
 
-See the [getting started](/README.md#getting-started) section for step-by-step instructions.
+### Installing dependencies for contributions
+We use [yarn](https://yarnpkg.com) for dependency management when developing this package:
+```
+yarn install
+```
 
-## Commands
+### Commands
 
 | Command        | Description                        |
 | -------------- | ---------------------------------- |
