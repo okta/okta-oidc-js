@@ -21,7 +21,7 @@ This is a monorepo that contains Okta's OpenID Connect JavaScript resources.
 
 ## Getting Started
 
-We use Yarn as our node package manager. To install Yarn, check out their [install documentation](https://yarnpkg.com/en/docs/install).
+We use Yarn as our node package manager during package development. To install Yarn, check out their [install documentation](https://yarnpkg.com/en/docs/install).
 
 ```bash
 # Clone the repo and navigate to it
