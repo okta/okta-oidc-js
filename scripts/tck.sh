@@ -1,4 +1,5 @@
 #!/bin/bash
+echo `java -version`
 
 if [ -z "$1" ]
   then
