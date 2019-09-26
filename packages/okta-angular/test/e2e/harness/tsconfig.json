@@ -5,6 +5,9 @@
     "paths": {
       "@angular/*": [
         "../node_modules/@angular/*"
+      ],
+      "@okta/okta-angular*": [
+        "web_modules/@okta/okta-angular*"
       ]
     },
     "sourceMap": true,

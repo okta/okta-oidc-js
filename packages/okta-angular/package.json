@@ -9,7 +9,7 @@
   ],
   "scripts": {
     "build:package-info": "node ../../util/write-package-info.js . src/okta/packageInfo.ts",
-    "lint": "ng lint && yarn --cwd test/e2e/harness/ lint",
+    "lint": "ng lint",
     "ngc": "./node_modules/.bin/ngc -p tsconfig.json",
     "prepare": "yarn ngc",
     "prengc": "yarn build:package-info",
