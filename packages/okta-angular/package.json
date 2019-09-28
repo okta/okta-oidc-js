@@ -13,10 +13,10 @@
     "ngc": "./node_modules/.bin/ngc -p tsconfig.json",
     "prepare": "yarn ngc",
     "prengc": "yarn build:package-info",
-    "start": "yarn --cwd test/e2e/harness/ start",
+    "start": "yarn --cwd ../okta-angular-harness start",
     "test": "yarn lint && yarn test:e2e && yarn test:unit",
-    "test:e2e": "yarn --cwd test/e2e/harness/ e2e",
-    "test:unit": "yarn --cwd test/e2e/harness/ test"
+    "test:e2e": "yarn --cwd ../okta-angular-harness e2e",
+    "test:unit": "yarn --cwd ../okta-angular-harness test"
   },
   "repository": "https://github.com/okta/okta-oidc-js",
   "homepage": "https://github.com/okta/okta-oidc-js/tree/master/packages/okta-angular",

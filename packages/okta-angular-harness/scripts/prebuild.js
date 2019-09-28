@@ -12,7 +12,7 @@
 
 const fs = require('fs');
 const path = require('path');
-const Config = require('../../../../../../.oidc.config.js');
+const Config = require('../../../.oidc.config.js');
 
 const environmentFilesDirectory = path.join(__dirname, '../src/environments');
 const targetEnvironmentFileName = 'environment.ts';

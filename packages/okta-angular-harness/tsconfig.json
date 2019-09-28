@@ -7,7 +7,7 @@
         "../node_modules/@angular/*"
       ],
       "@okta/okta-angular*": [
-        "../../../../dist*"
+        "../../../packages/okta-angular*"
       ]
     },
     "sourceMap": true,

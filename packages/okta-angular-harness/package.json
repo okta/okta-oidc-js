@@ -7,10 +7,10 @@
     "start": "yarn env && ng serve --port=8080",
     "env": "node ./scripts/prebuild.js",
     "build": "ng build",
-    "pretest": "../../../../../scripts/updateSeDrivers.sh 0",
+    "pretest": "../../scripts/updateSeDrivers.sh 0",
     "test": "ng test --watch=false",
     "lint": "ng lint",
-    "pree2e": "../../../../../scripts/updateSeDrivers.sh 0",
+    "pree2e": "../../scripts/updateSeDrivers.sh 0",
     "e2e": "yarn env && ng e2e --port 8080 --no-webdriver-update"
   },
   "private": true,
@@ -24,7 +24,8 @@
     "@angular/platform-browser": "^6.0.7",
     "@angular/platform-browser-dynamic": "^6.0.7",
     "@angular/router": "^6.0.7",
-    "@okta/okta-angular": "file:./web_modules/@okta/okta-angular",
+    "@okta/okta-angular": "^1.2.2",
+    "@okta/okta-auth-js": "^2.9.0",
     "core-js": "^2.4.1",
     "rxjs": "^6.2.1",
     "zone.js": "^0.8.14"
