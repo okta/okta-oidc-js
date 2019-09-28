@@ -16,7 +16,7 @@
     "start": "yarn --cwd test/e2e/harness/ start",
     "test": "yarn lint && yarn test:unit && yarn test:e2e",
     "test:e2e": "yarn --cwd test/e2e/harness/ test",
-    "test:unit": "jest src/"
+    "test:unit": "jest"
   },
   "jest": {
     "moduleFileExtensions": [
@@ -31,6 +31,9 @@
     "moduleNameMapper": {
       "^@/(.*)$": "<rootDir>/src/$1"
     },
+    "roots": [
+      "test/jest"
+    ],
     "testEnvironment": "jsdom"
   },
   "repository": {
