@@ -2,7 +2,7 @@
   "extends": "../tsconfig.json",
   "compilerOptions": {
     "outDir": "../out-tsc/spec",
-    "baseUrl": "./",
+    "baseUrl": "../",
     "module": "commonjs",
     "target": "es5",
     "types": [

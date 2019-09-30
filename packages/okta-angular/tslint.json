@@ -1,6 +1,6 @@
 {
     "rulesDirectory": [
-      "test/e2e/harness/node_modules/codelyzer"
+      "node_modules/codelyzer"
     ],
     "rules": {
       "arrow-return-shorthand": true,
