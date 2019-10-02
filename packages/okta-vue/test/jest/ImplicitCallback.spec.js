@@ -1,4 +1,5 @@
 import { createLocalVue, mount } from '@vue/test-utils'
+import waitForExpect from 'wait-for-expect'
 import VueRouter from 'vue-router'
 import { default as Auth } from '../../src/Auth'
 
@@ -6,7 +7,7 @@ describe('ImplicitCallback', () => {
   const baseConfig = {
     issuer: 'https://foo',
     clientId: 'foo',
-    redirectUri: 'foo'
+    redirectUri: 'https://foo'
   }
 
   let localVue
@@ -15,8 +16,12 @@ describe('ImplicitCallback', () => {
     localVue = createLocalVue()
     localVue.use(VueRouter)
     localVue.use(Auth, baseConfig)
-    jest.spyOn(localVue.prototype.$auth, 'handleAuthentication').mockReturnValue(options.result)
-    jest.spyOn(localVue.prototype.$auth, 'getFromUri').mockReturnValue(options.fromUri)
+    jest.spyOn(localVue.prototype.$auth, 'handleAuthentication').mockImplementation(async () => {
+      return Promise.resolve(options.result)
+    })
+    jest.spyOn(localVue.prototype.$auth, 'getFromUri').mockImplementation(() => {
+      return options.fromUri
+    })
 
     const routes = [{ path: '/foo', component: Auth.handleCallback() }]
     const router = new VueRouter({
@@ -34,15 +39,21 @@ describe('ImplicitCallback', () => {
     bootstrap()
   })
 
-  it('calls handleAuthentication', () => {
+  it('calls handleAuthentication', async () => {
     bootstrap()
     expect(localVue.prototype.$auth.handleAuthentication).toHaveBeenCalled()
+    await waitForExpect(() => {
+      expect(wrapper.vm.$router.replace).toHaveBeenCalled()
+    })
   })
 
-  it('calls router replace with the fromUri', () => {
-    const fromUri = 'fake'
+  it('calls router replace with the fromUri', async () => {
+    const fromUri = 'https://fake'
     bootstrap({
       fromUri
+    })
+    await waitForExpect(() => {
+      expect(wrapper.vm.$router.replace).toHaveBeenCalled()
     })
     expect(localVue.prototype.$auth.getFromUri).toHaveBeenCalled()
     expect(wrapper.vm.$router.replace).toHaveBeenCalledWith({ path: fromUri })
