@@ -1,7 +1,7 @@
 #!/bin/bash -xe
 
 # Install yarn
-curl -o- -L https://yarnpkg.com/install.sh | bash -s -- --rc
+curl -o- -L https://yarnpkg.com/install.sh | bash -s -- --version 1.17.3
 # Link the installed yarn to be default
 ln -sf ~/.yarn/bin/yarn /usr/bin/yarn
 
