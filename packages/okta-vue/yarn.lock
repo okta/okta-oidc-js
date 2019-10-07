@@ -7158,6 +7158,11 @@ w3c-hr-time@^1.0.1:
   dependencies:
     browser-process-hrtime "^0.1.2"
 
+wait-for-expect@^3.0.0:
+  version "3.0.0"
+  resolved "https://registry.yarnpkg.com/wait-for-expect/-/wait-for-expect-3.0.0.tgz#d6fbf28959e3b8779dc172fb1ea56bf1e833bf7a"
+  integrity sha512-9LyJL+MugZdcQn5V9PBSEC4d2UPTy1xX2U9wTc6LvG/18qeeYqdE/CgmAQJxc/Vcjs+VzH+wiyIXxz05F3nrpQ==
+
 walker@~1.0.5:
   version "1.0.7"
   resolved "https://registry.yarnpkg.com/walker/-/walker-1.0.7.tgz#2f7f9b8fd10d677262b18a884e28d19618e028fb"
