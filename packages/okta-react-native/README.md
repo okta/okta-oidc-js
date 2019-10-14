@@ -10,6 +10,8 @@ This library follows the current best practice for native apps using:
 * [OAuth 2.0 Authorization Code Flow](https://tools.ietf.org/html/rfc6749#section-1.3.1)
 * [Proof Key for Code Exchange (PKCE)](https://tools.ietf.org/html/rfc7636)
 
+You can learn more on the [Okta + ReactNative](https://developer.okta.com/code/react-native/) page in our documentation. You can also download our [sample application](https://github.com/okta/samples-js-react-native/tree/master/browser-sign-in)
+
 ## Prerequisites
 
 * If you do not already have a **Developer Edition Account**, you can create one at [https://developer.okta.com/signup/](https://developer.okta.com/signup/).
@@ -440,4 +442,13 @@ await refreshTokens();
   "id_token": "{idToken}", 
   "refresh_token": "refreshToken" 
 }
+```
+
+## Contributing
+We welcome contributions to all of our open-source packages. Please see the [contribution guide](https://github.com/okta/okta-oidc-js/blob/master/CONTRIBUTING.md) to understand how to structure a contribution.
+
+### Installing dependencies for contributions
+We use [yarn](https://yarnpkg.com) for dependency management when developing this package:
+```
+yarn install
 ```

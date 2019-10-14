@@ -1,0 +1,551 @@
+
+jest.mock('@okta/okta-auth-js');
+
+import { Router } from '@angular/router';
+import { TestBed, async, ComponentFixture } from '@angular/core/testing';
+import { RouterTestingModule } from '@angular/router/testing';
+import OktaAuth from '@okta/okta-auth-js';
+
+import PACKAGE_JSON from '../../package.json';
+
+import {
+  OktaAuthModule,
+  OktaAuthService,
+  OKTA_CONFIG
+} from '../../src';
+
+const VALID_CONFIG = {
+  clientId: 'foo',
+  issuer: 'https://foo',
+  redirectUri: 'https://foo'
+};
+
+describe('Angular service', () => {
+  beforeEach(() => {
+    OktaAuth.mockClear();
+  });
+  afterEach(() => {
+    jest.restoreAllMocks();
+  });
+  
+  describe('configuration', () => {
+    const createInstance = (params = {}) => {
+      return () => new OktaAuthService(params, undefined);
+    };
+    it('should throw if no issuer is provided', () => {
+      expect(createInstance()).toThrow();
+    });
+    it('should throw if an issuer that does not contain https is provided', () => {
+      expect(createInstance({ issuer: 'http://foo.com' })).toThrow();
+    });
+    it('should throw if an issuer matching {yourOktaDomain} is provided', () => {
+      expect(createInstance({ issuer: 'https://{yourOktaDomain}' })).toThrow();
+    });
+    it('should throw if an issuer matching -admin.okta.com is provided', () => {
+      expect(createInstance({ issuer: 'https://foo-admin.okta.com' })).toThrow();
+    });
+    it('should throw if an issuer matching -admin.oktapreview.com is provided', () => {
+      expect(createInstance({ issuer: 'https://foo-admin.oktapreview.com' })).toThrow();
+    });
+    it('should throw if an issuer matching -admin.okta-emea.com is provided', () => {
+      expect(createInstance({ issuer: 'https://foo-admin.okta-emea.com' })).toThrow();
+    });
+    it('should throw if an issuer matching more than one ".com" is provided', () => {
+      expect(createInstance({ issuer: 'https://foo.okta.com.com' })).toThrow();
+    });
+    it('should throw if an issuer matching more than one sequential "://" is provided', () => {
+      expect(createInstance({ issuer: 'https://://foo.okta.com' })).toThrow();
+    });
+    it('should throw if an issuer matching more than one "://" is provided', () => {
+      expect(createInstance({ issuer: 'https://foo.okta://.com' })).toThrow();
+    });
+    it('should throw if the client_id is not provided', () => {
+      expect(createInstance({ issuer: 'https://foo' })).toThrow();
+    });
+    it('should throw if a client_id matching {clientId} is provided', () => {
+      expect(
+        createInstance({
+          clientId: '{clientId}',
+          issuer: 'https://foo'
+        })
+      ).toThrow();
+    });
+    it('should throw if a redirectUri matching {redirectUri} is provided', () => {
+      expect(
+        createInstance({
+          clientId: 'foo',
+          issuer: 'https://foo',
+          redirectUri: '{redirectUri}'
+        })
+      ).toThrow();
+    });
+
+    it('will not throw if config is valid', () => {
+      expect(
+        createInstance(VALID_CONFIG)
+      ).not.toThrow();
+    });
+
+    it('will add "openid" scope if not present', () => {
+      var config = createInstance(VALID_CONFIG)().getOktaConfig();
+        expect(config.scopes).toMatchInlineSnapshot(`
+          Array [
+            "openid",
+          ]
+        `);
+    });
+  });
+
+  it('Adds a user agent on internal oktaAuth instance', () => {
+    var service = new OktaAuthService(VALID_CONFIG, undefined);
+    expect(service['oktaAuth'].userAgent.indexOf(`@okta/okta-angular/${PACKAGE_JSON.version}`)).toBeGreaterThan(-1);
+  });
+
+  it('Can create the service via angular injection', () => {
+    TestBed.configureTestingModule({
+      imports: [
+        RouterTestingModule.withRoutes([{ path: 'foo', redirectTo: '/foo' }]),
+        OktaAuthModule.initAuth(VALID_CONFIG)
+      ],
+      providers: [OktaAuthService],
+    });
+    const service = TestBed.get(OktaAuthService);
+    expect(service.config).toMatchInlineSnapshot(`
+      Object {
+        "clientId": "foo",
+        "issuer": "https://foo",
+        "redirectUri": "https://foo",
+        "responseType": undefined,
+        "scopes": Array [
+          "openid",
+        ],
+        "tokenManager": undefined,
+      }
+    `);
+  });
+
+  describe('service methods', () => {
+    function createService(config=null) {
+      TestBed.configureTestingModule({
+        imports: [
+          RouterTestingModule.withRoutes([{ path: 'foo', redirectTo: '/foo' }]),
+          OktaAuthModule.initAuth(config || VALID_CONFIG)
+        ],
+        providers: [OktaAuthService],
+      });
+      return TestBed.get(OktaAuthService);
+    }
+
+    describe('isAuthenticated', () => {
+
+      it('returns false if no access or id token', async () => {
+        jest.spyOn(OktaAuthService.prototype, 'getAccessToken').mockReturnValue(Promise.resolve(null));
+        jest.spyOn(OktaAuthService.prototype, 'getIdToken').mockReturnValue(Promise.resolve(null));
+        
+        const service = createService();
+        const val = await service.isAuthenticated();
+        expect(val).toBe(false);
+      });
+
+
+      it('returns true if access token', async () => {
+        jest.spyOn(OktaAuthService.prototype, 'getAccessToken').mockReturnValue(Promise.resolve('something'));
+        jest.spyOn(OktaAuthService.prototype, 'getIdToken').mockReturnValue(Promise.resolve(null));
+        
+        const service = createService();
+        const val = await service.isAuthenticated();
+        expect(val).toBe(true);
+      });
+      
+      it('returns true if id token', async () => {
+        jest.spyOn(OktaAuthService.prototype, 'getAccessToken').mockReturnValue(Promise.resolve(null));
+        jest.spyOn(OktaAuthService.prototype, 'getIdToken').mockReturnValue(Promise.resolve('something'));
+        
+        const service = createService();
+        const val = await service.isAuthenticated();
+        expect(val).toBe(true);
+      });
+    });
+
+    describe('getAccessToken', () => {
+      it('retrieves token from token manager', async () => {
+        const mockToken = {
+          accessToken: 'foo'
+        };
+        const mockAuthJS = {
+          tokenManager: {
+            get: jest.fn().mockImplementation(key => {
+              expect(key).toBe('accessToken');
+              return Promise.resolve(mockToken);
+            })
+          }
+        };
+        OktaAuth.mockImplementation(() => mockAuthJS);
+        
+        const service = createService();
+        const retVal = await service.getAccessToken();
+        expect(retVal).toBe(mockToken.accessToken);
+      });
+
+      it('catches exceptions', async () => {
+        const mockToken = {
+          accessToken: 'foo'
+        };
+        const mockAuthJS = {
+          tokenManager: {
+            get: jest.fn().mockImplementation(key => {
+              expect(key).toBe('accessToken');
+              throw new Error('expected test error');
+            })
+          }
+        };
+        OktaAuth.mockImplementation(() => mockAuthJS);
+        
+        const service = createService();
+        const retVal = await service.getAccessToken();
+        expect(retVal).toBe(undefined);
+      });
+    });
+
+    describe('getIdToken', () => {
+      it('retrieves token from token manager', async () => {
+        const mockToken = {
+          idToken: 'foo'
+        };
+        const mockAuthJS = {
+          tokenManager: {
+            get: jest.fn().mockImplementation(key => {
+              expect(key).toBe('idToken');
+              return Promise.resolve(mockToken);
+            })
+          }
+        };
+        OktaAuth.mockImplementation(() => mockAuthJS);
+        
+        const service = createService();
+        const retVal = await service.getIdToken();
+        expect(retVal).toBe(mockToken.idToken);
+      });
+
+      it('catches exceptions', async () => {
+        const mockToken = {
+          idToken: 'foo'
+        };
+        const mockAuthJS = {
+          tokenManager: {
+            get: jest.fn().mockImplementation(key => {
+              expect(key).toBe('idToken');
+              throw new Error('expected test error');
+            })
+          }
+        };
+        OktaAuth.mockImplementation(() => mockAuthJS);
+        
+        const service = createService();
+        const retVal = await service.getIdToken();
+        expect(retVal).toBe(undefined);
+      });
+    });
+
+    describe('getUser', () => {
+      it('neither id nor access token = returns undefined', async () => {
+        const mockAuthJS = {
+          tokenManager: {
+            get: jest.fn().mockImplementation(key => {
+              return Promise.resolve(null);
+            })
+          }
+        };
+        OktaAuth.mockImplementation(() => mockAuthJS);
+
+        const service = createService();
+        const retVal = await service.getUser();
+        expect(retVal).toBe(undefined);
+      });
+
+
+      it('idtoken but no accessToken = returns idToken claims', async () => {
+        const mockToken = {
+          idToken: 'foo',
+          claims: 'baz',
+        };
+        const mockAuthJS = {
+          tokenManager: {
+            get: jest.fn().mockImplementation(key => {
+              if (key === 'idToken') {
+                return Promise.resolve(mockToken);
+              }
+              return Promise.resolve(null);
+            })
+          }
+        };
+        OktaAuth.mockImplementation(() => mockAuthJS);
+
+        const service = createService();
+        const retVal = await service.getUser();
+        expect(retVal).toBe(mockToken.claims);
+      });
+
+      it('idtoken and accessToken = calls getUserInfo and returns user object', async () => {
+        const mockToken = {
+          claims: {
+            sub: 'test-sub',
+          },
+        };
+        const userInfo = {
+          sub: 'test-sub',
+        };
+        const mockAuthJS = {
+          token: {
+            getUserInfo: jest.fn().mockReturnValue(Promise.resolve(userInfo)),
+          },
+          tokenManager: {
+            get: jest.fn().mockImplementation(key => {
+              if (key === 'idToken' || key === 'accessToken') {
+                return Promise.resolve(mockToken);
+              }
+              return Promise.resolve(null);
+            })
+          }
+        };
+        OktaAuth.mockImplementation(() => mockAuthJS);
+
+        const service = createService();
+        const retVal = await service.getUser();
+        expect(retVal).toBe(userInfo);
+      });
+
+      it('idtoken and accessToken but scope-mismatch calls getUserInfo and returns scopes', async () => {
+        const mockToken = {
+          claims: {
+            sub: 'test-sub',
+          },
+        };
+        const userInfo = {
+          sub: 'test-sub-other',
+        };
+        const mockAuthJS = {
+          token: {
+            getUserInfo: jest.fn().mockReturnValue(Promise.resolve(userInfo)),
+          },
+          tokenManager: {
+            get: jest.fn().mockImplementation(key => {
+              if (key === 'idToken' || key === 'accessToken') {
+                return Promise.resolve(mockToken);
+              }
+              return Promise.resolve(null);
+            })
+          }
+        };
+        OktaAuth.mockImplementation(() => mockAuthJS);
+
+        const service = createService();
+        const retVal = await service.getUser();
+        expect(mockAuthJS.token.getUserInfo).toHaveBeenCalled();
+        expect(retVal).toBe(mockToken.claims);
+      });
+    });
+
+    describe('getOktaConfig', () => {
+      it('returns normalized config', () => {
+        const service = createService({
+          client_id: 'foo',
+          issuer: 'https://foo',
+          redirect_uri: 'https://foo',
+          auto_renew: true
+        });
+        expect(service.getOktaConfig()).toMatchInlineSnapshot(`
+          Object {
+            "auto_renew": true,
+            "clientId": "foo",
+            "client_id": "foo",
+            "issuer": "https://foo",
+            "redirectUri": "https://foo",
+            "redirect_uri": "https://foo",
+            "responseType": undefined,
+            "scopes": Array [
+              "openid",
+            ],
+            "tokenManager": Object {
+              "autoRenew": true,
+              "storage": undefined,
+            },
+          }
+        `);
+      });
+    });
+
+    describe('loginRedirect', () => {
+      beforeEach(() => {
+        const mockAuthJS = {
+          token: {
+            getWithRedirect: jest.fn()
+          },
+        };
+        OktaAuth.mockImplementation(() => mockAuthJS);
+      })
+      it('Saves the "referrerPath" in localStorage', async () => {
+        localStorage.setItem('referrerPath', '');
+        expect(localStorage.getItem('referrerPath')).toBe('');
+        const service = createService();
+        const uri = 'https://foo.random';
+        await service.loginRedirect(uri);
+        const val = JSON.parse(localStorage.getItem('referrerPath'));
+        expect(val.uri).toBe(uri);
+      });
+
+      it('Sets responseType if none supplied', async () => {
+        const service = createService();
+        const uri = 'https://foo.random';
+        await service.loginRedirect(uri);
+        expect(service.oktaAuth.token.getWithRedirect).toHaveBeenCalledWith({
+          responseType: ['id_token', 'token'],
+          scopes: ['openid'],
+        })
+      });
+
+      it('Accepts additional parameters', async () => {
+        const service = createService();
+        const uri = 'https://foo.random';
+        const params = {
+          responseType: ['token', 'something'],
+          scopes: ['openid', 'foo'],
+          unknownParameter: 'super random',
+          unkownSection: {
+            other: 'stuff'
+          }
+        }
+        await service.loginRedirect(uri, params);
+        expect(service.oktaAuth.token.getWithRedirect).toHaveBeenCalledWith(params);
+      });
+
+
+      it('Will use values for "scopes" and "responseType" from sdk config as base values', async () => {
+        const params = {
+          scopes: ['foo', 'bar', 'openid'],
+          responseType: ['unknown'],
+        }
+        const service = createService(Object.assign({}, VALID_CONFIG, params));
+        const uri = 'https://foo.random';
+
+        await service.loginRedirect(uri);
+        expect(service.oktaAuth.token.getWithRedirect).toHaveBeenCalledWith(params);
+      });
+
+
+      it('Values for "scopes" and "responseType" can be completely overridden from base values', async () => {
+        const params1 = {
+          scopes: ['foo', 'bar', 'openid'],
+          responseType: ['unknown'],
+        }
+        const service = createService(Object.assign({}, VALID_CONFIG, params1));
+        const uri = 'https://foo.random';
+        const params2 = {
+          scopes: ['something', 'different'],
+          responseType: ['also', 'different'],
+        };
+        await service.loginRedirect(uri, params2);
+        expect(service.oktaAuth.token.getWithRedirect).toHaveBeenCalledWith(params2);
+      });
+    });
+
+    describe('handleAuthentication', () => {
+      let service;
+      let tokens;
+      let isAuthenticated;
+      beforeEach(() => {
+        tokens = [];
+        isAuthenticated = false;
+        const mockAuthJS = {
+          token: {
+            parseFromUrl: jest.fn().mockImplementation(() => tokens)
+          },
+          tokenManager: {
+            add: jest.fn()
+          }
+        };
+        OktaAuth.mockImplementation(() => mockAuthJS);
+        service = createService();
+        jest.spyOn(service, 'isAuthenticated').mockImplementation(() => Promise.resolve(isAuthenticated));
+        jest.spyOn(service.router, 'navigate').mockReturnValue(null);
+        jest.spyOn(service, 'emitAuthenticationState');
+      });
+
+      it('calls parseFromUrl', async () => {
+        await service.handleAuthentication();
+        expect(service.oktaAuth.token.parseFromUrl).toHaveBeenCalled();
+      });
+
+      it('stores tokens', async () => {
+        const accessToken = { accessToken: 'foo' };
+        const idToken = { idToken: 'bar' };
+        tokens = [accessToken, idToken];
+  
+        await service.handleAuthentication();
+        expect(service.oktaAuth.tokenManager.add).toHaveBeenNthCalledWith(1, 'accessToken', accessToken);
+        expect(service.oktaAuth.tokenManager.add).toHaveBeenNthCalledWith(2, 'idToken', idToken);
+      });
+      
+      it('isAuthenticated (false): does not authenticated state', async () => {
+        isAuthenticated = false;
+        await service.handleAuthentication();
+        expect(service.emitAuthenticationState).not.toHaveBeenCalled();
+      });
+
+      it('isAuthenticated (true): emits authenticated state', async () => {
+        isAuthenticated = true;
+        await service.handleAuthentication();
+        expect(service.emitAuthenticationState).toHaveBeenCalled();
+      });
+
+      it('navigates to the saved uri', async () => {
+        const uri = 'https://fake.test.foo';
+        service.setFromUri(uri);
+        await service.handleAuthentication();
+        expect(service.router.navigate).toHaveBeenCalledWith([uri], { queryParams: undefined })
+      });
+    });
+
+    describe('logout', () => {
+      let service;
+      beforeEach(() => {
+        const mockAuthJS = {
+          signOut: jest.fn(),
+          tokenManager: {
+            clear: jest.fn(),
+          }
+        };
+        OktaAuth.mockImplementation(() => mockAuthJS);
+        service = createService();
+        jest.spyOn(service.router, 'navigate').mockReturnValue(null);
+        jest.spyOn(service, 'emitAuthenticationState');
+      });
+
+      it('clears the token manager', async () => {
+        await service.logout();
+        expect(service.oktaAuth.tokenManager.clear).toHaveBeenCalled();
+      });
+
+      it('calls oktaAuth.signOut', async () => {
+        await service.logout();
+        expect(service.oktaAuth.signOut).toHaveBeenCalled();
+      });
+
+      it('emits authentication state', async () => {
+        await service.logout();
+        expect(service.emitAuthenticationState).toHaveBeenCalledWith(false);
+      });
+
+      it('redirects to the root by default', async () => {
+        await service.logout();
+        expect(service.router.navigate).toHaveBeenCalledWith(['/']);
+      });
+
+      it('accepts an argument for uri to redirect to', async () => {
+        const uri = 'https://my.custom.uri';
+        await service.logout(uri);
+        expect(service.router.navigate).toHaveBeenCalledWith([uri]);
+      });
+    });
+  });
+});
