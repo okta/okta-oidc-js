@@ -7,6 +7,8 @@ Okta React SDK makes it easy to integrate [react-router](https://github.com/Reac
 
 This library currently supports:
   - [OAuth 2.0 Implicit Flow](https://tools.ietf.org/html/rfc6749#section-1.3.2)
+  - [OAuth 2.0 Authorization Code Flow](https://tools.ietf.org/html/rfc6749#section-1.3.1)
+  - [Proof Key for Code Exchange (PKCE)](https://tools.ietf.org/html/rfc7636)
 
 ## Getting Started
 
