@@ -8,6 +8,8 @@ The Okta Vue SDK is a wrapper around the [Okta Auth SDK](https://github.com/okta
 This library currently supports:
 
 - [OAuth 2.0 Implicit Flow](https://tools.ietf.org/html/rfc6749#section-1.3.2)
+- [OAuth 2.0 Authorization Code Flow](https://tools.ietf.org/html/rfc6749#section-1.3.1)
+- [Proof Key for Code Exchange (PKCE)](https://tools.ietf.org/html/rfc7636)
 
 ## Getting Started
 
@@ -46,7 +48,8 @@ Vue.use(Auth, {
   issuer: 'https://{yourOktaDomain}.com/oauth2/default',
   clientId: '{clientId}',
   redirectUri: 'http://localhost:{port}/implicit/callback',
-  scopes: ['openid', 'profile', 'email']
+  scopes: ['openid', 'profile', 'email'],
+  pkce: true
 })
 
 ```
