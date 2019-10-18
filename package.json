@@ -1,6 +1,7 @@
 {
   "private": true,
   "devDependencies": {
+    "dotenv": "^8.1.0",
     "globby": "^6.1.0",
     "lerna": "^2.11.0"
   },

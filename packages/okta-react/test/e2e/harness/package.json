@@ -26,8 +26,8 @@
     "webdriver-manager": "^12.1.4"
   },
   "scripts": {
-    "start": "REACT_APP_ISSUER=$ISSUER REACT_APP_CLIENT_ID=$SPA_CLIENT_ID PORT=8080 OKTA_TESTING_DISABLEHTTPSCHECK=$OKTA_TESTING_DISABLEHTTPSCHECK react-app-rewired start",
-    "build": "REACT_APP_ISSUER=$ISSUER REACT_APP_CLIENT_ID=$SPA_CLIENT_ID PORT=8080 OKTA_TESTING_DISABLEHTTPSCHECK=$OKTA_TESTING_DISABLEHTTPSCHECK react-app-rewired build",
+    "start": "PORT=8080 react-app-rewired start",
+    "build": "react-app-rewired build",
     "build:test": "rimraf e2e/dist && babel e2e/ -d e2e/dist",
     "kill:port": "kill -s TERM $(lsof -t -i:8080 -sTCP:LISTEN) || true",
     "pretest": "../../../../../scripts/updateSeDrivers.sh 0 && yarn build:test",
