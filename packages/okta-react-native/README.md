@@ -10,6 +10,8 @@ This library follows the current best practice for native apps using:
 * [OAuth 2.0 Authorization Code Flow](https://tools.ietf.org/html/rfc6749#section-1.3.1)
 * [Proof Key for Code Exchange (PKCE)](https://tools.ietf.org/html/rfc7636)
 
+You can learn more on the [Okta + ReactNative](https://developer.okta.com/code/react-native/) page in our documentation. You can also download our [sample application](https://github.com/okta/samples-js-react-native/tree/master/browser-sign-in)
+
 ## Prerequisites
 
 * If you do not already have a **Developer Edition Account**, you can create one at [https://developer.okta.com/signup/](https://developer.okta.com/signup/).
@@ -72,7 +74,7 @@ Perform the following Manual installation steps if you're not using `react-nativ
     ```
 3. Insert the following lines inside the dependencies block in `android/app/build.gradle`:
     ```
-      compile project(':@okta_okta-react-native')
+    compile project(':@okta_okta-react-native')
     ```
 
 ### iOS Setup
@@ -92,22 +94,36 @@ This library depends on the native [Okta OIDC iOS](https://github.com/okta/okta-
 
 You can currently add Okta OIDC iOS through CocoaPods:
 
-1. **CocoaPods**
-   With [CocoaPods](https://guides.cocoapods.org/using/getting-started.html), make sure your `Podfile` looks like this:
+1. [**CocoaPods**]((https://guides.cocoapods.org/using/getting-started.html))
 
+   ***React Native >= 0.60***: With React Native 0.60 pods are added to podfile automatically. Run `pod install` command to install dependecies:
+   ```
+   cd ios
+   pod install
+   ```
+   ***React Native < 0.60***: Make sure your `Podfile` looks like this:
     ```   
-    platform :ios, '11.0'
+   platform :ios, '11.0'
 
-    target '{YourTargetName}' do
-      use_frameworks!
+   target '{YourTargetName}' do
 
-      pod 'OktaOidc', '~> 3.0'
+   pod 'OktaOidc', '~> 3.0'
 
-    end
-    ```
+   end
+   ```
 
    Then run `pod install`.
+   
+2. **Carthage**
+   With [Carthage](https://github.com/Carthage/Carthage), add the following line to your Cartfile:
 
+    ```
+    github "okta/okta-oidc-ios" ~> 3.5.0
+    ```
+   Then run `carthage update --platform iOS`.
+
+   Open project settings and choose your application target. Then open `Build Phases` and add `OktaOidc.framework` from `ios/Carthage/Build/iOS` into `Embed Frameworks` section
+   
 #### Swift Configuration
 Since React Native uses Objective-C, and Okta React Native library is a Swift wrapper, you will need to have at least one Swift file in your iOS project for the project to compile. To add a dummy Swift file, follow the following steps:
 
@@ -177,7 +193,7 @@ await createConfig({
 
 ### `signIn`
 
-This async method will automatically redirect users to your Okta organziation for authentication. It will an event once a user successfully signs in. Make sure your event listeners are mounted and unmounted. Note: on iOS there isn't a `onCancelled` event. If the sign in process is cancelled, `onError` will be triggered. 
+This async method will automatically redirect users to your Okta organziation for authentication. It will emit an event once a user successfully signs in. Make sure your event listeners are mounted and unmounted. Note: on iOS there isn't a `onCancelled` event. If the sign in process is cancelled, `onError` will be triggered. 
 
 ```javascript
 signIn();
@@ -212,6 +228,14 @@ componentWillUnmount() {
 }
 
 ``` 
+
+### `authenticate`
+
+If you already logged in to Okta and have a valid session token, you can complete authorization by calling `authenticate` method. It will emit an event once a user successfully signs in. Make sure your event listeners are mounted and unmounted. Note: on iOS there isn't a `onCancelled` event. If the `authenticate` process is cancelled, `onError` will be triggered. 
+
+```javascript
+authenticate({sessionToken: sessionToken});
+```
 
 ### `signOut`
 
@@ -418,4 +442,13 @@ await refreshTokens();
   "id_token": "{idToken}", 
   "refresh_token": "refreshToken" 
 }
+```
+
+## Contributing
+We welcome contributions to all of our open-source packages. Please see the [contribution guide](https://github.com/okta/okta-oidc-js/blob/master/CONTRIBUTING.md) to understand how to structure a contribution.
+
+### Installing dependencies for contributions
+We use [yarn](https://yarnpkg.com) for dependency management when developing this package:
+```
+yarn install
 ```

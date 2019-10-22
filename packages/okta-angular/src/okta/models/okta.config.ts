@@ -23,7 +23,9 @@ export interface OktaConfig {
   redirectUri?: string;
   clientId?: string;
   scope?: string;
-  responseType?: string;
+  scopes?: string[];
+  responseType?: any; // can be string or array
+  pkce?: boolean;
   onAuthRequired?: AuthRequiredFunction;
   testing?: TestingObject;
 }

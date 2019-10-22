@@ -13,8 +13,8 @@
 import { browser, by, element, ExpectedConditions } from 'protractor';
 
 export class AppPage {
-  navigateTo() {
-    return browser.get('/');
+  navigateTo(query: string = '') {
+    return browser.get('/' + query);
   }
 
   waitUntilVisible() {
@@ -24,11 +24,11 @@ export class AppPage {
   }
 
   waitUntilLoggedOut() {
-    browser.wait(ExpectedConditions.presenceOf(this.getLoginButton()), 5000);
+    browser.wait(ExpectedConditions.presenceOf(this.getLoginButton()), 20000);
   }
 
   waitUntilLoggedIn() {
-    browser.wait(ExpectedConditions.presenceOf(this.getLogoutButton()), 5000);
+    browser.wait(ExpectedConditions.presenceOf(this.getLogoutButton()), 20000);
   }
 
   waitForElement(id: string) {

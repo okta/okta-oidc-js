@@ -38,7 +38,8 @@ util.createDemoServerWithCustomLoginPage = (options) => {
           const baseUrl = url.parse(baseConfig.issuer).protocol + '//' + url.parse(baseConfig.issuer).host;
           res.render('login', {
             csrfToken: req.csrfToken(),
-            baseUrl: baseUrl
+            baseUrl: baseUrl,
+            cdnUrl: baseConfig.cdnUrl
           });
         }
       }

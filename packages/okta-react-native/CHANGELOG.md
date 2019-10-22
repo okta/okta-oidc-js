@@ -1,3 +1,23 @@
+# 1.2.1
+
+### Bug fix
+- [`05be754`](https://github.com/okta/okta-oidc-js/commit/05be7540a53e9c712cf108573451baa0124032f0) - Compilation error in Android bridge file
+
+# 1.2.0
+
+### Features
+- [`58618c8`](https://github.com/okta/okta-oidc-js/commit/32b9a99e3065c34cdcc97018075697356403f11d) - Added `authenticate(withSessionToken:)` public method
+
+# 1.1.0
+
+### Features
+- [`58618c8`](https://github.com/okta/okta-oidc-js/commit/58618c8a3f519c82a41f1cce58918bc98a459a2b) - Added support for React Native 0.60.x
+
+# 1.0.2
+
+### Features
+- [`c422f1d`](https://github.com/okta/okta-oidc-js/commit/c422f1d064acaa26f994564ffb2fa5585a83c4be#diff-2c20101038faa8ceda1dda5c3cde79d8) - Add Carthage support
+
 # 1.0.1
 
 ### Features

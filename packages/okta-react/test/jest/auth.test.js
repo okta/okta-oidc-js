@@ -158,6 +158,31 @@ describe('Auth configuration', () => {
     }
     expect(createInstance).toThrow();
   });
+
+  it('accepts options in camel case', () => {
+    function createInstance () {
+      return new Auth({
+        issuer: 'https://foo/oauth2/default',
+        clientId: 'foo',
+        redirectUri: 'https://foo/redirect'
+      });
+    }
+    expect(createInstance).not.toThrow();
+  });
+
+  it('accepts the `pkce` option', () => {
+    jest.spyOn(AuthJS.prototype, 'constructor');
+    const options = {
+      clientId: 'foo',
+      issuer: 'https://foo/oauth2/default',
+      redirectUri: 'foo',
+      pkce: true,
+    }
+
+    new Auth(options);
+    expect(AuthJS.prototype.constructor).toHaveBeenCalledWith(options);
+  });
+
 });
 
 describe('Auth component', () => {
@@ -166,6 +191,7 @@ describe('Auth component', () => {
       return mockAuthJsInstance
     });
   });
+
   test('sets the right user agent on AuthJS', () => {
     const auth = new Auth({
       issuer: 'https://foo/oauth2/default',
@@ -229,12 +255,48 @@ describe('Auth component', () => {
       client_id: 'foo',
       redirect_uri: 'foo'
     });
-    auth.redirect({scope: ['openid', 'foo']});
-    expect(mockAuthJsInstance.token.getWithRedirect).toHaveBeenCalledWith({
-      responseType: ['id_token', 'token'],
-      scopes: ['openid', 'foo']
-    });
+    const overrides = {
+      scopes: ['openid', 'foo'],
+      responseType: ['fake'],
+    };
+    auth.redirect(overrides);
+    expect(mockAuthJsInstance.token.getWithRedirect).toHaveBeenCalledWith(overrides);
   });
+
+  test('redirect params: can use legacy param format (scope string)', () => {
+    const auth = new Auth({
+      issuer: 'https://foo/oauth2/default',
+      client_id: 'foo',
+      redirect_uri: 'foo'
+    });
+    const overrides = {
+      scope: 'openid foo',
+      response_type: ['fake']
+    };
+    auth.redirect(overrides);
+    expect(mockAuthJsInstance.token.getWithRedirect).toHaveBeenCalledWith(Object.assign(overrides, {
+      scopes: ['openid', 'foo'],
+      responseType: ['fake'],
+    }));
+  });
+
+  test('redirect params: can use legacy param format (scope array)', () => {
+    const auth = new Auth({
+      issuer: 'https://foo/oauth2/default',
+      client_id: 'foo',
+      redirect_uri: 'foo'
+    });
+    const overrides = {
+      scope: ['openid', 'foo'],
+      response_type: ['fake']
+    };
+    auth.redirect(overrides);
+    expect(mockAuthJsInstance.token.getWithRedirect).toHaveBeenCalledWith(Object.assign(overrides, {
+      scopes: ['openid', 'foo'],
+      responseType: ['fake'],
+    }));
+  });
+
   test('can append the authorize request builder with additionalParams through auth.redirect', () => {
     const auth = new Auth({
       issuer: 'https://foo/oauth2/default',

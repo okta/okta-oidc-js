@@ -19,7 +19,7 @@ export class ProtectedPage {
   }
 
   waitUntilVisible(path) {
-    Util.waitUrlContains('/protected' + path);
+    Util.waitUrlContains('/protected' + path, 20000);
   }
 
   waitForElement(id) {

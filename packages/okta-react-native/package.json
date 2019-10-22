@@ -1,12 +1,14 @@
 {
   "name": "@okta/okta-react-native",
   "title": "React Native Okta Sdk Bridge",
-  "version": "1.0.1",
+  "version": "1.2.1",
   "description": "Okta OIDC for React Native",
   "main": "index.js",
+  "podname": "OktaSdkBridgeReactNative",
+  "homepage": "https://github.com/okta/okta-oidc-js/tree/master/packages/okta-react-native",
   "scripts": {
-    "test": "echo \"Error: no test specified\"",
-    "test:debug": "echo \"Error: no test specified\""
+    "test": "node_modules/.bin/jest",
+    "test:debug": "node --inspect-brk node_modules/jest/bin/jest.js --runInBand"
   },
   "repository": {
     "type": "git",
@@ -28,19 +30,31 @@
     "okta",
     "oidc"
   ],
-  "author": "kayci.wang@okta.com",
+  "author": "developer@okta.com",
   "license": "Apache-2.0",
   "readmeFilename": "README.md",
   "peerDependencies": {
     "react": "^16.5.0",
-    "react-native": ">=0.57.0 <=0.59.9"
+    "react-native": "^0.60.0"
   },
   "devDependencies": {
+    "@babel/core": "^7.5.4",
+    "@babel/preset-env": "^7.5.4",
+    "babel-jest": "^24.8.0",
+    "jest": "^24.8.0",
+    "metro-react-native-babel-preset": "^0.55.0",
     "react": "^16.5.0",
-    "react-native": "^0.59.9"
+    "react-native": "^0.60.0"
   },
   "dependencies": {
     "@okta/configuration-validation": "^0.3.0",
     "jwt-lite": "^1.1.2"
+  },
+  "jest": {
+    "automock": false,
+    "preset": "react-native",
+    "setupFiles": [
+      "./setupJest.js"
+    ]
   }
 }

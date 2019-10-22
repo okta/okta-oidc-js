@@ -10,7 +10,7 @@
  * See the License for the specific language governing permissions and limitations under the License.
  */
 
-import { browser, by, element } from 'protractor';
+import { browser, by, element, ExpectedConditions } from 'protractor';
 import { Util } from '../util'
 
 export class SessionTokenSignInPage {
@@ -35,6 +35,7 @@ export class SessionTokenSignInPage {
   }
 
   signIn({username, password}) {
+    browser.wait(ExpectedConditions.elementToBeClickable(this.getUsernameField()), 5000);
     this.getUsernameField().sendKeys(username);
     this.getPasswordField().sendKeys(password);
     this.getSubmitButton().click();

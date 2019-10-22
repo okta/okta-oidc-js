@@ -8,15 +8,17 @@ An Angular wrapper around [Okta Auth JS](https://github.com/okta/okta-auth-js), 
 This library currently supports:
 
 - [OAuth 2.0 Implicit Flow](https://tools.ietf.org/html/rfc6749#section-1.3.2)
+- [OAuth 2.0 Authorization Code Flow](https://tools.ietf.org/html/rfc6749#section-1.3.1)
+- [Proof Key for Code Exchange (PKCE)](https://tools.ietf.org/html/rfc7636)
 
 This library has been tested for compatibility with the following Angular versions: 4, 5, 6, 7, 8
 
-`okta-angular` works directly with [`@angular/router`](https://angular.io/guide/router). 
+`okta-angular` works directly with [`@angular/router`](https://angular.io/guide/router).
 
 ## Getting Started
 
 - If you do not already have a **Developer Edition Account**, you can create one at [https://developer.okta.com/signup/](https://developer.okta.com/signup/).
-- An Okta Application, configured for Singe-Page App (SPA) mode. This is done from the Okta Developer Console and you can find instructions [here](https://developer.okta.com/authentication-guide/implementing-authentication/implicit#1-setting-up-your-application). When following the wizard, use the default properties. They are are designed to work with our sample applications.
+- An Okta Application, configured for Single-Page App (SPA) mode. This is done from the Okta Developer Console and you can find instructions [here](https://developer.okta.com/authentication-guide/implementing-authentication/implicit#1-setting-up-your-application). When following the wizard, use the default properties. They are are designed to work with our sample applications.
 
 ### Helpful Links
 
@@ -24,7 +26,7 @@ This library has been tested for compatibility with the following Angular versio
   - If you don't have an Angular app, or are new to Angular, please start with this guide. It will walk you through the creation of an Angular app, creating routes, and other application development essentials.
 - [Okta Sample Application](https://github.com/okta/samples-js-angular)
   - A fully functional sample application.
-- [Okta Angular Quickstart](https://okta.github.io/quickstart/#/angular/nodejs/generic)
+- [Okta Angular Quickstart](https://developer.okta.com/quickstart/#/angular/nodejs/express)
   - Helpful resource for integrating an existing Angular application into Okta.
 
 ## Installation
@@ -32,11 +34,7 @@ This library has been tested for compatibility with the following Angular versio
 This library is available through [npm](https://www.npmjs.com/package/@okta/okta-angular). To install it, simply add it to your project:
 
 ```bash
-# npm
 npm install --save @okta/okta-angular
-
-# yarn
-yarn add @okta/okta-angular
 ```
 
 ## Usage
@@ -56,7 +54,8 @@ import {
 const oktaConfig = {
   issuer: 'https://{yourOktaDomain}.com/oauth2/default',
   clientId: '{clientId}',
-  redirectUri: 'http://localhost:{port}/implicit/callback'
+  redirectUri: 'http://localhost:{port}/implicit/callback',
+  pkce: true
 }
 
 @NgModule({
@@ -78,8 +77,11 @@ An Angular InjectionToken used to configure the OktaAuthService. This value must
 - `issuer` **(required)**: The OpenID Connect `issuer`
 - `clientId` **(required)**: The OpenID Connect `client_id`
 - `redirectUri` **(required)**: Where the callback is hosted
-- `scope` *(optional)*: Reserved for custom claims to be returned in the tokens
-- `responseType` *(optional)*: Desired token grant types
+- `scope` *(deprecated in v1.2.2)*: Use `scopes` instead
+- `scopes` *(optional)*: Reserved for custom claims to be returned in the tokens. Defaults to `['openid']`, which will only return the `sub` claim. To obtain more information about the user, use `openid profile`. For a list of scopes and claims, please see [Scope-dependent claims](https://developer.okta.com/standards/OIDC/index.html#scope-dependent-claims-not-always-returned) for more information.
+- `responseType` *(optional)*: Desired token grant types. Default: `['id_token', 'token']`.
+For PKCE flow, this should be left undefined or set to `['code']`.
+- `pkce` *(optional)*: If `true`, PKCE flow will be used
 - `onAuthRequired` *(optional)*: Accepts a callback to make a decision when authentication is required. If not supplied, `okta-angular` will redirect directly to Okta for authentication.
 - `storage` *(optional)*:
   Specify the type of storage for tokens.
@@ -277,7 +279,7 @@ An observable that returns true/false when the authenticate state changes.  This
 
 #### `oktaAuth.getUser()`
 
-Returns a promise that will resolve with the result of the OpenID Connect `/userinfo` endpoint if an access token is provided, or returns the claims of the ID token if no access token is available.  The returned claims depend on the requested response type, requested scope, and authorization server policies.  For more information see documentation for the [UserInfo endpoint][], [ID Token Claims][], and [Customizing Your Authorization Server][].
+Returns a promise that will resolve with the result of the OpenID Connect `/userinfo` endpoint if an access token is provided, or returns the claims of the ID token if no access token is available.  The returned claims depend on the requested response type, requested scopes, and authorization server policies.  For more information see documentation for the [UserInfo endpoint][], [ID Token Claims][], and [Customizing Your Authorization Server][].
 
 #### `oktaAuth.getAccessToken() Promise<string>`
 
@@ -303,11 +305,16 @@ Used to capture the current URL state before a redirect occurs. Used primarily f
 
 Returns the stored URI and query parameters stored when the `OktaAuthGuard` and/or `setFromUri` was used.
 
-## Development
+## Contributing
+We welcome contributions to all of our open-source packages. Please see the [contribution guide](https://github.com/okta/okta-oidc-js/blob/master/CONTRIBUTING.md) to understand how to structure a contribution.
 
-See the [getting started](/README.md#getting-started) section for step-by-step instructions.
+### Installing dependencies for contributions
+We use [yarn](https://yarnpkg.com) for dependency management when developing this package:
+```
+yarn install
+```
 
-## Commands
+### Commands
 
 | Command      | Description                        |
 |--------------|------------------------------------|

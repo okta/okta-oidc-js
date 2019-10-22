@@ -62,9 +62,6 @@ repositories {
         // https://github.com/facebook/react-native/blob/0.59-stable/template/android/build.gradle#L30
         url "$projectDir/../node_modules/react-native/android"
     }
-    maven {
-        url  "https://dl.bintray.com/okta/com.okta.android"
-    }
     mavenCentral()
     google()
     jcenter()
@@ -72,7 +69,7 @@ repositories {
 
 dependencies {
     implementation 'com.facebook.react:react-native:+'
-    implementation 'com.okta.android:oidc-android:1.0.1'
+    implementation 'com.okta.android:oidc-androidx:1.0.2'
 }
 
 def configureReactNativePom(def pom) {

@@ -28,12 +28,14 @@ export default class Auth {
       disableHttpsCheck: !!config.disableHttpsCheck
     };
 
-    assertIssuer(config.issuer, testing);
-    assertClientId(config.client_id);
-    assertRedirectUri(config.redirect_uri);
-    this._oktaAuth = new OktaAuth(buildConfigObject(config));
+    // normalize authJS config. In this SDK, we allow underscore on certain properties, but AuthJS consistently uses camel case.
+    const authConfig = buildConfigObject(config);
+    assertIssuer(authConfig.issuer, testing);
+    assertClientId(authConfig.clientId);
+    assertRedirectUri(authConfig.redirectUri);
+    this._oktaAuth = new OktaAuth(authConfig);
     this._oktaAuth.userAgent = `${packageInfo.name}/${packageInfo.version} ${this._oktaAuth.userAgent}`;
-    this._config = config;
+    this._config = authConfig; // use normalized config
     this._history = config.history;
 
     this.handleAuthentication = this.handleAuthentication.bind(this);
@@ -125,19 +127,19 @@ export default class Auth {
   }
 
   async redirect(additionalParams = {}) {
-    const responseType = additionalParams.response_type
-      || this._config.response_type
+    // normalize config object
+    let params = buildConfigObject(additionalParams);
+
+    // set defaults
+    params.responseType = params.responseType
+      || this._config.responseType
       || ['id_token', 'token'];
 
-    const scopes = additionalParams.scope
-      || this._config.scope
+    params.scopes = params.scopes
+      || this._config.scopes
       || ['openid', 'email', 'profile'];
 
-    this._oktaAuth.token.getWithRedirect({
-      responseType: responseType,
-      scopes: scopes,
-      ...additionalParams
-    });
+    this._oktaAuth.token.getWithRedirect(params);
 
     // return a promise that doesn't terminate so nothing
     // happens after setting window.location

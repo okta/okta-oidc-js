@@ -8,45 +8,29 @@ The Okta Vue SDK is a wrapper around the [Okta Auth SDK](https://github.com/okta
 This library currently supports:
 
 - [OAuth 2.0 Implicit Flow](https://tools.ietf.org/html/rfc6749#section-1.3.2)
+- [OAuth 2.0 Authorization Code Flow](https://tools.ietf.org/html/rfc6749#section-1.3.1)
+- [Proof Key for Code Exchange (PKCE)](https://tools.ietf.org/html/rfc7636)
 
 ## Getting Started
 
 - If you do not already have a **Developer Edition Account**, you can create one at [https://developer.okta.com/signup/](https://developer.okta.com/signup/).
-- If you don't have a Vue app, or are new to Vue, please start with the [Vue CLI](https://github.com/vuejs/vue-cli) guide. It will walk you through the creation of a Vue app, creating [routers](https://router.vuejs.org/en/essentials/getting-started.html), and other application development essentials.
+- An Okta Application, configured for Single-Page App (SPA) mode. This is done from the Okta Developer Console and you can find instructions [here](https://developer.okta.com/authentication-guide/implementing-authentication/implicit#1-setting-up-your-application). When following the wizard, use the default properties. They are are designed to work with our sample applications.
 
-### Add an OpenID Connect Client in Okta
+### Helpful Links
 
-In Okta, applications are OpenID Connect clients that can use Okta Authorization servers to authenticate users.  Your Okta Org already has a default authorization server, so you just need to create an OIDC client that will use it.
-
-- Log into the Okta Developer Dashboard, click **Applications** > **Add Application**.
-- Choose **Single Page App (SPA)** as the platform, then submit the form the default values, which should look like this:
-
-| Setting             | Value                                          |
-| ------------------- | ---------------------------------------------- |
-| App Name            | My SPA App                                     |
-| Base URIs           | http://localhost:{port}                        |
-| Login redirect URIs | http://localhost:{port}/implicit/callback      |
-| Grant Types Allowed | Implicit                                       |
-
-After you have created the application there are two more values you will need to gather:
-
-| Setting       | Where to Find                                                                  |
-| ------------- | ------------------------------------------------------------------------------ |
-| Client ID     | In the applications list, or on the "General" tab of a specific application.   |
-| Org URL       | On the home screen of the developer dashboard, in the upper right.             |
-
-These values will be used in your Vue application to setup the OpenID Connect flow with Okta.
+- [Vue CLI](https://github.com/vuejs/vue-cli)
+  - If you don't have a Vue app, or are new to Vue, please start with this guide. It will walk you through the creation of a Vue app, creating [routers](https://router.vuejs.org/en/essentials/getting-started.html), and other application development essentials.
+- [Okta Sample Application](https://github.com/okta/samples-js-vue)
+  - A fully functional sample application.
+- [Okta Vue Quickstart](https://developer.okta.com/quickstart/#/vue/nodejs/express)
+  - Helpful resource for integrating an existing Vue application into Okta.
 
 ## Installation
 
 This library is available through [npm](https://www.npmjs.com/package/@okta/okta-vue). To install it, simply add it to your project:
 
 ```bash
-# npm
 npm install --save @okta/okta-vue
-
-# yarn
-yarn add @okta/okta-vue
 ```
 
 ### Configuration
@@ -62,9 +46,10 @@ import Auth from '@okta/okta-vue'
 
 Vue.use(Auth, {
   issuer: 'https://{yourOktaDomain}.com/oauth2/default',
-  client_id: '{clientId}',
-  redirect_uri: 'http://localhost:{port}/implicit/callback',
-  scope: 'openid profile email'
+  clientId: '{clientId}',
+  redirectUri: 'http://localhost:{port}/implicit/callback',
+  scopes: ['openid', 'profile', 'email'],
+  pkce: true
 })
 
 ```
@@ -226,21 +211,17 @@ router.beforeEach((to, from, next) {
 
 #### Configuration Options
 
-- `issuer` **(required)**: The OpenID Connect `issuer`
-- `client_id` **(required)**: The OpenID Connect `client_id`
-- `redirect_uri` **(required)**: Where the callback is hosted
-- `scope` *(optional)*: Reserved or custom claims to be returned in the tokens
-- `response_type` *(optional)*: Desired token grant types
-- `storage` *(optional)*:
-  Specify the type of storage for tokens.
-  The types are:
-  - [`localStorage`](https://developer.mozilla.org/en-US/docs/Web/API/Window/localStorage)
-  - [`sessionStorage`](https://developer.mozilla.org/en-US/docs/Web/API/Window/sessionStorage)
-  - [`cookie`](https://developer.mozilla.org/en-US/docs/Web/API/Document/cookie)
+he most commonly used options are shown here. See [Configuration Reference](https://github.com/okta/okta-auth-js#configuration-reference) for an extended set of supported options.
 
-  Defaults to `localStorage`. If [local storage](https://developer.mozilla.org/en-US/docs/Web/API/Web_Storage_API/Local_storage) is not available, falls back to `sessionStorage` or `cookie`.
-- `auto_renew` *(optional)*:
-  By default, the library will attempt to renew expired tokens. When an expired token is requested by the library, a renewal request is executed to update the token. If you wish to  to disable auto renewal of tokens, set `auto_renew` to `false`.
+- `issuer` **(required)**: The OpenID Connect `issuer`
+- `clientId` **(required)**: The OpenID Connect `client_id`
+- `redirectUri` **(required)**: Where the callback is hosted
+- `scope` *(deprecated in v1.1.1)*: Use `scopes` instead
+- `scopes` *(optional)*: Reserved or custom claims to be returned in the tokens. Defaults to `openid`, which will only return the `sub` claim. To obtain more information about the user, use `openid profile`. For a list of scopes and claims, please see [Scope-dependent claims](https://developer.okta.com/standards/OIDC/index.html#scope-dependent-claims-not-always-returned) for more information.
+- `responseType` *(optional)*: Desired token grant types. Default: `['id_token', 'token']`. For PKCE flow, this should be left undefined or set to `['code']`.
+- `pkce` *(optional)* - If `true`, PKCE flow will be used
+- `autoRenew` *(optional)*:
+  By default, the library will attempt to renew expired tokens. When an expired token is requested by the library, a renewal request is executed to update the token. If you wish to  to disable auto renewal of tokens, set `autoRenew` to `false`.
 
 #### `$auth.loginRedirect(fromUri, additionalParams)`
 
@@ -276,14 +257,20 @@ Returns the result of the OpenID Connect `/userinfo` endpoint if an access token
 
 Parses the tokens returned as hash fragments in the OAuth 2.0 Redirect URI.
 
-## Development
+## Contributing
+We welcome contributions to all of our open-source packages. Please see the [contribution guide](https://github.com/okta/okta-oidc-js/blob/master/CONTRIBUTING.md) to understand how to structure a contribution.
 
-See the [getting started](/README.md#getting-started) section for step-by-step instructions.
+### Installing dependencies for contributions
+We use [yarn](https://yarnpkg.com) for dependency management when developing this package:
+```
+yarn install
+```
 
-## Commands
+### Commands
 
 | Command        | Description                        |
 | -------------- | ---------------------------------- |
+| `yarn install` | Install all dependencies           |
 | `yarn start`   | Start the sample app using the SDK |
 | `yarn test`    | Run integration tests              |
 | `yarn lint`    | Run eslint linting tests           |

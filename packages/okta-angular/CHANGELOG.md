@@ -1,3 +1,15 @@
+# 1.2.2
+
+### Features
+
+- [`ef10d85`](https://github.com/okta/okta-oidc-js/commit/ef10d856fb6bceba26fac119f0d17db1aaf66a2c) - Support PKCE authorization flow
+
+### Other
+
+- [`654550`](https://github.com/okta/okta-oidc-js/commit/6545506921cbe6e8f15076e45e908f285a6e2f1e) - All configuration options are now accepted. See [Configuration Reference](https://github.com/okta/okta-auth-js#configuration-reference). Camel-case (clientId) is now the preferred syntax for all Okta OIDC libraries. Underscore syntax (client_id) will be deprecated in a future release.
+
+- [`a2a7b3e`](https://github.com/okta/okta-oidc-js/commit/a2a7b3e695d40e29d473be89e90340fbf5c4c56b) - Configuration property `scope` (string) is deprecated in favor of `scopes` (array). Normalize config format for the properties `responseType` and `scopes`, used in get token flows. Fully support deprecated config properties `request_type` and `scope` as previously documented and used within the okta-angular samples.
+
 # 1.2.1
 
 ### Other

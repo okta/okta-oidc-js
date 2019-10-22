@@ -57,6 +57,10 @@ export const signOut = async() => {
   return NativeModules.OktaSdkBridge.signOut();
 }
 
+export const authenticate = async({sessionToken}) => {
+  return NativeModules.OktaSdkBridge.authenticate(sessionToken);
+}
+
 export const getAccessToken = async() => {
   return NativeModules.OktaSdkBridge.getAccessToken();
 }
@@ -106,7 +110,4 @@ export const refreshTokens = async() => {
   return NativeModules.OktaSdkBridge.refreshTokens(); 
 }
 
-export const EventEmitter = Platform.select({
-  ios: new NativeEventEmitter(NativeModules.OktaSdkBridge),
-  android: DeviceEventEmitter
-})
+export const EventEmitter = new NativeEventEmitter(NativeModules.OktaSdkBridge);

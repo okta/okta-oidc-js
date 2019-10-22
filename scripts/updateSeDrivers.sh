@@ -5,7 +5,7 @@ SCRIPT_DIR="${SCRIPT_PATH%scripts}"
 DIR_MARKER="../"
 DEFAULT_STANDALONE_VER=latest
 DEFAULT_CHROME_DRIVER_VER=2.46
-
+NODE_MODULES="${PWD}/node_modules"
 DEPTH=$1
 
 function setCallDepth() {
@@ -107,12 +107,12 @@ function setStandaloneVersion() {
 
 function removeSymlinks() {
     # remove symlinks if found
-    CHROME_DRIVER_LINK=${TARGET_PATH}node_modules/webdriver-manager/selenium/chromedriver
+    CHROME_DRIVER_LINK=${NODE_MODULES}/webdriver-manager/selenium/chromedriver
     if [[ -f ${CHROME_DRIVER_LINK} ]];
     then
       rm ${CHROME_DRIVER_LINK}
     fi
-    SE_STANDALONE_LINK=${TARGET_PATH}node_modules/webdriver-manager/selenium/selenium-server-standalone.jar
+    SE_STANDALONE_LINK=${NODE_MODULES}/webdriver-manager/selenium/selenium-server-standalone.jar
     if [[ -f ${SE_STANDALONE_LINK} ]];
     then
       rm ${SE_STANDALONE_LINK}
@@ -120,14 +120,14 @@ function removeSymlinks() {
 }
 
 function findLatestStandaloneVersion() {
-  SE_STANDALONE_LATEST=$(ls -t1 ${TARGET_PATH}node_modules/webdriver-manager/selenium/selenium-server-standalone-*.jar | head -1)
+  SE_STANDALONE_LATEST=$(ls -t1 ${NODE_MODULES}/webdriver-manager/selenium/selenium-server-standalone-*.jar | head -1)
   SE_STANDALONE_REAL_VER=$(echo ${SE_STANDALONE_LATEST} | sed -En 's/.*\/selenium-server-standalone-(.*).jar/\1/p')
   echo "Real Standalone Version: ${SE_STANDALONE_REAL_VER}"
 }
 
 function updateDrivers() {
     # update the chromedriver and standalone driver
-    ${TARGET_PATH}node_modules/protractor/bin/webdriver-manager update --versions.chrome ${CHROME_DRIVER_VER} --gecko false --versions.standalone ${SE_STANDALONE_VER}
+    ${NODE_MODULES}/webdriver-manager/bin/webdriver-manager update --versions.chrome ${CHROME_DRIVER_VER} --gecko false --versions.standalone ${SE_STANDALONE_VER}
     CHROME_DRIVER_FILE_NAME=chromedriver_${CHROME_DRIVER_VER}
     if [[ ${SE_STANDALONE_VER} == 'latest' ]];
     then

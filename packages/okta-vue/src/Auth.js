@@ -10,19 +10,18 @@ import ImplicitCallback from './components/ImplicitCallback'
 
 function install (Vue, options) {
   const authConfig = initConfig(options)
-  const oktaAuth = new AuthJS(buildConfigObject(authConfig))
+  const oktaAuth = new AuthJS(authConfig)
   oktaAuth.userAgent = `${packageInfo.name}/${packageInfo.version} ${oktaAuth.userAgent}`
 
   Vue.prototype.$auth = {
-    loginRedirect (fromUri, additionalParams) {
+    async loginRedirect (fromUri, additionalParams) {
       if (fromUri) {
         localStorage.setItem('referrerPath', fromUri)
       }
-      return oktaAuth.token.getWithRedirect({
-        responseType: authConfig.response_type,
-        scopes: authConfig.scope.split(' '),
-        ...additionalParams
-      })
+      let params = buildConfigObject(additionalParams)
+      params.scopes = params.scopes || authConfig.scopes
+      params.responseType = params.responseType || authConfig.responseType
+      return oktaAuth.token.getWithRedirect(params)
     },
     async logout () {
       oktaAuth.tokenManager.clear()
@@ -92,16 +91,24 @@ function install (Vue, options) {
 
 function handleCallback () { return ImplicitCallback }
 
-const initConfig = auth => {
+const initConfig = options => {
+  // Normalize config object
+  let auth = buildConfigObject(options)
+
   // Assert configuration
   assertIssuer(auth.issuer, auth.testing)
-  assertClientId(auth.client_id)
-  assertRedirectUri(auth.redirect_uri)
+  assertClientId(auth.clientId)
+  assertRedirectUri(auth.redirectUri)
 
-  if (!auth.scope) auth.scope = 'openid'
+  // Ensure "openid" exists in the scopes
+  auth.scopes = auth.scopes || []
+  if (auth.scopes.indexOf('openid') < 0) {
+    auth.scopes.unshift('openid')
+  }
 
-  // Use space separated response_type or default value
-  auth.response_type = (auth.response_type || 'id_token token').split(' ')
+  // Set default responseType if not specified
+  auth.responseType = auth.responseType || ['id_token', 'token']
+
   return auth
 }
 

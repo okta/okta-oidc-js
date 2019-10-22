@@ -37,6 +37,7 @@ export class OktaSignInPage {
     }
 
     signIn({username, password}) {
+      browser.wait(ExpectedConditions.elementToBeClickable(this.getUsernameField()), 5000);
       this.getUsernameField().sendKeys(username);
       this.getPasswordField().sendKeys(password);
       this.getSubmitButton().click();

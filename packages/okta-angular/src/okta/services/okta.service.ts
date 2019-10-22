@@ -27,7 +27,7 @@ import packageInfo from '../packageInfo';
 /**
  * Import the okta-auth-js library
  */
-import * as OktaAuth from '@okta/okta-auth-js';
+import OktaAuth from '@okta/okta-auth-js';
 import { Observable, Observer } from 'rxjs';
 
 @Injectable()
@@ -38,36 +38,36 @@ export class OktaAuthService {
     $authenticationState: Observable<boolean>;
 
     constructor(@Inject(OKTA_CONFIG) private auth: OktaConfig, private router: Router) {
-      // Assert Configuration
-      assertIssuer(auth.issuer, auth.testing);
-      assertClientId(auth.clientId);
-      assertRedirectUri(auth.redirectUri)
-
       this.observers = [];
-
-      this.oktaAuth = new OktaAuth(buildConfigObject(auth));
-
-      this.oktaAuth.userAgent = `${packageInfo.name}/${packageInfo.version} ${this.oktaAuth.userAgent}`;
-
-      /**
-       * Scrub scopes to ensure 'openid' is included
-       */
-      auth.scope = this.scrubScopes(auth.scope);
 
       /**
        * Cache the auth config.
        */
-      this.config = auth;
+      this.config = buildConfigObject(auth); // use normalized config object
+      this.config.scopes = this.config.scopes || [];
 
-      this.$authenticationState = new Observable((observer: Observer<boolean>) => {this.observers.push(observer)})
+      /**
+       * Scrub scopes to ensure 'openid' is included
+       */
+
+      this.scrubScopes(this.config.scopes);
+
+      // Assert Configuration
+      assertIssuer(this.config.issuer, this.config.testing);
+      assertClientId(this.config.clientId);
+      assertRedirectUri(this.config.redirectUri);
+
+      this.oktaAuth = new OktaAuth(this.config);
+      this.oktaAuth.userAgent = `${packageInfo.name}/${packageInfo.version} ${this.oktaAuth.userAgent}`;
+      this.$authenticationState = new Observable((observer: Observer<boolean>) => { this.observers.push(observer); });
     }
 
     /**
      * Checks if there is an access token and id token
      */
     async isAuthenticated(): Promise<boolean> {
-      const accessToken = await this.getAccessToken()
-      const idToken = await this.getIdToken()
+      const accessToken = await this.getAccessToken();
+      const idToken = await this.getIdToken();
       return !!(accessToken || idToken);
     }
 
@@ -140,12 +140,14 @@ export class OktaAuthService {
         this.setFromUri(fromUri);
       }
 
-      this.oktaAuth.token.getWithRedirect({
-        responseType: (this.config.responseType || 'id_token token').split(' '),
-        // Convert scopes to list of strings
-        scopes: this.config.scope.split(' '),
-        ...additionalParams
-      });
+      // Normalize params, set defaults
+      const params = buildConfigObject(additionalParams);
+      params.scopes = params.scopes || this.config.scopes;
+      params.responseType = params.responseType
+        || this.config.responseType
+        || ['id_token', 'token'];
+
+      this.oktaAuth.token.getWithRedirect(params);
     }
 
     /**
@@ -176,7 +178,7 @@ export class OktaAuthService {
       return {
         uri: path.uri,
         extras: navigationExtras
-      }
+      };
     }
 
     /**
@@ -192,8 +194,8 @@ export class OktaAuthService {
           this.oktaAuth.tokenManager.add('accessToken', token);
         }
       });
-      if(await this.isAuthenticated()) {
-        this.emitAuthenticationState(true)
+      if (await this.isAuthenticated()) {
+        this.emitAuthenticationState(true);
       }
       /**
        * Navigate back to the initial view or root of application.
@@ -210,7 +212,7 @@ export class OktaAuthService {
     async logout(uri?: string): Promise<void> {
       this.oktaAuth.tokenManager.clear();
       await this.oktaAuth.signOut();
-      this.emitAuthenticationState(false)
+      this.emitAuthenticationState(false);
       this.router.navigate([uri || '/']);
     }
 
@@ -218,13 +220,10 @@ export class OktaAuthService {
      * Scrub scopes to ensure 'openid' is included
      * @param scopes
      */
-    scrubScopes(scopes: string): string {
-      if (!scopes) {
-        return 'openid email';
+    scrubScopes(scopes: string[]): void {
+      if (scopes.indexOf('openid') >= 0) {
+        return;
       }
-      if (scopes.indexOf('openid') === -1) {
-        return scopes + ' openid';
-      }
-      return scopes;
+      scopes.unshift('openid');
     }
 }
