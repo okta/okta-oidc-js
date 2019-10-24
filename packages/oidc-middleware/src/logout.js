@@ -15,12 +15,15 @@ const uuid = require('uuid');
 
 const logout = module.exports;
 
-const makeErrorHandler = emitter => err => { 
-  if (err.type) { 
-    emitter.emit('error', `${err.type} - ${err.text}`);
-  } else {
-    emitter.emit('error', err);
-  }
+const makeErrorHandler = emitter => err => {
+  // Emit the errors outside the promise chain so they can be received by event listeners
+  setTimeout(function() {
+    if (err.type) { 
+      emitter.emit('error', `${err.type} - ${err.text}`);
+    } else {
+      emitter.emit('error', err);
+    }
+  }, 1);
 };
 
 const makeAuthorizationHeader = ({ client_id, client_secret }) => 
