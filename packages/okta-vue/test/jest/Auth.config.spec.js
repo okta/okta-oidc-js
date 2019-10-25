@@ -1,5 +1,6 @@
 import { createLocalVue } from '@vue/test-utils'
 import { default as Auth } from '../../src/Auth'
+import AuthJS from '@okta/okta-auth-js'
 
 jest.mock('@okta/okta-auth-js')
 
@@ -15,6 +16,23 @@ describe('Auth configuration', () => {
       localVue.use(Auth, validConfig)
     }
     expect(createInstance).not.toThrow()
+  })
+
+  it('will pass tokenManager config', () => {
+    const validConfig = {
+      issuer: 'https://foo',
+      clientId: 'foo',
+      redirectUri: 'foo',
+      responseType: ['id_token', 'token'],
+      scopes: ['openid'],
+      tokenManager: {
+        secure: true,
+        storage: 'cookie'
+      }
+    }
+    const localVue = createLocalVue()
+    localVue.use(Auth, validConfig)
+    expect(AuthJS).toHaveBeenCalledWith(validConfig)
   })
 
   it('should throw if no issuer is provided', () => {

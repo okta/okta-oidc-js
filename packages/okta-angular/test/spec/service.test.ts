@@ -96,6 +96,11 @@ describe('Angular service', () => {
     });
   });
 
+  it('Can set the https secure cookie setting', () => {
+    const service = new OktaAuthService(Object.assign({}, VALID_CONFIG, { tokenManager: { secure: true }}), undefined);
+    expect(service.getOktaConfig().tokenManager.secure).toBe(true);
+  });
+
   it('Adds a user agent on internal oktaAuth instance', () => {
     var service = new OktaAuthService(VALID_CONFIG, undefined);
     expect(service['oktaAuth'].userAgent.indexOf(`@okta/okta-angular/${PACKAGE_JSON.version}`)).toBeGreaterThan(-1);

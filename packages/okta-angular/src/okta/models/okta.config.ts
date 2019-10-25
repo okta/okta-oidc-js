@@ -18,6 +18,12 @@ export interface TestingObject {
   disableHttpsCheck: boolean;
 }
 
+export interface TokenManagerConfig {
+  autoRenew?: boolean;
+  secure?: boolean;
+  storage?: string;
+}
+
 export interface OktaConfig {
   issuer?: string;
   redirectUri?: string;
@@ -28,6 +34,7 @@ export interface OktaConfig {
   pkce?: boolean;
   onAuthRequired?: AuthRequiredFunction;
   testing?: TestingObject;
+  tokenManager?: TokenManagerConfig;
 }
 
 export const OKTA_CONFIG = new InjectionToken<OktaConfig>('okta.config.angular');
