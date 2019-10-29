@@ -1,0 +1,31 @@
+{
+  // Use IntelliSense to learn about possible attributes.
+  // Hover to view descriptions of existing attributes.
+  // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "type": "node",
+      "request": "launch",
+      "protocol": "auto",
+      "name": "oidc-middleware Jest",
+      "cwd": "${workspaceFolder}/packages/oidc-middleware",
+      "args": [
+        "node_modules/.bin/jest",
+        "--runInBand",
+        "--no-cache",
+        "${workspaceFolder}/${relativeFile}"
+      ],
+      "sourceMaps": true,
+      "console": "integratedTerminal",
+      "internalConsoleOptions": "neverOpen",
+      "env": {
+
+      },
+      "sourceMapPathOverrides": {
+        "webpack:///*": "/*",
+      },
+      "disableOptimisticBPs": true
+    },
+  ]
+}
