@@ -194,6 +194,19 @@ For PKCE flow, this should be left undefined or set to `['code']`.
     1. `auth.login` is called
     2. SecureRoute is accessed without authentication
 
+- **tokenManager** *(optional)*: An object containing additional properties used to configure the internal token manager. See [AuthJS TokenManager](https://github.com/okta/okta-auth-js#the-tokenmanager) for more detailed information.
+  - `autoRenew` *(optional)*:
+  By default, the library will attempt to renew expired tokens. When an expired token is requested by the library, a renewal request is executed to update the token. If you wish to  to disable auto renewal of tokens, set autoRenew to false.
+
+  - `secure`: If `true` then only "secure" https cookies will be stored. This option will prevent cookies from being stored on an HTTP connection. This option is only relevant if `storage` is set to `cookie`, or if the client browser does not support `localStorage` or `sessionStorage`, in which case `cookie` storage will be used.
+
+  - `storage` *(optional)*:
+    Specify the type of storage for tokens.
+    The types are:
+    - [`localStorage`](https://developer.mozilla.org/en-US/docs/Web/API/Window/localStorage)
+    - [`sessionStorage`](https://developer.mozilla.org/en-US/docs/Web/API/Window/sessionStorage)
+    - [`cookie`](https://developer.mozilla.org/en-US/docs/Web/API/Document/cookie)
+
 #### Example
 
 ```jsx

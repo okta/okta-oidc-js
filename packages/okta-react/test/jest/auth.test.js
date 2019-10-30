@@ -183,6 +183,23 @@ describe('Auth configuration', () => {
     expect(AuthJS.prototype.constructor).toHaveBeenCalledWith(options);
   });
 
+  it('Passes tokenManager config to AuthJS', () => {
+    jest.spyOn(AuthJS.prototype, 'constructor');
+    const options = {
+      clientId: 'foo',
+      issuer: 'https://foo/oauth2/default',
+      redirectUri: 'foo',
+      pkce: true,
+      tokenManager: {
+        secure: true,
+        storage: 'cookie'
+      }
+    }
+
+    new Auth(options);
+    expect(AuthJS.prototype.constructor).toHaveBeenCalledWith(options);
+  });
+
 });
 
 describe('Auth component', () => {

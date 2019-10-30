@@ -16,7 +16,7 @@
     "start": "yarn --cwd test/e2e/harness/ start",
     "test": "yarn lint && yarn test:e2e && yarn test:unit",
     "test:e2e": "yarn --cwd test/e2e/harness/ e2e",
-    "test:unit": "yarn --cwd test/e2e/harness/ test"
+    "test:unit": "jest"
   },
   "repository": "https://github.com/okta/okta-oidc-js",
   "homepage": "https://github.com/okta/okta-oidc-js/tree/master/packages/okta-angular",
