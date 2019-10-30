@@ -15,20 +15,22 @@ const uuid = require('uuid');
 
 const logout = module.exports;
 
-const makeErrorHandler = emitter => err => { 
-  if (err.type) { 
-    emitter.emit('error', `${err.type} - ${err.text}`);
-  } else {
-    emitter.emit('error', err);
-  }
+const makeErrorHandler = emitter => err => {
+  // Emit the errors outside the promise chain so they can be received by event listeners
+  setTimeout(function() {
+    if (err.type) { 
+      emitter.emit('error', `${err.type} - ${err.message}`);
+    } else {
+      emitter.emit('error', err);
+    }
+  }, 1);
 };
 
 const makeAuthorizationHeader = ({ client_id, client_secret }) => 
   'Basic ' + Buffer.from(`${client_id}:${client_secret}`).toString('base64');
 
-const makeTokenRevoker = ({ issuer, client_id, client_secret, errorHandler }) => { 
+const makeTokenRevoker = ({ issuer, client_id, client_secret, errorHandler }) => {
   const revokeEndpoint = `${issuer}/v1/revoke`;
-
   return ({ token_hint, token }) => { 
     return fetch(revokeEndpoint, { 
       method: 'POST',
@@ -39,17 +41,20 @@ const makeTokenRevoker = ({ issuer, client_id, client_secret, errorHandler }) =>
       },
       body: querystring.stringify({token, token_type_hint: token_hint}),
     })
-      .then( r => r.ok ? r : r.text().then( e => Promise.reject({type: 'revokeError', message: e}) ))
-      .catch( errorHandler ); // catch and emit - this promise chain can never fail
+      .then( r => r.ok ? r : r.text().then(e => Promise.reject({type: 'revokeError', message: e}) ))
+      .catch( errorHandler ) // catch and emit - this promise chain can never fail
   };
 };
 
 
 logout.forceLogoutAndRevoke = context => { 
   const emitter = context.emitter;
-  const { issuer, client_id, client_secret } = context.options;
+  let { issuer, client_id, client_secret } = context.options;
   const REVOKABLE_TOKENS = ['refresh_token', 'access_token'];
-
+  // Support ORG Authorization Server
+  if (issuer.indexOf('/oauth2') === -1) {
+    issuer = issuer + '/oauth2';
+  }
   const revokeToken = makeTokenRevoker({ issuer, client_id, client_secret, errorHandler: makeErrorHandler(emitter) });
   return async (req, res, next) => { 
     const tokens = req.userContext.tokens;
@@ -66,7 +71,7 @@ logout.forceLogoutAndRevoke = context => {
     };
     req.session[context.options.sessionKey] = { state };
 
-    const endOktaSessionEndpoint = `${context.options.issuer}/v1/logout?${querystring.stringify(params)}`;
+    const endOktaSessionEndpoint = `${issuer}/v1/logout?${querystring.stringify(params)}`;
     return res.redirect(endOktaSessionEndpoint);
   };
 };
