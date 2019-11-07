@@ -17,6 +17,7 @@ const {
   authenticate,
   getAccessToken,
   getIdToken,
+  getRefreshToken,
   getUser,
   getUserFromIdToken,
   isAuthenticated,
@@ -41,6 +42,7 @@ jest.mock('react-native', () => {
         signOut: jest.fn(),
         getAccessToken: jest.fn(),
         getIdToken: jest.fn(),
+        getRefreshToken: jest.fn(),
         getUser: jest.fn(),
         isAuthenticated: jest.fn(),
         revokeAccessToken: jest.fn(),
@@ -171,6 +173,21 @@ describe('OktaReactNative', () => {
       expect.assertions(1);
       const data = await getIdToken();
       expect(data).toEqual('dummy_id_token');
+    });
+  });
+
+  describe('getRefreshTokenTest', () => {
+    let mockGetRefreshToken;
+
+    beforeEach(() => {
+      mockGetRefreshToken = require('react-native').NativeModules.OktaSdkBridge.getRefreshToken;
+    });
+
+    it('gets refresh token successfully', async () => {
+      mockGetRefreshToken.mockReturnValueOnce('dummy_refresh_token');
+      expect.assertions(1);
+      const data = await getRefreshToken();
+      expect(data).toEqual('dummy_refresh_token');
     });
   });
 

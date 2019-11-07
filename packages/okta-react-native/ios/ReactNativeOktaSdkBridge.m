@@ -26,6 +26,8 @@ RCT_EXTERN_METHOD(getAccessToken:(RCTPromiseResolveBlock *)promiseResolver promi
 
 RCT_EXTERN_METHOD(getIdToken:(RCTPromiseResolveBlock *)promiseResolver promiseRejecter:(RCTPromiseRejectBlock *)promiseRejecter)
 
+RCT_EXTERN_METHOD(getRefreshToken:(RCTPromiseResolveBlock *)promiseResolver promiseRejecter:(RCTPromiseRejectBlock *)promiseRejecter)
+
 RCT_EXTERN_METHOD(getUser:(RCTPromiseResolveBlock *)promiseResolver promiseRejecter:(RCTPromiseRejectBlock *)promiseRejecter)
 
 RCT_EXTERN_METHOD(isAuthenticated:(RCTPromiseResolveBlock *)promiseResolver promiseRejecter:(RCTPromiseRejectBlock *)promiseRejecter)

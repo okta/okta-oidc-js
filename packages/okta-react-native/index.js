@@ -69,6 +69,10 @@ export const getIdToken = async() => {
   return NativeModules.OktaSdkBridge.getIdToken();
 }
 
+export const getRefreshToken = async() => {
+  return NativeModules.OktaSdkBridge.getRefreshToken();
+}
+
 export const getUser = async() => {
   return NativeModules.OktaSdkBridge.getUser();
 }

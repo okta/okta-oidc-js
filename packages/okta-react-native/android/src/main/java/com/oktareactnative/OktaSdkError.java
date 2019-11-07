@@ -19,7 +19,8 @@ public enum OktaSdkError {
     OKTA_OIDC_ERROR("-600", "Okta Oidc error"),
     ERROR_TOKEN_TYPE("-700", "Token type not found"),
     NO_ACCESS_TOKEN("-900", "No access token found"),
-    SIGN_IN_FAILED("-1000", "Sign in was not authorized");
+    SIGN_IN_FAILED("-1000", "Sign in was not authorized"),
+    NO_REFRESH_TOKEN("-1100", "No refresh token found");
 
     private final String errorCode;
     private final String errorMessage;

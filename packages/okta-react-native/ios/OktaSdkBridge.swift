@@ -237,6 +237,28 @@ class OktaSdkBridge: RCTEventEmitter {
         return
     }
     
+    @objc(getRefreshToken:promiseRejecter:)
+    func getRefreshToken(promiseResolver: @escaping RCTPromiseResolveBlock, promiseRejecter: @escaping RCTPromiseRejectBlock) {
+
+        guard let oidcConfig = config else {
+            let error = OktaReactNativeError.notConfigured
+            promiseRejecter(error.errorCode, error.errorDescription, error)
+            return
+        }
+
+        guard let stateManager = OktaOidcStateManager.readFromSecureStorage(for: oidcConfig) else {
+            let error = OktaReactNativeError.unauthenticated
+            promiseRejecter(error.errorCode, error.errorDescription, error)
+            return
+        }
+
+        let dic = [
+            OktaSdkConstant.REFRESH_TOKEN_KEY: stateManager.refreshToken
+        ]
+
+        promiseResolver(dic)
+    }
+
     @objc(getUser:promiseRejecter:)
     func getUser(promiseResolver: @escaping RCTPromiseResolveBlock, promiseRejecter: @escaping RCTPromiseRejectBlock) {
         guard let oidcConfig = config else {

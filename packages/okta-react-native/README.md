@@ -307,6 +307,24 @@ If an id token is available:
 }
 ```
 
+### `getRefreshToken`
+
+This method returns a promise that will return the refresh token as a string. If no refresh token is available (either does not exist, or expired), then the promise will be rejected.
+
+```javascript
+await getRefreshToken();
+```
+
+##### Sample Response
+
+If a refresh token is available:
+
+```javascript
+{
+  "refresh_token": "{refreshToken}"
+}
+```
+
 ### `getUser`
 
 Returns a promise that will fetch the most up-to-date user claims from the [OpenID Connect `/userinfo`](https://developer.okta.com/docs/api/resources/oidc#userinfo) endpoint.

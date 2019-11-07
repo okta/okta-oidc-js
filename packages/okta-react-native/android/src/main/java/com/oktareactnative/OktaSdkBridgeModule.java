@@ -224,6 +224,31 @@ public class OktaSdkBridgeModule extends ReactContextBaseJavaModule implements A
     }
 
     @ReactMethod
+    public void getRefreshToken(final Promise promise) {
+        try {
+            if (webClient == null) {
+                promise.reject(OktaSdkError.NOT_CONFIGURED.getErrorCode(), OktaSdkError.NOT_CONFIGURED.getErrorMessage());
+                return;
+            }
+
+            final WritableMap params = Arguments.createMap();
+            final SessionClient sessionClient = webClient.getSessionClient();
+            final Tokens tokens = sessionClient.getTokens();
+
+            if (tokens == null || tokens.getRefreshToken() == null) {
+                promise.reject(OktaSdkError.NO_REFRESH_TOKEN.getErrorCode(), OktaSdkError.NO_REFRESH_TOKEN.getErrorMessage());
+                return;
+            }
+
+            params.putString(OktaSdkConstant.REFRESH_TOKEN_KEY, tokens.getRefreshToken());
+            promise.resolve(params);
+
+        } catch (Exception e) {
+            promise.reject(OktaSdkError.OKTA_OIDC_ERROR.getErrorCode(), e.getLocalizedMessage(), e);
+        }
+    }
+
+    @ReactMethod
     public void getUser(final Promise promise) {
         if (webClient == null) {
             promise.reject(OktaSdkError.NOT_CONFIGURED.getErrorCode(), OktaSdkError.NOT_CONFIGURED.getErrorMessage());
