@@ -12,17 +12,13 @@
 const fetch = require('node-fetch');
 const querystring = require('querystring');
 const uuid = require('uuid');
-
+const OIDCMiddlewareError = require('./OIDCMiddlewareError');
 const logout = module.exports;
 
 const makeErrorHandler = emitter => err => {
   // Emit the errors outside the promise chain so they can be received by event listeners
   setTimeout(function() {
-    if (err.type) { 
-      emitter.emit('error', `${err.type} - ${err.message}`);
-    } else {
-      emitter.emit('error', err);
-    }
+    emitter.emit('error', err);
   }, 1);
 };
 
@@ -41,7 +37,8 @@ const makeTokenRevoker = ({ issuer, client_id, client_secret, errorHandler }) =>
       },
       body: querystring.stringify({token, token_type_hint: token_hint}),
     })
-      .then( r => r.ok ? r : r.text().then(e => Promise.reject({type: 'revokeError', message: e}) ))
+      // eslint-disable-next-line promise/no-nesting
+      .then( r => r.ok ? r : r.text().then(message => Promise.reject(new OIDCMiddlewareError('revokeError', message)) ))
       .catch( errorHandler ) // catch and emit - this promise chain can never fail
   };
 };
@@ -56,7 +53,7 @@ logout.forceLogoutAndRevoke = context => {
     issuer = issuer + '/oauth2';
   }
   const revokeToken = makeTokenRevoker({ issuer, client_id, client_secret, errorHandler: makeErrorHandler(emitter) });
-  return async (req, res, next) => { 
+  return async (req, res /*, next */) => { 
     const tokens = req.userContext.tokens;
     const revokeIfExists = token_hint => tokens[token_hint] ? revokeToken({token_hint, token: tokens[token_hint]}) : null;
     const revokes = REVOKABLE_TOKENS.map( revokeIfExists );
@@ -69,6 +66,8 @@ logout.forceLogoutAndRevoke = context => {
       id_token_hint: tokens.id_token,
       post_logout_redirect_uri: context.options.logoutRedirectUri,
     };
+    // TODO: investigate potential race-condition with this line
+    // eslint-disable-next-line require-atomic-updates
     req.session[context.options.sessionKey] = { state };
 
     const endOktaSessionEndpoint = `${issuer}/v1/logout?${querystring.stringify(params)}`;

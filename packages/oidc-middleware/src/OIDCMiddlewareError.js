@@ -1,5 +1,5 @@
 /*!
- * Copyright (c) 2017-Present, Okta, Inc. and/or its affiliates. All rights reserved.
+ * Copyright (c) 2015-present, Okta, Inc. and/or its affiliates. All rights reserved.
  * The Okta software accompanied by this notice is provided pursuant to the Apache License, Version 2.0 (the "License.")
  *
  * You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0.
@@ -10,23 +10,16 @@
  * See the License for the specific language governing permissions and limitations under the License.
  */
 
-const constants = require('../util/constants');
-const EC = protractor.ExpectedConditions;
-
-module.exports = class ProtectedPage {
-  constructor() {
-    this.body = $('body');
-  }
-
-  async load() {
-    await browser.get('/protected');
-  }
-
-  async waitUntilVisible() {
-    await browser.wait(EC.urlIs(constants.BASE_URI + '/protected'), 10000, 'wait for protected url');
-  }
-
-  async getBodyText() {
-    return this.body.getText();
-  }
+function OIDCMiddlewareError(type, msg) {
+  this.name = 'OIDCMiddlewareError';
+  this.type = type;
+  this.message = msg;
+  this.errorCode = 'INTERNAL';
+  this.errorSummary = msg;
+  this.errorLink = 'INTERNAL';
+  this.errorId = 'INTERNAL';
+  this.errorCauses = [];
 }
+OIDCMiddlewareError.prototype = new Error();
+
+module.exports = OIDCMiddlewareError;

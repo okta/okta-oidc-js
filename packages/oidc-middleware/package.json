@@ -16,11 +16,13 @@
   ],
   "main": "index.js",
   "scripts": {
+    "lint": "eslint .",
     "test": "yarn test:unit && yarn test:e2e && yarn test:integration",
     "pretest:e2e": "../../scripts/updateSeDrivers.sh",
     "test:e2e": "protractor test/e2e/protractor.conf.js",
     "test:integration": "../../scripts/tck.sh 0.4.0-SNAPSHOT",
-    "test:unit": "jest test/unit"
+    "test:unit": "jest test/unit",
+    "start": "node test/e2e/harness/start-server.js"
   },
   "engines": {
     "node": ">=6"
@@ -43,8 +45,14 @@
     "uuid": "^3.1.0"
   },
   "devDependencies": {
+    "babel-eslint": "^10.0.3",
     "cross-env": "^5.1.1",
     "ejs": "^2.5.7",
+    "eslint": "^6.6.0",
+    "eslint-plugin-jasmine": "^2.10.1",
+    "eslint-plugin-jest": "^23.0.3",
+    "eslint-plugin-promise": "^4.2.1",
+    "eslint-plugin-protractor": "^2.1.1",
     "express-session": "^1.15.5",
     "jasmine-protractor-browser-log-reporter": "^1.0.0",
     "jasmine-reporters": "^2.2.0",
