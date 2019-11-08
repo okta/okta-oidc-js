@@ -17,6 +17,7 @@ const querystring = require('querystring');
 const uuid = require('uuid');
 const bodyParser = require('body-parser');
 const logout = require('./logout');
+const OIDCMiddlewareError = require('./OIDCMiddlewareError');
 
 const connectUtil = module.exports;
 
@@ -105,7 +106,7 @@ connectUtil.createLoginCallbackHandler = context => {
           customHandler(req, res, next);
           break;
         default:
-          throw new OIDCMiddlewareError('Your custom callback handler must request "next"');
+          throw new OIDCMiddlewareError('middlewareError', 'Your custom callback handler must request "next"');
       }
     };
     passport.authenticate('oidc')(req, res, nextHandler);
@@ -117,10 +118,10 @@ connectUtil.createLogoutHandler = context => logout.forceLogoutAndRevoke(context
 connectUtil.createLogoutCallbackHandler = context => {
   return (req, res) => {
     if ( req.session[context.options.sessionKey].state !== req.query.state ) {
-      context.emitter.emit('error', { type: 'logoutError', message: `'state' parameter did not match value in session` });
+      context.emitter.emit('error', new OIDCMiddlewareError('logoutError', `'state' parameter did not match value in session`));
     } else {
       req.logout();
       res.redirect(context.options.routes.logoutCallback.afterCallback);
-    };
+    }
   };
 };
