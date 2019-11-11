@@ -11,7 +11,6 @@
  */
 const fetch = require('node-fetch');
 const querystring = require('querystring');
-const uuid = require('uuid');
 const OIDCMiddlewareError = require('./OIDCMiddlewareError');
 const logout = module.exports;
 

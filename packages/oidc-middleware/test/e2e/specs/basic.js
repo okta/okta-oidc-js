@@ -53,6 +53,7 @@ describe('Basic login redirect', () => {
 
     // wait for protected page to appear with contents
     await privatePage.waitUntilVisible();
+  
     expect(privatePage.getBodyText()).toContain('sub');
 
     // Default response_type of library should contain an accessToken and idToken
@@ -63,11 +64,13 @@ describe('Basic login redirect', () => {
     const homePage = new HomePage();
     await homePage.load();
     await homePage.waitUntilVisible();
+
     expect(homePage.getBodyText()).toContain('Welcome home');
 
     // navigate to Okta logout and follow redirects
     await homePage.performLogout(); 
     await homePage.waitUntilVisible(); // after all redirects
+    
     expect(browser.getPageSource()).not.toContain('Welcome home');
 
     // confirm that Okta now requires login

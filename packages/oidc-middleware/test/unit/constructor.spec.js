@@ -46,7 +46,7 @@ describe('new ExpressOIDC()', () => {
   });
 
   it('should not throw if https issuer validation is skipped', () => {
-    const mock = jest.spyOn(console, 'warn').mockImplementation(() => {}); // silence for testing
+    jest.spyOn(console, 'warn').mockImplementation(() => {}); // silence for testing
     function createInstance() {
       new ExpressOIDC({
         ...minimumConfig,
@@ -251,6 +251,7 @@ describe('new ExpressOIDC()', () => {
     expect(Issuer.defaultHttpOptions.timeout).toBe(1);
   });
 
+  // eslint-disable-next-line jest/no-test-callback
   it('should throw ETIMEOUT if the timeout is reached', (done) => {
     nock('https://foo')
     .get('/.well-known/openid-configuration')
@@ -266,6 +267,7 @@ describe('new ExpressOIDC()', () => {
     });
   });
 
+  // eslint-disable-next-line jest/no-test-callback
   it('should set the correct User-Agent string', (done) => {
     rpt(modulesRoot, function (node, kidName) {
       return kidName.includes('openid');
