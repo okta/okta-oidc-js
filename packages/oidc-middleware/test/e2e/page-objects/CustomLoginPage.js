@@ -25,7 +25,7 @@ module.exports = class OktaSignInPage {
   }
 
   async waitUntilVisible() {
-    await browser.wait(EC.presenceOf(this.banner), 50000, 'wait for banner');
+    await browser.wait(EC.presenceOf(this.banner), 50000);
   }
 
   async signIn({username, password}) {

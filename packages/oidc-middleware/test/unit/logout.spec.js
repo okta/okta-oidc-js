@@ -159,11 +159,7 @@ describe('logout', () => {
           // prevent exception from being thrown
           context.emitter.emit.mockImplementation(() => {});
           jest.runAllTimers();
-          expect(context.emitter.emit).toHaveBeenCalledWith('error', expect.objectContaining({
-            name: 'OIDCMiddlewareError',
-            type: 'revokeError',
-            message: errorVal
-          })); // ensure error was emitted
+          expect(context.emitter.emit).toHaveBeenCalledWith('error', `revokeError - ${errorVal}`); // ensure error was emitted
         });
       });
     
