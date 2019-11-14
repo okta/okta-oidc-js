@@ -1,3 +1,16 @@
+# 2.1.0
+
+### Features
+
+- Support for Org Authorization Servers. [#590](https://github.com/okta/okta-oidc-js/pull/590) - See [composing your base url](https://developer.okta.com/docs/reference/api/oidc/#composing-your-base-url) for more information on Authorization Servers.
+
+### Bug Fixes
+- Errors during logout would cause the user to receive an empty page and remain logged in. [#585](https://github.com/okta/okta-oidc-js/pull/585) - 
+
+  Due to this bug, errors during logout were being incorrectly suppressed and would not have been seen by the server process. Instead, the user would see a blank page. With this fix, the user will be logged out correctly, but the error event will also now be emitted to the server process.
+
+  Your server code should be prepared to either log or ignore this error.
+
 # 2.0.0
 
 ### Features
