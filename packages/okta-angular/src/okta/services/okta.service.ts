@@ -165,14 +165,20 @@ export class OktaAuthService {
 
     /**
      * Returns the referrer path from localStorage or app root.
+     * Accepts extras argument for overrides to navigation options.
+     * @param extras
      */
-    getFromUri(): { uri: string, extras: NavigationExtras } {
+    getFromUri(extras: NavigationExtras = {}): { uri: string, extras: NavigationExtras } {
       const referrerPath = localStorage.getItem('referrerPath');
       localStorage.removeItem('referrerPath');
 
       const path = JSON.parse(referrerPath) || { uri: '/', params: {} };
       const navigationExtras: NavigationExtras = {
-        queryParams: path.params
+        ...extras,
+        queryParams: {
+          ...(extras.queryParams || {}),
+          ...path.params
+        }
       };
 
       return {
@@ -183,8 +189,10 @@ export class OktaAuthService {
 
     /**
      * Parses the tokens from the callback URL.
+     * Accepts extras argument for overrides to navigation options.
+     * @param extras
      */
-    async handleAuthentication(): Promise<void> {
+    async handleAuthentication(extras?: NavigationExtras): Promise<void> {
       const tokens = await this.oktaAuth.token.parseFromUrl();
       tokens.forEach(token => {
         if (token.idToken) {
@@ -200,20 +208,21 @@ export class OktaAuthService {
       /**
        * Navigate back to the initial view or root of application.
        */
-      const fromUri = this.getFromUri();
+      const fromUri = this.getFromUri(extras);
       this.router.navigate([fromUri.uri], fromUri.extras);
     }
 
     /**
      * Clears the user session in Okta and removes
-     * tokens stored in the tokenManager.
+     * Accepts extras argument for overrides to navigation options.
      * @param uri
+     * @param extras
      */
-    async logout(uri?: string): Promise<void> {
+    async logout(uri?: string, extras?: NavigationExtras): Promise<void> {
       this.oktaAuth.tokenManager.clear();
       await this.oktaAuth.signOut();
       this.emitAuthenticationState(false);
-      this.router.navigate([uri || '/']);
+      this.router.navigate([uri || '/'], extras);
     }
 
     /**
