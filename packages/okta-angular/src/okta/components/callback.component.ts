@@ -20,6 +20,6 @@ export class OktaCallbackComponent {
     /**
      * Handles the response from Okta and parses tokens.
      */
-    okta.handleAuthentication();
+    okta.handleAuthentication({ replaceUrl: true });
   }
 }
