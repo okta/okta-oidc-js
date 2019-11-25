@@ -47,6 +47,12 @@ export class OktaAuthService {
       this.config = buildConfigObject(auth); // use normalized config object
       this.config.scopes = this.config.scopes || [];
 
+      // Automatically enters login flow if token renew fails.
+      // The default behavior can be overriden by passing a function via config: `config.onAuthRequired`
+      if (!this.config.onSessionEnd) {
+        this.config.onSessionEnd = this._onSessionEnd.bind(this);
+      }
+
       /**
        * Scrub scopes to ensure 'openid' is included
        */
@@ -61,17 +67,10 @@ export class OktaAuthService {
       this.oktaAuth = new OktaAuth(this.config);
       this.oktaAuth.userAgent = `${packageInfo.name}/${packageInfo.version} ${this.oktaAuth.userAgent}`;
       this.$authenticationState = new Observable((observer: Observer<boolean>) => { this.observers.push(observer); });
-
-      // Automatically enters login flow if token renew fails.
-      // The default behavior can be overriden by passing a function via config: `config.onTokenError`
-      this.getTokenManager().on('error', this.config.onTokenError || this._onTokenError.bind(this));
     }
 
-    // Handle token manager errors: Default implementation
-    _onTokenError(error) {
-      if (error.errorCode === 'login_required') {
-        this.login();
-      }
+    _onSessionEnd() {
+      this.loginRedirect(this.router.url);
     }
 
     getTokenManager(): TokenManager {
@@ -151,21 +150,6 @@ export class OktaAuthService {
       return this.config;
     }
 
-    /**
-     * Launches a custom login flow, if configured with an `onAuthRequired` method. Defaults to login redirect.
-     * @param fromUri
-     * @param additionalParams
-     */
-    login(fromUri?: string, additionalParams?: OktaConfig) {
-      this.setFromUri(fromUri || window.location.pathname);
-
-      const onAuthRequired: AuthRequiredFunction = this.config.onAuthRequired;
-      if (onAuthRequired) {
-        return onAuthRequired(this, this.router);
-      }
-
-      return this.loginRedirect(fromUri, additionalParams); // can throw
-    }
     /**
      * Launches the login redirect.
      * @param fromUri

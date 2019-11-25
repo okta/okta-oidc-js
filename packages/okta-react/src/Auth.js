@@ -33,6 +33,13 @@ export default class Auth {
     assertIssuer(authConfig.issuer, testing);
     assertClientId(authConfig.clientId);
     assertRedirectUri(authConfig.redirectUri);
+
+    // Automatically enters login flow if token renew fails.
+    // The default behavior can be overriden by passing a function via config: `config.onSessionEnd`
+    if (!authConfig.onSessionEnd) {
+      authConfig.onSessionEnd = this.login.bind(this);
+    }
+
     this._oktaAuth = new OktaAuth(authConfig);
     this._oktaAuth.userAgent = `${packageInfo.name}/${packageInfo.version} ${this._oktaAuth.userAgent}`;
     this._config = authConfig; // use normalized config
@@ -46,16 +53,6 @@ export default class Auth {
     this.login = this.login.bind(this);
     this.logout = this.logout.bind(this);
     this.redirect = this.redirect.bind(this);
-
-    // Automatically enters login flow if token renew fails.
-    // The default behavior can be overriden by passing a function via config: `config.onTokenError` 
-    this.getTokenManager().on('error', this._config.onTokenError || this._onTokenError.bind(this));
-  }
-
-  _onTokenError(error) {
-    if (error.errorCode === 'login_required') {
-      this.login();
-    }
   }
 
   getTokenManager() {

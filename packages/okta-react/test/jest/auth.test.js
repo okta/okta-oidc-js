@@ -97,7 +97,7 @@ describe('Auth component', () => {
 
   it('should throw if no issuer is provided', () => {
     function createInstance () {
-      return new Auth({});
+      return new Auth();
     }
     expect(createInstance).toThrow()
   });
