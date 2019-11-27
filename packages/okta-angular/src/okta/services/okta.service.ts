@@ -207,13 +207,20 @@ export class OktaAuthService {
     /**
      * Clears the user session in Okta and removes
      * tokens stored in the tokenManager.
-     * @param uri
+     * @param options
      */
-    async logout(uri?: string): Promise<void> {
-      this.oktaAuth.tokenManager.clear();
-      await this.oktaAuth.signOut();
+    async logout(options?: any): Promise<void> {
+      let uri = null;
+      options = options || {};
+      if (typeof options === 'string') {
+        uri = options;
+        options = {};
+      }
+      await this.oktaAuth.signOut(options);
       this.emitAuthenticationState(false);
-      this.router.navigate([uri || '/']);
+      if (!options.postLogoutRedirectUri && !this.config.postLogoutRedirectUri) {
+        this.router.navigate([uri || '/']);
+      }
     }
 
     /**
