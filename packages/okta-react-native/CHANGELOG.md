@@ -1,3 +1,8 @@
+# 1.2.2
+
+### Bug Fix
+- [`05a3033`](https://github.com/okta/okta-oidc-js/commit/05a3033ba68e5e45170e3d50ce7dba535e3bccb5) - `refreshTokens` should save the new tokens (iOS)
+
 # 1.2.1
 
 ### Bug fix
