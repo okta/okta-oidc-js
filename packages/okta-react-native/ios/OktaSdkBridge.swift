@@ -346,6 +346,7 @@ class OktaSdkBridge: RCTEventEmitter {
                 return
             }
             
+            newStateManager.writeToSecureStorage()
             let dic = [
                 OktaSdkConstant.ACCESS_TOKEN_KEY: newStateManager.accessToken,
                 OktaSdkConstant.ID_TOKEN_KEY: newStateManager.idToken,
