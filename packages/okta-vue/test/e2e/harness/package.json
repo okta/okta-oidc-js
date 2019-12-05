@@ -17,7 +17,7 @@
     "build": "node build/build.js"
   },
   "dependencies": {
-    "@okta/okta-auth-js": "^2.0.0",
+    "@okta/okta-auth-js": "^2.11.0",
     "vue": "^2.5.2",
     "vue-router": "^3.0.1"
   },

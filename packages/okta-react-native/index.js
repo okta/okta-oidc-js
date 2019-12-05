@@ -50,6 +50,7 @@ export const createConfig = async({
 } 
 
 export const signIn = async() => {
+  console.warn('in the signin');
   return NativeModules.OktaSdkBridge.signIn();
 }
 

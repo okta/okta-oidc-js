@@ -31,7 +31,7 @@
   "license": "Apache-2.0",
   "dependencies": {
     "@okta/configuration-validation": "^0.4.1",
-    "@okta/okta-auth-js": "^2.6.3"
+    "@okta/okta-auth-js": "^2.11.0"
   },
   "devDependencies": {
     "@angular-devkit/build-angular": "~0.8.1",
@@ -45,13 +45,15 @@
     "@angular/platform-browser-dynamic": "7.0.0",
     "@angular/router": "^7.0.0",
     "@types/jest": "^24.0.18",
+    "@types/json-schema": "^7.0.3",
+    "@types/minimatch": "^3.0.3",
+    "core-js": "^2.4.1",
     "jest": "^24.9.0",
     "jest-preset-angular": "^7.1.1",
-    "core-js": "^2.4.1",
     "rxjs": "^6.2.1",
-    "zone.js": "^0.8.14",
     "tslint": "~5.5.0",
-    "typescript": "~3.1.6"
+    "typescript": "~3.1.6",
+    "zone.js": "^0.8.14"
   },
   "peerDependencies": {
     "@angular/common": ">=4",
@@ -78,5 +80,5 @@
     "setupFilesAfterEnv": [
       "../support/setupJest.ts"
     ]
-   }
+  }
 }
