@@ -1,6 +1,6 @@
 {
   "name": "@okta/okta-angular",
-  "version": "1.2.2",
+  "version": "1.2.3",
   "description": "Angular support for Okta",
   "main": "./dist/src/index.js",
   "types": "./dist/src/index.d.ts",
