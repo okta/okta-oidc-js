@@ -120,10 +120,19 @@ export default class Auth {
     await this.redirect(additionalParams);
   }
 
-  async logout(path) {
-    this._oktaAuth.tokenManager.clear();
-    await this._oktaAuth.signOut();
-    this._history.push(path || '/');
+  async logout(options) {
+    let path = null;
+    options = options || {};
+    if (typeof options === 'string') {
+      path = options;
+      options = {};
+    }
+    return this._oktaAuth.signOut(options)
+      .then(() => {
+        if (!options.postLogoutRedirectUri && !this._config.postLogoutRedirectUri) {
+          this._history.push(path || '/');
+        }
+      });
   }
 
   async redirect(additionalParams = {}) {

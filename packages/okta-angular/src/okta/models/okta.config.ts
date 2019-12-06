@@ -35,6 +35,7 @@ export interface OktaConfig {
   onAuthRequired?: AuthRequiredFunction;
   testing?: TestingObject;
   tokenManager?: TokenManagerConfig;
+  postLogoutRedirectUri?: string;
 }
 
 export const OKTA_CONFIG = new InjectionToken<OktaConfig>('okta.config.angular');

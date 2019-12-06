@@ -129,9 +129,11 @@ describe('loginRedirect', () => {
 describe('logout', () => {
   let localVue
   let mockAuthJsInstance
+  let signoutRes
   beforeEach(() => {
+    signoutRes = Promise.resolve()
     mockAuthJsInstance = {
-      signOut: jest.fn().mockReturnValue(null),
+      signOut: jest.fn().mockReturnValue(signoutRes),
       tokenManager: {
         clear: jest.fn().mockReturnValue(Promise.resolve())
       }
@@ -141,15 +143,33 @@ describe('logout', () => {
     })
     localVue = createLocalVue()
     localVue.use(Auth, baseConfig)
-    localVue.prototype.$auth.logout()
   })
 
-  test('calls "signOut', () => {
+  test('calls "signOut', async () => {
+    await localVue.prototype.$auth.logout()
     expect(mockAuthJsInstance.signOut).toHaveBeenCalled()
   })
 
-  test('clears tokens', () => {
-    expect(mockAuthJsInstance.tokenManager.clear).toHaveBeenCalled()
+  test('passes options', async () => {
+    const options = { foo: 'bar' }
+    await localVue.prototype.$auth.logout(options)
+    expect(mockAuthJsInstance.signOut).toHaveBeenCalledWith(options)
+  })
+
+  test('returns a promise', async () => {
+    const res = localVue.prototype.$auth.logout()
+    expect(typeof res.then).toBe('function')
+    expect(typeof res.catch).toBe('function')
+    return res
+  })
+
+  test('can throw', async () => {
+    const testError = new Error('test error')
+    signoutRes = Promise.reject(testError)
+    return localVue.prototype.$auth.logout()
+      .catch(e => {
+        expect(e).toBe(testError)
+      })
   })
 })
 
