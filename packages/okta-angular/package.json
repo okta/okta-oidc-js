@@ -4,9 +4,6 @@
   "description": "Angular support for Okta",
   "main": "./dist/src/index.js",
   "types": "./dist/src/index.d.ts",
-  "files": [
-    "dist"
-  ],
   "scripts": {
     "build:package-info": "node ../../util/write-package-info.js . src/okta/packageInfo.ts",
     "lint": "ng lint",
