@@ -1,3 +1,8 @@
+# 1.2.3
+
+### Bug Fix
+- [`52bebbf`](https://github.com/okta/okta-oidc-js/commit/52bebbf21d668e729a6f674db2091380675df520) - Update Android OIDC dependency to 1.0.8
+
 # 1.2.2
 
 ### Bug Fix
@@ -26,7 +31,7 @@
 # 1.0.1
 
 ### Features
-- [`138f068`](https://github.com/okta/okta-oidc-js/commit/138f068a64c62f754567919d79da2c67bbdb8969#diff-2c20101038faa8ceda1dda5c3cde79d8) - Make hardware backed key store configurable on android devices 
+- [`138f068`](https://github.com/okta/okta-oidc-js/commit/138f068a64c62f754567919d79da2c67bbdb8969#diff-2c20101038faa8ceda1dda5c3cde79d8) - Make hardware backed key store configurable on android devices
 
 ### Other
 - [`773bc9f`](https://github.com/okta/okta-oidc-js/commit/773bc9ff6bb2a440fb43439d17798224e57c0333#diff-2c20101038faa8ceda1dda5c3cde79d8) - Clears session client on android after user signs out
@@ -34,7 +39,7 @@
 # 1.0.0
 
 ### Features
-- [`e8948a8`](https://github.com/okta/okta-oidc-js/commit/e8948a83ce5b0f0213c96739760c219eda250598#diff-2c20101038faa8ceda1dda5c3cde79d8) - Reworks the React Native SDK. This major version upgrade removes Expo/Unimodules dependencies, replaces with Native Modules acting as wrappers around [okta-oidc-android](https://github.com/okta/okta-oidc-android) and [okta-oidc-ios](https://github.com/okta/okta-oidc-ios), and introduces new usages. For more details, refer to the commit. 
+- [`e8948a8`](https://github.com/okta/okta-oidc-js/commit/e8948a83ce5b0f0213c96739760c219eda250598#diff-2c20101038faa8ceda1dda5c3cde79d8) - Reworks the React Native SDK. This major version upgrade removes Expo/Unimodules dependencies, replaces with Native Modules acting as wrappers around [okta-oidc-android](https://github.com/okta/okta-oidc-android) and [okta-oidc-ios](https://github.com/okta/okta-oidc-ios), and introduces new usages. For more details, refer to the commit.
 
 # 0.1.2
 
