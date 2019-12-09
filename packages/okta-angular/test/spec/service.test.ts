@@ -485,12 +485,12 @@ describe('Angular service', () => {
         const accessToken = { accessToken: 'foo' };
         const idToken = { idToken: 'bar' };
         tokens = [accessToken, idToken];
-  
+
         await service.handleAuthentication();
         expect(service.oktaAuth.tokenManager.add).toHaveBeenNthCalledWith(1, 'accessToken', accessToken);
         expect(service.oktaAuth.tokenManager.add).toHaveBeenNthCalledWith(2, 'idToken', idToken);
       });
-      
+
       it('isAuthenticated (false): does not authenticated state', async () => {
         isAuthenticated = false;
         await service.handleAuthentication();
@@ -513,43 +513,84 @@ describe('Angular service', () => {
 
     describe('logout', () => {
       let service;
-      beforeEach(() => {
-        const mockAuthJS = {
-          signOut: jest.fn(),
+      let mockAuthJS;
+
+      function bootstrap(config?) {
+        mockAuthJS = {
+          signOut: jest.fn().mockReturnValue(Promise.resolve()),
           tokenManager: {
             clear: jest.fn(),
           }
         };
         OktaAuth.mockImplementation(() => mockAuthJS);
-        service = createService();
+        service = createService(config);
         jest.spyOn(service.router, 'navigate').mockReturnValue(null);
         jest.spyOn(service, 'emitAuthenticationState');
-      });
-
-      it('clears the token manager', async () => {
-        await service.logout();
-        expect(service.oktaAuth.tokenManager.clear).toHaveBeenCalled();
-      });
+      }
 
       it('calls oktaAuth.signOut', async () => {
+        bootstrap();
         await service.logout();
         expect(service.oktaAuth.signOut).toHaveBeenCalled();
       });
 
       it('emits authentication state', async () => {
+        bootstrap();
         await service.logout();
         expect(service.emitAuthenticationState).toHaveBeenCalledWith(false);
       });
 
       it('redirects to the root by default', async () => {
+        bootstrap();
         await service.logout();
         expect(service.router.navigate).toHaveBeenCalledWith(['/']);
       });
 
       it('accepts an argument for uri to redirect to', async () => {
+        bootstrap();
         const uri = 'https://my.custom.uri';
         await service.logout(uri);
         expect(service.router.navigate).toHaveBeenCalledWith([uri]);
+      });
+
+      it('accepts an options object', async () => {
+        bootstrap();
+        await service.logout({ foo: 'bar' });
+        expect(service.router.navigate).toHaveBeenCalledWith(['/']);
+      });
+
+      it('Does not call router.navigate if a "postLogoutRedirectUri" option was passed to logout()', async () => {
+        bootstrap();
+        await service.logout({ postLogoutRedirectUri: 'foo' });
+        expect(service.router.navigate).not.toHaveBeenCalled();
+      });
+
+      it('Does not call router.navigate if a "postLogoutRedirectUri" option was passed to constructor', async () => {
+        const config = Object.assign({}, VALID_CONFIG, { postLogoutRedirectUri: 'fake' });
+        bootstrap(config);
+        await service.logout();
+        expect(service.router.navigate).not.toHaveBeenCalled();
+      });
+
+      it('Returns a promise', async () => {
+        bootstrap();
+        const res = service.logout();
+        expect(typeof res.then).toBe('function');
+        expect(typeof res.catch).toBe('function');
+        return res;
+      });
+
+      it('Can throw', async () => {
+        bootstrap();
+        const testError = new Error('test error');
+        mockAuthJS.signOut.mockReturnValue(Promise.reject(testError));
+        return service.logout()
+          .catch(e => {
+            expect(e).toBe(testError);
+          })
+          .then(() => {
+            expect(service.router.navigate).not.toHaveBeenCalled();
+          });
       });
     });
   });

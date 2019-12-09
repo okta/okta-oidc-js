@@ -23,9 +23,8 @@ function install (Vue, options) {
       params.responseType = params.responseType || authConfig.responseType
       return oktaAuth.token.getWithRedirect(params)
     },
-    async logout () {
-      oktaAuth.tokenManager.clear()
-      await oktaAuth.signOut()
+    async logout (options) {
+      return oktaAuth.signOut(options)
     },
     async isAuthenticated () {
       return !!(await this.getAccessToken()) || !!(await this.getIdToken())
