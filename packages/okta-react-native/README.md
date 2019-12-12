@@ -389,6 +389,10 @@ Revoke the refresh token to make it inactive. Resolves `true` if refresh token h
 await revokeRefreshToken();
 ```
 
+### `clearTokens`
+
+Removes all tokens from local storage. Resolves `true` if tokens were successfully cleared.
+
 ### `introspectAccessToken`
 
 Introspect the access token. 
