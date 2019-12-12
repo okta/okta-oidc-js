@@ -110,4 +110,8 @@ export const refreshTokens = async() => {
   return NativeModules.OktaSdkBridge.refreshTokens(); 
 }
 
+export const clearTokens = async() => {
+  return NativeModules.OktaSdkBridge.clearTokens(); 
+}
+
 export const EventEmitter = new NativeEventEmitter(NativeModules.OktaSdkBridge);

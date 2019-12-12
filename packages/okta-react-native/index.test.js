@@ -27,6 +27,7 @@ const {
   introspectIdToken,
   introspectRefreshToken,
   refreshTokens,
+  clearTokens,
 } = jest.requireActual('./');
 
 import { Platform } from 'react-native';
@@ -50,6 +51,7 @@ jest.mock('react-native', () => {
         introspectIdToken: jest.fn(),
         introspectRefreshToken: jest.fn(),
         refreshTokens: jest.fn(),
+        clearTokens: jest.fn(),
       },
     },
     Platform: {
@@ -351,6 +353,21 @@ describe('OktaReactNative', () => {
       mockRefreshTokens.mockReturnValueOnce(true);
       expect.assertions(1);
       const data = await refreshTokens();
+      expect(data).toEqual(true);
+    });
+  });
+
+  describe('clearTokensTest', () => {
+    let mockClearTokens;
+
+    beforeEach(() => {
+      mockClearTokens = require('react-native').NativeModules.OktaSdkBridge.clearTokens;
+    });
+
+    it('refreshes tokens', async () => {
+      mockClearTokens.mockReturnValueOnce(true);
+      expect.assertions(1);
+      const data = await clearTokens();
       expect(data).toEqual(true);
     });
   });
