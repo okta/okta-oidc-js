@@ -1,3 +1,8 @@
+# 1.3.0
+
+### Features
+- [`f734054`](https://github.com/okta/okta-oidc-js/commit/f7340542b31495a9921e576349093305e9831b9d) - `clearTokens` will remove all tokens from local storage
+
 # 1.2.3
 
 ### Bug Fix
