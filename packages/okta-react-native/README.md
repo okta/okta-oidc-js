@@ -393,6 +393,10 @@ await revokeRefreshToken();
 
 Removes all tokens from local storage. Resolves `true` if tokens were successfully cleared.
 
+```javascript
+await clearTokens();
+```
+
 ### `introspectAccessToken`
 
 Introspect the access token. 
