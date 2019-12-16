@@ -44,4 +44,6 @@ RCT_EXTERN_METHOD(introspectRefreshToken:(RCTPromiseResolveBlock *)promiseResolv
 
 RCT_EXTERN_METHOD(refreshTokens:(RCTPromiseResolveBlock *)promiseResolver promiseRejecter:(RCTPromiseRejectBlock *)promiseRejecter)
 
+RCT_EXTERN_METHOD(clearTokens:(RCTPromiseResolveBlock *)promiseResolver promiseRejecter:(RCTPromiseRejectBlock *)promiseRejecter)
+
 @end

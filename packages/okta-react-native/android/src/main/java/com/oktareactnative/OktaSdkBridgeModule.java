@@ -347,6 +347,22 @@ public class OktaSdkBridgeModule extends ReactContextBaseJavaModule implements A
         }
     }
 
+    @ReactMethod
+    public void clearTokens(final Promise promise) {
+        try {
+            if (webClient != null) {
+                webClient.getSessionClient().clear();
+            }
+
+            if (authClient != null) {
+                authClient.getSessionClient().clear();
+            }
+            promise.resolve(true);
+        } catch (Exception e) {
+            promise.reject(OktaSdkError.OKTA_OIDC_ERROR.getErrorCode(), e.getLocalizedMessage(), e);
+        }
+    }
+
     @Override
     public void onActivityResult(Activity activity, int requestCode, int resultCode, Intent data) {
         webClient.handleActivityResult(requestCode & 0xffff, resultCode, data);
