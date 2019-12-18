@@ -170,7 +170,14 @@ export class OktaAuthService {
       const referrerPath = localStorage.getItem('referrerPath');
       localStorage.removeItem('referrerPath');
 
-      const path = JSON.parse(referrerPath) || { uri: '/', params: {} };
+      let path;
+      if (referrerPath) {
+          path = JSON.parse(referrerPath);
+      }
+      if (!path) {
+        path = { uri: '/', params: {} };
+      }
+
       const navigationExtras: NavigationExtras = {
         queryParams: path.params
       };

@@ -10,7 +10,7 @@ const packageInfo = {
   name: packageJson.name,
   version: packageJson.version
 };
-const output = 'export default ' + JSON.stringify(packageInfo, null, 2) + ';';
+const output = 'export default ' + JSON.stringify(packageInfo, null, 2).replace(/\"/g, '\'') + ';\n';
 
 console.log('Writing config to', configDest);
 
