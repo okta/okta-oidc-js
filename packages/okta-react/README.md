@@ -20,7 +20,7 @@ With the [Okta Auth SDK][], you can:
 All of these features are supported by this SDK. Additionally, using this SDK, you can:
 
 - Add "secure" routes, which will require authentication before render
-- Enter a custom login flow when authentication is required
+- Define custom logic/behavior when authentication is required
 - Provide an instance of the [Auth service][] to your components using a [higher-order component][]
 
 > This SDK does not provide any UI components.
@@ -42,8 +42,8 @@ This library currently supports:
   - If you don't have a React app, or are new to React, please start with this guide. It will walk you through the creation of a React app, creating routes, and other application development essentials.
 - [Okta Sample Application](https://github.com/okta/samples-js-react)
   - A fully functional sample application built using this SDK.
-- [Okta React Quickstart](https://developer.okta.com/quickstart/#/react/nodejs/express)
-  - Helpful resource for integrating an existing React application into Okta.
+- [Okta Guide: Sign users into your single-page application](https://developer.okta.com/docs/guides/sign-into-spa/react/before-you-begin/)
+  - Step-by-step guide to integrating an existing React application with Okta login.
 
 ## Installation
 
