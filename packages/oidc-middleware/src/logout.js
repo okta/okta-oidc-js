@@ -53,23 +53,23 @@ logout.forceLogoutAndRevoke = context => {
     issuer = issuer + '/oauth2';
   }
   const revokeToken = makeTokenRevoker({ issuer, client_id, client_secret, errorHandler: makeErrorHandler(emitter) });
-  return async (req, res /*, next */) => { 
+  return async (req, res /*, next */) => {
     const tokens = req.userContext.tokens;
     const revokeIfExists = token_hint => tokens[token_hint] ? revokeToken({token_hint, token: tokens[token_hint]}) : null;
     const revokes = REVOKABLE_TOKENS.map( revokeIfExists );
-    // attempt all revokes before logout
+
+    // clear local session
+    req.logout();
+
+    // attempt all revokes
     await Promise.all(revokes); // these capture (emit) all rejections, no wrapping catch needed, no early fail of .all()
 
-    const state = uuid.v4();
     const params = {
-      state,
       id_token_hint: tokens.id_token,
       post_logout_redirect_uri: context.options.logoutRedirectUri,
     };
-    // TODO: investigate potential race-condition with this line
-    // eslint-disable-next-line require-atomic-updates
-    req.session[context.options.sessionKey] = { state };
 
+    // redirect to Okta to clear SSO session
     const endOktaSessionEndpoint = `${issuer}/v1/logout?${querystring.stringify(params)}`;
     return res.redirect(endOktaSessionEndpoint);
   };

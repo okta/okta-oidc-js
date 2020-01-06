@@ -1,3 +1,11 @@
+# 3.0.0
+
+### Breaking Changes 
+
+See "Updating" in the README for migration steps
+
+- Logout callback route has been removed (`/logout/callback`). Local session is now cleared before redirect to Okta and the default logout redirect Uri is the app base URL. [#644](https://github.com/okta/okta-oidc-js/pull/644)
+
 # 2.1.0
 
 ### Features

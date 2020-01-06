@@ -145,12 +145,12 @@ Required config:
 * **issuer** - The OIDC provider (e.g. `https://{yourOktaDomain}/oauth2/default`)
 * **client_id** - An id provided when you create an OIDC app in your Okta Org
 * **client_secret** - A secret provided when you create an OIDC app in your Okta Org
-* **appBaseUrl** - The base scheme, host, and port (if not 80/443) of your app, not including any path (e.g. http://localhost:3000, not http://localhost:3000/ )  
+* **appBaseUrl** - The base scheme, host, and port (if not 80/443) of your app, not including any path (e.g. http://localhost:8080, not http://localhost:8080/ )  
 
 Optional config:
 
-* **loginRedirectUri** - The URI for your app that Okta will redirect users to after sign in to create the local session.  Locally, this is usually `http://localhost:3000/authorization-code/callback`. When deployed, this should be `https://{yourProductionDomain}/authorization-code/callback`.  This will default to `{appBaseUrl}{routes.loginCallback.path}` if `appBaseUrl` is provided, or the (deprecated) `redirect_uri` if `appBaseUrl` is not provided.  Unless your redirect is to a different application, it is recommended to NOT set this parameter and instead set `appBaseUrl` and (if different than the default of `/authorization-code/callback`) `routes.loginCallback.path`.
-* **logoutRedirectUri** - The URI for your app that Okta will redirect users to after sign out to clean up the local session.  Locally this is usually `http://localhost:3000/logout/callback`.  When deployed, this should be `https://{yourProductionDomain}/logout/callback`.  This will default to `{appBaseUrl}{routes.logoutCallback.path}` if `appBaseUrl` is provided.  Unless your redirect is to a different application, it is recommended to NOT set this parameter and instead set `appBaseUrl` and (if different than the default of `/logout/callback`) `routes.logoutCallback.path`.
+* **loginRedirectUri** - The URI for your app that Okta will redirect users to after sign in to create the local session.  Locally, this is usually `http://localhost:8080/authorization-code/callback`. When deployed, this should be `https://{yourProductionDomain}/authorization-code/callback`.  if `loginRedirectUri` is not provided, the value will be set to `{appBaseUrl}{routes.loginCallback.path}`. Unless your redirect is to a different application, it is recommended to NOT set this parameter and instead set `routes.loginCallback.path` (if different than the default of `/authorization-code/callback`) so that the callback will be handled by this module. After the callback has been handled, this module will redirect to the route defined by `routes.loginCallback.afterCallback` (defaults to `/`). Your application should handle this route.
+* **logoutRedirectUri** - The URI for your app that Okta will redirect users to after sign out. Defaults to `{appBaseUrl}/`. Locally this is usually `http://localhost:8080/`.  When deployed, this should be `https://{yourProductionDomain}/`.  Unless your redirect is to a different application, it is recommended to NOT set this parameter and instead set `routes.logoutCallback.path` (if different than the default of `/`) so that the callback will map to a route handled by your application.
 * **response_type** - Defaults to `code`
 * **scope** - Defaults to `openid`, which will only return the `sub` claim. To obtain more information about the user, use `openid profile`. For a list of scopes and claims, please see [Scope-dependent claims](https://developer.okta.com/standards/OIDC/index.html#scope-dependent-claims-not-always-returned) for more information.
 * **routes** - Allows customization of the generated routes. See [Customizing Routes](#customizing-routes) for details.
@@ -176,7 +176,7 @@ The router is required in order for `ensureAuthenticated`, and `isAuthenticated`
 * `/login` - redirects to the Okta sign-in page by default
 * `/authorization-code/callback` - processes the OIDC response, then attaches userinfo to the session
 * `/logout` - revokes any known Okta access/refresh tokens, then redirects to the Okta logout endpoint which then redirects back to a callback url for logout specified in your Okta settings
-* `/logout/callback` - the default callback url that Okta will redirect back to after the session at Okta is ended
+
 The paths for these generated routes can be customized using the `routes` config, see [Customizing Routes](#customizing-routes) for details.
 
 #### oidc.on('ready', callback)
@@ -192,6 +192,7 @@ oidc.on('ready', () => {
 #### oidc.on('error', callback)
 
 This is triggered if an error occurs
+
 * while ExpressOIDC is trying to start
 * if an error occurs while calling the Okta `/revoke` service endpoint on the users tokens while logging out
 * if the state value for a logout does not match the current session
@@ -220,7 +221,7 @@ Use this to define a route that will force a logout of the user from Okta and th
 
 ```javascript
 app.post('/forces-logout', oidc.forceLogoutAndRevoke(), (req, res) => {
-  // Nothing here will execute, after the redirects the user will end up wherever the `routes.logoutCallback.afterCallback` specifies (default `/`)
+  // Nothing here will execute, after the redirects the user will end up wherever the `routes.logoutCallback.path` specifies (default `/`)
 });
 ```
 
@@ -287,21 +288,25 @@ const oidc = new ExpressOIDC({
   // ...
   routes: {
     login: {
+      // handled by this module
       path: '/different/login'
     },
     loginCallback: {
+      // handled by this module
       path: '/different/callback',
       handler: (req, res, next) => {
         // Perform custom logic before final redirect, then call next()
       },
+      // handled by your application
       afterCallback '/home'
     },
     logout: {
+      // handled by this module
       path: '/different/logout'
     },
     logoutCallback: {
-      path: '/different/logout-callback',
-      afterCallback: '/thank-you'
+      // handled by your application
+      path: '/different/logout-callback'
     }
   }
 });
@@ -313,8 +318,7 @@ const oidc = new ExpressOIDC({
 * **`loginCallback.path`** - The URI that this library will host the login callback handler on. Defaults to `/authorization-code/callback`.  Must match a value from the Login Redirect Uri list from the Okta console for this application.
 * **`login.path`** - The URI that redirects the user to the Okta authorize endpoint. Defaults to `/login`.
 * **`logout.path`** - The URI that redirects the user to the Okta logout endpoint.  Defaults to `/logout`.
-* **`logoutCallback.afterCallback`** - Where the user is redirected to after a successful logout callback, if no `redirectTo` value was specified by `oidc.forceLogoutAndRevoke()`.  Defaults to `/`.
-* **`logoutCallback.path`** - The URI that this library will host the logout callback handler on.  Defaults to `/logout/callback`.  Must match a value from the Logout Redirect Uri list from the Okta console for this application.
+* **`logoutCallback.path`** - Where the user is redirected to after a successful logout callback, if no `redirectTo` value was specified by `oidc.forceLogoutAndRevoke()`.  Defaults to `/`. Must match a value from the Logout Redirect Uri list from the Okta console for this application.
 
 #### Using a Custom Login Page
 
@@ -409,19 +413,25 @@ The 2.x improves support for default options without removing flexibility and ad
 Specify the `appBaseUrl` property in your config - this is the base scheme + domain + port for your application that will be used for generating the URIs validated against the Okta settings for your application.
 
 Remove the `redirect_uri` property in your config.
-  * If you are using the Okta default value (appBaseUrl + /authorization-code/callback) it will be given a route by default, no additional configuration required.
-  * If you are NOT using the Okta default value, but are using a route on the same server indicated by your appBaseUrl, you should define your login callback path in your routes.loginCallback.path config (see [the API reference](#expressoidc-api)).
+
+* If you are using the Okta default value (appBaseUrl + /authorization-code/callback) it will be given a route by default, no additional configuration required.
+* If you are NOT using the Okta default value, but are using a route on the same server indicated by your appBaseUrl, you should define your login callback path in your routes.loginCallback.path config (see [the API reference](#expressoidc-api)).
 
 Any customization previously done to `routes.callback` should now be done to `routes.loginCallback` as the name of that property object has changed.
 
 Any value previously set for `routes.callback.defaultRedirect` should now be done to `routes.loginCallback.afterCallback`.  
 
+#### from 2.x to 3.x
+
+This library no longer provides a handler for the logout callback, which was by default `/logout/callback`. The default logout callback is now `{appBaseUrl}/`, but it can be set to any URI or route handled by your application. The URI must be added to the Logout Redirect Uri list for this application from the Okta Admin console. If your app is currently configured to use `/logout/callback`, you can either change the callback URI from the Okta console or add a handler for the `/logout/callback` route. If your app is setting a value for `routes.logoutCallback.afterCallback` you should move this value to `routes.logoutCallback.path`. `routes.logoutCallback.afterCallback` has been deprecated and is no longer used.
+
 ##### Straightforward Okta logout for your app
 
 Configure a logout redirect uri for your application in the Okta admin console for your application, if one is not already defined
-  * If you do not, logouts will not return to your application but will end on the Okta site
-  * Okta recommends `{appBaseUrl}/logout/callback`.  Be sure to fully specify the uri for your application
-  * If you chose a different logout redirect uri, specify the path for the local route to create in your routes.logoutCallback.path value (see [the API reference](#expressoidc-api)).
+
+* If you do not, logouts will not return to your application but will end on the Okta site
+* Okta recommends `{appBaseUrl}/`.  Be sure to fully specify the uri for your application
+* If you chose a different logout redirect uri, specify the path for the local route to create in your `routes.logoutCallback.path` value (see [the API reference](#expressoidc-api)).
 
 By default the middleware will create a `/logout` (POST only) route.  You should remove any local `/logout` route you have added - if it only destroyed the local session (per the example from the 1.x version of this library) you can simply remove it.  If it did additional post-logout logic, you can change the path of the route and list that path in the route.logoutCallback.afterCallback option (see [the API reference](#expressoidc-api)).
 
