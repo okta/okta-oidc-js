@@ -1,3 +1,9 @@
+# 1.3.1
+
+### Bug Fixes
+
+- [`3b95ed`](https://github.com/okta/okta-oidc-js/commit/3b95ed3533ad969bf96194933769f6091e018c3b) -  Changes from deprecated 'componentWillMount' to 'componentDidMount'
+
 # 1.3.0
 
 ### Features
