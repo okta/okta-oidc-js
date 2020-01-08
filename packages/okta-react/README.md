@@ -1,9 +1,29 @@
+[Okta Auth SDK]: https://github.com/okta/okta-auth-js
+[react-router]: https://github.com/ReactTraining/react-router
+[higher-order component]: https://reactjs.org/docs/higher-order-components.html
+[Auth service]: #auth
+
 # Okta React SDK
 
 [![npm version](https://img.shields.io/npm/v/@okta/okta-react.svg?style=flat-square)](https://www.npmjs.com/package/@okta/okta-react)
 [![build status](https://img.shields.io/travis/okta/okta-oidc-js/master.svg?style=flat-square)](https://travis-ci.org/okta/okta-oidc-js)
 
-Okta React SDK makes it easy to integrate [react-router](https://github.com/ReactTraining/react-router) with Okta's [OpenID Connect API](https://developer.okta.com/docs/api/resources/oidc.html).
+Okta React SDK builds on top of the [Okta Auth SDK][]. This SDK adds integration with [react-router][] and provides additional logic and components designed to help you quickly add authentication and authorization to your React single-page web application.
+
+With the [Okta Auth SDK][], you can:
+
+- Login and logout from Okta using the [OAuth 2.0 API](https://developer.okta.com/docs/api/resources/oidc)
+- Retrieve user information
+- Determine authentication status
+- Validate the current user's session
+
+All of these features are supported by this SDK. Additionally, using this SDK, you can:
+
+- Add "secure" routes, which will require authentication before render
+- Define custom logic/behavior when authentication is required
+- Provide an instance of the [Auth service][] to your components using a [higher-order component][]
+
+> This SDK does not provide any UI components.
 
 This library currently supports:
 
@@ -21,9 +41,9 @@ This library currently supports:
 - [React Quickstart](https://facebook.github.io/react/docs/installation.html#creating-a-new-application)
   - If you don't have a React app, or are new to React, please start with this guide. It will walk you through the creation of a React app, creating routes, and other application development essentials.
 - [Okta Sample Application](https://github.com/okta/samples-js-react)
-  - A fully functional sample application.
-- [Okta React Quickstart](https://developer.okta.com/quickstart/#/react/nodejs/express)
-  - Helpful resource for integrating an existing React application into Okta.
+  - A fully functional sample application built using this SDK.
+- [Okta Guide: Sign users into your single-page application](https://developer.okta.com/docs/guides/sign-into-spa/react/before-you-begin/)
+  - Step-by-step guide to integrating an existing React application with Okta login.
 
 ## Installation
 
@@ -35,19 +55,19 @@ npm install --save @okta/okta-react
 
 ## Usage
 
-`okta-react` works directly with `react-router` and provides four additional components:
+`okta-react` works directly with [react-router][] and provides some additional components:
 
-* **Security** - (required) Allows you to supply your OpenID Connect client configuration.
-* **SecureRoute** - (required) A normal `Route` except authentication is needed to render the component.
-* **ImplicitCallback** - (required) Handles the implicit flow callback. This will parse the tokens and store them automatically.
+- [Security](#security) - Allows you to supply your OpenID Connect client [configuration](#reference). Provides an instance of the [Auth service][] to child components.
+- [SecureRoute](#secureroute) - A normal `Route` except authentication is needed to render the component.
+- [ImplicitCallback](#implicitcallback) - A simple component which handles the login callback.
 
 ## Create Routes
 
 Here is a minimal working example. This example defines 3 routes:
 
-* **/** - Anyone can access the home page
-* **/protected** - Protected is only visible to authenticated users
-* **/implicit/callback** - This is where auth is handled for you after redirection
+- **/** - Anyone can access the home page
+- **/protected** - Protected is only visible to authenticated users
+- **/implicit/callback** - This is where auth is handled for you after redirection
 
 ```jsx
 // src/App.js
@@ -78,6 +98,7 @@ export default App;
 ```
 
 ## Show Login and Logout Buttons
+
 In the relevant location in your application, you will want to provide `Login` and `Logout` buttons for the user. You can show/hide the correct button by using the `auth.isAuthenticated()` method. For example:
 
 ```jsx
@@ -178,7 +199,7 @@ Security is the top-most component of okta-react. This is where most of the conf
 
 #### Configuration options
 
-These options are used by `Security` to configure the [Auth](https://github.com/okta/okta-oidc-js/blob/master/packages/okta-react/src/Auth.js) object. The most commonly used options are shown here. See [Configuration Reference](https://github.com/okta/okta-auth-js#configuration-reference) for an extended set of supported options.
+These options are used by `Security` to configure the [Auth service][]. The most commonly used options are shown here. See [Configuration Reference](https://github.com/okta/okta-auth-js#configuration-reference) for an extended set of supported options.
 
 - **issuer** (required) - The OpenId Connect `issuer`
 - **clientId** (required) - The OpenId Connect `client_id`
@@ -232,16 +253,15 @@ class App extends Component {
 }
 ```
 
-#### Alternate configuration using `Auth` object
+#### Alternate configuration using `Auth` instance
 
-When the `auth` option is passed, all other configuration options passed to `Security` will be ignored. The `Auth` object should be configured directly before being passed to `Security`.
+When the `auth` option is passed, all other configuration options passed to `Security` will be ignored.
 
-- **auth** *(optional)* - Provide an [Auth](https://github.com/okta/okta-oidc-js/blob/master/packages/okta-react/src/Auth.js) object instead of the options above. This is the most direct way to use methods on the `Auth` object outside of your components and is helpful when integrating `okta-react` with external libraries that need access to the tokens.
-
+- **auth** *(optional)* - Provide an [Auth service][] instance instead of the options above. This is the most direct way to use methods on the [Auth service][] instance *outside* of your components and is helpful when integrating `okta-react` with external libraries that need access to the tokens.
 
 #### Example with Auth object
 
-Configure an instance of the `Auth` object and pass it to the `Security` component.
+Configure an instance of the [Auth service][] and pass it to the `Security` component.
 
 ```jsx
 // src/App.js
@@ -281,7 +301,7 @@ export default App;
 
 #### PKCE Example
 
-Assuming you have configured your application to allow the `Authorization code` grant type, simply pass `pkce=true` to the `Security` component. This will configure the `Auth` object to perform PKCE flow for both login and token refresh.
+Assuming you have configured your application to allow the `Authorization code` grant type, simply pass `pkce=true` to the `Security` component. This will configure the [Auth service][] to perform PKCE flow for both login and token refresh.
 
 ```jsx
 
@@ -302,7 +322,7 @@ class App extends Component {
 }
 ```
 
-You may also configure an `Auth` object directly and pass it to the Security component.
+You may also configure an instance of the [Auth service][] directly and pass it to the Security component.
 
 ```jsx
 
@@ -334,15 +354,15 @@ class App extends Component {
 
 ### `ImplicitCallback`
 
-`ImplicitCallback` handles the callback after the redirect. By default, it parses the tokens from the uri, stores them, then redirects to `/`. If a `SecureRoute` caused the redirect, then the callback redirects to the secured route.
+`ImplicitCallback` handles the callback after the redirect. By default, it parses the tokens from the uri, stores them, then redirects to `/`. If a `SecureRoute` caused the redirect, then the callback redirects to the secured route. For more advanced cases, this component can be copied to your own source tree and modified as needed.
 
 ### `withAuth`
 
-`withAuth` provides a way for components to make decisions based on auth state. It injects an `auth` prop into the component.
+`withAuth` is a [higher-order component][] which injects an `auth` prop into the component. This provides a way for components to make decisions based on auth state.
 
 ### `auth`
 
-`auth` provides methods that allow managing tokens and auth state. All of the methods return Promises.
+`auth` An object that provides methods for managing tokens and auth state. All of the methods return Promises.
 
 #### `auth.isAuthenticated()`
 
@@ -389,11 +409,14 @@ auth.redirect({
 Parses tokens from the url and stores them.
 
 ## Contributing
+
 We welcome contributions to all of our open-source packages. Please see the [contribution guide](https://github.com/okta/okta-oidc-js/blob/master/CONTRIBUTING.md) to understand how to structure a contribution.
 
 ### Installing dependencies for contributions
+
 We use [yarn](https://yarnpkg.com) for dependency management when developing this package:
-```
+
+```bash
 yarn install
 ```
 
