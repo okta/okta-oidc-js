@@ -23,7 +23,6 @@ describe('logout', () => {
   const client_secret = 'testSecret';
   const id_token = 'testIdToken';
   const logoutRedirectUri = 'testLogoutUri';
-  const mockState = 'fake-state';
   const sessionKey = 'fake-session-key';
 
   testSuite('ORG issuer', orgIssuer);
@@ -36,7 +35,7 @@ describe('logout', () => {
     const baseUri = issuer.indexOf('oauth2') > 0 ? `${issuer}` : `${issuer}/oauth2`;
     const revokeUri = `${baseUri}/v1/revoke`;
 
-    const expectedUri = `${baseUri}/v1/logout?state=${mockState}&id_token_hint=${id_token}&post_logout_redirect_uri=${logoutRedirectUri}`;
+    const expectedUri = `${baseUri}/v1/logout?id_token_hint=${id_token}&post_logout_redirect_uri=${logoutRedirectUri}`;
 
     describe(label, () => {
       beforeEach(() => {
@@ -47,8 +46,6 @@ describe('logout', () => {
           return fetchResponse;
         });
         nodeFetch.mockImplementation(fetch);
-    
-        uuid.v4 = jest.fn().mockReturnValue(mockState);
     
         context = {
           options: {
@@ -72,7 +69,8 @@ describe('logout', () => {
             tokens: {
               id_token
             }
-          }
+          },
+          logout: jest.fn()
         };
         res = {
           redirect: jest.fn()
@@ -168,9 +166,9 @@ describe('logout', () => {
       });
     
       describe('session', () => {
-        it('sets the session object', async () => {
+        it('calls req.logout()', async () => {
           await logout(req, res);
-          expect(req.session[sessionKey]).toEqual({ state: mockState });
+          expect(req.logout).toHaveBeenCalled();
         })
       })
     });
