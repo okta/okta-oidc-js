@@ -1,9 +1,31 @@
+[Okta Auth SDK]: https://github.com/okta/okta-auth-js
+[@angular/router]: https://angular.io/guide/router
+[Observable]: https://angular.io/guide/observables
+[Dependency Injection]: https://angular.io/guide/dependency-injection
+[Auth service]: #oktaauthservice
+
 # Okta Angular SDK
 
 [![npm version](https://img.shields.io/npm/v/@okta/okta-angular.svg?style=flat-square)](https://www.npmjs.com/package/@okta/okta-angular)
 [![build status](https://img.shields.io/travis/okta/okta-oidc-js/master.svg?style=flat-square)](https://travis-ci.org/okta/okta-oidc-js)
 
-An Angular wrapper around [Okta Auth JS](https://github.com/okta/okta-auth-js), that builds on top of Okta's [OpenID Connect API](https://developer.okta.com/docs/api/resources/oidc.html).
+Okta Angular SDK builds on top of the [Okta Auth SDK][]. This SDK adds integration with [@angular/router][] and provides additional logic and components designed to help you quickly add authentication and authorization to your Angular single-page web application.
+
+With the [Okta Auth SDK][], you can:
+
+- Login and logout from Okta using the [OAuth 2.0 API](https://developer.okta.com/docs/api/resources/oidc)
+- Retrieve user information
+- Determine authentication status
+- Validate the current user's session
+
+All of these features are supported by this SDK. Additionally, using this SDK, you can:
+
+- Add "protected" routes, which will require authentication before render
+- Define custom logic/behavior when authentication is required
+- Subscribe to changes in authentication state using an [Observable] property
+- Provide an instance of the [Auth service][] to your components using [Dependency Injection][]
+
+> This SDK does not provide any UI components.
 
 This library currently supports:
 
@@ -11,9 +33,7 @@ This library currently supports:
 - [OAuth 2.0 Authorization Code Flow](https://tools.ietf.org/html/rfc6749#section-1.3.1)
 - [Proof Key for Code Exchange (PKCE)](https://tools.ietf.org/html/rfc7636)
 
-This library has been tested for compatibility with the following Angular versions: 4, 5, 6, 7, 8
-
-`okta-angular` works directly with [`@angular/router`](https://angular.io/guide/router).
+> This library has been tested for compatibility with the following Angular versions: 4, 5, 6, 7, 8
 
 ## Getting Started
 
@@ -26,8 +46,8 @@ This library has been tested for compatibility with the following Angular versio
   - If you don't have an Angular app, or are new to Angular, please start with this guide. It will walk you through the creation of an Angular app, creating routes, and other application development essentials.
 - [Okta Sample Application](https://github.com/okta/samples-js-angular)
   - A fully functional sample application.
-- [Okta Angular Quickstart](https://developer.okta.com/quickstart/#/angular/nodejs/express)
-  - Helpful resource for integrating an existing Angular application into Okta.
+- [Okta Guide: Sign users into your single-page application](https://developer.okta.com/docs/guides/sign-into-spa/angular/before-you-begin/)
+  - Step-by-step guide to integrating an existing Angular application with Okta login.
 
 ## Installation
 
@@ -133,7 +153,9 @@ If a user does not have a valid session, they will be redirected to the Okta Log
 
 ### `OktaCallbackComponent`
 
-In order to handle the redirect back from Okta, you need to capture the token values from the URL. You'll use `/implicit/callback` as the callback URL, and specify the default `OktaCallbackComponent` and declare it in your `NgModule`.
+Handles the callback after the redirect. By default, it parses the tokens from the uri, stores them, then redirects to `/`. If a protected route (using [`OktaAuthGuard`](#oktaauthguard)) caused the redirect, then the callback redirects to the protected route. For more advanced cases, this component can be copied to your own source tree and modified as needed.
+
+You should define a route to handle the callback URL (`/implicit/callback` by default). Also add `OktaCallbackComponent` to the declarations section of in your `NgModule`.
 
 ```typescript
 // myApp.module.ts
@@ -161,7 +183,7 @@ const appRoutes: Routes = [
 
 ### `OktaLoginRedirectComponent`
 
-By default, the `OktaLoginRedirect` component redirects users to your Okta organization for login. Simply import and add it to your `appRoutes` to offset authentication to Okta entirely:
+The `OktaLoginRedirect` component redirects the user's browser to the Okta-hosted login page for your organization. For more advanced cases, this component can be copied to your own source tree and modified as needed.
 
 ```typescript
 // myApp.module.ts
@@ -183,7 +205,7 @@ const appRoutes: Routes = [
 
 The `okta-angular` SDK supports the session token redirect flow for custom login pages. For more information, [see the basic Okta Sign-in Widget functionality](https://github.com/okta/okta-signin-widget#new-oktasigninconfig).
 
-To handle the session-token redirect flow, you can modify the unauthentication callback functionality by adding a `data` attribute directly to your `Route`:
+To handle the session-token redirect flow, you can set an `onAuthRequired` callback by adding a `data` attribute directly to your `Route`:
 
 ```typescript
 // myApp.module.ts
@@ -310,11 +332,14 @@ Used to capture the current URL state before a redirect occurs. Used primarily f
 Returns the stored URI and query parameters stored when the `OktaAuthGuard` and/or `setFromUri` was used.
 
 ## Contributing
+
 We welcome contributions to all of our open-source packages. Please see the [contribution guide](https://github.com/okta/okta-oidc-js/blob/master/CONTRIBUTING.md) to understand how to structure a contribution.
 
 ### Installing dependencies for contributions
+
 We use [yarn](https://yarnpkg.com) for dependency management when developing this package:
-```
+
+```bash
 yarn install
 ```
 
