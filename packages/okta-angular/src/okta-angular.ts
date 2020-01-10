@@ -1,4 +1,4 @@
-/*!
+/*
  * Copyright (c) 2017-Present, Okta, Inc. and/or its affiliates. All rights reserved.
  * The Okta software accompanied by this notice is provided pursuant to the Apache License, Version 2.0 (the "License.")
  *
@@ -10,4 +10,12 @@
  * See the License for the specific language governing permissions and limitations under the License.
  */
 
-export * from './src/';
+export { OktaAuthModule }  from './okta/okta.module';
+export { OktaAuthGuard }   from './okta/okta.guard';
+export { OktaAuthService } from './okta/services/okta.service';
+export { OKTA_CONFIG }     from './okta/models/okta.config';
+export { UserClaims }     from './okta/models/user-claims';
+
+// Okta View Components
+export { OktaCallbackComponent } from './okta/components/callback.component';
+export { OktaLoginRedirectComponent } from './okta/components/login-redirect.component';

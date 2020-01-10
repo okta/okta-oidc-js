@@ -12,6 +12,20 @@
 
 const fs = require('fs');
 const path = require('path');
+const shell = require('shelljs');
+
+// Link the local module. We are not using yarn link because we do not want to modify the global state
+const MODULE_NAME = '@okta/okta-angular';
+const SRC_DIR = path.resolve(__dirname, '..', '..', '..', '..', 'dist');
+const DEST_LINK = path.resolve(__dirname, '..', 'node_modules', MODULE_NAME);
+const DEST_DIR = path.resolve(DEST_LINK, '..');
+
+shell.echo(`Linking module: ${MODULE_NAME} from ${SRC_DIR}`);
+shell.mkdir(`-p`, `${SRC_DIR}`);
+shell.mkdir(`-p`, `${DEST_DIR}`);
+shell.exec(`ln -sF ${SRC_DIR} ${DEST_LINK}`);
+
+// Generate environment.ts from the OIDC config
 const Config = require('../../../../../../.oidc.config.js');
 
 const environmentFilesDirectory = path.join(__dirname, '../src/environments');

@@ -1,3 +1,8 @@
+# 1.3.1
+
+### Bug fixes
+
+- [#646](https://github.com/okta/okta-oidc-js/pull/646) - Fixes regression with AOT compilation. Also tested against Angular 9.
 
 # 1.3.0
 
