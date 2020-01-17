@@ -3,7 +3,7 @@
 [![npm version](https://img.shields.io/npm/v/@okta/jwt-verifier.svg?style=flat-square)](https://www.npmjs.com/package/@okta/jwt-verifier)
 [![build status](https://img.shields.io/travis/okta/okta-oidc-js/master.svg?style=flat-square)](https://travis-ci.org/okta/okta-oidc-js)
 
-This library verifies Okta access tokens (issued by Okta Custom Authorization servers) by fetching the public keys from the JWKS endpoint of the authorization server. If the access token is valid it will be converted to a JSON object and returned to your code. 
+This library verifies Okta access tokens (issued by [Okta Custom Authorization servers](https://developer.okta.com/docs/concepts/auth-servers/) by fetching the public keys from the JWKS endpoint of the authorization server. If the access token is valid it will be converted to a JSON object and returned to your code. 
 
 > Okta Custom Authorization Servers require the API Access Management license.  If you are using Okta Org Authorization Servers (which don’t require API Access Management) you can manually validate against the /introspect endpoint ( https://developer.okta.com/docs/reference/api/oidc/#introspect ). 
 
