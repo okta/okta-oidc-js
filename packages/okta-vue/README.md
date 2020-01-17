@@ -1,9 +1,28 @@
+[Okta Auth SDK]: https://github.com/okta/okta-auth-js
+[vue-router]: https://router.vuejs.org/en/essentials/getting-started.html
+[Vue prototype]: https://vuejs.org/v2/cookbook/adding-instance-properties.html
+[Auth service]: #$auth
+
 # Okta Vue SDK
 
 [![npm version](https://img.shields.io/npm/v/@okta/okta-vue.svg?style=flat-square)](https://www.npmjs.com/package/@okta/okta-vue)
 [![build status](https://img.shields.io/travis/okta/okta-oidc-js/master.svg?style=flat-square)](https://travis-ci.org/okta/okta-oidc-js)
 
-The Okta Vue SDK is a wrapper around the [Okta Auth SDK](https://github.com/okta/okta-auth-js), which builds on top of Okta's [OpenID Connect API](https://developer.okta.com/docs/api/resources/oidc.html).
+Okta Vue SDK builds on top of the [Okta Auth SDK][]. This SDK integrates with the [vue-router][] and extends the [Vue prototype][] with an [Auth service][] to help you quickly add authentication and authorization to your Vue single-page web application.
+
+With the [Okta Auth SDK][], you can:
+
+- Login and logout from Okta using the [OAuth 2.0 API](https://developer.okta.com/docs/api/resources/oidc)
+- Retrieve user information
+- Determine authentication status
+- Validate the current user's session
+
+All of these features are supported by this SDK. Additionally, using this SDK, you can:
+
+- Add "protected" routes, which will require authentication before render
+- Provide an instance of the [Auth service][] to your components on the [Vue prototype][]
+
+> This SDK does not provide any UI components.
 
 This library currently supports:
 
@@ -22,8 +41,8 @@ This library currently supports:
   - If you don't have a Vue app, or are new to Vue, please start with this guide. It will walk you through the creation of a Vue app, creating [routers](https://router.vuejs.org/en/essentials/getting-started.html), and other application development essentials.
 - [Okta Sample Application](https://github.com/okta/samples-js-vue)
   - A fully functional sample application.
-- [Okta Vue Quickstart](https://developer.okta.com/quickstart/#/vue/nodejs/express)
-  - Helpful resource for integrating an existing Vue application into Okta.
+- [Okta Guide: Sign users into your single-page application](https://developer.okta.com/docs/guides/sign-into-spa/vue/before-you-begin/)
+  - Step-by-step guide to integrating an existing Vue application with Okta login.
 
 ## Installation
 
@@ -211,7 +230,7 @@ router.beforeEach((to, from, next) {
 
 #### Configuration Options
 
-he most commonly used options are shown here. See [Configuration Reference](https://github.com/okta/okta-auth-js#configuration-reference) for an extended set of supported options.
+The most commonly used options are shown here. See [Configuration Reference](https://github.com/okta/okta-auth-js#configuration-reference) for an extended set of supported options.
 
 - `issuer` **(required)**: The OpenID Connect `issuer`
 - `clientId` **(required)**: The OpenID Connect `client_id`
@@ -270,11 +289,14 @@ Returns the result of the OpenID Connect `/userinfo` endpoint if an access token
 Parses the tokens returned as hash fragments in the OAuth 2.0 Redirect URI.
 
 ## Contributing
+
 We welcome contributions to all of our open-source packages. Please see the [contribution guide](https://github.com/okta/okta-oidc-js/blob/master/CONTRIBUTING.md) to understand how to structure a contribution.
 
 ### Installing dependencies for contributions
+
 We use [yarn](https://yarnpkg.com) for dependency management when developing this package:
-```
+
+```bash
 yarn install
 ```
 

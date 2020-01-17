@@ -1,5 +1,10 @@
 typedocs
-dist
-node_modules
-environment.ts
+/node_modules
+/dist
+/documentation
+/coverage
+
+*.log
 *.tgz
+
+environment.ts

@@ -94,8 +94,7 @@ module.exports = class ExpressOIDC extends EventEmitter {
           path: '/logout'
         },
         logoutCallback: {
-          path: '/logout/callback',
-          afterCallback: '/'
+          path: '/'
         }
       },
       sessionKey: sessionKey || `oidc:${issuer}`,

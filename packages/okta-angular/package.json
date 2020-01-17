@@ -1,81 +1,114 @@
 {
-  "name": "@okta/okta-angular",
-  "version": "1.3.0",
-  "description": "Angular support for Okta",
-  "main": "./dist/src/index.js",
-  "types": "./dist/src/index.d.ts",
-  "scripts": {
-    "build:package-info": "node ../../util/write-package-info.js . src/okta/packageInfo.ts",
-    "lint": "ng lint",
-    "ngc": "./node_modules/.bin/ngc -p tsconfig.json",
-    "prepare": "yarn ngc",
-    "prengc": "yarn build:package-info",
-    "start": "yarn --cwd test/e2e/harness/ start",
-    "test": "yarn lint && yarn test:e2e && yarn test:unit",
-    "test:e2e": "yarn --cwd test/e2e/harness/ e2e",
-    "test:unit": "jest"
-  },
-  "repository": "https://github.com/okta/okta-oidc-js",
-  "homepage": "https://github.com/okta/okta-oidc-js/tree/master/packages/okta-angular",
-  "keywords": [
-    "okta",
-    "oidc",
-    "OpenID Connect",
-    "authentication",
-    "auth",
-    "oauth2"
-  ],
-  "license": "Apache-2.0",
-  "dependencies": {
-    "@okta/configuration-validation": "^0.4.1",
-    "@okta/okta-auth-js": "^2.11.0"
-  },
-  "devDependencies": {
-    "@angular-devkit/build-angular": "~0.8.1",
-    "@angular/cli": "^7.0.0",
-    "@angular/common": "^7.0.0",
-    "@angular/compiler": "^7.0.0",
-    "@angular/compiler-cli": "^7.0.0",
-    "@angular/core": "^7.0.0",
-    "@angular/http": "^7.0.0",
-    "@angular/platform-browser": "^7.0.0",
-    "@angular/platform-browser-dynamic": "7.0.0",
-    "@angular/router": "^7.0.0",
-    "@types/jest": "^24.0.18",
-    "@types/json-schema": "^7.0.3",
-    "@types/minimatch": "^3.0.3",
-    "core-js": "^2.4.1",
-    "jest": "^24.9.0",
-    "jest-preset-angular": "^7.1.1",
-    "rxjs": "^6.2.1",
-    "tslint": "~5.5.0",
-    "typescript": "~3.1.6",
-    "zone.js": "^0.8.14"
-  },
-  "peerDependencies": {
-    "@angular/common": ">=4",
-    "@angular/core": ">=4",
-    "@angular/platform-browser": ">=4",
-    "@angular/router": ">=4",
-    "rxjs": ">=5.4.3"
-  },
-  "jest": {
-    "transform": {
-      "^.+\\.(ts|html)$": "ts-jest"
+    "name": "@okta/okta-angular",
+    "private": true,
+    "version": "1.3.1",
+    "description": "Angular support for Okta",
+    "main": "./bundles/okta-angular.umd.js",
+    "module": "./fesm5/okta-angular.js",
+    "es2015": "./fesm2015/okta-angular.js",
+    "esm5": "./esm5/okta-angular.js",
+    "esm2015": "./esm2015/okta-angular.js",
+    "fesm5": "./fesm5/okta-angular.js",
+    "fesm2015": "./fesm2015/okta-angular.js",
+    "typings": "./okta-angular.d.ts",
+    "scripts": {
+        "build:package-info": "node ../../util/write-package-info.js . src/okta/packageInfo.ts",
+        "lint": "tslint -p tsconfig.json -t stylish src/**/*.ts",
+        "prebuild": "yarn build:package-info",
+        "build": "node build.js",
+        "prepare": "yarn build",
+        "start": "yarn --cwd test/e2e/harness/ start",
+        "test": "yarn lint && yarn test:e2e && yarn test:unit",
+        "test:e2e": "yarn --cwd test/e2e/harness/ e2e",
+        "test:unit": "jest",
+        "pack:lib": "npm run build && npm pack ./dist",
+        "publish:lib": "npm run build && npm publish ./dist",
+        "publish:lib:next": "npm run build && npm publish --tag next ./dist",
+        "compodoc": "compodoc -p tsconfig.json",
+        "compodoc:serve": "compodoc -s"
     },
-    "transformIgnorePatterns": [
-      "node_modules",
-      "packages/(?!okta-angular)"
+    "repository": "https://github.com/okta/okta-oidc-js",
+    "homepage": "https://github.com/okta/okta-oidc-js/tree/master/packages/okta-angular",
+    "keywords": [
+        "okta",
+        "oidc",
+        "OpenID Connect",
+        "authentication",
+        "auth",
+        "oauth2"
     ],
-    "globals": {
-      "ts-jest": {
-        "tsConfig": "<rootDir>/tsconfig.spec.json"
-      }
+    "license": "Apache-2.0",
+    "dependencies": {
+        "@okta/configuration-validation": "^0.4.1",
+        "@okta/okta-auth-js": "^2.11.0",
+        "tslib": "^1.9.0"
     },
-    "preset": "jest-preset-angular",
-    "rootDir": "./test/spec",
-    "setupFilesAfterEnv": [
-      "../support/setupJest.ts"
-    ]
-  }
+    "devDependencies": {
+        "@angular/animations": "8.0.0",
+        "@angular/common": "8.0.0",
+        "@angular/compiler": "8.0.0",
+        "@angular/compiler-cli": "8.0.0",
+        "@angular/core": "8.0.0",
+        "@angular/platform-browser": "8.0.0",
+        "@angular/platform-browser-dynamic": "8.0.0",
+        "@angular/platform-server": "8.0.0",
+        "@angular/router": "8.0.0",
+        "@compodoc/compodoc": "1.1.9",
+        "@rollup/plugin-commonjs": "11.0.1",
+        "@rollup/plugin-node-resolve": "7.0.0",
+        "@types/jest": "^24.0.18",
+        "@types/json-schema": "^7.0.3",
+        "@types/node": "12.0.4",
+        "angular2-template-loader": "0.6.2",
+        "chalk": "2.4.2",
+        "codelyzer": "5.0.1",
+        "core-js": "3.1.3",
+        "jest": "^24.9.0",
+        "jest-preset-angular": "^7.1.1",
+        "raw-loader": "1.0.0",
+        "reflect-metadata": "0.1.13",
+        "rollup": "1.29.0",
+        "rollup-plugin-license": "0.8.1",
+        "rollup-plugin-sourcemaps": "0.4.2",
+        "rxjs": "6.5.2",
+        "shelljs": "0.8.3",
+        "source-map-loader": "0.2.4",
+        "to-string-loader": "1.1.5",
+        "ts-loader": "6.0.1",
+        "tsickle": "0.33.0",
+        "tslint": "5.16.0",
+        "tslint-angular": "3.0.2",
+        "typescript": "3.4.5",
+        "uglify-js": "3.6.0",
+        "webpack": "4.32.2",
+        "webpack-filter-warnings-plugin": "1.2.1",
+        "zone.js": "0.9.1"
+    },
+    "peerDependencies": {
+        "@angular/common": ">=4",
+        "@angular/core": ">=4",
+        "@angular/platform-browser": ">=4",
+        "@angular/router": ">=4",
+        "rxjs": ">=5.4.3"
+    },
+    "jest": {
+        "transform": {
+            "^.+\\.(ts|html)$": "ts-jest"
+        },
+        "transformIgnorePatterns": [
+            "node_modules",
+            "packages/(?!okta-angular)"
+        ],
+        "globals": {
+            "ts-jest": {
+                "tsConfig": "<rootDir>/tsconfig.spec.json"
+            }
+        },
+        "preset": "jest-preset-angular",
+        "rootDir": "./test/spec",
+        "setupFilesAfterEnv": [
+            "../support/setupJest.ts"
+        ]
+    },
+    "sideEffects": false
 }
