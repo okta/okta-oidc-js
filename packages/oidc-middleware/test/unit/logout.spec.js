@@ -2,11 +2,7 @@
 jest.mock('node-fetch');
 const nodeFetch = require('node-fetch');
 
-jest.mock('uuid', () => { return {}; });
-const uuid = require('uuid');
-
 const { forceLogoutAndRevoke } = require('../../src/logout');
-
 
 describe('logout', () => {
   let fetchResponse;

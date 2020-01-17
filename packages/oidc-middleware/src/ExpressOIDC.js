@@ -145,6 +145,7 @@ module.exports = class ExpressOIDC extends EventEmitter {
 
     // create client
     oidcUtil.createClient(context)
+    // eslint-disable-next-line promise/always-return
     .then(client => {
       context.client = client;
       oidcUtil.bootstrapPassportStrategy(context);
