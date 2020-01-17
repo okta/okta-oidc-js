@@ -1,0 +1,17 @@
+{
+  "extends": [
+    "eslint:recommended",
+    "plugin:promise/recommended"
+  ],
+  "plugins": ["promise"],
+  "env": {
+    "browser": false,
+    "commonjs": true
+  },
+  "parserOptions": {
+    "ecmaVersion": 2017
+  },
+  "globals": {
+    "Promise": "readonly"
+  }
+}
