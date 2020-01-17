@@ -12,7 +12,13 @@
 
 import { InjectionToken } from '@angular/core';
 
-import { AuthRequiredFunction } from './auth-required-function';
+import { Router } from '@angular/router';
+
+import { OktaAuthService } from '../services/okta.service';
+
+export type AuthRequiredFunction = (oktaAuth: OktaAuthService, router: Router) => void;
+export type IsAuthenticatedFunction = () => Promise<boolean>;
+export type OnSessionExpiredFunction = () => void;
 
 export interface TestingObject {
   disableHttpsCheck: boolean;
@@ -36,6 +42,8 @@ export interface OktaConfig {
   testing?: TestingObject;
   tokenManager?: TokenManagerConfig;
   postLogoutRedirectUri?: string;
+  isAuthenticated?: IsAuthenticatedFunction;
+  onSessionExpired?: OnSessionExpiredFunction;
 }
 
 export const OKTA_CONFIG = new InjectionToken<OktaConfig>('okta.config.angular');

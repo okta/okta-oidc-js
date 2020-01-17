@@ -19,6 +19,7 @@
     "test:unit": "jest"
   },
   "jest": {
+    "restoreMocks": true,
     "moduleFileExtensions": [
       "js",
       "json",
@@ -51,7 +52,7 @@
   "homepage": "https://github.com/okta/okta-oidc-js#readme",
   "dependencies": {
     "@okta/configuration-validation": "^0.4.1",
-    "@okta/okta-auth-js": "^2.11.0",
+    "@okta/okta-auth-js": "^2.11.2",
     "cross-env": "^5.1.1",
     "vue": "^2.5.17",
     "vue-router": "^3.0.1"

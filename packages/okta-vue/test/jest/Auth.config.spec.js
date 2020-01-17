@@ -1,10 +1,20 @@
-import { createLocalVue } from '@vue/test-utils'
-import { default as Auth } from '../../src/Auth'
+/* eslint-disable no-new */
+import Auth from '../../src/Auth'
 import AuthJS from '@okta/okta-auth-js'
 
 jest.mock('@okta/okta-auth-js')
 
 describe('Auth configuration', () => {
+  beforeEach(() => {
+    AuthJS.mockImplementation(() => {
+      return {
+        tokenManager: {
+          on: jest.fn()
+        }
+      }
+    })
+  })
+
   it('does not throw if config is valid', () => {
     const validConfig = {
       issuer: 'https://foo',
@@ -12,8 +22,7 @@ describe('Auth configuration', () => {
       redirectUri: 'foo'
     }
     function createInstance () {
-      const localVue = createLocalVue()
-      localVue.use(Auth, validConfig)
+      new Auth(validConfig)
     }
     expect(createInstance).not.toThrow()
   })
@@ -28,24 +37,22 @@ describe('Auth configuration', () => {
       tokenManager: {
         secure: true,
         storage: 'cookie'
-      }
+      },
+      onSessionExpired: () => {}
     }
-    const localVue = createLocalVue()
-    localVue.use(Auth, validConfig)
+    new Auth(validConfig)
     expect(AuthJS).toHaveBeenCalledWith(validConfig)
   })
 
   it('should throw if no issuer is provided', () => {
     function createInstance () {
-      const localVue = createLocalVue()
-      localVue.use(Auth, {})
+      new Auth({})
     }
     expect(createInstance).toThrow()
   })
   it('should throw if an issuer that does not contain https is provided', () => {
     function createInstance () {
-      const localVue = createLocalVue()
-      localVue.use(Auth, {
+      new Auth({
         issuer: 'http://foo.com'
       })
     }
@@ -53,8 +60,7 @@ describe('Auth configuration', () => {
   })
   it('should throw if an issuer matching {yourOktaDomain} is provided', () => {
     function createInstance () {
-      const localVue = createLocalVue()
-      localVue.use(Auth, {
+      new Auth({
         issuer: 'https://{yourOktaDomain}'
       })
     }
@@ -62,8 +68,7 @@ describe('Auth configuration', () => {
   })
   it('should throw if an issuer matching -admin.okta.com is provided', () => {
     function createInstance () {
-      const localVue = createLocalVue()
-      localVue.use(Auth, {
+      new Auth({
         issuer: 'https://foo-admin.okta.com'
       })
     }
@@ -71,8 +76,7 @@ describe('Auth configuration', () => {
   })
   it('should throw if an issuer matching -admin.oktapreview.com is provided', () => {
     function createInstance () {
-      const localVue = createLocalVue()
-      localVue.use(Auth, {
+      new Auth({
         issuer: 'https://foo-admin.oktapreview.com'
       })
     }
@@ -80,8 +84,7 @@ describe('Auth configuration', () => {
   })
   it('should throw if an issuer matching -admin.okta-emea.com is provided', () => {
     function createInstance () {
-      const localVue = createLocalVue()
-      localVue.use(Auth, {
+      new Auth({
         issuer: 'https://foo-admin.okta-emea.com'
       })
     }
@@ -89,8 +92,7 @@ describe('Auth configuration', () => {
   })
   it('should throw if an issuer matching more than one ".com" is provided', () => {
     function createInstance () {
-      const localVue = createLocalVue()
-      localVue.use(Auth, {
+      new Auth({
         issuer: 'https://foo.okta.com.com'
       })
     }
@@ -98,8 +100,7 @@ describe('Auth configuration', () => {
   })
   it('should throw if an issuer matching more than one sequential "://" is provided', () => {
     function createInstance () {
-      const localVue = createLocalVue()
-      localVue.use(Auth, {
+      new Auth({
         issuer: 'https://://foo.okta.com'
       })
     }
@@ -107,8 +108,7 @@ describe('Auth configuration', () => {
   })
   it('should throw if an issuer matching more than one "://" is provided', () => {
     function createInstance () {
-      const localVue = createLocalVue()
-      localVue.use(Auth, {
+      new Auth({
         issuer: 'https://foo.okta://.com'
       })
     }
@@ -116,8 +116,7 @@ describe('Auth configuration', () => {
   })
   it('should throw if the client_id is not provided', () => {
     function createInstance () {
-      const localVue = createLocalVue()
-      localVue.use(Auth, {
+      new Auth({
         issuer: 'https://foo'
       })
     }
@@ -125,8 +124,7 @@ describe('Auth configuration', () => {
   })
   it('should throw if a client_id matching {clientId} is provided', () => {
     function createInstance () {
-      const localVue = createLocalVue()
-      localVue.use(Auth, {
+      new Auth({
         client_id: '{clientId}',
         issuer: 'https://foo'
       })
@@ -135,8 +133,7 @@ describe('Auth configuration', () => {
   })
   it('should throw if the redirect_uri is not provided', () => {
     function createInstance () {
-      const localVue = createLocalVue()
-      localVue.use(Auth, {
+      new Auth({
         issuer: 'https://foo/oauth2/default',
         client_id: 'foo'
       })
@@ -146,8 +143,7 @@ describe('Auth configuration', () => {
 
   it('should throw if a redirect_uri matching {redirectUri} is provided', () => {
     function createInstance () {
-      const localVue = createLocalVue()
-      localVue.use(Auth, {
+      new Auth({
         issuer: 'https://foo/oauth2/default',
         client_id: 'foo',
         redirect_uri: '{redirectUri}'

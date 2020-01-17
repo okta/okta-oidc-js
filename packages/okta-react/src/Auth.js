@@ -33,6 +33,13 @@ export default class Auth {
     assertIssuer(authConfig.issuer, testing);
     assertClientId(authConfig.clientId);
     assertRedirectUri(authConfig.redirectUri);
+
+    // Automatically enter login flow if session has expired or was ended outside the application
+    // The default behavior can be overriden by passing your own function via config: `config.onSessionExpired`
+    if (!authConfig.onSessionExpired) {
+      authConfig.onSessionExpired = this.login.bind(this);
+    }
+
     this._oktaAuth = new OktaAuth(authConfig);
     this._oktaAuth.userAgent = `${packageInfo.name}/${packageInfo.version} ${this._oktaAuth.userAgent}`;
     this._config = authConfig; // use normalized config
@@ -48,6 +55,10 @@ export default class Auth {
     this.redirect = this.redirect.bind(this);
   }
 
+  getTokenManager() {
+    return this._oktaAuth.tokenManager;
+  }
+
   async handleAuthentication() {
     let tokens = await this._oktaAuth.token.parseFromUrl();
     tokens = Array.isArray(tokens) ? tokens : [tokens];
@@ -61,8 +72,15 @@ export default class Auth {
   }
 
   async isAuthenticated() {
+    // Support a user-provided method to check authentication
+    if (this._config.isAuthenticated) {
+      return (this._config.isAuthenticated)();
+    }
+
     // If there could be tokens in the url
     if (location && location.hash && containsAuthTokens.test(location.hash)) return null;
+
+    // Return true if either the access or id token exist in client storage
     return !!(await this.getAccessToken()) || !!(await this.getIdToken());
   }
 
@@ -105,19 +123,14 @@ export default class Auth {
   }
 
   async login(fromUri, additionalParams) {
-    const referrerPath = fromUri
-      ? { pathname: fromUri }
-      : this._history.location;
-    localStorage.setItem(
-      'secureRouterReferrerPath',
-      JSON.stringify(referrerPath)
-      );
+    // Save the current url before redirect
+    this.setFromUri(fromUri); // will save current location if fromUri is undefined
     if (this._config.onAuthRequired) {
       const auth = this;
       const history = this._history;
       return this._config.onAuthRequired({ auth, history });
     }
-    await this.redirect(additionalParams);
+    return this.redirect(additionalParams);
   }
 
   async logout(options) {
@@ -148,11 +161,24 @@ export default class Auth {
       || this._config.scopes
       || ['openid', 'email', 'profile'];
 
-    this._oktaAuth.token.getWithRedirect(params);
+    return this._oktaAuth.token.getWithRedirect(params);
+  }
 
-    // return a promise that doesn't terminate so nothing
-    // happens after setting window.location
-    /* eslint-disable-next-line no-unused-vars */
-    return new Promise((resolve, reject) => {});
+  setFromUri (fromUri) {
+    // Use current history location if fromUri was not passed
+    const referrerPath = fromUri
+      ? { pathname: fromUri }
+      : this._history.location;
+    localStorage.setItem(
+      'secureRouterReferrerPath',
+      JSON.stringify(referrerPath)
+      );
+  }
+
+  getFromUri () {
+    const referrerKey = 'secureRouterReferrerPath';
+    const location = JSON.parse(localStorage.getItem(referrerKey) || '{ "pathname": "/" }');
+    localStorage.removeItem(referrerKey);
+    return location;
   }
 }

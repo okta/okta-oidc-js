@@ -97,13 +97,17 @@ An Angular InjectionToken used to configure the OktaAuthService. This value must
 - `issuer` **(required)**: The OpenID Connect `issuer`
 - `clientId` **(required)**: The OpenID Connect `client_id`
 - `redirectUri` **(required)**: Where the callback is hosted
+- `postLogoutRedirectUri` | Specify the url where the browser should be redirected after [logout](#oktaauthlogouturi). This url must be added to the list of `Logout redirect URIs` on the application's `General Settings` tab.
 - `scope` *(deprecated in v1.2.2)*: Use `scopes` instead
 - `scopes` *(optional)*: Reserved for custom claims to be returned in the tokens. Defaults to `['openid']`, which will only return the `sub` claim. To obtain more information about the user, use `openid profile`. For a list of scopes and claims, please see [Scope-dependent claims](https://developer.okta.com/standards/OIDC/index.html#scope-dependent-claims-not-always-returned) for more information.
 - `responseType` *(optional)*: Desired token grant types. Default: `['id_token', 'token']`.
 For PKCE flow, this should be left undefined or set to `['code']`.
 - `pkce` *(optional)*: If `true`, PKCE flow will be used
-- `onAuthRequired` *(optional)*: Accepts a callback to make a decision when authentication is required. If not supplied, `okta-angular` will redirect directly to Okta for authentication.
-
+- `onAuthRequired` *(optional)*: - callback function. Called when authentication is required. If not supplied, `okta-angular` will redirect directly to Okta for authentication. This is triggered when:
+    1. [login](#oktaauthloginfromuri-additionalparams) is called
+    2. A route protected by `OktaAuthGuard` is accessed without authentication
+- `onSessionExpired` *(optional)* - callback function. Called when the Okta SSO session has expired or was ended outside of the application. This SDK adds a default handler which will call [login](#oktaauthloginfromuri-additionalparams) to initiate a login flow. Passing a function here will disable the default handler.
+- `isAuthenticated` *(optional)* - callback function. By default, `OktaAuthService.isAuthenticated` will return true if both `getIdToken()` and `getAccessToken()` return a value. Setting a `isAuthenticated` function on the config will skip the default logic and call the supplied function instead. The function should return a Promise and resolve to either true or false.
 - `tokenManager` *(optional)*: An object containing additional properties used to configure the internal token manager. See [AuthJS TokenManager](https://github.com/okta/okta-auth-js#the-tokenmanager) for more detailed information.
 
   - `autoRenew` *(optional)*:
@@ -117,6 +121,7 @@ For PKCE flow, this should be left undefined or set to `['code']`.
     - [`localStorage`](https://developer.mozilla.org/en-US/docs/Web/API/Window/localStorage)
     - [`sessionStorage`](https://developer.mozilla.org/en-US/docs/Web/API/Window/sessionStorage)
     - [`cookie`](https://developer.mozilla.org/en-US/docs/Web/API/Document/cookie)
+
 
 ### `OktaAuthModule`
 
@@ -215,7 +220,7 @@ import {
   ...
 } from '@okta/okta-angular';
 
-export function onAuthRequired({oktaAuth, router}) {
+export function onAuthRequired(oktaAuth, router) {
   // Redirect the user to your custom login page
   router.navigate(['/custom-login']);
 }
@@ -281,6 +286,12 @@ export class MyComponent {
 }
 ```
 
+#### `oktaAuth.login(fromUri?, additionalParams?)`
+
+Calls `onAuthRequired` function if it was set on the initial configuration. Otherwise, it will call `loginRedirect`. This method accepts a `fromUri` parameter to push the user to after successful authentication, and an optional `additionalParams` object.
+
+For more information on `additionalParams`, see the [oktaAuth.loginRedirect](#oktaauthloginredirectfromuri-additionalparams) method below.
+
 #### `oktaAuth.loginRedirect(fromUri?, additionalParams?)`
 
 Performs a full page redirect to Okta based on the initial configuration. This method accepts a `fromUri` parameter to push the user to after successful authentication.
@@ -330,6 +341,10 @@ Used to capture the current URL state before a redirect occurs. Used primarily f
 #### `oktaAuth.getFromUri()`
 
 Returns the stored URI and query parameters stored when the `OktaAuthGuard` and/or `setFromUri` was used.
+
+#### `oktaAuth.getTokenManager()`
+
+Returns the internal [TokenManager](https://github.com/okta/okta-auth-js#tokenmanager).
 
 ## Contributing
 
