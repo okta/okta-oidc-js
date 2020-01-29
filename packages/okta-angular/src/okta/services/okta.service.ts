@@ -19,15 +19,16 @@ import {
   buildConfigObject
 } from '@okta/configuration-validation';
 
-import { OKTA_CONFIG, OktaConfig } from '../models/okta.config';
+import { OKTA_CONFIG, OktaConfig, AuthRequiredFunction } from '../models/okta.config';
 import { UserClaims } from '../models/user-claims';
+import { TokenManager } from '../models/token-manager';
 
 import packageInfo from '../packageInfo';
 
 /**
  * Import the okta-auth-js library
  */
-import * as OktaAuth from '@okta/okta-auth-js';
+import OktaAuth from '@okta/okta-auth-js';
 import { Observable, Observer } from 'rxjs';
 
 @Injectable()
@@ -38,36 +39,60 @@ export class OktaAuthService {
     $authenticationState: Observable<boolean>;
 
     constructor(@Inject(OKTA_CONFIG) private auth: OktaConfig, private router: Router) {
-      // Assert Configuration
-      assertIssuer(auth.issuer, auth.testing);
-      assertClientId(auth.clientId);
-      assertRedirectUri(auth.redirectUri)
-
       this.observers = [];
-
-      this.oktaAuth = new OktaAuth(buildConfigObject(auth));
-
-      this.oktaAuth.userAgent = `${packageInfo.name}/${packageInfo.version} ${this.oktaAuth.userAgent}`;
-
-      /**
-       * Scrub scopes to ensure 'openid' is included
-       */
-      auth.scope = this.scrubScopes(auth.scope);
 
       /**
        * Cache the auth config.
        */
-      this.config = auth;
+      this.config = buildConfigObject(auth); // use normalized config object
+      this.config.scopes = this.config.scopes || [];
 
-      this.$authenticationState = new Observable((observer: Observer<boolean>) => {this.observers.push(observer)})
+      // Automatically enter login flow if session has expired or was ended outside the application
+      // The default behavior can be overriden by setting your own `onSessionExpired` function on the OktaConfig
+      if (!this.config.onSessionExpired) {
+        this.config.onSessionExpired = this.login.bind(this);
+      }
+
+      /**
+       * Scrub scopes to ensure 'openid' is included
+       */
+
+      this.scrubScopes(this.config.scopes);
+
+      // Assert Configuration
+      assertIssuer(this.config.issuer, this.config.testing);
+      assertClientId(this.config.clientId);
+      assertRedirectUri(this.config.redirectUri);
+
+      this.oktaAuth = new OktaAuth(this.config);
+      this.oktaAuth.userAgent = `${packageInfo.name}/${packageInfo.version} ${this.oktaAuth.userAgent}`;
+      this.$authenticationState = new Observable((observer: Observer<boolean>) => { this.observers.push(observer); });
+    }
+
+    login(fromUri?: string, additionalParams?: object) {
+      this.setFromUri(fromUri || this.router.url);
+      const onAuthRequired: AuthRequiredFunction | undefined = this.getOktaConfig().onAuthRequired;
+      if (onAuthRequired) {
+        return onAuthRequired(this, this.router);
+      }
+      return this.loginRedirect(undefined, additionalParams);
+    }
+
+    getTokenManager(): TokenManager {
+      return this.oktaAuth.tokenManager;
     }
 
     /**
      * Checks if there is an access token and id token
      */
     async isAuthenticated(): Promise<boolean> {
-      const accessToken = await this.getAccessToken()
-      const idToken = await this.getIdToken()
+      // Support a user-provided method to check authentication
+      if (this.config.isAuthenticated) {
+        return (this.config.isAuthenticated)();
+      }
+
+      const accessToken = await this.getAccessToken();
+      const idToken = await this.getIdToken();
       return !!(accessToken || idToken);
     }
 
@@ -140,12 +165,14 @@ export class OktaAuthService {
         this.setFromUri(fromUri);
       }
 
-      this.oktaAuth.token.getWithRedirect({
-        responseType: (this.config.responseType || 'id_token token').split(' '),
-        // Convert scopes to list of strings
-        scopes: this.config.scope.split(' '),
-        ...additionalParams
-      });
+      // Normalize params, set defaults
+      const params = buildConfigObject(additionalParams);
+      params.scopes = params.scopes || this.config.scopes;
+      params.responseType = params.responseType
+        || this.config.responseType
+        || ['id_token', 'token'];
+
+      return this.oktaAuth.token.getWithRedirect(params); // can throw
     }
 
     /**
@@ -168,7 +195,14 @@ export class OktaAuthService {
       const referrerPath = localStorage.getItem('referrerPath');
       localStorage.removeItem('referrerPath');
 
-      const path = JSON.parse(referrerPath) || { uri: '/', params: {} };
+      let path;
+      if (referrerPath) {
+          path = JSON.parse(referrerPath);
+      }
+      if (!path) {
+        path = { uri: '/', params: {} };
+      }
+
       const navigationExtras: NavigationExtras = {
         queryParams: path.params
       };
@@ -176,7 +210,7 @@ export class OktaAuthService {
       return {
         uri: path.uri,
         extras: navigationExtras
-      }
+      };
     }
 
     /**
@@ -192,8 +226,8 @@ export class OktaAuthService {
           this.oktaAuth.tokenManager.add('accessToken', token);
         }
       });
-      if(await this.isAuthenticated()) {
-        this.emitAuthenticationState(true)
+      if (await this.isAuthenticated()) {
+        this.emitAuthenticationState(true);
       }
       /**
        * Navigate back to the initial view or root of application.
@@ -205,26 +239,30 @@ export class OktaAuthService {
     /**
      * Clears the user session in Okta and removes
      * tokens stored in the tokenManager.
-     * @param uri
+     * @param options
      */
-    async logout(uri?: string): Promise<void> {
-      this.oktaAuth.tokenManager.clear();
-      await this.oktaAuth.signOut();
-      this.emitAuthenticationState(false)
-      this.router.navigate([uri || '/']);
+    async logout(options?: any): Promise<void> {
+      let uri = null;
+      options = options || {};
+      if (typeof options === 'string') {
+        uri = options;
+        options = {};
+      }
+      await this.oktaAuth.signOut(options);
+      this.emitAuthenticationState(false);
+      if (!options.postLogoutRedirectUri && !this.config.postLogoutRedirectUri) {
+        this.router.navigate([uri || '/']);
+      }
     }
 
     /**
      * Scrub scopes to ensure 'openid' is included
      * @param scopes
      */
-    scrubScopes(scopes: string): string {
-      if (!scopes) {
-        return 'openid email';
+    scrubScopes(scopes: string[]): void {
+      if (scopes.indexOf('openid') >= 0) {
+        return;
       }
-      if (scopes.indexOf('openid') === -1) {
-        return scopes + ' openid';
-      }
-      return scopes;
+      scopes.unshift('openid');
     }
 }

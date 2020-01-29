@@ -5,6 +5,9 @@ const path = require('path');
 const fs = require('fs');
 
 const packagesDir = path.resolve(path.join(__dirname, '../packages'));
+const overridePublishDir = {
+  'okta-angular': './dist'
+};
 
 // collect local packages (assuming only dirs in packages)
 let dirs = fs.readdirSync(packagesDir)
@@ -39,7 +42,8 @@ dirs.forEach(name => {
     console.log(`${moduleWithVersion} exists`);
   } else {
     console.log(`Publishing ${moduleWithVersion}`);
-    execSync(`npm publish --registry ${registry}`, {
+    const publishDir = overridePublishDir[name] || '.';
+    execSync(`npm publish ${publishDir} --registry ${registry}`, {
       cwd: moduleDir
     });
     hasPublishedAPackage = true;

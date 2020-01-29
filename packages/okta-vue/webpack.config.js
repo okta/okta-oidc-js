@@ -4,7 +4,7 @@ var UglifyJsPlugin = require('uglifyjs-webpack-plugin')
 var VueLoaderPlugin = require('vue-loader/lib/plugin')
 
 module.exports = {
-  entry: './src/Auth.js',
+  entry: './src/okta-vue.js',
   output: {
     path: path.resolve(__dirname, './dist'),
     publicPath: '/dist/',

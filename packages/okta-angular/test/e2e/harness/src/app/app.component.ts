@@ -18,10 +18,11 @@ import { OktaAuthService } from '@okta/okta-angular';
   selector: 'app-root',
   template: `
   <button id="home-button" routerLink="/"> Home </button>
-  <button id="login-button" *ngIf="!isAuthenticated" routerLink="/login"> Login </button>
+  <button id="login-button" *ngIf="!isAuthenticated" routerLink="/login" [queryParams]="{ fooParams: 'foo' }"> Login </button>
   <button id="logout-button" *ngIf="isAuthenticated" (click)="logout()"> Logout </button>
-  <button id="protected-button" routerLink="/protected"> Protected </button>
-  <button id="protected-login-button" routerLink="/protected-with-data"> Protected Page w/ custom config </button>
+  <button id="protected-button" routerLink="/protected" [queryParams]="{ fooParams: 'foo' }"> Protected </button>
+  <button id="protected-login-button" routerLink="/protected-with-data"
+    [queryParams]="{ fooParams: 'foo' }"> Protected Page w/ custom config </button>
 
   <router-outlet></router-outlet>
   `,

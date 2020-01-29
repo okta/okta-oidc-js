@@ -12,7 +12,8 @@
 
 import { ModuleWithProviders, NgModule } from '@angular/core';
 
-import { OktaCallbackComponent, OktaLoginRedirectComponent } from './components/';
+import { OktaCallbackComponent } from './components/callback.component';
+import { OktaLoginRedirectComponent } from './components/login-redirect.component';
 import { OktaAuthService } from './services/okta.service';
 import { OktaAuthGuard } from './okta.guard';
 import { OktaConfig, OKTA_CONFIG } from './models/okta.config';

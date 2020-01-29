@@ -22,7 +22,6 @@ describe('jwt-verifier configuration validation', () => {
     function createInstance() {
       new OktaJwtVerifier({
         issuer: 'http://foo.com',
-        clientId: 'foo',
         testing: {
           disableHttpsCheck: true
         }
@@ -95,22 +94,24 @@ describe('jwt-verifier configuration validation', () => {
     expect(createInstance).toThrow();
   });
 
-  it('should throw if the client_id is not provided', () => {
+  it('should throw if clientId matching {clientId} is provided', () => {
     function createInstance() {
       new OktaJwtVerifier({
-        issuer: 'https://foo'
+        issuer: 'https://foo',
+        clientId: '{clientId}',
       });
     }
     expect(createInstance).toThrow();
   });
 
-  it('should throw if a client_id matching {clientId} is provided', () => {
+  it('should NOT throw if clientId not matching {clientId} is provided', () => {
     function createInstance() {
       new OktaJwtVerifier({
-        client_id: '{clientId}',
-        issuer: 'https://foo'
+        issuer: 'https://foo',
+        clientId: '123456',
       });
     }
-    expect(createInstance).toThrow();
+    expect(createInstance).not.toThrow();
   });
+
 });

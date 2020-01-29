@@ -11,24 +11,23 @@
  */
 
 import { browser, by, element } from 'protractor';
+import { Util } from '../util'
 
 export class AppPage {
-  navigateTo() {
-    return browser.get('/');
+  navigateTo(path = '/') {
+    return browser.get(path);
   }
 
   waitUntilVisible() {
-    const loginExists = ExpectedConditions.presenceOf(this.getLoginButton());
-    const logoutExists = ExpectedConditions.presenceOf(this.getLogoutButton());
-    browser.wait(ExpectedConditions.or(loginExists, logoutExists), 5000);
+    Util.waitElementOr(this.getLoginButton(), this.getLogoutButton());
   }
 
   waitUntilLoggedOut() {
-    browser.wait(ExpectedConditions.presenceOf(this.getLoginButton()), 5000);
+    Util.waitElement(this.getLoginButton(), 20000);
   }
 
   waitUntilLoggedIn() {
-    browser.wait(ExpectedConditions.presenceOf(this.getLogoutButton()), 5000);
+    Util.waitElement(this.getLogoutButton(), 20000);
   }
 
   getLoginButton() {
@@ -41,5 +40,9 @@ export class AppPage {
 
   getProtectedButton() {
     return element(by.id('protected-button'));
+  }
+
+  getLoginFlow() {
+    return element(by.id('login-flow'));
   }
 }

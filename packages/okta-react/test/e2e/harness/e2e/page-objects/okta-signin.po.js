@@ -11,10 +11,13 @@
  */
 
 import { browser, by, element, ExpectedConditions } from 'protractor';
+import { Util } from '../util'
 
 export class OktaSignInPage {
     waitUntilVisible() {
-      browser.wait(ExpectedConditions.presenceOf(this.getSubmitButton()), 5000);
+      Util.waitElement(this.getUsernameField());
+      Util.waitElement(this.getPasswordField());
+      Util.waitElement(this.getSubmitButton());
     }
 
     getUsernameField() {
@@ -30,6 +33,7 @@ export class OktaSignInPage {
     }
 
     signIn({username, password}) {
+      browser.wait(ExpectedConditions.elementToBeClickable(this.getUsernameField()), 5000);
       this.getUsernameField().sendKeys(username);
       this.getPasswordField().sendKeys(password);
       this.getSubmitButton().click();

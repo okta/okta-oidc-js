@@ -21,7 +21,7 @@ This is a monorepo that contains Okta's OpenID Connect JavaScript resources.
 
 ## Getting Started
 
-We use Yarn as our node package manager. To install Yarn, check out their [install documentation](https://yarnpkg.com/en/docs/install).
+We use Yarn as our node package manager during package development. To install Yarn, check out their [install documentation](https://yarnpkg.com/en/docs/install).
 
 ```bash
 # Clone the repo and navigate to it
@@ -36,9 +36,9 @@ yarn install
 
 ### Monorepo
 
-The okta-oidc-js repo is managed as a **monorepo** using [Yarn Workspaces](https://yarnpkg.com/blog/2017/08/02/introducing-workspaces/) for managing dependencies and [Lerna](https://lernajs.io/) for everything else. You can think of each package as a separate npm module - each must list out its own dependencies, have its own package name, and be versioned.
+The okta-oidc-js repo is managed as a **monorepo** using [Lerna](https://lernajs.io/). Each package within the **monorepo** is a separate npm module, each with its own `package.json` and `node_modules` directory.
 
-Packages are parsed from the `workspaces` property in [package.json](package.json), and adhere to this structure:
+Packages are parsed from the `packages` property in [lerna.json](lerna.json), and adhere to this structure:
 
 ```bash
 packages/
@@ -98,7 +98,7 @@ Since the workspace contains libraries for Single-Page and Web Applications, you
 2. Select SPA
 3. Add the following **login redirect URI**:
     - `http://localhost:8080/implicit/callback`
-    - `http://localhost:3000/implicit/callback`
+    - `http://localhost:8080/pkce/callback`
 4. Click Done
 5. Users > Add Person
 6. Create and activate user

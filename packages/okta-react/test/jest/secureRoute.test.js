@@ -6,7 +6,9 @@ import Security from '../../src/Security';
 
 describe('<SecureRoute />', () => {
   const mockProps = {
-    auth: {},
+    auth: {
+      isAuthenticated: jest.fn()
+    },
   };
 
   it('should accept a "path" prop and render a component', () => {

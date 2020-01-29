@@ -1,5 +1,5 @@
 /*!
- * Copyright (c) 2017, Okta-Present, Inc. and/or its affiliates. All rights reserved.
+ * Copyright (c) 2017-Present, Okta, Inc. and/or its affiliates. All rights reserved.
  * The Okta software accompanied by this notice is provided pursuant to the Apache License, Version 2.0 (the "License.")
  *
  * You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0.
@@ -11,6 +11,7 @@
  */
 
 import { browser, by, element, ExpectedConditions } from 'protractor';
+import { Util } from '../util'
 
 export class SessionTokenSignInPage {
   navigateTo() {
@@ -18,7 +19,7 @@ export class SessionTokenSignInPage {
   }
 
   waitUntilVisible() {
-    browser.wait(ExpectedConditions.presenceOf(this.getSubmitButton()), 5000);
+    Util.waitElement(this.getSubmitButton());
   }
 
   getUsernameField() {
@@ -34,6 +35,7 @@ export class SessionTokenSignInPage {
   }
 
   signIn({username, password}) {
+    browser.wait(ExpectedConditions.elementToBeClickable(this.getUsernameField()), 5000);
     this.getUsernameField().sendKeys(username);
     this.getPasswordField().sendKeys(password);
     this.getSubmitButton().click();

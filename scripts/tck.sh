@@ -1,6 +1,12 @@
 #!/bin/bash
 
-TCK_VERSION=0.4.0-SNAPSHOT
+if [ -z "$1" ]
+  then
+    TCK_VERSION=0.5.4-SNAPSHOT
+  else
+    TCK_VERSION=$1
+fi
+
 TCK_JAR_URL="https://oss.sonatype.org/service/local/artifact/maven/redirect?r=public&g=com.okta.oidc.tck&a=okta-oidc-tck&v=${TCK_VERSION}&e=jar&c=shaded"
 TCK_FILE="./okta-oidc-tck-${TCK_VERSION}-shaded.jar"
 TCK_PEM="./tck-keystore.pem"
@@ -19,7 +25,7 @@ function runTest() {
 
     mkdir -p target
     #JAVA_OPTS="-agentlib:jdwp=transport=dt_socket,server=y,suspend=y,address=8000"
-    java ${JAVA_OPTS} -Dconfig="${test_runner_yml}" -jar "${TCK_FILE}" -d "${test_output_dir}" "${testng_xml}"
+    java ${JAVA_OPTS} -Dokta.testing.disableHttpsCheck=true -Dconfig="${test_runner_yml}" -jar "${TCK_FILE}" -d "${test_output_dir}" "${testng_xml}"
 
     return_status=$?
 

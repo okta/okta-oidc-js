@@ -12,10 +12,12 @@
 
 const JUnitXmlReporter = require('jasmine-reporters').JUnitXmlReporter;
 const SpecReporter = require('jasmine-spec-reporter').SpecReporter;
+const { ProtractorBrowserLogReporter } = require('jasmine-protractor-browser-log-reporter');
 
 exports.config = {
   framework: 'jasmine2',
   onPrepare() {
+    jasmine.getEnv().addReporter(new ProtractorBrowserLogReporter());
     jasmine.getEnv().addReporter(new JUnitXmlReporter({
       savePath: 'reports/junit',
       filePrefix: 'results',
@@ -34,8 +36,12 @@ exports.config = {
   directConnect: true,
   specs: ['specs/*.js'],
   baseUrl: 'http://localhost:8080/',
+  loggingPrefs: {
+    'browser': 'ALL' // for reporter
+  },
   capabilities: {
     browserName: 'chrome',
+    loggingPrefs: { "driver": "INFO", "browser": "INFO" }, // for webdriver
     chromeOptions: {
       args: [
         '--headless',

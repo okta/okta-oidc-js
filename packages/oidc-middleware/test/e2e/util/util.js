@@ -34,11 +34,12 @@ util.createDemoServerWithCustomLoginPage = (options) => {
   return new DemoServer(Object.assign(baseConfig, {
     routes: {
       login: {
-        viewHandler: (req, res, next) => {
+        viewHandler: (req, res/*, next */) => {
           const baseUrl = url.parse(baseConfig.issuer).protocol + '//' + url.parse(baseConfig.issuer).host;
           res.render('login', {
             csrfToken: req.csrfToken(),
-            baseUrl: baseUrl
+            baseUrl: baseUrl,
+            cdnUrl: baseConfig.cdnUrl
           });
         }
       }

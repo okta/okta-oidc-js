@@ -28,12 +28,21 @@ export default class Auth {
       disableHttpsCheck: !!config.disableHttpsCheck
     };
 
-    assertIssuer(config.issuer, testing);
-    assertClientId(config.client_id);
-    assertRedirectUri(config.redirect_uri);
-    this._oktaAuth = new OktaAuth(buildConfigObject(config));
+    // normalize authJS config. In this SDK, we allow underscore on certain properties, but AuthJS consistently uses camel case.
+    const authConfig = buildConfigObject(config);
+    assertIssuer(authConfig.issuer, testing);
+    assertClientId(authConfig.clientId);
+    assertRedirectUri(authConfig.redirectUri);
+
+    // Automatically enter login flow if session has expired or was ended outside the application
+    // The default behavior can be overriden by passing your own function via config: `config.onSessionExpired`
+    if (!authConfig.onSessionExpired) {
+      authConfig.onSessionExpired = this.login.bind(this);
+    }
+
+    this._oktaAuth = new OktaAuth(authConfig);
     this._oktaAuth.userAgent = `${packageInfo.name}/${packageInfo.version} ${this._oktaAuth.userAgent}`;
-    this._config = config;
+    this._config = authConfig; // use normalized config
     this._history = config.history;
 
     this.handleAuthentication = this.handleAuthentication.bind(this);
@@ -44,6 +53,10 @@ export default class Auth {
     this.login = this.login.bind(this);
     this.logout = this.logout.bind(this);
     this.redirect = this.redirect.bind(this);
+  }
+
+  getTokenManager() {
+    return this._oktaAuth.tokenManager;
   }
 
   async handleAuthentication() {
@@ -59,8 +72,15 @@ export default class Auth {
   }
 
   async isAuthenticated() {
+    // Support a user-provided method to check authentication
+    if (this._config.isAuthenticated) {
+      return (this._config.isAuthenticated)();
+    }
+
     // If there could be tokens in the url
     if (location && location.hash && containsAuthTokens.test(location.hash)) return null;
+
+    // Return true if either the access or id token exist in client storage
     return !!(await this.getAccessToken()) || !!(await this.getIdToken());
   }
 
@@ -103,6 +123,49 @@ export default class Auth {
   }
 
   async login(fromUri, additionalParams) {
+    // Save the current url before redirect
+    this.setFromUri(fromUri); // will save current location if fromUri is undefined
+    if (this._config.onAuthRequired) {
+      const auth = this;
+      const history = this._history;
+      return this._config.onAuthRequired({ auth, history });
+    }
+    return this.redirect(additionalParams);
+  }
+
+  async logout(options) {
+    let path = null;
+    options = options || {};
+    if (typeof options === 'string') {
+      path = options;
+      options = {};
+    }
+    return this._oktaAuth.signOut(options)
+      .then(() => {
+        if (!options.postLogoutRedirectUri && !this._config.postLogoutRedirectUri) {
+          this._history.push(path || '/');
+        }
+      });
+  }
+
+  async redirect(additionalParams = {}) {
+    // normalize config object
+    let params = buildConfigObject(additionalParams);
+
+    // set defaults
+    params.responseType = params.responseType
+      || this._config.responseType
+      || ['id_token', 'token'];
+
+    params.scopes = params.scopes
+      || this._config.scopes
+      || ['openid', 'email', 'profile'];
+
+    return this._oktaAuth.token.getWithRedirect(params);
+  }
+
+  setFromUri (fromUri) {
+    // Use current history location if fromUri was not passed
     const referrerPath = fromUri
       ? { pathname: fromUri }
       : this._history.location;
@@ -110,38 +173,12 @@ export default class Auth {
       'secureRouterReferrerPath',
       JSON.stringify(referrerPath)
       );
-    if (this._config.onAuthRequired) {
-      const auth = this;
-      const history = this._history;
-      return this._config.onAuthRequired({ auth, history });
-    }
-    await this.redirect(additionalParams);
   }
 
-  async logout(path) {
-    this._oktaAuth.tokenManager.clear();
-    await this._oktaAuth.signOut();
-    this._history.push(path || '/');
-  }
-
-  async redirect(additionalParams = {}) {
-    const responseType = additionalParams.response_type
-      || this._config.response_type
-      || ['id_token', 'token'];
-
-    const scopes = additionalParams.scope
-      || this._config.scope
-      || ['openid', 'email', 'profile'];
-
-    this._oktaAuth.token.getWithRedirect({
-      responseType: responseType,
-      scopes: scopes,
-      ...additionalParams
-    });
-
-    // return a promise that doesn't terminate so nothing
-    // happens after setting window.location
-    /* eslint-disable-next-line no-unused-vars */
-    return new Promise((resolve, reject) => {});
+  getFromUri () {
+    const referrerKey = 'secureRouterReferrerPath';
+    const location = JSON.parse(localStorage.getItem(referrerKey) || '{ "pathname": "/" }');
+    localStorage.removeItem(referrerKey);
+    return location;
   }
 }

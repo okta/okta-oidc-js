@@ -51,7 +51,7 @@ oidcUtil.createClient = context => {
 
   Issuer.defaultHttpOptions.timeout = timeout || 10000;
 
-  return Issuer.discover(issuer)
+  return Issuer.discover(issuer +  '/.well-known/openid-configuration')
   .then(iss => {
     const client = new iss.Client({
       client_id,
