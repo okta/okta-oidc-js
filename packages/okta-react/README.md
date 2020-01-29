@@ -1,6 +1,7 @@
 [Okta Auth SDK]: https://github.com/okta/okta-auth-js
 [react-router]: https://github.com/ReactTraining/react-router
 [higher-order component]: https://reactjs.org/docs/higher-order-components.html
+[React Hook]: https://reactjs.org/docs/hooks-intro.html
 [Auth service]: #auth
 
 # Okta React SDK
@@ -21,7 +22,7 @@ All of these features are supported by this SDK. Additionally, using this SDK, y
 
 - Add "secure" routes, which will require authentication before render
 - Define custom logic/behavior when authentication is required
-- Provide an instance of the [Auth service][] to your components using a [higher-order component][]
+- Provide an instance of the [Auth service][] to your components using a [React Hook] or a [higher-order component][] 
 
 > This SDK does not provide any UI components.
 
@@ -101,6 +102,40 @@ export default App;
 
 In the relevant location in your application, you will want to provide `Login` and `Logout` buttons for the user. You can show/hide the correct button by using the `auth.isAuthenticated()` method. For example:
 
+### Login/Logout buttons using React Hook
+```jsx
+// src/Home.js
+
+import React, { useState } from 'react';
+import { useAuth } from '@okta/okta-react';
+
+const Home = () => { 
+  const [isAuthenticated, setAuthenticated] = useState(null);
+  const auth = useAuth();
+
+  useEffect( async () => {
+    const oktaSaysAuthenticated = await auth.isAuthenticated();
+
+    if (oktaSaysAuthenticated !== isAuthenticated) {
+      setAuthenticated(oktaSaysAuthenticated);
+    }
+  }, [auth, isAuthenticated]);
+
+  const login = async () => auth.login('/');
+  const logout = async () => auth.logout('/');
+
+  if (isAuthenticated === null) return null;
+  return isAuthenticated ?
+    <button onClick={this.logout}>Logout</button> :
+    <button onClick={this.login}>Login</button>;
+};
+
+export default Home;
+```
+
+```
+
+### Login/Logout buttons using Higher Order Component (HOC)
 ```jsx
 // src/Home.js
 

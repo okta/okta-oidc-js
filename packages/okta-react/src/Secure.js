@@ -11,12 +11,12 @@
  */
 
 import React from 'react';
-import { useOkta } from './OktaContext';
+import { useAuth } from './OktaContext';
 
 const Secure = ({ render }) => {
-  const { auth } = useOkta();
+  const { auth } = useAuth();
 
   return render({ auth });
 };
 
-export default Secure
+export default Secure;
