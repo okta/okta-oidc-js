@@ -11,7 +11,6 @@
  */
 
 const csrf = require('csurf');
-const passport = require('passport');
 const { Router } = require('express');
 const querystring = require('querystring');
 const uuid = require('uuid');
@@ -23,6 +22,7 @@ const connectUtil = module.exports;
 
 // Create a router to easily add routes
 connectUtil.createOIDCRouter = context => {
+  const passport = context.passport;
   const routes = context.options.routes;
   const oidcRouter = new Router();
   oidcRouter.use(passport.initialize({ userProperty: 'userContext' }));
@@ -45,6 +45,7 @@ connectUtil.createOIDCRouter = context => {
 };
 
 connectUtil.createLoginHandler = context => {
+  const passport = context.passport;
   const passportHandler = passport.authenticate('oidc');
   const csrfProtection = csrf();
 
@@ -82,6 +83,7 @@ connectUtil.createLoginHandler = context => {
 };
 
 connectUtil.createLoginCallbackHandler = context => {
+  const passport = context.passport;
   const routes = context.options.routes;
   const customHandler = routes.loginCallback.handler;
 
