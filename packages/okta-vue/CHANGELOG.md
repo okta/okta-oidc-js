@@ -1,3 +1,12 @@
+# 1.3.0
+
+### Features
+
+- [#648](https://github.com/okta/okta-oidc-js/pull/648)
+  - Adds a default handler for onSessionExpired
+  - Adds a new option isAuthenticated which works with onAuthRequired
+  - Expose TokenManager
+  - Adds documentation for postLogoutRedirectUri
 
 # 1.2.0
 
