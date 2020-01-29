@@ -15,7 +15,7 @@ import ImplicitCallback from './ImplicitCallback';
 import SecureRoute from './SecureRoute';
 import withAuth from './withAuth';
 import Auth from './Auth';
-import OktaContext, { useOkta } from './OktaContext';
+import OktaContext, { useAuth } from './OktaContext';
 
 export {
   ImplicitCallback,
@@ -24,5 +24,5 @@ export {
   withAuth,
   Auth,
   OktaContext,
-  useOkta,
+  useAuth,
 };
