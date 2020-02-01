@@ -5,5 +5,8 @@
   "env": {
     "es6": true,
     "node": true
+  },
+  "rules": {
+    "jest/no-test-callback": 0
   }
 }
