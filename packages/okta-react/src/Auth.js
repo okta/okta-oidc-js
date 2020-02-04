@@ -60,14 +60,13 @@ export default class Auth {
   }
 
   async handleAuthentication() {
-    let tokens = await this._oktaAuth.token.parseFromUrl();
-    tokens = Array.isArray(tokens) ? tokens : [tokens];
-    for (let token of tokens) {
-      if (token.idToken) {
-        this._oktaAuth.tokenManager.add('idToken', token);
-      } else if (token.accessToken) {
-        this._oktaAuth.tokenManager.add('accessToken', token);
-      }
+    const res = await this._oktaAuth.token.parseFromUrl();
+    const tokens = res.tokens;
+    if (tokens.idToken) {
+      this._oktaAuth.tokenManager.add('idToken', tokens.idToken);
+    }
+    if (tokens.accessToken) {
+      this._oktaAuth.tokenManager.add('accessToken', tokens.accessToken);
     }
   }
 
@@ -85,17 +84,15 @@ export default class Auth {
   }
 
   async getUser() {
+    // TODO: do we want to support this behavior?
+    // Returns raw claims from idToken if there is no accessToken. Suppresses exception if there is no idToken.
     const accessToken = await this._oktaAuth.tokenManager.get('accessToken');
     const idToken = await this._oktaAuth.tokenManager.get('idToken');
-    if (accessToken && idToken) {
-      const userinfo = await this._oktaAuth.token.getUserInfo(accessToken);
-      if (userinfo.sub === idToken.claims.sub) {
-        // Only return the userinfo response if subjects match to
-        // mitigate token substitution attacks
-        return userinfo
-      }
+    if (!accessToken || !idToken) {
+      return idToken ? idToken.claims : undefined;
     }
-    return idToken ? idToken.claims : undefined;
+
+    return this._oktaAuth.token.getUserInfo();
   }
 
   async getIdToken() {

@@ -35,7 +35,8 @@ class App extends Component {
                     disableHttpsCheck={true}
                     redirectUri={redirectUri}
                     onAuthRequired={({history}) => history.push('/login')}
-                    pkce={pkce}>
+                    pkce={pkce}
+                    responseMode="fragment">
             <Route path='/' component={Home}/>
             <Route path='/login' component={CustomLogin}/>
             <Route path='/sessionToken-login' component={SessionTokenLogin}/>
@@ -44,6 +45,7 @@ class App extends Component {
             <Route path='/pkce/callback' component={ImplicitCallback} />
           </Security>
         </Router>
+        <a href="/?pkce=1">PKCE Flow</a> | <a href="/">Implicit Flow</a>
       </React.StrictMode>
     );
   }
