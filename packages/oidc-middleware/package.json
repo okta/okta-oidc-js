@@ -1,6 +1,6 @@
 {
   "name": "@okta/oidc-middleware",
-  "version": "3.0.0",
+  "version": "4.0.0",
   "description": "OpenId Connect middleware for authorization code flows",
   "repository": "https://github.com/okta/okta-oidc-js",
   "homepage": "https://github.com/okta/okta-oidc-js/tree/master/packages/oidc-middleware",
@@ -17,7 +17,7 @@
   "main": "index.js",
   "scripts": {
     "lint": "eslint .",
-    "test": "yarn test:unit && yarn test:e2e && yarn test:integration",
+    "test": "yarn lint && yarn test:unit && yarn test:e2e && yarn test:integration",
     "pretest:e2e": "../../scripts/updateSeDrivers.sh",
     "test:e2e": "protractor test/e2e/protractor.conf.js",
     "test:integration": "../../scripts/tck.sh 0.4.0-SNAPSHOT",
@@ -26,14 +26,14 @@
     "start:custom": "node test/e2e/harness/start-custom-login-server.js"
   },
   "engines": {
-    "node": ">=6"
+    "node": "^10.13.0 || >=12.0.0"
   },
   "jest": {
     "testEnvironment": "jsdom"
   },
   "license": "Apache-2.0",
   "dependencies": {
-    "@okta/configuration-validation": "^0.2.0",
+    "@okta/configuration-validation": "^0.4.1",
     "body-parser": "^1.18.2",
     "connect-ensure-login": "^0.1.1",
     "csurf": "^1.9.0",
@@ -41,16 +41,16 @@
     "lodash": "^4.17.5",
     "negotiator": "^0.6.1",
     "node-fetch": "^2.3.0",
-    "openid-client": "2.5.0",
-    "passport": "^0.3.2",
+    "openid-client": "3.12.2",
+    "passport": "^0.4.1",
     "uuid": "^3.1.0"
   },
   "devDependencies": {
     "babel-eslint": "^10.0.3",
-    "cross-env": "^5.1.1",
-    "ejs": "^2.5.7",
+    "cross-env": "^7.0.0",
+    "ejs": "^3.0.1",
     "eslint": "^6.6.0",
-    "eslint-plugin-jasmine": "^2.10.1",
+    "eslint-plugin-jasmine": "^4.1.0",
     "eslint-plugin-jest": "^23.0.3",
     "eslint-plugin-promise": "^4.2.1",
     "eslint-plugin-protractor": "^2.1.1",
@@ -58,8 +58,8 @@
     "jasmine-protractor-browser-log-reporter": "^1.0.0",
     "jasmine-reporters": "^2.2.0",
     "jasmine-spec-reporter": "^4.1.0",
-    "jest": "^23.6.0",
-    "nock": "^9.1.6",
+    "jest": "^25.1.0",
+    "nock": "^11.7.2",
     "protractor": "^5.4.2",
     "read-package-tree": "^5.1.6",
     "server-destroy": "^1.0.1"

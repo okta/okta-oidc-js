@@ -164,7 +164,7 @@ describe('logout', () => {
       describe('session', () => {
         it('calls req.logout()', async () => {
           await logout(req, res);
-          expect(req.logout).toHaveBeenCalled();
+          expect(req.logout).toHaveBeenCalledWith();
         })
       })
     });

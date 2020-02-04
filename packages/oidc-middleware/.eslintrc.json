@@ -1,9 +1,13 @@
 {
   "extends": [
     "eslint:recommended",
-    "plugin:promise/recommended"
+    "plugin:promise/recommended",
+    "plugin:jasmine/recommended"
   ],
-  "plugins": ["promise"],
+  "plugins": [
+    "promise",
+    "jasmine"
+  ],
   "env": {
     "browser": false,
     "commonjs": true
@@ -13,5 +17,8 @@
   },
   "globals": {
     "Promise": "readonly"
+  },
+  "rules": {
+    "jasmine/new-line-before-expect": 0
   }
 }

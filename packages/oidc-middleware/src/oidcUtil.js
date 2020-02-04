@@ -11,33 +11,42 @@
  */
 
 const passport = require('passport');
-const OpenIdClientStrategy = require('openid-client').Strategy;
-const Issuer = require('openid-client').Issuer;
+const OpenIdClient = require('openid-client');
 const ensureLoggedIn = require('connect-ensure-login').ensureLoggedIn;
 const Negotiator = require('negotiator');
 const os = require('os');
 
 const pkg = require('../package.json');
 
-/**
- * Parse out the default user agent for the openid-client library, which currently looks like:
- *
- * openid-client/1.15.0 (https://github.com/panva/node-openid-client)
- *
- * We strip off the github link because it's not necessary.
- */
-let clientUserAgent = Issuer.defaultHttpOptions.headers['User-Agent'];
-if (typeof clientUserAgent === 'string' && clientUserAgent) {
-  clientUserAgent = ' ' + clientUserAgent.split(' ')[0]
-} else {
-  clientUserAgent = '';
-}
-
-const userAgent = `${pkg.name}/${pkg.version}${clientUserAgent} node/${process.versions.node} ${os.platform()}/${os.release()}`;
-
-Issuer.defaultHttpOptions.headers['User-Agent'] = userAgent;
+const OpenIdClientStrategy = OpenIdClient.Strategy;
+const Issuer = OpenIdClient.Issuer;
+const custom = OpenIdClient.custom;
 
 const oidcUtil = module.exports;
+
+function customizeUserAgent(options) {
+  /**
+   * Parse out the default user agent for the openid-client library, which currently looks like:
+   *
+   * openid-client/1.15.0 (https://github.com/panva/node-openid-client)
+   *
+   * We strip off the github link because it's not necessary.
+   */
+  options = options || {};
+  const headers = options.headers || {};
+  let clientUserAgent = headers['User-Agent'];
+  if (typeof clientUserAgent === 'string') {
+    clientUserAgent = ' ' + clientUserAgent.split(' ')[0]
+  } else {
+    clientUserAgent = '';
+  }
+
+  const userAgent = `${pkg.name}/${pkg.version}${clientUserAgent} node/${process.versions.node} ${os.platform()}/${os.release()}`;
+  headers['User-Agent'] = userAgent;
+
+  options.headers = headers;
+  return options;
+}
 
 oidcUtil.createClient = context => {
   const {
@@ -49,7 +58,11 @@ oidcUtil.createClient = context => {
     timeout
   } = context.options;
 
-  Issuer.defaultHttpOptions.timeout = timeout || 10000;
+  Issuer[custom.http_options] = function(options) {
+    options = customizeUserAgent(options);
+    options.timeout = timeout || 10000;
+    return options;
+  };
 
   return Issuer.discover(issuer +  '/.well-known/openid-configuration')
   .then(iss => {
@@ -60,8 +73,8 @@ oidcUtil.createClient = context => {
         redirect_uri
       ]
     });
-
-    client.CLOCK_TOLERANCE = maxClockSkew;
+    client[custom.http_options] = customizeUserAgent;
+    client[custom.clock_tolerance] = maxClockSkew;
 
     return client;
   });

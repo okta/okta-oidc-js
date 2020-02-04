@@ -1,3 +1,12 @@
+# 4.0.0
+
+### Breaking Changes
+
+- [#661](https://github.com/okta/okta-oidc-js/pull/661) Requires Node >= 10.13.0. Add support for Node 12. Update production dependencies:
+  - `openid-client@3.12.2` (was 2.5.0)
+  - `passport@0.4.1` (was 0.3.2)
+  - `@okta/configuration-validation@0.4.1` (was 0.2.0)
+
 # 3.0.0
 
 ### Breaking Changes 

@@ -1,4 +1,4 @@
-const Issuer = require('openid-client').Issuer;
+const OpenIdClient = require('openid-client');
 const nock = require('nock');
 const os = require('os');
 const path = require('path');
@@ -7,6 +7,9 @@ const rpt = require ('read-package-tree');
 const { ExpressOIDC } = require('../../index.js');
 const pkg = require('../../package.json');
 const modulesRoot = path.resolve(__dirname, '../../');
+
+const Issuer = OpenIdClient.Issuer;
+const custom = OpenIdClient.custom;
 
 describe('new ExpressOIDC()', () => {
   const findDomainMessage = 'You can copy your domain from the Okta Developer ' +
@@ -23,6 +26,23 @@ describe('new ExpressOIDC()', () => {
     appBaseUrl: 'https://app.foo'
   };
 
+  function mockWellKnown(issuer) {
+    issuer = issuer || 'https://foo'
+    nock(issuer)
+    .get('/.well-known/openid-configuration')
+    .reply(200, {
+      issuer
+    })
+  }
+
+  afterEach(function() {
+    if(!nock.isDone()) {
+      nock.cleanAll();
+      throw new Error('Not all nock interceptors were used!');
+    }
+  });
+
+  
   it('should throw if no issuer is provided', () => {
     function createInstance() {
       new ExpressOIDC({
@@ -38,27 +58,30 @@ describe('new ExpressOIDC()', () => {
     function createInstance() {
       new ExpressOIDC({
         ...minimumConfig, 
-        issuer: 'http://foo.com' 
+        issuer: 'http://foo' 
       });
     }
-    const errorMsg = `Your Okta URL must start with https. Current value: http://foo.com. ${findDomainMessage}`;
+    const errorMsg = `Your Okta URL must start with https. Current value: http://foo. ${findDomainMessage}`;
     expect(createInstance).toThrow(errorMsg);
   });
 
-  it('should not throw if https issuer validation is skipped', () => {
+  it('should not throw if https issuer validation is skipped', done => {
     jest.spyOn(console, 'warn').mockImplementation(() => {}); // silence for testing
-    function createInstance() {
-      new ExpressOIDC({
-        ...minimumConfig,
-        issuer: 'http://foo.com',
-        testing: {
-          disableHttpsCheck: true
-        }
-      }).on('error', () => {}); // prevent warning about unhandled error on this intentional error
-    }
-    const errorMsg = `Your Okta URL must start with https. Current value: http://foo.com. ${findDomainMessage}`;
-    expect(createInstance).not.toThrow(errorMsg);
-    expect(console.warn).toBeCalledWith('Warning: HTTPS check is disabled. This allows for insecure configurations and is NOT recommended for production use.');
+    mockWellKnown('http://foo');
+    new ExpressOIDC({
+      ...minimumConfig,
+      issuer: 'http://foo',
+      testing: {
+        disableHttpsCheck: true
+      }
+    })
+    .on('error', () => {
+      expect(false).toBe(true);
+    })
+    .on('ready', () => {
+      expect(console.warn).toBeCalledWith('Warning: HTTPS check is disabled. This allows for insecure configurations and is NOT recommended for production use.');
+      done();
+    });
   });
 
   it('should throw if an issuer matching {yourOktaDomain} is provided', () => {
@@ -163,7 +186,7 @@ describe('new ExpressOIDC()', () => {
       });
     }
     const errorMsg = `Your client secret is missing. ${findCredentialsMessage}`;
-  expect(createInstance).toThrow(errorMsg);
+    expect(createInstance).toThrow(errorMsg);
   });
 
   it('should throw if a client_id matching {clientId} is provided', () => {
@@ -232,29 +255,34 @@ describe('new ExpressOIDC()', () => {
     expect(createInstance).toThrow(errorMsg);
   });
 
-  it('should set the HTTP timeout to 10 seconds', () => {
+  it('should set the HTTP timeout to 10 seconds', done => {
+    mockWellKnown();
     new ExpressOIDC({
       ...minimumConfig
-    }).on('error', () => {
-      // Ignore errors caused by mock configuration data
+    })
+    .on('ready', () => {
+      expect(Issuer[custom.http_options]().timeout).toBe(10000);
+      done();
     });
-    expect(Issuer.defaultHttpOptions.timeout).toBe(10000);
   });
 
-  it('should allow me to change the HTTP timeout', () => {
+  it('should allow me to change the HTTP timeout', done => {
+    mockWellKnown();
     new ExpressOIDC({
       ...minimumConfig,
-      timeout: 1
-    }).on('error', () => {
-      // Ignore errors caused by mock configuration data
+      timeout: 2000
+    })
+    .on('ready', () => {
+      expect(Issuer[custom.http_options]().timeout).toBe(2000);
+      done();
     });
-    expect(Issuer.defaultHttpOptions.timeout).toBe(1);
   });
 
   // eslint-disable-next-line jest/no-test-callback
   it('should throw ETIMEOUT if the timeout is reached', (done) => {
     nock('https://foo')
     .get('/.well-known/openid-configuration')
+    .delay(1000)
     .reply(200, function cb() {
       // dont reply, we want to timeout
     });
@@ -262,6 +290,7 @@ describe('new ExpressOIDC()', () => {
       ...minimumConfig,
       timeout: 1
     }).on('error', (e) => {
+      nock.abortPendingRequests();
       expect(e.code).toBe('ETIMEDOUT');
       done();
     });
@@ -273,20 +302,23 @@ describe('new ExpressOIDC()', () => {
       return kidName.includes('openid');
     }, function (er, data) {
       const openIdPkg = data.children[0].package;
+      
+      const expectedAgent = `${pkg.name}/${pkg.version} ${openIdPkg.name}/${openIdPkg.version} node/${process.versions.node} ${os.platform()}/${os.release()}`;
+      let userAgent;
+
       nock('https://foo')
       .get('/.well-known/openid-configuration')
       .reply(200, function cb() {
-        const userAgent = this.req.headers['user-agent'];
-        const expectedAgent = `${pkg.name}/${pkg.version} ${openIdPkg.name}/${openIdPkg.version} node/${process.versions.node} ${os.platform()}/${os.release()}`;
-        expect(userAgent).toBe(expectedAgent);
-        done();
+        userAgent = this.req.headers['user-agent'];
+        return JSON.stringify({ issuer: 'https://foo' });
       });
       new ExpressOIDC({
         ...minimumConfig
-      }).on('error', () => {
-        // Because we're mocking and not fulfilling the real response, the client will error
-        // Ignore this because we're only asserting what we see on the request
-      });
+      })
+      .on('ready', () => {
+        expect(userAgent).toBe(expectedAgent);
+        done();
+      })
     });
   })
 });
