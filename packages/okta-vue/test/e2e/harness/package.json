@@ -9,7 +9,7 @@
     "kill:port": "kill -s TERM $(lsof -t -i:8080 -sTCP:LISTEN) || true",
     "start": "yarn env && yarn dev",
     "env": "node ./scripts/prebuild.js",
-    "pree2e": "../../../../../scripts/updateSeDrivers.sh",
+    "pree2e": "../../../../../scripts/update_se_drivers.sh",
     "e2e": "node test/e2e/runner.js",
     "test": "yarn env && yarn e2e",
     "posttest": "yarn kill:port",
