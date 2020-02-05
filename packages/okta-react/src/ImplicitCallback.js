@@ -17,7 +17,6 @@ import withAuth from './withAuth';
 export default withAuth(class ImplicitCallback extends Component {
   constructor(props) {
     super(props);
-
     this.state = {
       authenticated: null,
       error: null
@@ -26,18 +25,23 @@ export default withAuth(class ImplicitCallback extends Component {
 
   componentDidMount() {
     this.props.auth.handleAuthentication()
-    .then(() => this.setState({ authenticated: true }))
+    .then(() => {
+      const location = this.props.auth.getFromUri();
+      this.setState({ authenticated: true, location });
+    })
     .catch(err => this.setState({ authenticated: false, error: err.toString() }));
   }
 
   render() {
-    if (this.state.authenticated === null) {
-      return null;
+    const { error, authenticated, location } = this.state;
+    if (error) {
+      return <p>{error}</p>;
     }
 
-    const location = this.props.auth.getFromUri();
-    return this.state.authenticated ?
-      <Redirect to={location}/> :
-      <p>{this.state.error}</p>;
+    if (authenticated && location) {
+      return <Redirect to={location}/>;
+    }
+
+    return null;
   }
 });
