@@ -1,3 +1,22 @@
+# 2.0.0
+
+### Features
+
+- Now offers the following React Hooks (2.x requires a version of React that supports Hooks)
+  - `useAuth` - TODO DOCLINK
+  - `useIsAuthenticated` - TODO DOCLINK
+  - `useUserInfo` - TODO DOCLINK
+  - `useToken` - TODO DOCLINK
+- Now can be used with other routers than react-router
+  - React Router continues to be supported via TODO DOCLINK
+
+### Other
+- Upgrades to use `@okta/okta-auth-js` 3.x - TODO LINK TO AUTH JS RELEASE
+
+FIXME: redirect?
+FIXME: router response mode
+
+
 # 1.3.1
 
 ### Bug Fixes
