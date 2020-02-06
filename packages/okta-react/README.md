@@ -1,15 +1,22 @@
 [Okta Auth SDK]: https://github.com/okta/okta-auth-js
 [react-router]: https://github.com/ReactTraining/react-router
+[reach-router]: https://reach.tech/router
 [higher-order component]: https://reactjs.org/docs/higher-order-components.html
 [React Hook]: https://reactjs.org/docs/hooks-intro.html
 [Auth service]: #auth
+[Routers]: #routers
+[Migrating from 1.x]: #migrating
+
 
 # Okta React SDK
 
 [![npm version](https://img.shields.io/npm/v/@okta/okta-react.svg?style=flat-square)](https://www.npmjs.com/package/@okta/okta-react)
 [![build status](https://img.shields.io/travis/okta/okta-oidc-js/master.svg?style=flat-square)](https://travis-ci.org/okta/okta-oidc-js)
 
-Okta React SDK builds on top of the [Okta Auth SDK][]. This SDK adds integration with [react-router][] and provides additional logic and components designed to help you quickly add authentication and authorization to your React single-page web application.
+Okta React SDK builds on top of the [Okta Auth SDK][]. 
+This SDK is intended to be easily integrated with many common "router" packages, such as [react-router][], [reach-router][], and others.  See [Routers][] for more details.
+
+Users migrating from version 1.x of this SDK that required [react-router][] should see [Migrating from 1.x][] to learn what changes are necessary.
 
 With the [Okta Auth SDK][], you can:
 
@@ -22,7 +29,7 @@ All of these features are supported by this SDK. Additionally, using this SDK, y
 
 - Add "secure" routes, which will require authentication before render
 - Define custom logic/behavior when authentication is required
-- Provide an instance of the [Auth service][] to your components using a [React Hook] or a [higher-order component][] 
+- Provide an instance of the [Auth service][] to your components using a [React Hook][] or a [higher-order component][] 
 
 > This SDK does not provide any UI components.
 
@@ -56,9 +63,11 @@ npm install --save @okta/okta-react
 
 ## Usage
 
-`okta-react` works directly with [react-router][] and provides some additional components:
+`okta-react` provides the means to connect a React SPA with Okta OIDC information.  Most commonly, you will connect to a router library such as [react-router][].
+`okta-react` provides the following components:
 
 - [Security](#security) - Allows you to supply your OpenID Connect client [configuration](#reference). Provides an instance of the [Auth service][] to child components.
+
 - [SecureRoute](#secureroute) - A normal `Route` except authentication is needed to render the component.
 - [ImplicitCallback](#implicitcallback) - A simple component which handles the login callback.
 
@@ -69,6 +78,8 @@ Here is a minimal working example. This example defines 3 routes:
 - **/** - Anyone can access the home page
 - **/protected** - Protected is only visible to authenticated users
 - **/implicit/callback** - This is where auth is handled for you after redirection
+
+> A common mistake is to try and apply an authentication requirement to all pages, THEN add an exception for the login page.  This often fails because of how routes are evaluated in most routing packages.  Instead, you should declare specific routes or branches of routes that require authentication without exceptions.
 
 ```jsx
 // src/App.js
@@ -451,12 +462,21 @@ Store the current URL state before a redirect occurs.
 
 Returns the stored URI and query parameters stored by `setFromUri`
 
-## Contributing
-
-We welcome contributions to all of our open-source packages. Please see the [contribution guide](https://github.com/okta/okta-oidc-js/blob/master/CONTRIBUTING.md) to understand how to structure a contribution.
 #### `auth.getTokenManager()`
 
 Returns the internal [TokenManager](https://github.com/okta/okta-auth-js#tokenmanager).
+
+## Migrating between versions
+
+### Migrating from 1.x to 2.x
+
+The 1.x series for this SDK required the use of [react-router][].  These instructions assume you are moving to version 2.x of this SDK and are still using React Router.  
+
+
+
+## Contributing
+
+We welcome contributions to all of our open-source packages. Please see the [contribution guide](https://github.com/okta/okta-oidc-js/blob/master/CONTRIBUTING.md) to understand how to structure a contribution.
 
 ## Development
 

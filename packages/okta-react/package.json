@@ -39,7 +39,7 @@
   },
   "peerDependencies": {
     "react": ">=16.8.0",
-    "react-router": ">=4"
+    "react-router": ">=4.4.0"
   },
   "devDependencies": {
     "babel-cli": "^6.26.0",
