@@ -1,6 +1,12 @@
+# 3.0.1
+
+### Bug Fixes
+
+- Apply success and failure redirects to custom login callback handlers
+
 # 3.0.0
 
-### Breaking Changes 
+### Breaking Changes
 
 See "Updating" in the README for migration steps
 
@@ -13,7 +19,7 @@ See "Updating" in the README for migration steps
 - Support for Org Authorization Servers. [#590](https://github.com/okta/okta-oidc-js/pull/590) - See [composing your base url](https://developer.okta.com/docs/reference/api/oidc/#composing-your-base-url) for more information on Authorization Servers.
 
 ### Bug Fixes
-- Errors during logout would cause the user to receive an empty page and remain logged in. [#585](https://github.com/okta/okta-oidc-js/pull/585) - 
+- Errors during logout would cause the user to receive an empty page and remain logged in. [#585](https://github.com/okta/okta-oidc-js/pull/585) -
 
   Due to this bug, errors during logout were being incorrectly suppressed and would not have been seen by the server process. Instead, the user would see a blank page. With this fix, the user will be logged out correctly, but the error event will also now be emitted to the server process.
 
@@ -29,7 +35,7 @@ See "Updating" in the README for migration steps
 
 - Adds Okta logout capability (informing Okta that the session is ended rather than just locally forgetting the current session) ([#162](https://github.com/okta/okta-oidc-js/issues/162))
 
-### Breaking Changes 
+### Breaking Changes
 
 See "Updating" in the README for migration steps
 

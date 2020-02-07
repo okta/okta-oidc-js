@@ -84,12 +84,13 @@ connectUtil.createLoginHandler = context => {
 connectUtil.createLoginCallbackHandler = context => {
   const routes = context.options.routes;
   const customHandler = routes.loginCallback.handler;
+  const passportOptions = {
+		successReturnToOrRedirect: routes.loginCallback.afterCallback,
+		failureRedirect: routes.loginCallback.failureRedirect
+	}
 
   if (!customHandler) {
-    return passport.authenticate('oidc', {
-      successReturnToOrRedirect: routes.loginCallback.afterCallback,
-      failureRedirect: routes.loginCallback.failureRedirect
-    });
+    return passport.authenticate('oidc', passportOptions);
   }
 
   const customHandlerArity = customHandler.length;
@@ -107,7 +108,7 @@ connectUtil.createLoginCallbackHandler = context => {
           throw new OIDCMiddlewareError('middlewareError', 'Your custom callback handler must request "next"');
       }
     };
-    passport.authenticate('oidc')(req, res, nextHandler);
+    passport.authenticate('oidc', passportOptions)(req, res, nextHandler);
   }
 };
 
