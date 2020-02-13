@@ -40,6 +40,13 @@ export class OktaAuthService {
 
     constructor(@Inject(OKTA_CONFIG) private auth: OktaConfig, private router: Router) {
       this.observers = [];
+      
+      /**
+       * Extract the OKTA_CONFIG if passed as array from Provider factory.
+       */
+      if(Array.isArray(auth) && auth.length > 0 && auth[0].issuer){
+        auth = auth[0];
+      }
 
       /**
        * Cache the auth config.
