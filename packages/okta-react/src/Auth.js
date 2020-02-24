@@ -19,9 +19,7 @@ import OktaAuth from '@okta/okta-auth-js';
 
 import packageInfo from './packageInfo';
 
-const containsAuthTokens = /id_token|access_token|code/;
-
-export default class Auth {
+class Auth {
   constructor(config) {
     const testing = {
       // If the config is undefined, cast it to false
@@ -44,15 +42,23 @@ export default class Auth {
     this._oktaAuth.userAgent = `${packageInfo.name}/${packageInfo.version} ${this._oktaAuth.userAgent}`;
     this._config = authConfig; // use normalized config
     this._history = config.history;
+    this._listeners = {};
 
     this.handleAuthentication = this.handleAuthentication.bind(this);
-    this.isAuthenticated = this.isAuthenticated.bind(this);
+    this.updateAuthState = this.updateAuthState.bind(this);
+    this.clearAuthState = this.clearAuthState.bind(this);
     this.getUser = this.getUser.bind(this);
     this.getIdToken = this.getIdToken.bind(this);
     this.getAccessToken = this.getAccessToken.bind(this);
     this.login = this.login.bind(this);
     this.logout = this.logout.bind(this);
     this.redirect = this.redirect.bind(this);
+    this.emit = this.emit.bind(this);
+    this.on = this.on.bind(this);
+
+    this.eventCount = 0;
+
+    this.clearAuthState();
   }
 
   getTokenManager() {
@@ -61,7 +67,8 @@ export default class Auth {
 
   async handleAuthentication() {
     let tokens = await this._oktaAuth.token.parseFromUrl();
-    tokens = Array.isArray(tokens) ? tokens : [tokens];
+    tokens = Array.isArray(tokens) ? tokens : [tokens];    
+
     for (let token of tokens) {
       if (token.idToken) {
         this._oktaAuth.tokenManager.add('idToken', token);
@@ -69,19 +76,29 @@ export default class Auth {
         this._oktaAuth.tokenManager.add('accessToken', token);
       }
     }
+
+    return await this.updateAuthState();
   }
 
-  async isAuthenticated() {
-    // Support a user-provided method to check authentication
-    if (this._config.isAuthenticated) {
-      return (this._config.isAuthenticated)();
-    }
+  clearAuthState(state={}) { 
+    this._authState = { ...Auth.DEFAULT_STATE, ...state };
+    this.emit('authStateChange', this._authState);
+  }
 
-    // If there could be tokens in the url
-    if (location && location.hash && containsAuthTokens.test(location.hash)) return null;
+  async updateAuthState() {
+    const accessToken = await this.getAccessToken();
+    const idToken = await this.getIdToken();
 
-    // Return true if either the access or id token exist in client storage
-    return !!(await this.getAccessToken()) || !!(await this.getIdToken());
+    // Use external check, or default to isAuthenticated if either the access or id token exist
+    const isAuthenticated = this._config.isAuthenticated ? this._config.isAuthenticated() : !! ( accessToken || idToken );
+
+    this._authState = { 
+      isAuthenticated,
+      idToken,
+      accessToken,
+    };
+    this.emit('authStateChange', this._authState);
+    return this._authState;
   }
 
   async getUser() {
@@ -92,7 +109,7 @@ export default class Auth {
       if (userinfo.sub === idToken.claims.sub) {
         // Only return the userinfo response if subjects match to
         // mitigate token substitution attacks
-        return userinfo
+        return userinfo;
       }
     }
     return idToken ? idToken.claims : undefined;
@@ -140,11 +157,15 @@ export default class Auth {
       path = options;
       options = {};
     }
+
     return this._oktaAuth.signOut(options)
       .then(() => {
         if (!options.postLogoutRedirectUri && !this._config.postLogoutRedirectUri) {
           this._history.push(path || '/');
         }
+      })
+      .finally( () => {;
+        this.clearAuthState();
       });
   }
 
@@ -164,21 +185,44 @@ export default class Auth {
     return this._oktaAuth.token.getWithRedirect(params);
   }
 
-  setFromUri (fromUri) {
+  setFromUri(fromUri) {
     // Use current history location if fromUri was not passed
     const referrerPath = fromUri
       ? { pathname: fromUri }
       : this._history.location;
-    localStorage.setItem(
-      'secureRouterReferrerPath',
-      JSON.stringify(referrerPath)
-      );
+    localStorage.setItem( 'secureRouterReferrerPath', JSON.stringify(referrerPath) );
   }
 
-  getFromUri () {
+  getFromUri() {
     const referrerKey = 'secureRouterReferrerPath';
     const location = JSON.parse(localStorage.getItem(referrerKey) || '{ "pathname": "/" }');
     localStorage.removeItem(referrerKey);
     return location;
   }
+
+  on( event, callback ) {
+    // FIXME: restricted events?
+    const eventId = this.eventCount++;
+    this._listeners[event] = this._listeners[event] || {};
+    this._listeners[event][eventId] = callback;
+    return () => { 
+      console.log('unsub called!', eventId);
+      delete this._listeners[event][eventId];
+    }
+  }
+
+  emit(event, message ) { 
+    this._listeners[event] = this._listeners[event] || {};
+    Object.values(this._listeners[event]).forEach( listener => listener(message) );
+  }
+  
 }
+
+Auth.DEFAULT_STATE = { 
+  isPending: true,
+  isAuthenticated: null,
+  idToken: null,
+  accessToken: null,
+};
+
+export default Auth;

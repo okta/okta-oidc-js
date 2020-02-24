@@ -9,18 +9,13 @@
  *
  * See the License for the specific language governing permissions and limitations under the License.
  */
-import React, { useContext } from 'react';
 
-const OktaContext = {
-  auth: React.createContext(),
-  authState: React.createContext(),
+import RouterSecurity from './RouterSecurity';
+import ImplicitCallback from './ImplicitCallback';
+import SecureRoute from './SecureRoute';
+
+export {
+  ImplicitCallback,
+  SecureRoute,
+  RouterSecurity,
 };
-
-export const useAuth = () => useContext(OktaContext.auth);
-
-export const useAuthState = () => {
-  const context  = useContext(OktaContext.authState);
-  return context;
-};
-
-export default OktaContext;
