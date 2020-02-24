@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2017-Present, Okta, Inc. and/or its affiliates. All rights reserved.
+ * Copyright (c) 2020-Present, Okta, Inc. and/or its affiliates. All rights reserved.
  * The Okta software accompanied by this notice is provided pursuant to the Apache License, Version 2.0 (the "License.")
  *
  * You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0.
@@ -11,18 +11,16 @@
  */
 
 import React from 'react';
-import Secure from './Secure';
+import { useAuth, useAuthState } from './OktaContext';
 
-const withAuth = Component => {
-  const C = props => (
-    <Secure render={secureComponentProps => (
-      <Component {...props} {...secureComponentProps}/>
-    )}/>
-  );
-
-  C.displayName = `withAuth(${Component.displayName || Component.name})`;
-
-  return C;
+const withOktaAuth = (ComponentToWrap) => { 
+  // const WrappedComponent = (props) => <ComponentToWrap {...props} auth={auth} authState={authState}/>;
+  return (props) => { 
+    const auth = useAuth();
+    const authState = useAuthState();
+    return <ComponentToWrap {...props} auth={auth} authState={authState}/>;
+  };
+  // return WrappedComponent
 };
 
-export default withAuth;
+export default withOktaAuth;

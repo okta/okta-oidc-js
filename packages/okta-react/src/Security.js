@@ -10,25 +10,35 @@
  * See the License for the specific language governing permissions and limitations under the License.
  */
 
-import React, { useRef, useEffect } from 'react';
-import { withRouter } from 'react-router';
+import React, { useState, useEffect } from 'react';
 import Auth from './Auth';
 import OktaContext from './OktaContext';
 
-const Security = (props) => {
-  const auth = useRef(null);
+const Security = (props) => { 
 
-  useEffect(() => {
-    auth.current = props.auth || new Auth(props);
-  }, [props]);
+  const [auth] = useState( props.auth || new Auth(props) );
+  const [authState, setAuthState] = useState({...Auth.DEFAULT_STATE});
+
+  console.log('in security render');
+
+  useEffect( () => { 
+    let unsub;
+    unsub = auth.on('authStateChange', (newAuthState) => { 
+      setAuthState(newAuthState);
+    });
+    auth.updateAuthState(); // Force an authStateChange event to set the initial state
+    return unsub;
+  }, [auth]);
 
   return (
-    <OktaContext.Provider auth={auth.current}>
+    <OktaContext.auth.Provider value={auth}>
+    <OktaContext.authState.Provider value={authState}>
       <div className={props.className}>
         {props.children}
       </div>
-    </OktaContext.Provider>
+    </OktaContext.authState.Provider>
+    </OktaContext.auth.Provider>
   );
 };
 
-export default withRouter(Security);
+export default Security;

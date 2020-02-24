@@ -11,12 +11,21 @@
  */
 
 import React from 'react';
-import { useAuth } from './OktaContext';
+import Security from './Security2';
+import { useHistory } from 'react-router-dom';
 
-const Secure = ({ render }) => {
-  const { auth } = useAuth();
+const RouterSecurity = (props) => { 
+  
+  const history = useHistory();
 
-  return render({ auth });
+  return (
+    <Security 
+      history={history}
+      {...props} >
+      {props.children}
+    </Security>
+  );
 };
 
-export default Secure;
+export default RouterSecurity;
+

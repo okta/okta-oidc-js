@@ -11,18 +11,15 @@
  */
 
 import Security from './Security';
-import ImplicitCallback from './ImplicitCallback';
-import SecureRoute from './SecureRoute';
-import withAuth from './withAuth';
+import withOktaAuth from './withOktaAuth';
+import { useAuth, useAuthState}, OktaContext from './OktaContext';
 import Auth from './Auth';
-import OktaContext, { useAuth } from './OktaContext';
 
 export {
-  ImplicitCallback,
-  SecureRoute,
   Security,
-  withAuth,
+  withOktaAuth,
   Auth,
-  OktaContext,
   useAuth,
+  useAuthState,
+  OktaContext,
 };
