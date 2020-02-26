@@ -14,11 +14,12 @@ import React, { Component } from 'react';
 import { Route } from 'react-router';
 import withAuth from './withAuth';
 
-
 class RenderWrapper extends Component {
   checkAuthentication() {
     if (this.props.authenticated === false) {
-      this.props.login();
+      const history = this.props.history;
+      const fromUri = history.createHref(history.location);
+      this.props.login(fromUri);
     }
   }
 
@@ -73,6 +74,7 @@ class SecureRoute extends Component {
         component={this.props.component}
         render={this.props.render}
         renderProps={renderProps}
+        history={renderProps.history}
       />
     );
   }

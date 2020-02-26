@@ -73,7 +73,7 @@ Here is a minimal working example. This example defines 3 routes:
 // src/App.js
 
 import React, { Component } from 'react';
-import { BrowserRouter as Router, Route } from 'react-router-dom';
+import { Route, withRouter } from 'react-router';
 import { Security, SecureRoute, ImplicitCallback } from '@okta/okta-react';
 import Home from './Home';
 import Protected from './Protected';
@@ -81,7 +81,6 @@ import Protected from './Protected';
 class App extends Component {
   render() {
     return (
-      <Router>
         <Security issuer='https://{yourOktaDomain}.com/oauth2/default'
                   clientId='{clientId}'
                   redirectUri={window.location.origin + '/implicit/callback'} >
@@ -89,12 +88,23 @@ class App extends Component {
           <SecureRoute path='/protected' component={Protected}/>
           <Route path='/implicit/callback' component={ImplicitCallback} />
         </Security>
-      </Router>
     );
   }
 }
 
-export default App;
+export default withRouter(App);
+
+// src/index.js
+import React from 'react';
+import ReactDOM from 'react-dom';
+import App from './App';
+import { BrowserRouter as Router } from 'react-router-dom';
+
+ReactDOM.render(
+  <Router>
+    <App />
+  </Router>
+, document.getElementById('root'));
 ```
 
 ## Show Login and Logout Buttons
@@ -210,7 +220,7 @@ These options are used by `Security` to configure the [Auth service][]. The most
 - **responseType** *(optional)* - Desired token types. Default: `['id_token', 'token']`.
 For PKCE flow, this should be left undefined or set to `['code']`.
 - **pkce** *(optional)* - If `true`, PKCE flow will be used
-- **onAuthRequired** *(optional)* - callback function. Called when authentication is required. If this is not supplied, `okta-react` redirects to Okta. This callback will receive `auth` and `history` parameters. This is triggered when:
+- **onAuthRequired** *(optional)* - callback function. Called when authentication is required. If this is not supplied, `okta-react` redirects to Okta. This callback will receive `auth` as the first function parameter. This is triggered when:
     1. [login](#authloginfromuri-additionalparams) is called
     2. A `SecureRoute` is accessed without authentication
 - **onSessionExpired** *(optional)* - callback function. Called when the Okta SSO session has expired or was ended outside of the application. This SDK adds a default handler which will call [login](#authloginfromuri-additionalparams) to initiate a login flow. Passing a function here will disable the default handler.
@@ -231,23 +241,23 @@ For PKCE flow, this should be left undefined or set to `['code']`.
 #### Example
 
 ```jsx
-function customAuthHandler({auth, history}) {
-  // Redirect to the /login page that has a CustomLoginComponent
-  history.push('/login');
-}
 
 class App extends Component {
+  customAuthHandler() {
+    // Redirect to the /login page that has a CustomLoginComponent
+    this.props.history.push('/login');
+  }
+
   render() {
+    const customAuthHandler = this.customAuthHandler.bind(this);
     return (
-      <Router>
-        <Security issuer='https://{yourOktaDomain}.com/oauth2/default'
-                  clientId='{clientId}'
-                  redirectUri={window.location.origin + '/implicit/callback'}
-                  onAuthRequired={customAuthHandler} >
-          <Router path='/login' component={CustomLoginComponent}>
-          {/* some routes here */}
-        </Security>
-      </Router>
+      <Security issuer='https://{yourOktaDomain}.com/oauth2/default'
+                clientId='{clientId}'
+                redirectUri={window.location.origin + '/implicit/callback'}
+                onAuthRequired={customAuthHandler} >
+        <Route path='/login' component={CustomLoginComponent}>
+        {/* some routes here */}
+      </Security>
     );
   }
 }
@@ -267,16 +277,12 @@ Configure an instance of the [Auth service][] and pass it to the `Security` comp
 // src/App.js
 
 import React, { Component } from 'react';
-import { Router, Route } from 'react-router-dom';
+import { Route } from 'react-router';
 import { Security, SecureRoute, ImplicitCallback, Auth } from '@okta/okta-react';
 import Home from './Home';
 import Protected from './Protected';
-import { createBrowserHistory } from 'history'
-
-const history = createBrowserHistory();
 
 const auth = new Auth({
-  history,
   issuer: 'https://{yourOktaDomain}.com/oauth2/default',
   clientId: '{clientId}',
   redirectUri: window.location.origin + '/implicit/callback',
@@ -285,13 +291,11 @@ const auth = new Auth({
 class App extends Component {
   render() {
     return (
-      <Router history={history}>
-        <Security auth={auth} >
-          <Route path='/' exact={true} component={Home}/>
-          <SecureRoute path='/protected' component={Protected}/>
-          <Route path='/implicit/callback' component={ImplicitCallback} />
-        </Security>
-      </Router>
+      <Security auth={auth} >
+        <Route path='/' exact={true} component={Home}/>
+        <SecureRoute path='/protected' component={Protected}/>
+        <Route path='/implicit/callback' component={ImplicitCallback} />
+      </Security>
     );
   }
 }
@@ -308,15 +312,13 @@ Assuming you have configured your application to allow the `Authorization code` 
 class App extends Component {
   render() {
     return (
-      <Router>
-        <Security issuer='https://{yourOktaDomain}.com/oauth2/default'
-                  clientId='{clientId}'
-                  pkce={true}
-                  redirectUri={window.location.origin + '/implicit/callback'}>
-          <Router path='/login' component={CustomLoginComponent}>
-          {/* some routes here */}
-        </Security>
-      </Router>
+      <Security issuer='https://{yourOktaDomain}.com/oauth2/default'
+                clientId='{clientId}'
+                pkce={true}
+                redirectUri={window.location.origin + '/implicit/callback'}>
+        <Route path='/login' component={CustomLoginComponent}>
+        {/* some routes here */}
+      </Security>
     );
   }
 }
@@ -336,12 +338,10 @@ const auth = new Auth({
 class App extends Component {
   render() {
     return (
-      <Router history={history}>
-        <Security auth={auth} >
-          <Route path='/' exact={true} component={Home}/>
-          <Route path='/implicit/callback' component={ImplicitCallback} />
-        </Security>
-      </Router>
+      <Security auth={auth} >
+        <Route path='/' exact={true} component={Home}/>
+        <Route path='/implicit/callback' component={ImplicitCallback} />
+      </Security>
     );
   }
 }

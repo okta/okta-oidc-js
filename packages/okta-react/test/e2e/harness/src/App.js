@@ -11,7 +11,8 @@
  */
 
 import React, { Component } from 'react';
-import { BrowserRouter as Router, Route } from 'react-router-dom';
+import { Route } from 'react-router-dom';
+import { withRouter } from 'react-router';
 import { Security, SecureRoute, ImplicitCallback, Auth } from '@okta/okta-react';
 import Home from './Home';
 import Protected from './Protected';
@@ -23,18 +24,22 @@ if (!Auth) {
 }
 
 class App extends Component {
+  onAuthRequired() {
+    this.props.history.push('/login')
+  }
+
   render() {
      /* global process */
     const { ISSUER, CLIENT_ID } = process.env;
     const { pkce, redirectUri } = this.props;
+    const onAuthRequired = this.onAuthRequired.bind(this);
     return (
       <React.StrictMode>
-        <Router>
           <Security issuer={ISSUER}
                     clientId={CLIENT_ID}
                     disableHttpsCheck={true}
                     redirectUri={redirectUri}
-                    onAuthRequired={({history}) => history.push('/login')}
+                    onAuthRequired={onAuthRequired}
                     pkce={pkce}>
             <Route path='/' component={Home}/>
             <Route path='/login' component={CustomLogin}/>
@@ -43,10 +48,9 @@ class App extends Component {
             <Route path='/implicit/callback' component={ImplicitCallback} />
             <Route path='/pkce/callback' component={ImplicitCallback} />
           </Security>
-        </Router>
       </React.StrictMode>
     );
   }
 }
 
-export default App;
+export default withRouter(App);

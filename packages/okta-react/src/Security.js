@@ -11,7 +11,6 @@
  */
 
 import React, { Component } from 'react';
-import { withRouter } from 'react-router';
 import PropTypes from 'prop-types';
 import Auth from './Auth';
 
@@ -40,4 +39,4 @@ class Security extends Component {
   }
 }
 
-export default withRouter(Security);
+export default Security;

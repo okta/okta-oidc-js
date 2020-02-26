@@ -11,7 +11,6 @@
  */
 
 import React, { Component } from 'react';
-import { Redirect } from 'react-router';
 import withAuth from './withAuth';
 
 export default withAuth(class ImplicitCallback extends Component {
@@ -30,14 +29,20 @@ export default withAuth(class ImplicitCallback extends Component {
     .catch(err => this.setState({ authenticated: false, error: err.toString() }));
   }
 
-  render() {
-    if (this.state.authenticated === null) {
-      return null;
-    }
+  componentDidUpdate() {
+    if (this.state.authenticated !== null) {
+      const location = this.props.auth.getFromUri();
 
-    const location = this.props.auth.getFromUri();
-    return this.state.authenticated ?
-      <Redirect to={location}/> :
-      <p>{this.state.error}</p>;
+      if (this.state.authenticated === true) {
+        window.location.assign(location);
+      }
+    }
+  }
+
+  render() {
+    if (this.state.error) {
+      return <p>{this.state.error}</p>;
+    }
+    return null;
   }
 });

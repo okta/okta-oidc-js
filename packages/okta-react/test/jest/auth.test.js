@@ -198,6 +198,7 @@ describe('Auth component', () => {
     AuthJS.mockImplementation(() => {
       return mockAuthJsInstance
     });
+    jest.spyOn(window.location, 'assign').mockImplementation(() => {});
   });
 
   function extendConfig(config) {
@@ -241,50 +242,38 @@ describe('Auth component', () => {
         issuer: 'https://foo/oauth2/default',
         client_id: 'foo',
         redirect_uri: 'foo',
-        history: {
-          push: jest.fn()
-        }
       });
       await auth.logout();
-      expect(auth._history.push).toHaveBeenCalledWith('/');
+      expect(window.location.assign).toHaveBeenCalledWith(window.location.origin + '/');
     });
     test('can pass unknown options without affecting default', async () => {
       const auth = new Auth({
         issuer: 'https://foo/oauth2/default',
         client_id: 'foo',
         redirect_uri: 'foo',
-        history: {
-          push: jest.fn()
-        }
       });
       await auth.logout({ foo: 'bar' });
-      expect(auth._history.push).toHaveBeenCalledWith('/');
+      expect(window.location.assign).toHaveBeenCalledWith(window.location.origin + '/');
     });
     test('if a string is passed, it will be used as history path', async () => {
       const auth = new Auth({
         issuer: 'https://foo/oauth2/default',
         client_id: 'foo',
         redirect_uri: 'foo',
-        history: {
-          push: jest.fn()
-        }
       });
       const testPath = '/fake/blah';
       await auth.logout(testPath);
-      expect(auth._history.push).toHaveBeenCalledWith(testPath);
+      expect(window.location.assign).toHaveBeenCalledWith(window.location.origin + testPath);
     });
     test('Will not update history if "postLogoutRedirectUri" is in options passed to logout()', async () => {
       const auth = new Auth({
         issuer: 'https://foo/oauth2/default',
         client_id: 'foo',
         redirect_uri: 'foo',
-        history: {
-          push: jest.fn()
-        }
       });
       const postLogoutRedirectUri = 'http://fake/after';
       await auth.logout({ postLogoutRedirectUri });
-      expect(auth._history.push).not.toHaveBeenCalled();
+      expect(window.location.assign).not.toHaveBeenCalled();
       expect(mockAuthJsInstance.signOut).toHaveBeenCalledWith({ postLogoutRedirectUri });
     });
     test('Will not update history if "postLogoutRedirectUri" is in options passed to constructor', async () => {
@@ -293,14 +282,11 @@ describe('Auth component', () => {
         issuer: 'https://foo/oauth2/default',
         client_id: 'foo',
         redirect_uri: 'foo',
-        history: {
-          push: jest.fn()
-        },
         postLogoutRedirectUri
       });
-
+      jest.spyOn(window.location, 'assign');
       await auth.logout();
-      expect(auth._history.push).not.toHaveBeenCalled();
+      expect(window.location.assign).not.toHaveBeenCalled();
       expect(mockAuthJsInstance.signOut).toHaveBeenCalledWith({});
     });
     test('returns a promise', async () => {
@@ -333,7 +319,7 @@ describe('Auth component', () => {
           expect(e).toBe(testError);
         })
         .then(() => {
-          expect(auth._history.push).not.toHaveBeenCalled();
+          expect(window.location.assign).not.toHaveBeenCalled();
         });
     })
   });
@@ -492,24 +478,23 @@ describe('Auth component', () => {
   });
 
   describe('setFromUri', () => {
-    it('Saves the fromUri as "pathname" in localStorage', () => {
+    it('Saves the fromUri in localStorage', () => {
       localStorage.setItem('secureRouterReferrerPath', '');
       expect(localStorage.getItem('secureRouterReferrerPath')).toBe('');
-      const fromUri = '/foo/random';
+      const fromUri = 'http://localhost/foo/random';
       const auth = new Auth(validConfig);
       auth.setFromUri(fromUri);
-      const val = JSON.parse(localStorage.getItem('secureRouterReferrerPath'));
-      expect(val.pathname).toBe(fromUri);
+      const val = localStorage.getItem('secureRouterReferrerPath');
+      expect(val).toBe(fromUri);
     });
 
-    it('Saves the history.location by default', () => {
+    it('Saves the window.location.href by default', () => {
       localStorage.setItem('secureRouterReferrerPath', '');
       expect(localStorage.getItem('secureRouterReferrerPath')).toBe('');
       const auth = new Auth(validConfig);
-      auth._history = { location: 'test-value' };
       auth.setFromUri();
-      const val = JSON.parse(localStorage.getItem('secureRouterReferrerPath'));
-      expect(val).toBe(auth._history.location);
+      const val = localStorage.getItem('secureRouterReferrerPath');
+      expect(val).toBe(window.location.href);
     });
 
   });
@@ -517,10 +502,10 @@ describe('Auth component', () => {
   describe('getFromUri', () => {
     test('cleares referrer from localStorage', () => {
       const TEST_VALUE = 'foo-bar';
-      localStorage.setItem('secureRouterReferrerPath', JSON.stringify({ pathname: TEST_VALUE }));
+      localStorage.setItem('secureRouterReferrerPath', TEST_VALUE);
       const auth = new Auth(validConfig);
       const res = auth.getFromUri();
-      expect(res.pathname).toBe(TEST_VALUE);
+      expect(res).toBe(TEST_VALUE);
       expect(localStorage.getItem('referrerPath')).not.toBeTruthy();
     });
   });
@@ -549,12 +534,11 @@ describe('Auth component', () => {
         redirectUri: 'https://foo/redirect',
         onAuthRequired,
       });
-      auth._history = 'foo';
       jest.spyOn(auth, 'redirect');
   
       const retVal = await auth.login('/');
       expect(retVal).toBe(expectedVal);
-      expect(onAuthRequired).toHaveBeenCalledWith({ auth, history: auth._history });
+      expect(onAuthRequired).toHaveBeenCalledWith(auth);
       expect(auth.redirect).not.toHaveBeenCalled();
     });
   });
