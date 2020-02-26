@@ -11,8 +11,8 @@
  */
 
 import React from 'react';
-import { useAuth, useAuthState } from './OktaContext';
-import { Route } from 'react-router';
+import { useAuth, useAuthState } from '../OktaContext';
+import { Route } from 'react-router-dom';
 
 const RequireAuth = ({ children }) => { 
   const auth = useAuth();
@@ -26,9 +26,9 @@ const RequireAuth = ({ children }) => {
   }
 
   return (
-    <> 
+    <React.Fragment>
       {children}
-    </>
+    </React.Fragment>
   );
 
 };

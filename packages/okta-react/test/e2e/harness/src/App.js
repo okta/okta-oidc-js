@@ -12,7 +12,8 @@
 
 import React, { Component } from 'react';
 import { BrowserRouter as Router, Route } from 'react-router-dom';
-import { Security, SecureRoute, ImplicitCallback, Auth } from '@okta/okta-react';
+import { Auth } from '@okta/okta-react';
+import { RouterSecurity, SecureRoute, ImplicitCallback } from '@okta/okta-react/react-router';
 import Home from './Home';
 import Protected from './Protected';
 import CustomLogin from './CustomLogin';
@@ -30,7 +31,7 @@ class App extends Component {
     return (
       <React.StrictMode>
         <Router>
-          <Security issuer={ISSUER}
+          <RouterSecurity issuer={ISSUER}
                     clientId={CLIENT_ID}
                     disableHttpsCheck={true}
                     redirectUri={redirectUri}
@@ -42,7 +43,7 @@ class App extends Component {
             <SecureRoute exact path='/protected' component={Protected}/>
             <Route path='/implicit/callback' component={ImplicitCallback} />
             <Route path='/pkce/callback' component={ImplicitCallback} />
-          </Security>
+          </RouterSecurity>
         </Router>
       </React.StrictMode>
     );

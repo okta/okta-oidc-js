@@ -2,7 +2,7 @@
 
 const webpack = require('webpack');
 const path = require('path');
-const MAIN_ENTRY = path.resolve(__dirname, '../../../dist/index.js');
+const MAIN_ENTRY = path.resolve(__dirname, '../../../dist/');
 
 require('../../../../../.oidc.config.js'); // will load environment vars from testenv
 

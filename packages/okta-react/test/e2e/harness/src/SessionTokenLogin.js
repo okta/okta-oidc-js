@@ -12,9 +12,9 @@
 
 import React, { Component } from 'react';
 import OktaAuth from '@okta/okta-auth-js';
-import { withAuth } from '@okta/okta-react';
+import { withOktaAuth } from '@okta/okta-react';
 
-export default withAuth(class SessionTokenLogin extends Component {
+export default withOktaAuth(class SessionTokenLogin extends Component {
   constructor(props) {
     super(props);
     this.state = {

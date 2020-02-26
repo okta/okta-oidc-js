@@ -12,7 +12,7 @@
 
 import Security from './Security';
 import withOktaAuth from './withOktaAuth';
-import { useAuth, useAuthState}, OktaContext from './OktaContext';
+import OktaContext, { useAuth, useAuthState} from './OktaContext';
 import Auth from './Auth';
 
 export {

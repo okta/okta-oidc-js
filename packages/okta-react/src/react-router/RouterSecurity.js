@@ -11,7 +11,7 @@
  */
 
 import React from 'react';
-import Security from './Security2';
+import Security from '../Security'
 import { useHistory } from 'react-router-dom';
 
 const RouterSecurity = (props) => { 

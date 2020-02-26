@@ -12,7 +12,7 @@
 
 import React, { useEffect } from 'react';
 import { Redirect } from 'react-router';
-import { useAuth, useAuthState } from './OktaContext';
+import { useAuth, useAuthState } from '../OktaContext';
 
 const ImplicitCallback = () => { 
   const auth = useAuth();

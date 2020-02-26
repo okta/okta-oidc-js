@@ -11,9 +11,9 @@
  */
 
 import { Component } from 'react';
-import { withAuth } from '@okta/okta-react';
+import { withOktaAuth } from '@okta/okta-react';
 
-export default withAuth(class CustomLogin extends Component {
+export default withOktaAuth(class CustomLogin extends Component {
   componentDidMount() {
     this.props.auth.redirect();
   }

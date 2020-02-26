@@ -11,9 +11,9 @@
  */
 
 import React, { Component } from 'react';
-import { withAuth } from '@okta/okta-react';
+import { withOktaAuth } from '@okta/okta-react';
 
-export default withAuth(class Protected extends Component {
+export default withOktaAuth(class Protected extends Component {
   constructor(props) {
     super(props);
     this.state = { userinfo: null };
