@@ -1,3 +1,9 @@
+# 1.4.1
+
+### Bug Fixes
+
+- [#669](https://github.com/okta/okta-oidc-js/pull/669) - Fixes ImplicitCallback component so it will not attempt redirect unless `getFromUri` returns a value. This can occur if multiple instances of the component are mounted.
+
 # 1.4.0
 
 ### Features
