@@ -17,6 +17,7 @@ export default withAuth(class Protected extends Component {
   constructor(props) {
     super(props);
     this.state = { userinfo: null };
+    this.logout = this.logout.bind(this);
   }
 
   async componentDidMount() {
@@ -25,11 +26,16 @@ export default withAuth(class Protected extends Component {
     this.setState({ userinfo });
   }
 
+  async logout() {
+    this.props.auth.logout('/');
+  }
+
   render() {
     return (
       <div>
         <div> Protected! </div>
         {this.state.userinfo && <pre id="userinfo-container"> {this.state.userinfo} </pre>}
+        <button id="logout-button" onClick={this.logout}>Logout</button>
       </div>
     );
   }

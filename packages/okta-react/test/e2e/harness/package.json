@@ -31,11 +31,12 @@
     "build": "react-app-rewired build",
     "build:test": "rimraf e2e/dist && babel e2e/ -d e2e/dist",
     "kill:port": "kill -s TERM $(lsof -t -i:8080 -sTCP:LISTEN) || true",
-    "pretest": "../../../../../scripts/update_se_drivers.sh 0 && yarn build:test",
+    "pretest": "../../../../../scripts/update_se_drivers.sh 0",
     "wait:server": "BROWSER=none yarn start & ./node_modules/.bin/wait-on http://localhost:8080",
     "test": "yarn wait:server && yarn protractor",
     "posttest": "yarn kill:port",
     "eject": "react-scripts eject",
+    "preprotractor": "yarn build:test",
     "protractor": "babel-node ./node_modules/.bin/protractor protractor.conf.js"
   },
   "browserslist": [
