@@ -24,6 +24,11 @@ if (!Auth) {
 }
 
 class App extends Component {
+  constructor(props) {
+    super(props);
+    this.onAuthRequired = this.onAuthRequired.bind(this);
+  }
+
   onAuthRequired() {
     this.props.history.push('/login')
   }
@@ -32,14 +37,13 @@ class App extends Component {
      /* global process */
     const { ISSUER, CLIENT_ID } = process.env;
     const { pkce, redirectUri } = this.props;
-    const onAuthRequired = this.onAuthRequired.bind(this);
     return (
       <React.StrictMode>
           <Security issuer={ISSUER}
                     clientId={CLIENT_ID}
                     disableHttpsCheck={true}
                     redirectUri={redirectUri}
-                    onAuthRequired={onAuthRequired}
+                    onAuthRequired={this.onAuthRequired}
                     pkce={pkce}>
             <Route path='/' component={Home}/>
             <Route path='/login' component={CustomLogin}/>

@@ -243,18 +243,22 @@ For PKCE flow, this should be left undefined or set to `['code']`.
 ```jsx
 
 class App extends Component {
+  constructor(props) {
+    super(props);
+    this.customAuthHandler = this.customAuthHandler.bind(this);
+  }
+
   customAuthHandler() {
     // Redirect to the /login page that has a CustomLoginComponent
     this.props.history.push('/login');
   }
 
   render() {
-    const customAuthHandler = this.customAuthHandler.bind(this);
     return (
       <Security issuer='https://{yourOktaDomain}.com/oauth2/default'
                 clientId='{clientId}'
                 redirectUri={window.location.origin + '/implicit/callback'}
-                onAuthRequired={customAuthHandler} >
+                onAuthRequired={this.customAuthHandler} >
         <Route path='/login' component={CustomLoginComponent}>
         {/* some routes here */}
       </Security>
