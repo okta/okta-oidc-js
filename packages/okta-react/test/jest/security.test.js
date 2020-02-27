@@ -13,11 +13,14 @@ describe('<Security />', () => {
 
   it('should accept a className prop and render a component using the className', () => {
     const mockProps = {
-      auth: {}
+      auth: {
+        on: jest.fn(),
+        updateAuthState: jest.fn(),
+      },
     };
     const wrapper = mount(
       <MemoryRouter>
-        <Security auth={mockProps} className='foo bar' />
+        <Security {...mockProps} className='foo bar' />
       </MemoryRouter>
     );
     expect(wrapper.find(Security).hasClass('foo bar')).toEqual(true);
@@ -31,7 +34,11 @@ describe('<Security />', () => {
     }
 
     const mockProps = Object.assign({}, VALID_CONFIG, {
-      tokenManager
+      tokenManager,
+      auth: {
+        on: jest.fn(),
+        updateAuthState: jest.fn(),
+      },
     });
     const wrapper = mount(
       <MemoryRouter>

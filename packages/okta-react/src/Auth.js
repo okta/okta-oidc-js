@@ -41,7 +41,6 @@ class Auth {
     this._oktaAuth = new OktaAuth(authConfig);
     this._oktaAuth.userAgent = `${packageInfo.name}/${packageInfo.version} ${this._oktaAuth.userAgent}`;
     this._config = authConfig; // use normalized config
-    this._history = config.history;
     this._listeners = {};
 
     this.handleAuthentication = this.handleAuthentication.bind(this);
@@ -143,9 +142,7 @@ class Auth {
     // Save the current url before redirect
     this.setFromUri(fromUri); // will save current location if fromUri is undefined
     if (this._config.onAuthRequired) {
-      const auth = this;
-      const history = this._history;
-      return this._config.onAuthRequired({ auth, history });
+      return this._config.onAuthRequired(this);
     }
     return this.redirect(additionalParams);
   }
@@ -161,10 +158,15 @@ class Auth {
     return this._oktaAuth.signOut(options)
       .then(() => {
         if (!options.postLogoutRedirectUri && !this._config.postLogoutRedirectUri) {
-          this._history.push(path || '/');
+          let redirectUri = path || '/';
+          // If a relative path was passed, convert to absolute URI
+          if (redirectUri.charAt(0) === '/') {
+            redirectUri = window.location.origin + redirectUri;
+          }
+          window.location.assign(redirectUri);
         }
       })
-      .finally( () => {;
+      .finally( () => {
         this.clearAuthState();
       });
   }
@@ -186,16 +188,18 @@ class Auth {
   }
 
   setFromUri(fromUri) {
-    // Use current history location if fromUri was not passed
-    const referrerPath = fromUri
-      ? { pathname: fromUri }
-      : this._history.location;
-    localStorage.setItem( 'secureRouterReferrerPath', JSON.stringify(referrerPath) );
+    // Use current location if fromUri was not passed
+    fromUri = fromUri || window.location.href;
+    // If a relative path was passed, convert to absolute URI
+    if (fromUri.charAt(0) === '/') {
+      fromUri = window.location.origin + fromUri;
+    }
+    localStorage.setItem( 'secureRouterReferrerPath', fromUri );
   }
 
   getFromUri() {
     const referrerKey = 'secureRouterReferrerPath';
-    const location = JSON.parse(localStorage.getItem(referrerKey) || '{ "pathname": "/" }');
+    const location = localStorage.getItem(referrerKey) || window.location.origin;
     localStorage.removeItem(referrerKey);
     return location;
   }
@@ -206,7 +210,6 @@ class Auth {
     this._listeners[event] = this._listeners[event] || {};
     this._listeners[event][eventId] = callback;
     return () => { 
-      console.log('unsub called!', eventId);
       delete this._listeners[event][eventId];
     }
   }

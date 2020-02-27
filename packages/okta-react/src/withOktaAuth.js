@@ -14,13 +14,11 @@ import React from 'react';
 import { useAuth, useAuthState } from './OktaContext';
 
 const withOktaAuth = (ComponentToWrap) => { 
-  // const WrappedComponent = (props) => <ComponentToWrap {...props} auth={auth} authState={authState}/>;
   return (props) => { 
     const auth = useAuth();
     const authState = useAuthState();
     return <ComponentToWrap {...props} auth={auth} authState={authState}/>;
   };
-  // return WrappedComponent
 };
 
 export default withOktaAuth;

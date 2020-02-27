@@ -10,22 +10,30 @@
  * See the License for the specific language governing permissions and limitations under the License.
  */
 
-import React from 'react';
-import Security from '../Security'
-import { useHistory } from 'react-router-dom';
+import React, { useEffect } from 'react';
+import { useAuth, useAuthState } from '../OktaContext';
 
-const RouterSecurity = (props) => { 
-  
-  const history = useHistory();
+const ImplicitCallback = () => { 
+  const auth = useAuth();
+  const authState = useAuthState();
 
-  return (
-    <Security 
-      history={history}
-      {...props} >
-      {props.children}
-    </Security>
-  );
+  useEffect( () => {
+    if(authState.isPending) { 
+      auth.handleAuthentication()
+        .catch( err => {
+          // FIXME error
+          console.log('implicit callback unhappiness', err) 
+        });
+    }
+  });
+
+  if( authState.isAuthenticated ) { 
+    const location = auth.getFromUri();
+    if( location ) { 
+      window.location.assign(location);
+    }
+  }
+  return null;
 };
 
-export default RouterSecurity;
-
+export default ImplicitCallback;

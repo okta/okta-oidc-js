@@ -68,17 +68,16 @@ npm install --save @okta/okta-react
 ### React-Router components (optional)
 
 `okta-react` provides a number of pre-built components to connect a `react-router`-based SPA to Okta OIDC information.  You can use these components directly, or use them as a basis for building your own components.
-- [RouterSecurity](#RouterSecurity) - Allows you to supply your OpenID Connect client [configuration](#reference). Includes React context providers to allow the use of [useAuthState][], [useAuth][], or the [withOktaAuth][] wrapper.
-- [SecureRoute](#SecureRoute) - A normal `Route` except authentication is needed to render the component.
-- [ImplicitCallback](#ImplicitCallback) - A simple component which handles the login callback.
+- [SecureRoute](#SecureRoute) - A normal `Route` except authentication is needed to render the component.  
 
-### Components to use with other Routers  
+### General components
 
 `okta-react` provides the necessary tools to build an integration with most common React-based SPA routers.
 
-- [Security](#security) - Allows you to supply your OpenID Connect client [configuration](#reference). Includes React context providers to allow the use of [useAuthState][], [useAuth][], or the [withOktaAuth][] wrapper.
+- [Security](#security) - Allows you to supply your OpenID Connect client [configuration](#reference). Includes React context providers to allow the use of [useAuthState][], [useAuth][], or the [withOktaAuth][] Higher Order Component wrapper.
+- [LoginCallback](#LoginCallback) - A simple component which handles the login callback when the user is redirected back to the application from the Okta login site.
 
-You will need to build a version of the `ImplicitCallback` component to be a route that processes post-login information.  See the provided example `ImplicitCallback` component inside `src/react-router/` for an example.
+Users of routers other than `react-router` will have to add their own checks for authentication.  The exact method will depend on your router, but the basic idea is to use [useAuthState][] to see if a `authState.isPending` is false and `authState.isAuthorized` is true.  If both are false, you can send them to login via `auth.login(...)`.
 
 ### Available Hooks
 
@@ -87,7 +86,7 @@ These hooks require that the component be inside a `Security` component that pro
 - [useAuthState](#useAuthState) - provides an `authState` object that describes the current authentication.
 - [useAuth](#useAuth) - provides access to the [Auth service][] object.  
 
-### Minimal Example in React Router using class-based components
+### Minimal Example in React Router
 #### Create Routes
 This example defines 3 routes:
 
@@ -97,12 +96,15 @@ This example defines 3 routes:
 
 > A common mistake is to try and apply an authentication requirement to all pages, THEN add an exception for the login page.  This often fails because of how routes are evaluated in most routing packages.  To avoid this problem, declare specific routes or branches of routes that require authentication without exceptions.
 
+#### Creating React Router Routes with class-based components
+
 ```jsx
 // src/App.js
 
 import React, { Component } from 'react';
 import { BrowserRouter as Router, Route } from 'react-router-dom';
-import { RouterSecurity, SecureRoute, ImplicitCallback } from '@okta/okta-react/react-router';
+import { SecureRoute } from '@okta/okta-react/react-router';
+import { Security, LoginCallback } from '@okta/okta-react';
 import Home from './Home';
 import Protected from './Protected';
 
@@ -110,17 +112,43 @@ class App extends Component {
   render() {
     return (
       <Router>
-        <RouterSecurity issuer='https://{yourOktaDomain}.com/oauth2/default'
+        <Security issuer='https://{yourOktaDomain}.com/oauth2/default'
                   clientId='{clientId}'
                   redirectUri={window.location.origin + '/implicit/callback'} >
           <Route path='/' exact={true} component={Home}/>
           <SecureRoute path='/protected' component={Protected}/>
           <Route path='/implicit/callback' component={ImplicitCallback} />
-        </RouterSecurity>
+        </Security>
       </Router>
     );
   }
 }
+
+export default App;
+```
+
+#### Creating React Router Routes with function-based components
+
+```jsx
+import React from 'react';
+import { SecureRoute } from '@okta/okta-react/react-router';
+import { Security, LoginCallback } from '@okta/okta-react';
+import Home from './Home';
+import Protected from './Protected';
+
+const App = () => (
+  <Router>
+    <RouterSecurity
+      issuer='https://{yourOktaDomain}.com/oauth2/default'
+      clientId='{clientId}'
+      redirectUri={window.location.origin + '/implicit/callback'}
+    >
+      <Route path='/' exact={true} component={Home}/>
+      <SecureRoute path='/protected' component={Protected}/>
+      <Route path='/implicit/callback' component={ImplicitCallback} />
+    </RouterSecurity>
+  </Router>
+);
 
 export default App;
 ```
@@ -154,6 +182,40 @@ export default withOktaAuth(class Home extends Component {
       <button onClick={this.login}>Login</button>;
   }
 });
+```
+#### Show Login and Logout Buttons (react-router, function-based)
+```jsx
+// src/Home.js
+
+const Home = () => {
+  const auth = useAuth();
+  const authState = useAuthState();
+
+  const login = async () => { auth.login('/'); };
+  const logout = async () => { auth.logout('/'); };
+
+  if(authState.isPending) { 
+    return <div>Loading...</div>;
+  }
+
+  if(!authState.isAuthenticated) {
+    return (
+      <div>
+        <p>Not Logged in yet</p>
+        <button onClick={login}>Login</button>
+      </div>
+    );
+  }
+
+  return (
+    <div>
+      <p>Logged in!</p>
+      <button onClick={logout}>Logout</button>
+    </div>
+  );
+};
+
+export default Home;
 ```
 #### Use the Access Token (class-based)
 When your users are authenticated, your React application has an access token that was issued by your Okta Authorization server. You can use this token to authenticate requests for resources on your server or API. As a hypothetical example, let's say you have an API that provides messages for a user. You could create a `MessageList` component that gets the access token and uses it to make an authenticated request to your server.
@@ -196,73 +258,6 @@ export default withOktaAuth(class MessageList extends Component {
   }
 });
 ```
-### Minimal Example in React Router using function-based components
-#### Create Routes (react-router, function-based)_
-This example defines 3 routes:
-
-- **/** - Anyone can access the home page
-- **/protected** - Protected is only visible to authenticated users
-- **/implicit/callback** - This is where auth is handled for you after redirection
-
-> A common mistake is to try and apply an authentication requirement to all pages, THEN add an exception for the login page.  This often fails because of how routes are evaluated in most routing packages.  To avoid this problem, declare specific routes or branches of routes that require authentication without exceptions.
-
-```jsx
-import React from 'react';
-import { BrowserRouter as Router, Route } from 'react-router-dom';
-import { RouterSecurity, SecureRoute, ImplicitCallback } from '@okta/okta-react/react-router';
-import Home from './Home';
-import Protected from './Protected';
-
-const App = () => (
-  <Router>
-    <RouterSecurity
-      issuer='https://{yourOktaDomain}.com/oauth2/default'
-      clientId='{clientId}'
-      redirectUri={window.location.origin + '/implicit/callback'}
-    >
-      <Route path='/' exact={true} component={Home}/>
-      <SecureRoute path='/protected' component={Protected}/>
-      <Route path='/implicit/callback' component={ImplicitCallback} />
-    </RouterSecurity>
-  </Router>
-);
-
-export default App;
-```
-#### Show Login and Logout Buttons (react-router, function-based)
-```jsx
-// src/Home.js
-
-const Home = () => {
-  const auth = useAuth();
-  const authState = useAuthState();
-
-  const login = async () => { auth.login('/'); };
-  const logout = async () => { auth.logout('/'); };
-
-  if(authState.isPending) { 
-    return <div>Loading...</div>;
-  }
-
-  if(!authState.isAuthenticated) {
-    return (
-      <div>
-        <p>Not Logged in yet</p>
-        <button onClick={login}>Login</button>
-      </div>
-    );
-  }
-
-  return (
-    <div>
-      <p>Logged in!</p>
-      <button onClick={logout}>Logout</button>
-    </div>
-  );
-};
-
-export default Home;
-```
 #### Use the Access Token (function-based)
 When your users are authenticated, your React application has an access token that was issued by your Okta Authorization server. You can use this token to authenticate requests for resources on your server or API. As a hypothetical example, let's say you have an API that provides messages for a user. You could create a `MessageList` component that gets the access token and uses it to make an authenticated request to your server.
 
@@ -299,17 +294,6 @@ export default MessageList = () => {
   return <ul>{items}</ul>;
 };
 ```
-### Minimal Example using function-based components for other Routers
-#### Create Routes (NOT react-router, function-based)_
-This example defines 3 routes:
-
-- **/** - Anyone can access the home page
-- **/protected** - Protected is only visible to authenticated users
-- **/implicit/callback** - This is where auth is handled for you after redirection
-
-> A common mistake is to try and apply an authentication requirement to all pages, THEN add an exception for the login page.  This often fails because of how routes are evaluated in most routing packages.  To avoid this problem, declare specific routes or branches of routes that require authentication without exceptions.
-FIXME: rearrange examples
-
 ## Reference
 
 ### `Security`
@@ -328,12 +312,11 @@ These options are used by `Security` to configure the [Auth service][]. The most
 - **responseType** *(optional)* - Desired token types. Default: `['id_token', 'token']`.
 For PKCE flow, this should be left undefined or set to `['code']`.
 - **pkce** *(optional)* - If `true`, PKCE flow will be used
-- **history** *(optional)* - Provide an object to manage browser navigation.  Will default to the browser history API, but routers (such as react-router) may want their own controls instead.
-- **onAuthRequired** *(optional)* - callback function. Called when authentication is required. If this is not supplied, `okta-react` redirects to Okta. This callback will receive `auth` and `history` parameters. This is triggered when:
+- **onAuthRequired** *(optional)* - callback function. Called when authentication is required. If this is not supplied, `okta-react` redirects to Okta. This callback will receive `auth` as the first function parameter. This is triggered when:
     1. [login](#authloginfromuri-additionalparams) is called
     2. A `SecureRoute` is accessed without authentication
 - **onSessionExpired** *(optional)* - callback function. Called when the Okta SSO session has expired or was ended outside of the application. This SDK adds a default handler which will call [login](#authloginfromuri-additionalparams) to initiate a login flow. Passing a function here will disable the default handler.
-- **isAuthenticated** *(optional)* - callback function. By default, `auth.isAuthenticated()` will return true if both `getIdToken()` and `getAccessToken()` return a value. Setting a `isAuthenticated` function on the config will skip the default logic and call the supplied function instead. The function should return a Promise and resolve to either true or false.  Note that this is only evaluated as needed unless the `auth.updateAuthState()` method is called to trigger a re-evaluation.
+- **isAuthenticated** *(optional)* - callback function. By default, `auth` will consider a user authenticated if both `getIdToken()` and `getAccessToken()` return a value. Setting a `isAuthenticated` function on the config will skip the default logic and call the supplied function instead. The function should return a Promise and resolve to either true or false.  Note that this is only evaluated when the `auth` code has reason to think the authentication state has changed.  You can call the `auth.updateAuthState()` method to trigger a re-evaluation.
 - **tokenManager** *(optional)*: An object containing additional properties used to configure the internal token manager. See [AuthJS TokenManager](https://github.com/okta/okta-auth-js#the-tokenmanager) for more detailed information.
   - `autoRenew` *(optional)*:
   By default, the library will attempt to renew expired tokens. When an expired token is requested by the library, a renewal request is executed to update the token. If you wish to  to disable auto renewal of tokens, set autoRenew to false.
@@ -348,17 +331,16 @@ For PKCE flow, this should be left undefined or set to `['code']`.
     - [`cookie`](https://developer.mozilla.org/en-US/docs/Web/API/Document/cookie)
 
 #### Example
-FIXME: history push below?
 ```jsx
-function customAuthHandler({auth, history}) {
+function customAuthHandler(auth) {
   // Redirect to the /login page that has a CustomLoginComponent
-  history.push('/login');
+  // React-Router specific
+  this.props.history.push('/login');
 }
 
 class App extends Component {
   render() {
     return (
-      <Router>
         <Security issuer='https://{yourOktaDomain}.com/oauth2/default'
                   clientId='{clientId}'
                   redirectUri={window.location.origin + '/implicit/callback'}
@@ -366,10 +348,11 @@ class App extends Component {
           <Router path='/login' component={CustomLoginComponent}>
           {/* some routes here */}
         </Security>
-      </Router>
     );
   }
 }
+
+export default withRouter(App);
 ```
 
 #### Alternate configuration using `Auth` instance
@@ -387,16 +370,12 @@ Configure an instance of the [Auth service][] and pass it to the `Security` comp
 
 import React, { Component } from 'react';
 import { Router, Route } from 'react-router-dom';
-import { RouterSecurity, SecureRoute, ImplicitCallback } from '@okta/okta-react';
-import { Auth } from '@okta/okta-react/react-router';
+import { Auth, Security, LoginCallback } from '@okta/okta-react';
+import { SecureRoute } from '@okta/okta-react/react-router';
 import Home from './Home';
 import Protected from './Protected';
-import { createBrowserHistory } from 'history'
-
-const history = createBrowserHistory();
 
 const auth = new Auth({
-  history,
   issuer: 'https://{yourOktaDomain}.com/oauth2/default',
   clientId: '{clientId}',
   redirectUri: window.location.origin + '/implicit/callback',
@@ -405,12 +384,12 @@ const auth = new Auth({
 class App extends Component {
   render() {
     return (
-      <Router history={history}>
-        <RouterSecurity auth={auth} >
+      <Router>
+        <Security auth={auth} >
           <Route path='/' exact={true} component={Home}/>
           <SecureRoute path='/protected' component={Protected}/>
-          <Route path='/implicit/callback' component={ImplicitCallback} />
-        </RouterSecurity>
+          <Route path='/implicit/callback' component={LoginCallback} />
+        </Security>
       </Router>
     );
   }
@@ -421,7 +400,7 @@ export default App;
 
 #### PKCE Example
 
-Assuming you have configured your application to allow the `Authorization code` grant type, simply pass `pkce=true` to the `Security` component. This will configure the [Auth service][] to perform PKCE flow for both login and token refresh.
+Assuming you have configured your application to allow the `Authorization code` grant type, simply pass `pkce=true` to the `Security` component. This will configure the [Auth service][] to perform PKCE flow for both login and token refresh.  
 
 ```jsx
 
@@ -429,13 +408,13 @@ class App extends Component {
   render() {
     return (
       <Router>
-        <RouterSecurity issuer='https://{yourOktaDomain}.com/oauth2/default'
+        <Security issuer='https://{yourOktaDomain}.com/oauth2/default'
                   clientId='{clientId}'
                   pkce={true}
                   redirectUri={window.location.origin + '/implicit/callback'}>
           <Router path='/login' component={CustomLoginComponent}>
           {/* some routes here */}
-        </RouterSecurity>
+        </Security>
       </Router>
     );
   }
@@ -456,10 +435,10 @@ const auth = new Auth({
 class App extends Component {
   render() {
     return (
-      <Router history={history}>
+      <Router>
         <Security auth={auth} >
           <Route path='/' exact={true} component={Home}/>
-          <Route path='/implicit/callback' component={ImplicitCallback} />
+          <Route path='/implicit/callback' component={LoginCallback} />
         </Security>
       </Router>
     );
@@ -472,9 +451,11 @@ class App extends Component {
 
 `SecureRoute` ensures that a route is only rendered if the user is authenticated. If the user is not authenticated, it calls `onAuthRequired` if it exists, otherwise, it redirects to Okta.
 
-### `ImplicitCallback`
+`SecureRoute` is specific to `react-router`.  Other routers will need their own methods to ensure authentication using the hooks/HOC props provided by this SDK.
 
-`ImplicitCallback` handles the callback after the redirect. By default, it parses the tokens from the uri, stores them, then redirects to `/`. If a `SecureRoute` caused the redirect, then the callback redirects to the secured route. For more advanced cases, this component can be copied to your own source tree and modified as needed.
+### `LoginCallback`
+
+`LoginCallback` handles the callback after the redirect to and back from the Okta site. By default, it parses the tokens from the uri, stores them, then redirects to `/`. If a `SecureRoute` caused the redirect, then the callback redirects to the secured route. For more advanced cases, this component can be copied to your own source tree and modified as needed.
 
 ### `withOktaAuth`
 
@@ -493,7 +474,7 @@ export default MyComponent = () => {
   if( authState.isPending ) { 
     return <div>Loading...</div>;
   }
-  if( authState.isAuthorized ) { 
+  if( authState.isAuthenticated ) { 
     return <div>Hello User!</div>;
   }
   return <div>You need to login</div>;
@@ -534,7 +515,7 @@ Retrieves the access token from storage if it exists.  Devs should prefer to con
 
 #### `auth.login(fromUri, additionalParams)`
 
-Calls `onAuthRequired` or redirects to Okta if `onAuthRequired` is undefined. This method accepts a `fromUri` parameter to push the user to after successful authentication, and an optional `additionalParams` object.
+Calls the optional `onAuthRequired` passed to `<Security>` or redirects to Okta if `onAuthRequired` is undefined. This method accepts a `fromUri` parameter to push the user to after successful authentication, and an optional `additionalParams` object.
 
 For more information on `additionalParams`, see the [`auth.redirect`](#authredirectadditionalparams) method below.
 
@@ -558,7 +539,7 @@ auth.redirect({
 
 #### `auth.handleAuthentication()`
 
-Parses tokens from the url and stores them.  Done when handling a redirect back to the application from the issuer.  See the ImplicitCallback component for an example of use.
+Parses tokens from the url and stores them.  Done when handling a redirect back to the application from the issuer.  See the LoginCallback component for an example of use.
 
 ### `auth.setFromUri(uri, queryParams)`
 
@@ -566,7 +547,7 @@ Store the current URL state before a redirect occurs.  Called internally by `aut
 
 #### `auth.getFromUri()`
 
-Returns the stored URI and query parameters stored by `setFromUri` and removes it from storage.  See the ImplicitCallback component for an example of use.  
+Returns the stored URI and query parameters stored by `setFromUri` and removes it from storage.  See the LoginCallback component for an example of use.  
 
 #### `auth.getTokenManager()`
 
@@ -593,11 +574,11 @@ Resets the authentication status to pending and forgets any tokens `auth` is awa
 
 The 1.x series for this SDK required the use of [react-router][].  These instructions assume you are moving to version 2.x of this SDK and are still using React Router.
 
-#### Replacing Security component and providing history
+#### Replacing Security component
 
-The `<Security>` component is now a generic provider of Okta context for child components.  To handle the navigation requirements of `react-router` you need to provide a `history` param that reflects the `history` control that `react-router` uses.  We provide a `<RouterSecurity>` component that does that - you can `import RouterSecurity as Security from '@okta/okta-react';` in place of the previous `<Security>` component.  
+The `<Security>` component is now a generic provider of Okta context for child components and is required to be an ancestor of any components using the `useAuth` or `useAuthState` hooks, as well as any components using the `withOktaAuth` Higher Order Component.
 
-Except for the addition of the `history` parameter, the prop options to `<Security>` have not changed from the 1.x series to the 2.0.x series.
+The prop options to `<Security>` have not changed from the 1.x series to the 2.0.x series.
 
 #### Replacing the withAuth Higher-Order Component wrapper
 
@@ -607,7 +588,7 @@ This SDK now provides authentication information via React Hooks (see [useAuth](
 
 Two complications of the 1.x series of this SDK have been simplified in the 2.x series:
 - These functions were asynchronous (because the retrieval layer underneath them can be asynchronous) which made avoiding race conditions in renders/re-renders tricky.
-- Recognizing when authentication had yet to be decided versus when it had been decided and was not authenticated was an unclear difference between `true`, `false`, and `null`.
+- Recognizing when authentication had yet to be decided versus when it had been decided and was not authenticated was an unclear difference between `null`, `true`, and `false`.
 
 To resolve these the `auth` object holds the authentication information and provides it synchronously (following the first async determination) as an `authState` object.  While waiting on that first determination, the `authState` object has an explicit `.isPending` property.  When the authentication updates the `auth` object will emit an `authStateChange` event with the new `authState` object.   
 
@@ -621,9 +602,9 @@ If you need access to the `auth` instance directly, it is provided by `withOktaA
 
 #### Updating your ImplicitCallback component
 
-- If you were using the provided ImplicitCallback component, you can continue to do so without changes to that component other than changing your import of `ImplicitCallback` to import from `@okta/okta-react/react-router`
-- If you were using a modified version of the provided ImplicitCallback component, you will need to examine the new version to see the changes.  It may be easier to start with a copy of the new ImplicitCallback component and copy your changes to it.  If you want to use a class-based version of ImplicitCallback, wrap the component in the [withOktaAuth][] HOC to have the `auth` and `authState` properties passed as props.
-- If you had your own component that handled the redirect-back-to-the-application after authentication, you should examine the new version of the ImplicitCallback component as well as the notes in this migration section about the changes to `.isAuthenticated()`, `.getAccessToken()`, and `.getIdToken()`.
+- If you were using the provided ImplicitCallback component, you can replace it with `LoginCallback` 
+- If you were using a modified version of the provided ImplicitCallback component, you will need to examine the new version to see the changes.  It may be easier to start with a copy of the new LoginCallback component and copy your changes to it.  If you want to use a class-based version of LoginCallback, wrap the component in the [withOktaAuth][] HOC to have the `auth` and `authState` properties passed as props.
+- If you had your own component that handled the redirect-back-to-the-application after authentication, you should examine the new LoginCallback component as well as the notes in this migration section about the changes to `.isAuthenticated()`, `.getAccessToken()`, and `.getIdToken()`.
 
 ## Contributing
 

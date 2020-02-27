@@ -19,8 +19,6 @@ const Security = (props) => {
   const [auth] = useState( props.auth || new Auth(props) );
   const [authState, setAuthState] = useState({...Auth.DEFAULT_STATE});
 
-  console.log('in security render');
-
   useEffect( () => { 
     let unsub;
     unsub = auth.on('authStateChange', (newAuthState) => { 

@@ -7,7 +7,8 @@ import Security from '../../src/Security';
 describe('<SecureRoute />', () => {
   const mockProps = {
     auth: {
-      isAuthenticated: jest.fn()
+      on: jest.fn(),
+      updateAuthState: jest.fn(),
     },
   };
 
@@ -23,6 +24,7 @@ describe('<SecureRoute />', () => {
     );
     expect(wrapper.find(SecureRoute).props().path).toBe('/');
   });
+
   it('should accept an "exact" prop and render a component', () => {
     const wrapper = mount(
       <MemoryRouter>
@@ -36,6 +38,7 @@ describe('<SecureRoute />', () => {
     );
     expect(wrapper.find(SecureRoute).props().exact).toBe(true);
   });
+
   it('should not contain an "exact" prop and render a component', () => {
     const wrapper = mount(
       <MemoryRouter>
@@ -48,6 +51,7 @@ describe('<SecureRoute />', () => {
     );
     expect(wrapper.find(SecureRoute).props().exact).toBeUndefined();
   });
+
   it('should accept a "strict" prop and render a component', () => {
     const wrapper = mount(
       <MemoryRouter>
@@ -61,6 +65,7 @@ describe('<SecureRoute />', () => {
     );
     expect(wrapper.find(SecureRoute).props().strict).toBe(true);
   });
+
   it('should accept a "sensitive" prop and render a component', () => {
     const wrapper = mount(
       <MemoryRouter>
@@ -74,6 +79,7 @@ describe('<SecureRoute />', () => {
     );
     expect(wrapper.find(SecureRoute).props().sensitive).toBe(true);
   });
+
   it('should accept an "exact" prop and pass it to an internal Route', () => {
     const wrapper = mount(
       <MemoryRouter>
@@ -88,6 +94,7 @@ describe('<SecureRoute />', () => {
     const secureRoute = wrapper.find(SecureRoute);
     expect(secureRoute.find(Route).props().exact).toBe(true);
   });
+
   it('should accept a "strict" prop and pass it to an internal Route', () => {
     const wrapper = mount(
       <MemoryRouter>
@@ -102,6 +109,7 @@ describe('<SecureRoute />', () => {
     const secureRoute = wrapper.find(SecureRoute);
     expect(secureRoute.find(Route).props().strict).toBe(true);
   });
+
   it('should accept a "sensitive" prop and pass it to an internal Route', () => {
     const wrapper = mount(
       <MemoryRouter>

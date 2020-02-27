@@ -35,9 +35,9 @@ module.exports = {
     if (!config.resolve.alias) {
       config.resolve.alias = {};
     }
-    Object.assign(config.resolve.alias, {
-      '@okta/okta-react': MAIN_ENTRY
-    });
+    // Object.assign(config.resolve.alias, {
+    //   '@okta/okta-react': MAIN_ENTRY
+    // });
 
     config.devtool = 'source-map';
     config.module.rules.push(
