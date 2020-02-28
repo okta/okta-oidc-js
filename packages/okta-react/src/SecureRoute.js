@@ -38,7 +38,7 @@ const RequireAuth = ({ children }) => {
 
 const SecureRoute = ( {component, ...props} ) => { 
 
-  const PassedComponent = component;
+  const PassedComponent = component || function() {};
   const WrappedComponent = () => (<RequireAuth><PassedComponent/></RequireAuth>);
   return (
     <Route
