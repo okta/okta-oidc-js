@@ -55,7 +55,7 @@ class Auth {
     this.emit = this.emit.bind(this);
     this.on = this.on.bind(this);
 
-    this.eventCount = 0;
+    this._subscriberCount = 0;
 
     this.clearAuthState();
   }
@@ -206,11 +206,11 @@ class Auth {
 
   on( event, callback ) {
     // FIXME: restricted events?
-    const eventId = this.eventCount++;
+    const subscriberId = this._subscriberCount++;
     this._listeners[event] = this._listeners[event] || {};
-    this._listeners[event][eventId] = callback;
+    this._listeners[event][subscriberId] = callback;
     return () => { 
-      delete this._listeners[event][eventId];
+      delete this._listeners[event][subscriberId];
     }
   }
 
