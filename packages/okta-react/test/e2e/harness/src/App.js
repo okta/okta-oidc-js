@@ -46,12 +46,12 @@ class App extends Component {
                   onAuthRequired={this.onAuthRequired}
                   pkce={pkce}>
           <Switch>
-            <Route path='/' component={Home}/>
             <Route path='/login' component={CustomLogin}/>
             <Route path='/sessionToken-login' component={SessionTokenLogin}/>
             <SecureRoute exact path='/protected' component={Protected}/>
             <Route path='/implicit/callback' component={LoginCallback} />
             <Route path='/pkce/callback' component={LoginCallback} />
+            <Route path='/' component={Home}/>
           </Switch>
         </Security>
         <a href="/?pkce=1">PKCE Flow</a> | <a href="/">Implicit Flow</a>
