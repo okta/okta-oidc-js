@@ -227,7 +227,6 @@ class Auth {
   }
 
   on( event, callback ) {
-    // FIXME: restricted events?
     const subscriberId = this._subscriberCount++;
     this._listeners[event] = this._listeners[event] || {};
     this._listeners[event][subscriberId] = callback;
