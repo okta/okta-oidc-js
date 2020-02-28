@@ -46,6 +46,7 @@ class Auth {
     this.handleAuthentication = this.handleAuthentication.bind(this);
     this.updateAuthState = this.updateAuthState.bind(this);
     this.clearAuthState = this.clearAuthState.bind(this);
+    this.emitAuthState = this.emitAuthState.bind(this);
     this.getUser = this.getUser.bind(this);
     this.getIdToken = this.getIdToken.bind(this);
     this.getAccessToken = this.getAccessToken.bind(this);
@@ -65,38 +66,59 @@ class Auth {
   }
 
   async handleAuthentication() {
-    let tokens = await this._oktaAuth.token.parseFromUrl();
-    tokens = Array.isArray(tokens) ? tokens : [tokens];    
+    try { 
+      let tokens = await this._oktaAuth.token.parseFromUrl();
+      tokens = Array.isArray(tokens) ? tokens : [tokens];    
 
-    for (let token of tokens) {
-      if (token.idToken) {
-        this._oktaAuth.tokenManager.add('idToken', token);
-      } else if (token.accessToken) {
-        this._oktaAuth.tokenManager.add('accessToken', token);
+      for (let token of tokens) {
+        if (token.idToken) {
+          this._oktaAuth.tokenManager.add('idToken', token);
+        } else if (token.accessToken) {
+          this._oktaAuth.tokenManager.add('accessToken', token);
+        }
       }
+      return await this.updateAuthState();
+    } catch(error) { 
+      return this.emitAuthState({ 
+        isAuthenticated: false,
+        error,
+        idToken: null,
+        accessToken: null,
+      });
     }
-
-    return await this.updateAuthState();
   }
 
   clearAuthState(state={}) { 
-    this._authState = { ...Auth.DEFAULT_STATE, ...state };
+    this.emitAuthState({ ...Auth.DEFAULT_STATE, ...state });
+  }
+
+  emitAuthState(state) { 
+    this._authState = state;
     this.emit('authStateChange', this._authState);
+    return this._authState;
   }
 
   async updateAuthState() {
-    const accessToken = await this.getAccessToken();
-    const idToken = await this.getIdToken();
+    try { 
+      const accessToken = await this.getAccessToken();
+      const idToken = await this.getIdToken();
 
-    // Use external check, or default to isAuthenticated if either the access or id token exist
-    const isAuthenticated = this._config.isAuthenticated ? this._config.isAuthenticated() : !! ( accessToken || idToken );
+      // Use external check, or default to isAuthenticated if either the access or id token exist
+      const isAuthenticated = this._config.isAuthenticated ? await this._config.isAuthenticated() : !! ( accessToken || idToken );
 
-    this._authState = { 
-      isAuthenticated,
-      idToken,
-      accessToken,
-    };
-    this.emit('authStateChange', this._authState);
+      this.emitAuthState({ 
+        isAuthenticated,
+        idToken,
+        accessToken,
+      });
+    } catch (error) { 
+      this.emitAuthState({ 
+        isAuthenticated: false,
+        error,
+        idToken: null,
+        accessToken: null,
+      });
+    }
     return this._authState;
   }
 

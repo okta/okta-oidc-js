@@ -567,9 +567,8 @@ describe('Auth component', () => {
         clientId: 'foo',
         redirectUri: 'https://foo/redirect',
       });
-      //     jest.spyOn(auth, 'getAccessToken').mockReturnValue(Promise.resolve(null));
-      //     jest.spyOn(auth, 'getIdToken').mockReturnValue(Promise.resolve(null));
       const callback = jest.fn();
+
       expect(Object.values(auth._listeners.authStateChange).length).toBe(0);
       auth.on('authStateChange', callback);
       expect(Object.values(auth._listeners.authStateChange).length).toBe(1);
@@ -624,7 +623,6 @@ describe('Auth component', () => {
         clientId: 'foo',
         redirectUri: 'https://foo/redirect',
       });
-      // jest.spyOn(auth, 'getAccessToken').mockReturnValue(Promise.resolve(null));
       jest.spyOn(auth, 'getIdToken').mockReturnValue(Promise.resolve(null));
       
       let resolve;
@@ -642,162 +640,131 @@ describe('Auth component', () => {
     });
 
     it('emits an authState of isAuthenticated when the TokenManager returns an id token', async () => { 
+      const auth = new Auth({
+        issuer: 'https://foo/oauth2/default',
+        clientId: 'foo',
+        redirectUri: 'https://foo/redirect',
+      });
+      jest.spyOn(auth, 'getAccessToken').mockReturnValue(Promise.resolve(null));
+      
+      let resolve;
+      const wasCalled = new Promise( (res) => resolve = res );
+      auth.on('authStateChange', authState => resolve(authState) );
+      
+      auth.updateAuthState();
+      return wasCalled.then( authState => { 
+        expect(authState).toEqual({ 
+          isAuthenticated: true, 
+          idToken: 'i am a fake id token',
+          accessToken: null,
+        });
+      });
     });
 
     it('emits an authState where isAuthenticated is false when the the TokenManager does not return an access token or an id token', async () => { 
+      const auth = new Auth({
+        issuer: 'https://foo/oauth2/default',
+        clientId: 'foo',
+        redirectUri: 'https://foo/redirect',
+      });
+      jest.spyOn(auth, 'getAccessToken').mockReturnValue(Promise.resolve(null));
+      jest.spyOn(auth, 'getIdToken').mockReturnValue(Promise.resolve(null));
+      
+      let resolve;
+      const wasCalled = new Promise( (res) => resolve = res );
+      auth.on('authStateChange', authState => resolve(authState) );
+      
+      auth.updateAuthState();
+      return wasCalled.then( authState => { 
+        expect(authState).toEqual({ 
+          isAuthenticated: false, 
+          idToken: null,
+          accessToken: null,
+        });
+      });
     });
 
-    it('emits an authState based on the override isAuthenticated() callback when provided', async () => { 
+    it('emits an authenticated authState if the override isAuthenticated() callback returns true', async () => { 
+      const isAuthenticated = jest.fn().mockReturnValue(Promise.resolve(true));
+
+      const auth = new Auth({
+        issuer: 'https://foo/oauth2/default',
+        clientId: 'foo',
+        redirectUri: 'https://foo/redirect',
+        isAuthenticated,
+      });
+      jest.spyOn(auth, 'getAccessToken').mockReturnValue(Promise.resolve(null));
+      jest.spyOn(auth, 'getIdToken').mockReturnValue(Promise.resolve(null));
+      
+      let resolve;
+      const wasCalled = new Promise( (res) => resolve = res );
+      auth.on('authStateChange', authState => resolve(authState) );
+      
+      auth.updateAuthState();
+      return wasCalled.then( authState => { 
+        expect(isAuthenticated).toHaveBeenCalled();
+        expect(authState).toEqual({ 
+          isAuthenticated: true, 
+          idToken: null,
+          accessToken: null,
+        });
+      });
     });
 
-    // test('isAuthenticated() returns true when the TokenManager returns an access token', async () => {
-    //   const auth = new Auth({
-    //     issuer: 'https://foo/oauth2/default',
-    //     client_id: 'foo',
-    //     redirect_uri: 'foo'
-    //   });
-    //   const authenticated = await auth.isAuthenticated();
-    //   expect(mockAuthJsInstance.tokenManager.get).toHaveBeenCalledWith('accessToken');
-    //   expect(authenticated).toBeTruthy();
-    // });
+    it('emits an authState that is not authenticated if override isAuthenticated() callback returns false', async () => { 
+      const isAuthenticated = jest.fn().mockReturnValue( Promise.resolve(false));;
 
-    // test('isAuthenticated() returns false when the TokenManager does not return an access token', async () => {
-    //   mockAuthJsInstance.tokenManager.get = jest.fn().mockImplementation(() => {
-    //     throw new Error();
-    //   });
-    //   const auth = new Auth({
-    //     issuer: 'https://foo/oauth2/default',
-    //     client_id: 'foo',
-    //     redirect_uri: 'foo'
-    //   });
-    //   const authenticated = await auth.isAuthenticated();
-    //   expect(authenticated).toBeFalsy();
-    // });
+      const auth = new Auth({
+        issuer: 'https://foo/oauth2/default',
+        clientId: 'foo',
+        redirectUri: 'https://foo/redirect',
+        isAuthenticated,
+      });
+      jest.spyOn(auth, 'getAccessToken').mockReturnValue(Promise.resolve(null));
+      jest.spyOn(auth, 'getIdToken').mockReturnValue(Promise.resolve(null));
+      
+      let resolve;
+      const wasCalled = new Promise( (res) => resolve = res );
+      auth.on('authStateChange', authState => resolve(authState) );
+      
+      auth.updateAuthState();
+      return wasCalled.then( authState => { 
+        expect(isAuthenticated).toHaveBeenCalled();
+        expect(authState).toEqual({ 
+          isAuthenticated: false,
+          idToken: null,
+          accessToken: null,
+        });
+      });
+    });
 
+    it('emits an authState that is not authenticated if override isAuthenticated() callback rejects', async () => { 
+      const isAuthenticated = jest.fn().mockReturnValue( Promise.reject('!!!!11eleventy-one!'));;
 
-    // describe('isAuthenticated', () => {
-    //   it('Will be true if both idToken and accessToken are present', async () => {
-    //     const auth = new Auth({
-    //       issuer: 'https://foo/oauth2/default',
-    //       clientId: 'foo',
-    //       redirectUri: 'https://foo/redirect',
-    //     });
-    //     jest.spyOn(auth, 'getAccessToken').mockReturnValue(Promise.resolve(accessTokenParsed));
-    //     jest.spyOn(auth, 'getIdToken').mockReturnValue(Promise.resolve(idTokenParsed));
+      const auth = new Auth({
+        issuer: 'https://foo/oauth2/default',
+        clientId: 'foo',
+        redirectUri: 'https://foo/redirect',
+        isAuthenticated,
+      });
+      jest.spyOn(auth, 'getAccessToken').mockReturnValue(Promise.resolve(null));
+      jest.spyOn(auth, 'getIdToken').mockReturnValue(Promise.resolve(null));
+      
+      let resolve;
+      const wasCalled = new Promise( (res) => resolve = res );
+      auth.on('authStateChange', authState => resolve(authState) );
+      
+      auth.updateAuthState();
+      return wasCalled.then( authState => { 
+        expect(isAuthenticated).toHaveBeenCalled();
+        expect(authState).toEqual({ 
+          isAuthenticated: false, 
+          idToken: null,
+          accessToken: null,
+          error: '!!!!11eleventy-one!',
+        });
+      });
+    });
 
-    //     const ret = await auth.isAuthenticated();
-    //     expect(ret).toBe(true);
-    //   });
-
-    //   it('Will be true if accessToken is present', async () => {
-    //     const auth = new Auth({
-    //       issuer: 'https://foo/oauth2/default',
-    //       clientId: 'foo',
-    //       redirectUri: 'https://foo/redirect',
-    //     });
-    //     jest.spyOn(auth, 'getAccessToken').mockReturnValue(Promise.resolve(accessTokenParsed));
-    //     jest.spyOn(auth, 'getIdToken').mockReturnValue(Promise.resolve(null));
-
-    //     const ret = await auth.isAuthenticated();
-    //     expect(ret).toBe(true);
-    //     expect(auth.getAccessToken).toHaveBeenCalled();
-    //   });
-
-    //   it('Will be true if idToken is present', async () => {
-    //     const auth = new Auth({
-    //       issuer: 'https://foo/oauth2/default',
-    //       clientId: 'foo',
-    //       redirectUri: 'https://foo/redirect',
-    //     });
-    //     jest.spyOn(auth, 'getAccessToken').mockReturnValue(Promise.resolve(null));
-    //     jest.spyOn(auth, 'getIdToken').mockReturnValue(Promise.resolve(idTokenParsed));
-
-    //     const ret = await auth.isAuthenticated();
-    //     expect(ret).toBe(true);
-
-    //     expect(auth.getIdToken).toHaveBeenCalled();
-    //   });
-
-    //   it('Will be false if neither idToken nor accessToken are present', async () => {
-    //     const auth = new Auth({
-    //       issuer: 'https://foo/oauth2/default',
-    //       clientId: 'foo',
-    //       redirectUri: 'https://foo/redirect',
-    //     });
-    //     jest.spyOn(auth, 'getAccessToken').mockReturnValue(Promise.resolve(null));
-    //     jest.spyOn(auth, 'getIdToken').mockReturnValue(Promise.resolve(null));
-
-    //     const ret = await auth.isAuthenticated();
-    //     expect(ret).toBe(false);
-    //   });
-
-    //   it('Will return null if there is idToken in the URL', async () => {
-    //     const auth = new Auth({
-    //       issuer: 'https://foo/oauth2/default',
-    //       clientId: 'foo',
-    //       redirectUri: 'https://foo/redirect',
-    //     });
-    //     jest.spyOn(auth, 'getAccessToken');
-    //     jest.spyOn(auth, 'getIdToken');
-
-    //     location.hash = 'id_token=foo';
-    //     const ret = await auth.isAuthenticated();
-    //     expect(ret).toBe(null);
-
-    //     expect(auth.getAccessToken).not.toHaveBeenCalled();
-    //     expect(auth.getIdToken).not.toHaveBeenCalled();
-    //   });
-
-    //   it('Will return null if there is accesstoken in the URL', async () => {
-    //     const auth = new Auth({
-    //       issuer: 'https://foo/oauth2/default',
-    //       clientId: 'foo',
-    //       redirectUri: 'https://foo/redirect',
-      //     });
-    //     jest.spyOn(auth, 'getAccessToken');
-    //     jest.spyOn(auth, 'getIdToken');
-
-    //     location.hash = 'access_token=foo';
-    //     const ret = await auth.isAuthenticated();
-    //     expect(ret).toBe(null);
-
-    //     expect(auth.getAccessToken).not.toHaveBeenCalled();
-    //     expect(auth.getIdToken).not.toHaveBeenCalled();
-    //   });
-
-    //   it('Will return null if there is code in the URL', async () => {
-    //     const auth = new Auth({
-    //       issuer: 'https://foo/oauth2/default',
-      //       clientId: 'foo',
-      //       redirectUri: 'https://foo/redirect',
-    //     });
-    //     jest.spyOn(auth, 'getAccessToken');
-    //     jest.spyOn(auth, 'getIdToken');
-
-    //     location.hash = 'code=foo';
-    //     const ret = await auth.isAuthenticated();
-    //     expect(ret).toBe(null);
-
-    //     expect(auth.getAccessToken).not.toHaveBeenCalled();
-    //     expect(auth.getIdToken).not.toHaveBeenCalled();
-      //   });
-
-      //   it('Will call a custom function if "config.isAuthenticated" was set', async () => {
-    //     const isAuthenticated = jest.fn().mockReturnValue(Promise.resolve('foo'));
-      //     const auth = new Auth({
-    //       issuer: 'https://foo/oauth2/default',
-    //       clientId: 'foo',
-    //       redirectUri: 'https://foo/redirect',
-    //       isAuthenticated,
-    //     });
-    //     jest.spyOn(auth, 'getAccessToken');
-    //     jest.spyOn(auth, 'getIdToken');
-      //     const ret = await auth.isAuthenticated();
-      //     expect(ret).toBe('foo');
-    //     expect(isAuthenticated).toHaveBeenCalled();
-      //     expect(auth.getAccessToken).not.toHaveBeenCalled();
-    //     expect(auth.getIdToken).not.toHaveBeenCalled();
-    //   });
-    // });
   });
 });

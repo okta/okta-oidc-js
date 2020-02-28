@@ -77,7 +77,7 @@ npm install --save @okta/okta-react
 - [Security](#security) - Allows you to supply your OpenID Connect client [configuration](#reference). Includes React context providers to allow the use of [useAuthState][], [useAuth][], or the [withOktaAuth][] Higher Order Component wrapper.
 - [LoginCallback](#LoginCallback) - A simple component which handles the login callback when the user is redirected back to the application from the Okta login site.
 
-Users of routers other than `react-router` will have to add their own checks for authentication.  The exact method will depend on your router, but the basic idea is to use [useAuthState][] to see if a `authState.isPending` is false and `authState.isAuthorized` is true.  If both are false, you can send them to login via `auth.login(...)`.
+Users of routers other than `react-router` will have to add their own checks for authentication.  The exact method will depend on your router, but the basic idea is to use [useAuthState][] to see if a `authState.isPending` is false and `authState.isAuthenticated` is true.  If both are false, you can send them to login via `auth.login(...)`.
 
 ### Available Hooks
 
@@ -272,7 +272,7 @@ export default MessageList = () => {
   const [messages, setMessages] = useState(null);
 
   useEffect( () => { 
-    if(authState.isAuthorized) { 
+    if(authState.isAuthenticated) { 
       try {
         const response = await fetch('http://localhost:{serverPort}/api/messages', {
           headers: {
@@ -496,6 +496,8 @@ Components get this object as a passed prop using the [withOktaAuth][] HOC or us
     - the JWT idToken for the currently authenticated user (if provided by the `scopes`)
 - `.accessToken`
     - the JWT accessToken for the currently authenticated user (if provided by the `scopes`)
+- `.error` 
+    - contains the error returned if an error occurs in `auth.handleAuthentication()` or `auth.updateAuthState()` (which includes any errors encountered when calling the optional `isAuthRequired()` callback provided to `<Security>`)
 
 ### `auth`
 
@@ -570,13 +572,13 @@ Resets the authentication status to pending and forgets any tokens `auth` is awa
 
 ## Migrating between versions
 
-### Migrating from 1.x to 2.x
+### Migrating from 1.x to 2.0
 
-The 1.x series for this SDK required the use of [react-router][].  These instructions assume you are moving to version 2.x of this SDK and are still using React Router.
+The 1.x series for this SDK required the use of [react-router][].  These instructions assume you are moving to version 2.0 of this SDK and are still using React Router.
 
 #### Replacing Security component
 
-The `<Security>` component is now a generic provider of Okta context for child components and is required to be an ancestor of any components using the `useAuth` or `useAuthState` hooks, as well as any components using the `withOktaAuth` Higher Order Component.
+The `<Security>` component is now a generic (not router-specific) provider of Okta context for child components and is required to be an ancestor of any components using the `useAuth` or `useAuthState` hooks, as well as any components using the `withOktaAuth` Higher Order Component.
 
 The prop options to `<Security>` have not changed from the 1.x series to the 2.0.x series.
 

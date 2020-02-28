@@ -13,17 +13,13 @@
 import { useEffect } from 'react';
 import { useAuth, useAuthState } from './OktaContext';
 
-const ImplicitCallback = () => { 
+const LoginCallback = () => { 
   const auth = useAuth();
   const authState = useAuthState();
 
   useEffect( () => {
     if(authState.isPending) { 
-      auth.handleAuthentication()
-        .catch( err => {
-          // FIXME error
-          console.log('implicit callback unhappiness', err) 
-        });
+      auth.handleAuthentication();
     }
 
     if( authState.isAuthenticated ) { 
@@ -35,4 +31,4 @@ const ImplicitCallback = () => {
   return null;
 };
 
-export default ImplicitCallback;
+export default LoginCallback;

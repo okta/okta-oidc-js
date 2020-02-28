@@ -15,6 +15,7 @@
   - `auth.IsAuthenticated()` has been removed
   - `withAuth` has been replaced with `withOktaAuth`, which gives slightly different parameters
   - the arguments passed to the optional `isAuthenticated()` callback provided to the `<Security>` component have changed
+  - error handling for authentication is now handled by putting the error into the `authState.error` property
 
 # 1.4.1
 
