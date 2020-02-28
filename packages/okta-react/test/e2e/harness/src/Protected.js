@@ -21,7 +21,7 @@ export default withOktaAuth(class Protected extends Component {
   }
 
   async componentDidMount() {
-    const claims = await this.props.auth.getUser();
+    const claims = await this.props.authService.getUser();
     const userinfo = JSON.stringify(claims, null, 4);
     this.setState({ userinfo });
   }

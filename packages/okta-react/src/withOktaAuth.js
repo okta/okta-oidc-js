@@ -18,7 +18,7 @@ const withOktaAuth = (ComponentToWrap) => {
     const oktaAuthProps = useOktaAuth();
     return <ComponentToWrap {...oktaAuthProps } {...props} />;
   };
-  WrappedComponent.displayName = 'withOktaAuth_' + ComponentToWrap.displayName;
+  WrappedComponent.displayName = 'withOktaAuth_' + (ComponentToWrap.displayName || ComponentToWrap.name);
   return WrappedComponent;
 };
 
