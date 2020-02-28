@@ -27,6 +27,10 @@ const LoginCallback = () => {
     }
   }, [authService, authState]);
 
+  if(authState.error) { 
+    return <p>${authState.error}</p>;
+  }
+
   return null;
 };
 
