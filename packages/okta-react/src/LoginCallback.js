@@ -10,8 +10,8 @@
  * See the License for the specific language governing permissions and limitations under the License.
  */
 
-import React, { useEffect } from 'react';
-import { useAuth, useAuthState } from '../OktaContext';
+import { useEffect } from 'react';
+import { useAuth, useAuthState } from './OktaContext';
 
 const ImplicitCallback = () => { 
   const auth = useAuth();

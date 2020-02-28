@@ -49,8 +49,8 @@ class App extends Component {
           <Route path='/login' component={CustomLogin}/>
           <Route path='/sessionToken-login' component={SessionTokenLogin}/>
           <SecureRoute exact path='/protected' component={Protected}/>
-          <Route path='/implicit/callback' component={ImplicitCallback} />
-          <Route path='/pkce/callback' component={ImplicitCallback} />
+          <Route path='/implicit/callback' component={LoginCallback} />
+          <Route path='/pkce/callback' component={LoginCallback} />
         </Security>
       </React.StrictMode>
     );
