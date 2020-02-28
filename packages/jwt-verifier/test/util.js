@@ -11,7 +11,7 @@
  */
 
 const qs = require('qs');
-const request = require('request');
+const fetch = require('node-fetch');
 const url = require('url');
 
 function getAccessToken(options = {}) {
@@ -27,18 +27,25 @@ function getAccessToken(options = {}) {
     const urlProperties = url.parse(ISSUER);
     const domain = urlProperties.protocol + '//' + urlProperties.host;
     const postUrl = domain + '/api/v1/authn';
-    request.post(postUrl, {
-      json: true,
-      body: {
+
+    fetch(postUrl, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
         username: USERNAME,
         password: PASSWORD
+      })
+    }).then(resp => {
+      if (!resp.ok) {
+        throw new Error(`/api/v1/authn returned error: ${resp.status}`);
       }
-    }, function (err, resp, body) {
-      const statusCode = resp ? resp.statusCode : null;
-      if (err || (resp && resp.statusCode >= 400) || !resp) {
-        console.error('/api/v1/authn returned error: ', statusCode, err || body);
-        return reject(new Error('/api/v1/authn error: ' + (err || body)));
+
+      return resp.json();
+    }).then(body => {
+      if (!body.sessionToken) {
+        throw new Error(`Could not pass sessionToken from ${postUrl}`);
       }
+
       const authorizeParams = {
         sessionToken: body.sessionToken,
         response_type: 'token',
@@ -49,25 +56,28 @@ function getAccessToken(options = {}) {
         state: 'foo'
       }
       const authorizeUrl = ISSUER + '/v1/authorize?' + qs.stringify(authorizeParams);
-      request.get(authorizeUrl, {followRedirect: false}, function(err, resp, body) {
-        const statusCode = resp ? resp.statusCode : null;
-        if (err || (resp && resp.statusCode >= 400) || !resp) {
-          console.error('/api/v1/authorize returned error: ', statusCode, err || body);
-          return reject(new Error('/api/v1/authorize error: ' + statusCode, + ' ' + err || body));
-        }
 
-        const parsedUrl = url.parse(resp.headers.location, true);
-        if (parsedUrl.query.error) {
-          console.error('/api/v1/authorize error in query:', parsedUrl.query.error);
-          return reject(parsedUrl.query.error);
-        }
-        const match = resp.headers.location.match(/access_token=([^&]+)/);
-        const accessToken = match && match[1];
-        if (!accessToken){
-          return reject(new Error('Could not parse access token from URI'));
-        }
-        resolve(accessToken);
-      })
+      return fetch(authorizeUrl, { redirect: 'manual' });
+    }).then(resp => {
+      if (resp.status >= 400) {
+        throw new Error(`/api/v1/authorize error: ${resp.status}`);
+      }
+
+      const parsedUrl = url.parse(resp.headers.get('location'), true);
+      if (parsedUrl.query.error) {
+        throw new Error(`/api/v1/authorize error in query: ${parsedUrl.query.error}`);
+      }
+
+      const match = resp.headers.get('location').match(/access_token=([^&]+)/);
+      const accessToken = match && match[1];
+      if (!accessToken){
+        throw new Error('Could not parse access token from URI');
+      }
+
+      resolve(accessToken);
+    }).catch(err => {
+      console.error(err.message || err);
+      reject(err)
     });
   });
 }
