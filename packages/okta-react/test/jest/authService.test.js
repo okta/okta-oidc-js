@@ -546,7 +546,7 @@ describe('AuthService', () => {
 
   describe('AuthState tracking', () => { 
 
-    it('has an authState of pending initially', async () => { 
+    test('initial authState ', async () => { 
       const auth = new AuthService({
         issuer: 'https://foo/oauth2/default',
         clientId: 'foo',
@@ -554,7 +554,6 @@ describe('AuthService', () => {
       });
   
       expect(auth._authState).toEqual({
-        isPending: true,
         isAuthenticated: null,
         idToken: null,
         accessToken: null,
@@ -609,7 +608,6 @@ describe('AuthService', () => {
       auth.clearAuthState();
       return wasCalled.then( authState => {
         expect(authState).toEqual({ 
-          isPending: true,
           isAuthenticated: null,
           idToken: null,
           accessToken: null,

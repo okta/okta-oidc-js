@@ -57,7 +57,7 @@ class AuthService {
     this.on = this.on.bind(this);
 
     this._subscriberCount = 0;
-
+    this._authStatePending = false;
     this.clearAuthState();
   }
 
@@ -93,13 +93,19 @@ class AuthService {
   }
 
   emitAuthState(state) { 
+    this._authStatePending = false;
     this._authState = state;
     this.emit('authStateChange', this._authState);
     return this._authState;
   }
 
   async updateAuthState() {
+    // Avoid multiple concurrent update cycles
+    if (this._authStatePending) {
+      return;
+    }
     try { 
+      this._authStatePending = true;
       const accessToken = await this.getAccessToken();
       const idToken = await this.getIdToken();
 
@@ -242,8 +248,7 @@ class AuthService {
   
 }
 
-AuthService.DEFAULT_STATE = { 
-  isPending: true,
+AuthService.DEFAULT_STATE = {
   isAuthenticated: null,
   idToken: null,
   accessToken: null,

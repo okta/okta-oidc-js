@@ -18,11 +18,9 @@ const RequireAuth = ({ children }) => {
   const { authService, authState } = useOktaAuth();
   const history = useHistory();
 
-  if(!authState.isAuthenticated) { 
-    if(!authState.isPending) { 
-      const fromUri = history.createHref(history.location);
-      authService.login(fromUri);
-    }
+  if (authState.isAuthenticated === false) { 
+    const fromUri = history.createHref(history.location);
+    authService.login(fromUri);
     return null;
   }
 
@@ -36,7 +34,7 @@ const RequireAuth = ({ children }) => {
 
 const SecureRoute = ( {component, ...props} ) => { 
 
-  const PassedComponent = component || function() {};
+  const PassedComponent = component || function() { return null; };
   const WrappedComponent = () => (<RequireAuth><PassedComponent/></RequireAuth>);
   return (
     <Route

@@ -17,10 +17,6 @@ const LoginCallback = () => {
   const { authService, authState } = useOktaAuth();
 
   useEffect( () => {
-    authService.updateAuthState();
-  }, [authService]);
-
-  useEffect( () => {
     if (authState.isAuthenticated === false) { 
       authService.handleAuthentication();
     }
