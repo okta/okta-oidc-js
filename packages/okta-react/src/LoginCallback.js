@@ -17,11 +17,15 @@ const LoginCallback = () => {
   const { authService, authState } = useOktaAuth();
 
   useEffect( () => {
-    if(authState.isPending) { 
+    authService.updateAuthState();
+  }, [authService]);
+
+  useEffect( () => {
+    if (authState.isAuthenticated === false) { 
       authService.handleAuthentication();
     }
 
-    if( authState.isAuthenticated ) { 
+    if (authState.isAuthenticated === true) { 
       const location = authService.getFromUri();
       window.location.assign(location);
     }
