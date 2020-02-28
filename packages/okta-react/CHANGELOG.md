@@ -8,6 +8,11 @@
 - Now can be used with other routers than react-router
   - React Router 5 continues to be supported, but is now optional
   - Routers other than React-Router will have to write their own version of `ImplicitCallback` component 
+# 1.4.1
+
+### Bug Fixes
+
+- [#669](https://github.com/okta/okta-oidc-js/pull/669) - Fixes ImplicitCallback component so it will not attempt redirect unless `getFromUri` returns a value. This can occur if multiple instances of the component are mounted.
 
 # 1.4.0
 
