@@ -99,6 +99,18 @@ class AuthService {
   }
 
   async updateAuthState() {
+    // avoid concurrent updates
+    if( this._authStatePending ) { 
+      return this._authStatePending;
+    }
+
+    // create a promise to return in case of multiple parallel requests
+    let authStatePromise = {};
+    this._authStatePending = new Promise( (resolve, reject) => {
+      authStatePromise.resolve = resolve;
+      authStatePromise.reject = reject;
+    });
+
     try { 
       const accessToken = await this.getAccessToken();
       const idToken = await this.getIdToken();
@@ -111,6 +123,7 @@ class AuthService {
         idToken,
         accessToken,
       });
+      this._authStatePromise.resolve(this._authState);
     } catch (error) { 
       this.emitAuthState({ 
         isAuthenticated: false,
@@ -118,8 +131,13 @@ class AuthService {
         idToken: null,
         accessToken: null,
       });
+      this._authStatePromise.reject(this._authState);
     }
-    return this._authState;
+
+    // clean out pending promise
+    const authState = this._authStatePending;
+    this._authStatePending = null;
+    return authState;
   }
 
   async getUser() {
