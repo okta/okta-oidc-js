@@ -131,6 +131,18 @@ const oktaJwtVerifier = new OktaJwtVerifier({
 });
 ```
 
+## Testing
+Setup SPA and Web App in your Okta org and testing environment variables by following [Testing](https://github.com/okta/okta-oidc-js#testing) section in okta-oidc-js Monorepo's README.
+
+**NOTE:** 
+
+When create SPA application in your Okta org, please make sure all `Implicit` checks have been checked in `General Settings -> Application -> Allowed grant types` section.
+
+Command for running unit test:
+```
+yarn test:unit
+```
+
 ## Contributing
 We welcome contributions to all of our open-source packages. Please see the [contribution guide](https://github.com/okta/okta-oidc-js/blob/master/CONTRIBUTING.md) to understand how to structure a contribution.
 

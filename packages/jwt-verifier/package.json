@@ -45,7 +45,7 @@
     "jest": "^24.8.0",
     "jest-junit": "^6.4.0",
     "nock": "^9.0.14",
-    "request": "^2.81.0",
+    "node-fetch": "^2.6.0",
     "timekeeper": "^1.0.0"
   }
 }
