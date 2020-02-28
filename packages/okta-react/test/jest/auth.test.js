@@ -546,16 +546,99 @@ describe('Auth component', () => {
 
   describe('AuthState tracking', () => { 
 
+    it('has an authState of pending initially', async () => { 
+      const auth = new Auth({
+        issuer: 'https://foo/oauth2/default',
+        clientId: 'foo',
+        redirectUri: 'https://foo/redirect',
+      });
+  
+      expect(auth._authState).toEqual({
+        isPending: true,
+        isAuthenticated: null,
+        idToken: null,
+        accessToken: null,
+      });
+    });
+
     it('allows subscribing to an "authStateChange" event', async () => { 
+      const auth = new Auth({
+        issuer: 'https://foo/oauth2/default',
+        clientId: 'foo',
+        redirectUri: 'https://foo/redirect',
+      });
+      //     jest.spyOn(auth, 'getAccessToken').mockReturnValue(Promise.resolve(null));
+      //     jest.spyOn(auth, 'getIdToken').mockReturnValue(Promise.resolve(null));
+      const callback = jest.fn();
+      expect(Object.values(auth._listeners.authStateChange).length).toBe(0);
+      auth.on('authStateChange', callback);
+      expect(Object.values(auth._listeners.authStateChange).length).toBe(1);
+      auth.emit('authStateChange', "test");
+      expect(callback).toHaveBeenCalledWith("test");
     });
 
     it('emits an "authStateChange" event when updateAuthState() is called', async () => { 
+      const auth = new Auth({
+        issuer: 'https://foo/oauth2/default',
+        clientId: 'foo',
+        redirectUri: 'https://foo/redirect',
+      });
+      let resolve;
+      const wasCalled = new Promise( (res) => resolve = res );
+      auth.on('authStateChange', authState => resolve(authState) );
+
+      auth.updateAuthState();
+      return wasCalled.then( authState => {
+        expect(authState).toEqual({ 
+          isAuthenticated: true,
+          idToken: 'i am a fake id token',
+          accessToken: 'i am a fake access token',
+        });
+      });
     });
 
-    it('emits an authState of pending initially', async () => { 
+    it('emits an authState of pending when clearAuthState() is called', async () => { 
+      const auth = new Auth({
+        issuer: 'https://foo/oauth2/default',
+        clientId: 'foo',
+        redirectUri: 'https://foo/redirect',
+      });
+      let resolve;
+      const wasCalled = new Promise( (res) => resolve = res );
+      auth.on('authStateChange', authState => resolve(authState) );
+
+      auth.clearAuthState();
+      return wasCalled.then( authState => {
+        expect(authState).toEqual({ 
+          isPending: true,
+          isAuthenticated: null,
+          idToken: null,
+          accessToken: null,
+        });
+      });
     });
 
     it('emits an authState of isAuthenticated when the TokenManager returns an access token', async () => { 
+      const auth = new Auth({
+        issuer: 'https://foo/oauth2/default',
+        clientId: 'foo',
+        redirectUri: 'https://foo/redirect',
+      });
+      // jest.spyOn(auth, 'getAccessToken').mockReturnValue(Promise.resolve(null));
+      jest.spyOn(auth, 'getIdToken').mockReturnValue(Promise.resolve(null));
+      
+      let resolve;
+      const wasCalled = new Promise( (res) => resolve = res );
+      auth.on('authStateChange', authState => resolve(authState) );
+      
+      auth.updateAuthState();
+      return wasCalled.then( authState => { 
+        expect(authState).toEqual({ 
+          isAuthenticated: true, 
+          idToken: null,
+          accessToken: 'i am a fake access token',
+        });
+      });
     });
 
     it('emits an authState of isAuthenticated when the TokenManager returns an id token', async () => { 

@@ -49,8 +49,6 @@ describe('React + Okta App', () => {
       .then(userInfo => {
         expect(userInfo).toContain('email');
       });
-  
-      expect(appPage.getLoginFlow().getText()).toBe('implicit');
 
       // Logout
       protectedPage.getLogoutButton().click();
@@ -104,8 +102,6 @@ describe('React + Okta App', () => {
       .then(userInfo => {
         expect(userInfo).toContain('email');
       });
-  
-      expect(appPage.getLoginFlow().getText()).toBe('PKCE');
 
       // Logout
       protectedPage.getLogoutButton().click();

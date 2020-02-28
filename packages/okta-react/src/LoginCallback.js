@@ -25,14 +25,13 @@ const ImplicitCallback = () => {
           console.log('implicit callback unhappiness', err) 
         });
     }
-  });
 
-  if( authState.isAuthenticated ) { 
-    const location = auth.getFromUri();
-    if( location ) { 
+    if( authState.isAuthenticated ) { 
+      const location = auth.getFromUri();
       window.location.assign(location);
     }
-  }
+  }, [auth, authState]);
+
   return null;
 };
 

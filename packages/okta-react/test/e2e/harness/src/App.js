@@ -11,7 +11,7 @@
  */
 
 import React, { Component } from 'react';
-import { Route } from 'react-router-dom';
+import { Route, Switch } from 'react-router-dom';
 import { withRouter } from 'react-router';
 import { Auth, Security, LoginCallback, SecureRoute } from '@okta/okta-react';
 import Home from './Home';
@@ -45,13 +45,16 @@ class App extends Component {
                   redirectUri={redirectUri}
                   onAuthRequired={this.onAuthRequired}
                   pkce={pkce}>
-          <Route path='/' component={Home}/>
-          <Route path='/login' component={CustomLogin}/>
-          <Route path='/sessionToken-login' component={SessionTokenLogin}/>
-          <SecureRoute exact path='/protected' component={Protected}/>
-          <Route path='/implicit/callback' component={LoginCallback} />
-          <Route path='/pkce/callback' component={LoginCallback} />
+          <Switch>
+            <Route path='/login' component={CustomLogin}/>
+            <Route path='/sessionToken-login' component={SessionTokenLogin}/>
+            <SecureRoute exact path='/protected' component={Protected}/>
+            <Route path='/implicit/callback' component={LoginCallback} />
+            <Route path='/pkce/callback' component={LoginCallback} />
+            <Route path='/' component={Home}/>
+          </Switch>
         </Security>
+        <a href="/?pkce=1">PKCE Flow</a> | <a href="/">Implicit Flow</a>
       </React.StrictMode>
     );
   }
