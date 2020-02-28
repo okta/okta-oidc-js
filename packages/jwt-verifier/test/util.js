@@ -42,6 +42,10 @@ function getAccessToken(options = {}) {
 
       return resp.json();
     }).then(body => {
+      if (!body.sessionToken) {
+        throw new Error(`Could not pass sessionToken from ${postUrl}`);
+      }
+
       const authorizeParams = {
         sessionToken: body.sessionToken,
         response_type: 'token',
@@ -55,7 +59,7 @@ function getAccessToken(options = {}) {
 
       return fetch(authorizeUrl, { redirect: 'manual' });
     }).then(resp => {
-      if (!resp.status >= 400) {
+      if (resp.status >= 400) {
         throw new Error(`/api/v1/authorize error: ${resp.status}`);
       }
 

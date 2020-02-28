@@ -132,7 +132,7 @@ const oktaJwtVerifier = new OktaJwtVerifier({
 ```
 
 ## Testing
-Setup SPA and Web App in your Okta org and testing environment variables by following [Testing](https://github.com/okta/okta-oidc-js#testing) section in Monorepo's README.
+Setup SPA and Web App in your Okta org and testing environment variables by following [Testing](https://github.com/okta/okta-oidc-js#testing) section in okta-oidc-js Monorepo's README.
 
 **NOTE:** 
 
