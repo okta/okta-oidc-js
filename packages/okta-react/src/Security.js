@@ -11,31 +11,28 @@
  */
 
 import React, { useState, useEffect } from 'react';
-import Auth from './Auth';
+import AuthService from './AuthService';
 import OktaContext from './OktaContext';
 
 const Security = (props) => { 
 
-  const [auth] = useState( props.auth || new Auth(props) );
-  const [authState, setAuthState] = useState({...Auth.DEFAULT_STATE});
+  const [authService] = useState( props.authService || new AuthService(props) );
+  const [authState, setAuthState] = useState({...AuthService.DEFAULT_STATE});
 
   useEffect( () => { 
-    let unsub;
-    unsub = auth.on('authStateChange', (newAuthState) => { 
+    const unsub = authService.on('authStateChange', (newAuthState) => { 
       setAuthState(newAuthState);
     });
-    auth.updateAuthState(); // Force an authStateChange event to set the initial state
+    authService.updateAuthState(); // Force an authStateChange event to set the initial state
     return unsub;
-  }, [auth]);
+  }, [authService]);
 
   return (
-    <OktaContext.auth.Provider value={auth}>
-    <OktaContext.authState.Provider value={authState}>
+    <OktaContext.Provider value={ { authService, authState } }>
       <div className={props.className}>
         {props.children}
       </div>
-    </OktaContext.authState.Provider>
-    </OktaContext.auth.Provider>
+    </OktaContext.Provider>
   );
 };
 

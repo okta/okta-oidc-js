@@ -11,22 +11,21 @@
  */
 
 import { useEffect } from 'react';
-import { useAuth, useAuthState } from './OktaContext';
+import { useOktaAuth } from './OktaContext';
 
 const LoginCallback = () => { 
-  const auth = useAuth();
-  const authState = useAuthState();
+  const { authService, authState } = useOktaAuth();
 
   useEffect( () => {
     if(authState.isPending) { 
-      auth.handleAuthentication();
+      authService.handleAuthentication();
     }
 
     if( authState.isAuthenticated ) { 
-      const location = auth.getFromUri();
+      const location = authService.getFromUri();
       window.location.assign(location);
     }
-  }, [auth, authState]);
+  }, [authService, authState]);
 
   return null;
 };

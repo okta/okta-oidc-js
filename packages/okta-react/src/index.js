@@ -12,17 +12,16 @@
 
 import Security from './Security';
 import withOktaAuth from './withOktaAuth';
-import OktaContext, { useAuth, useAuthState} from './OktaContext';
-import Auth from './Auth';
+import OktaContext, { useOktaAuth } from './OktaContext';
+import AuthService from './AuthService';
 import LoginCallback from './LoginCallback';
 import SecureRoute from './SecureRoute';
 
 export {
   Security,
   withOktaAuth,
-  Auth,
-  useAuth,
-  useAuthState,
+  AuthService, 
+  useOktaAuth,
   OktaContext,
   LoginCallback,
   SecureRoute,

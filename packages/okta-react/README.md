@@ -3,7 +3,7 @@
 [reach-router]: https://reach.tech/router
 [higher-order component]: https://reactjs.org/docs/higher-order-components.html
 [React Hook]: https://reactjs.org/docs/hooks-intro.html
-[Auth service]: #auth
+[Auth service]: #authservice
 [Routers]: #routers
 [Migrating from 1.x]: #migrating
 
@@ -74,17 +74,18 @@ npm install --save @okta/okta-react
 
 `okta-react` provides the necessary tools to build an integration with most common React-based SPA routers.
 
-- [Security](#security) - Allows you to supply your OpenID Connect client [configuration](#reference). Includes React context providers to allow the use of [useAuthState][], [useAuth][], or the [withOktaAuth][] Higher Order Component wrapper.
+- [Security](#security) - Allows you to supply your OpenID Connect client [configuration](#reference). Includes React context providers to allow the use of the [useOktaAuth][] React Hook, or the [withOktaAuth][] Higher Order Component wrapper.
 - [LoginCallback](#LoginCallback) - A simple component which handles the login callback when the user is redirected back to the application from the Okta login site.
 
-Users of routers other than `react-router` will have to add their own checks for authentication.  The exact method will depend on your router, but the basic idea is to use [useAuthState][] to see if a `authState.isPending` is false and `authState.isAuthenticated` is true.  If both are false, you can send them to login via `auth.login(...)`.
+Users of routers other than `react-router` will have to add their own checks for authentication.  The exact method will depend on your router, but the basic idea is to use [useOktaAuth][] to see if a `authState.isPending` is false and `authState.isAuthenticated` is true.  If both are false, you can send them to login via `authService.login(...)`.
 
 ### Available Hooks
 
-These hooks require that the component be inside a `Security` component that provides the necessary context.  Class-based components can gain access to the same information via the `withOktaAuth` Higher Order Component, which provides `auth` and `authState` as props to the wrapped component.
+These hooks require that the component be inside a `Security` component that provides the necessary context.  Class-based components can gain access to the same information via the `withOktaAuth` Higher Order Component, which provides `authService` and `authState` as props to the wrapped component.
 
-- [useAuthState](#useAuthState) - provides an `authState` object that describes the current authentication.
-- [useAuth](#useAuth) - provides access to the [Auth service][] object.  
+- [useOktaAuth](#useOktaAuth) - gives an object with two properties:
+  - `authService` - the [Auth service][] object that allows for modification of and deeper queries into the authentication state 
+  - `authState` - the [Auth State][] object that shows the current authentication state of the user to your app
 
 ### Minimal Example in React Router
 #### Create Routes
@@ -168,11 +169,11 @@ export default withOktaAuth(class Home extends Component {
   }
 
   async login() {
-    this.props.auth.login('/');
+    this.props.authService.login('/');
   }
 
   async logout() {
-    this.props.auth.logout('/');
+    this.props.authService.logout('/');
   }
 
   render() {
@@ -188,11 +189,10 @@ export default withOktaAuth(class Home extends Component {
 // src/Home.js
 
 const Home = () => {
-  const auth = useAuth();
-  const authState = useAuthState();
+  const { auth, authState } = useOktaAuth();
 
-  const login = async () => { auth.login('/'); };
-  const logout = async () => { auth.logout('/'); };
+  const login = async () => { authService.login('/'); };
+  const logout = async () => { authService.logout('/'); };
 
   if(authState.isPending) { 
     return <div>Loading...</div>;
@@ -265,10 +265,10 @@ Here is what the React component could look like for this hypothetical example:
 ```jsx
 import fetch from 'isomorphic-fetch';
 import React, { useState, useEffect } from 'react';
-import { useAuthState } from '@okta/okta-react';
+import { useOktaAuth } from '@okta/okta-react';
 
 export default MessageList = () => {
-  const authState = useAuthState();
+  const { authState } = useOktaAuth();
   const [messages, setMessages] = useState(null);
 
   useEffect( () => { 
@@ -332,7 +332,7 @@ For PKCE flow, this should be left undefined or set to `['code']`.
 
 #### Example
 ```jsx
-function customAuthHandler(auth) {
+function customAuthHandler(authService) {
   // Redirect to the /login page that has a CustomLoginComponent
   // React-Router specific
   this.props.history.push('/login');
@@ -355,13 +355,13 @@ class App extends Component {
 export default withRouter(App);
 ```
 
-#### Alternate configuration using `Auth` instance
+#### Alternate configuration using `AuthService` instance
 
-When the `auth` option is passed, all other configuration options passed to `Security` will be ignored.
+When the `authService` option is passed, all other configuration options passed to `Security` will be ignored.
 
-- **auth** *(optional)* - Provide an [Auth service][] instance instead of the options above. This is the most direct way to use methods on the [Auth service][] instance *outside* of your components and is helpful when integrating `okta-react` with external libraries that need access to the tokens.
+- **authService** *(optional)* - Provide an [Auth service][] instance instead of the options above. This is the most direct way to use methods on the [Auth service][] instance *outside* of your components and is helpful when integrating `okta-react` with external libraries that need access to the tokens.
 
-#### Example with Auth object
+#### Example with AuthService object
 
 Configure an instance of the [Auth service][] and pass it to the `Security` component.
 
@@ -370,12 +370,11 @@ Configure an instance of the [Auth service][] and pass it to the `Security` comp
 
 import React, { Component } from 'react';
 import { Router, Route } from 'react-router-dom';
-import { Auth, Security, LoginCallback } from '@okta/okta-react';
-import { SecureRoute } from '@okta/okta-react/react-router';
+import { AuthService, Security, LoginCallback, SecureRoute } from '@okta/okta-react';
 import Home from './Home';
 import Protected from './Protected';
 
-const auth = new Auth({
+const authService = new AuthService({
   issuer: 'https://{yourOktaDomain}.com/oauth2/default',
   clientId: '{clientId}',
   redirectUri: window.location.origin + '/implicit/callback',
@@ -385,7 +384,7 @@ class App extends Component {
   render() {
     return (
       <Router>
-        <Security auth={auth} >
+        <Security authService={authService} >
           <Route path='/' exact={true} component={Home}/>
           <SecureRoute path='/protected' component={Protected}/>
           <Route path='/implicit/callback' component={LoginCallback} />
@@ -425,7 +424,7 @@ You may also configure an instance of the [Auth service][] directly and pass it 
 
 ```jsx
 
-const auth = new Auth({
+const authService = new AuthService({
   issuer: 'https://{yourOktaDomain}.com/oauth2/default',
   clientId: '{clientId}',
   pkce: true,
@@ -436,7 +435,7 @@ class App extends Component {
   render() {
     return (
       <Router>
-        <Security auth={auth} >
+        <Security authService={authService} >
           <Route path='/' exact={true} component={Home}/>
           <Route path='/implicit/callback' component={LoginCallback} />
         </Security>
@@ -459,18 +458,19 @@ class App extends Component {
 
 ### `withOktaAuth`
 
-`withOktaAuth` is a [higher-order component][] which injects an `auth` prop and an `authState` prop into the component. Function-based components will want to use the `useAuth` and/or `useAuthState` hooks instead.  These props provide a way for components to make decisions based on auth state or to call [Auth Service][] methods, such as `.login()` or `.logout()`.  Components wrapped in `withOktaAuth()` need to exist inside a `<Security>` component to have the necessary context.
+`withOktaAuth` is a [higher-order component][] which injects an `authService` prop and an `authState` prop into the component. Function-based components will want to use the `useOktaAuth` hook instead.  These props provide a way for components to make decisions based on auth state or to call [Auth Service][] methods, such as `.login()` or `.logout()`.  Components wrapped in `withOktaAuth()` need to exist inside a `<Security>` component to have the necessary context.
 
-### `useAuthState`
+### `useOktaAuth`
 
-`useAuthState()` is a React Hook that returns an [authState](#authState) object.  Class-based components will want to use the [withOktaAuth](#withOktaAuth) HOC instead.  Using this hook will trigger a re-render when the authState object updates.  Components calling this hook need to exist inside a `<Security>` component to have the necessary context.
+`useOktaAuth()` is a React Hook that returns an object containing the [authState](#authState) object and the [authService][] object.  Class-based components will want to use the [withOktaAuth](#withOktaAuth) HOC instead.  Using this hook will trigger a re-render when the authState object updates.  Components calling this hook need to exist inside a `<Security>` component to have the necessary context.
 
+#### Using `useOktaAuth`
 ```jsx
 import React from 'react';
-import { useAuthState } from '@okta/okta-react';
+import { useOktaAuth } from '@okta/okta-react';
 
 export default MyComponent = () => { 
-  const authState = useAuthState();
+  const { authState } = useOktaAuth();
   if( authState.isPending ) { 
     return <div>Loading...</div>;
   }
@@ -481,13 +481,9 @@ export default MyComponent = () => {
 };
 ```
 
-### `useAuth`
-
-`useAuth()` is a React Hook that returns an [auth](#auth) object.  Class-based components will want to use the [withOktaAuth](#withOktaAuth) HOC instead.  Components calling this hook need to exist inside a `<Security>` component to have the necessary context.
-
 ### `authState`
 
-Components get this object as a passed prop using the [withOktaAuth][] HOC or using the [useAuthState][] React Hook.  The `authState` object provides synchronous access to the following properties:
+Components get this object as a passed prop using the [withOktaAuth][] HOC or using the [useOktaAuth][] React Hook.  The `authState` object provides synchronous access to the following properties:
 - `.isPending` 
     - true in the time after page load (first render) but before the asynchronous methods to see if the tokenManager is aware of a current authentication.  
 - `.isAuthenticated`
@@ -499,74 +495,74 @@ Components get this object as a passed prop using the [withOktaAuth][] HOC or us
 - `.error` 
     - contains the error returned if an error occurs in `auth.handleAuthentication()` or `auth.updateAuthState()` (which includes any errors encountered when calling the optional `isAuthRequired()` callback provided to `<Security>`)
 
-### `auth`
+### `authService`
 
-Components can get this object as a passed prop using the [withOktaAuth][] HOC or using the [useAuth][] React Hook.  The `auth` object provides methods for managing tokens and auth state. All of the methods except `auth.on()` return Promises.  
+Components can get this object as a passed prop using the [withOktaAuth][] HOC or using the [useOktaAuth][] React Hook.  The `authService` object provides methods for managing tokens and auth state. All of the methods except `authService.on()` return Promises.  
 
-#### `auth.getUser()`
+#### `authService.getUser()`
 
 Returns the result of the OpenID Connect `/userinfo` endpoint if an access token exists.
 
-#### `auth.getIdToken()`
+#### `authService.getIdToken()`
 
-Retrieves the id token from storage if it exists.  Devs should prefer to consult the synchronous results emitted from subscribing to the `authStateChange` event.
+Retrieves the id token from storage if it exists.  Devs should prefer to consult the synchronous results emitted from subscribing to the `authStateChange` event using `authService.on()`
 
-#### `auth.getAccessToken()`
+#### `authService.getAccessToken()`
 
 Retrieves the access token from storage if it exists.  Devs should prefer to consult the synchronous results emitted from subscribing to the `authStateChange` event.
 
-#### `auth.login(fromUri, additionalParams)`
+#### `authService.login(fromUri, additionalParams)`
 
 Calls the optional `onAuthRequired` passed to `<Security>` or redirects to Okta if `onAuthRequired` is undefined. This method accepts a `fromUri` parameter to push the user to after successful authentication, and an optional `additionalParams` object.
 
 For more information on `additionalParams`, see the [`auth.redirect`](#authredirectadditionalparams) method below.
 
-#### `auth.logout(uri)`
+#### `authService.logout(uri)`
 
 Terminates the user's session in Okta and clears all stored tokens. Accepts an optional `uri` parameter to push the user to after logout.
 
-#### `auth.redirect(additionalParams)`
+#### `authService.redirect(additionalParams)`
 
 Performs a full-page redirect to Okta with optional request parameters.
 
 The `additionalParams` are mapped to Okta's [`/authorize` request parameters](https://developer.okta.com/docs/api/resources/oidc#authorize). This will override any existing [configuration](#configuration-options). As an example, if you have an Okta `sessionToken`, you can bypass the full-page redirect by passing in this token. This is recommended when using the [Okta Sign-In Widget](https://github.com/okta/okta-signin-widget). Simply pass in a `sessionToken` into the `redirect` method as follows:
 
 ```jsx
-auth.redirect({
+authService.redirect({
   sessionToken: '{sampleSessionToken}'
 });
 ```
 
 > Note: For information on obtaining a `sessionToken` using the [Okta Sign-In Widget](https://github.com/okta/okta-signin-widget), please see the [`renderEl()` example](https://github.com/okta/okta-signin-widget#rendereloptions-success-error).
 
-#### `auth.handleAuthentication()`
+#### `authService.handleAuthentication()`
 
 Parses tokens from the url and stores them.  Done when handling a redirect back to the application from the issuer.  See the LoginCallback component for an example of use.
 
-### `auth.setFromUri(uri, queryParams)`
+### `authService.setFromUri(uri, queryParams)`
 
 Store the current URL state before a redirect occurs.  Called internally by `auth.login`.
 
-#### `auth.getFromUri()`
+#### `authService.getFromUri()`
 
-Returns the stored URI and query parameters stored by `setFromUri` and removes it from storage.  See the LoginCallback component for an example of use.  
+Returns the stored URI and query parameters stored by `setFromUri` and removes it from storage.  See the `LoginCallback` component for an example of use.  
 
-#### `auth.getTokenManager()`
+#### `authService.getTokenManager()`
 
 Returns the internal [TokenManager](https://github.com/okta/okta-auth-js#tokenmanager).
 
-#### `auth.updateAuthState()`
+#### `authService.updateAuthState()`
 
 Triggers a re-evaluation of whether a user is considered authenticated.  Normally only used to set the initial authorization state, but might be need to be triggered manually for users that pass overrides to `isAuthenticated` to the Security component or to the `Auth` constructor.  Does NOT perform a login, simply re-evaluates the current authenticated status. An 'authStateChange' event is emitted once the re-evaluation is complete. 
 
-#### `auth.on(eventName, callback)`
+#### `authService.on(eventName, callback)`
 
 Subscribes a callback that will be called when the named event happens.  Returns a function to remove the callback from the list of subscribers.  This is consumed by the `withOktaAuth()` HOC and the `useAuthState()` React Hook, so Devs normally don't need to subscribe to any events and instead rely on the re-renders that automatically trigger from changes in props/hook state.
 
 Known events:
 - 'authStateChange' - Emitted when the authState is re-evalated.  The callback will be called and passed a new authState object.
 
-#### `auth.clearAuthState()`
+#### `authService.clearAuthState()`
 
 Resets the authentication status to pending and forgets any tokens `auth` is aware of.  Does NOT perform a logout, does not trigger a login.  Use `auth.logout()` or `auth.login()` for those results.
 
@@ -574,17 +570,19 @@ Resets the authentication status to pending and forgets any tokens `auth` is awa
 
 ### Migrating from 1.x to 2.0
 
-The 1.x series for this SDK required the use of [react-router][].  These instructions assume you are moving to version 2.0 of this SDK and are still using React Router.
+The 1.x series for this SDK required the use of [react-router][].  These instructions assume you are moving to version 2.0 of this SDK and are still using React Router (v5+)
 
 #### Replacing Security component
 
-The `<Security>` component is now a generic (not router-specific) provider of Okta context for child components and is required to be an ancestor of any components using the `useAuth` or `useAuthState` hooks, as well as any components using the `withOktaAuth` Higher Order Component.
+The `<Security>` component is now a generic (not router-specific) provider of Okta context for child components and is required to be an ancestor of any components using the `useOktaAuth` hook, as well as any components using the `withOktaAuth` Higher Order Component.
 
-The prop options to `<Security>` have not changed from the 1.x series to the 2.0.x series.
+`Auth.js` has been renamed `AuthService.js`.
+
+The `auth` prop to the `<Security>` component is now `authService`.  The other prop options to `<Security>` have not changed from the 1.x series to the 2.0.x series
 
 #### Replacing the withAuth Higher-Order Component wrapper
 
-This SDK now provides authentication information via React Hooks (see [useAuth](#useAuth) and [useAuthState](#useAuthState)).  If you want a component to receive the auth information as a direct prop to your class-based component, you can use the `withOktaAuth` wrapper where you previously used the `withAuth` wrapper.  The exact props provided have changed to allow for synchronous access to authentication information.  In addition to the `auth` object prop, there is also an `authState` object prop that has properties for the current authentication state.  
+This SDK now provides authentication information via React Hooks (see [useOktaAuth](#useOktaAuth)).  If you want a component to receive the auth information as a direct prop to your class-based component, you can use the `withOktaAuth` wrapper where you previously used the `withAuth` wrapper.  The exact props provided have changed to allow for synchronous access to authentication information.  In addition to the `authService` object prop (previously `auth`), there is also an `authState` object prop that has properties for the current authentication state.  
 
 #### Replacing `.isAuthenticated()`, `.getAccessToken()`, and `.getIdToken()` inside a component
 
@@ -592,20 +590,20 @@ Two complications of the 1.x series of this SDK have been simplified in the 2.x 
 - These functions were asynchronous (because the retrieval layer underneath them can be asynchronous) which made avoiding race conditions in renders/re-renders tricky.
 - Recognizing when authentication had yet to be decided versus when it had been decided and was not authenticated was an unclear difference between `null`, `true`, and `false`.
 
-To resolve these the `auth` object holds the authentication information and provides it synchronously (following the first async determination) as an `authState` object.  While waiting on that first determination, the `authState` object has an explicit `.isPending` property.  When the authentication updates the `auth` object will emit an `authStateChange` event with the new `authState` object.   
+To resolve these the `authService` object holds the authentication information and provides it synchronously (following the first async determination) as an `authState` object.  While waiting on that first determination, the `authState` object has an explicit `.isPending` property.  When the authentication updates the `authService` object will emit an `authStateChange` event with the new `authState` object.   
 
 Any component that was using `withAuth()` to get the `auth` object and called the properties above has two options to migrate to the new SDK:
 1. Replace the use of `withAuth()` with `withOktaAuth()`, and replace any of these asynchronous calls to the `auth` methods with the values of the related `authState` properties. (this should reduce the coding effort within your components).  **OR**
-2. Remove the use of `withAuth()` and instead use the `useAuth()` React Hook from `OktaContext` to get an `authState` object.  
+2. Remove the use of `withAuth()` and instead use the `useOktaAuth()` React Hook to get the `authService` and `authState` objects.  
 
 Either of these options needs to be inside a `<Security>` (or `<RouterSecurity>`) component to provide the necessary context.
 
-If you need access to the `auth` instance directly, it is provided by `withOktaAuth()` as a prop or is available via the `useAuth()` React Hook from `OktaContext`.  You can inspect the provided `<ImplicitCallback>` component to see an example of the use of the `auth` instance. 
+If you need access to the `authService` instance directly, it is provided by `withOktaAuth()` as a prop or is available via the `useOktaAuth()` React Hook.  You can inspect the provided `<LoginCallback>` component to see an example of the use of the `authService` instance. 
 
 #### Updating your ImplicitCallback component
 
 - If you were using the provided ImplicitCallback component, you can replace it with `LoginCallback` 
-- If you were using a modified version of the provided ImplicitCallback component, you will need to examine the new version to see the changes.  It may be easier to start with a copy of the new LoginCallback component and copy your changes to it.  If you want to use a class-based version of LoginCallback, wrap the component in the [withOktaAuth][] HOC to have the `auth` and `authState` properties passed as props.
+- If you were using a modified version of the provided ImplicitCallback component, you will need to examine the new version to see the changes.  It may be easier to start with a copy of the new LoginCallback component and copy your changes to it.  If you want to use a class-based version of LoginCallback, wrap the component in the [withOktaAuth][] HOC to have the `authService` and `authState` properties passed as props.
 - If you had your own component that handled the redirect-back-to-the-application after authentication, you should examine the new LoginCallback component as well as the notes in this migration section about the changes to `.isAuthenticated()`, `.getAccessToken()`, and `.getIdToken()`.
 
 ## Contributing

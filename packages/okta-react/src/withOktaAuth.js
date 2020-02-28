@@ -11,13 +11,12 @@
  */
 
 import React from 'react';
-import { useAuth, useAuthState } from './OktaContext';
+import { useOktaAuth } from './OktaContext';
 
 const withOktaAuth = (ComponentToWrap) => { 
   const WrappedComponent = (props) => { 
-    const auth = useAuth();
-    const authState = useAuthState();
-    return <ComponentToWrap {...props} auth={auth} authState={authState}/>;
+    const oktaAuthProps = useOktaAuth();
+    return <ComponentToWrap {...oktaAuthProps } {...props} />;
   };
   WrappedComponent.displayName = 'withOktaAuth_' + ComponentToWrap.displayName;
   return WrappedComponent;

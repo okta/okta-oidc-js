@@ -11,19 +11,17 @@
  */
 
 import React from 'react';
-import { useAuth, useAuthState } from './OktaContext';
-import { useHistory } from 'react-router-dom';
-import { Route } from 'react-router-dom';
+import { useOktaAuth } from './OktaContext';
+import { useHistory, Route } from 'react-router-dom';
 
 const RequireAuth = ({ children }) => { 
-  const auth = useAuth();
-  const authState = useAuthState();
+  const { authService, authState } = useOktaAuth();
   const history = useHistory();
 
   if(!authState.isAuthenticated) { 
     if(!authState.isPending) { 
       const fromUri = history.createHref(history.location);
-      auth.login(fromUri);
+      authService.login(fromUri);
     }
     return null;
   }

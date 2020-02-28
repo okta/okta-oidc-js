@@ -27,7 +27,7 @@ export default withOktaAuth(class Protected extends Component {
   }
 
   async logout() {
-    this.props.auth.logout('/');
+    this.props.authService.logout('/');
   }
 
   render() {

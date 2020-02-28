@@ -29,15 +29,15 @@ export default withOktaAuth(class Home extends Component {
   }
 
   async login() {
-    this.props.auth.login('/protected');
+    this.props.authService.login('/protected');
   }
 
   async logout() {
-    this.props.auth.logout('/');
+    this.props.authService.logout('/');
   }
 
   renewToken(tokenName) {
-    const tokenManager = this.props.auth.getTokenManager();
+    const tokenManager = this.props.authService.getTokenManager();
     tokenManager.renew(tokenName)
       .then(() => {
         this.setState({
@@ -60,7 +60,7 @@ export default withOktaAuth(class Home extends Component {
       <button id="logout-button" onClick={this.logout}>Logout</button> :
       <button id="login-button" onClick={this.login}>Login</button>;
 
-    const pkce = this.props.auth._oktaAuth.options.pkce;
+    const pkce = this.props.authService._oktaAuth.options.pkce;
 
     return (
       <div>

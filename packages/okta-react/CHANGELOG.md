@@ -2,15 +2,15 @@
 
 ### Features
 
-- Now offers the following React Hooks (2.x requires React 16.8+)
-  - `useAuth` 
-  - `useAuthState`
+- Now offers the following React Hook (2.x requires React 16.8+)
+  - `useOktaAuth` 
 - Now can be used with other routers than react-router
   - React Router 5 continues to be supported, but is now optional
   - Routers other than React-Router will have to write their own version of `LoginCallback` component 
 
 ### Breaking Changes
 - See the `Migration from 1.x to 2.0` section of the README for details on migrating your applications
+  - `Auth.js` and the `auth` parameter to `<Security>` have been renamed to `AuthService.js` and `authService`
   - `<ImplicitCallback>` has been replaced with `<LoginCallback>`
   - `auth.IsAuthenticated()` has been removed
   - `withAuth` has been replaced with `withOktaAuth`, which gives slightly different parameters

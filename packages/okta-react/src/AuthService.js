@@ -19,7 +19,7 @@ import OktaAuth from '@okta/okta-auth-js';
 
 import packageInfo from './packageInfo';
 
-class Auth {
+class AuthService {
   constructor(config) {
     const testing = {
       // If the config is undefined, cast it to false
@@ -89,7 +89,7 @@ class Auth {
   }
 
   clearAuthState(state={}) { 
-    this.emitAuthState({ ...Auth.DEFAULT_STATE, ...state });
+    this.emitAuthState({ ...AuthService.DEFAULT_STATE, ...state });
   }
 
   emitAuthState(state) { 
@@ -242,11 +242,11 @@ class Auth {
   
 }
 
-Auth.DEFAULT_STATE = { 
+AuthService.DEFAULT_STATE = { 
   isPending: true,
   isAuthenticated: null,
   idToken: null,
   accessToken: null,
 };
 
-export default Auth;
+export default AuthService;

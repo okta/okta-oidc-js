@@ -13,7 +13,7 @@ describe('<Security />', () => {
 
   it('should accept a className prop and render a component using the className', () => {
     const mockProps = {
-      auth: {
+      authService: {
         on: jest.fn(),
         updateAuthState: jest.fn(),
       },
@@ -35,7 +35,7 @@ describe('<Security />', () => {
 
     const mockProps = Object.assign({}, VALID_CONFIG, {
       tokenManager,
-      auth: {
+      authService: {
         on: jest.fn(),
         updateAuthState: jest.fn(),
       },

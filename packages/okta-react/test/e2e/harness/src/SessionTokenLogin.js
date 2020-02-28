@@ -44,7 +44,7 @@ export default withOktaAuth(class SessionTokenLogin extends Component {
       this.setState({
         sessionToken: res.sessionToken
       });
-      this.props.auth.redirect({sessionToken: res.sessionToken});
+      this.props.authService.redirect({sessionToken: res.sessionToken});
     })
     .catch(err => {
       console.log('Found an error', err);

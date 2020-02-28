@@ -13,14 +13,14 @@
 import React, { Component } from 'react';
 import { Route, Switch } from 'react-router-dom';
 import { withRouter } from 'react-router';
-import { Auth, Security, LoginCallback, SecureRoute } from '@okta/okta-react';
+import { AuthService, Security, LoginCallback, SecureRoute } from '@okta/okta-react';
 import Home from './Home';
 import Protected from './Protected';
 import CustomLogin from './CustomLogin';
 import SessionTokenLogin from './SessionTokenLogin';
 
-if (!Auth) {
-  throw new Error('Auth should be defined');
+if (!AuthService) {
+  throw new Error('AuthService should be defined');
 }
 
 class App extends Component {

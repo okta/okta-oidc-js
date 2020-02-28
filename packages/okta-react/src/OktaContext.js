@@ -11,16 +11,8 @@
  */
 import React, { useContext } from 'react';
 
-const OktaContext = {
-  auth: React.createContext(),
-  authState: React.createContext(),
-};
+const OktaContext = React.createContext();
 
-export const useAuth = () => useContext(OktaContext.auth);
-
-export const useAuthState = () => {
-  const context  = useContext(OktaContext.authState);
-  return context;
-};
+export const useOktaAuth = () => useContext(OktaContext);
 
 export default OktaContext;

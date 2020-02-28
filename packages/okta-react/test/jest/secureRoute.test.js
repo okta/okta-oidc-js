@@ -6,7 +6,7 @@ import Security from '../../src/Security';
 
 describe('<SecureRoute />', () => {
   const mockProps = {
-    auth: {
+    authService: {
       on: jest.fn(),
       updateAuthState: jest.fn(),
     },
