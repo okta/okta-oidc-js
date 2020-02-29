@@ -350,7 +350,7 @@ class App extends Component {
 
 ### `SecureRoute`
 
-`SecureRoute` ensures that a route is only rendered if the user is authenticated. If the user is not authenticated, it calls `onAuthRequired` if it exists, otherwise, it redirects to Okta.
+`SecureRoute` ensures that a route is only rendered if the user is authenticated. An optional `authenticated` prop allows you to prevent remounting & handle the initial render of the route if you are navigating and rendering the same route. If the user is not authenticated, it calls `onAuthRequired` if it exists, otherwise, it redirects to Okta.
 
 ### `ImplicitCallback`
 

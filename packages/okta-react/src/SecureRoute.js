@@ -45,7 +45,7 @@ class SecureRoute extends Component {
     super(props);
 
     this.state = {
-      authenticated: null
+      authenticated: props.authenticated || null
     };
 
     this.checkAuthentication = this.checkAuthentication.bind(this);
