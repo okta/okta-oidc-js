@@ -61,7 +61,6 @@ class AuthService {
     this._subscriberCount = 0;
 
     this.clearAuthState();
-    this.updateAuthState();
   }
 
   getTokenManager() {
@@ -85,7 +84,7 @@ class AuthService {
         }
       }
       const authState = await this.updateAuthState();
-      if(authState.isAuthorized) { 
+      if(authState.isAuthenticated) { 
         const location = this.getFromUri();
         window.location.assign(location);
       }
