@@ -93,10 +93,6 @@ class AuthService {
   }
 
   emitAuthState(state) { 
-    if(this._authStatePending) { 
-      this._authStatePending.resolve(state);
-      this._authStatePending = null;
-    }
     this._authState = state;
     this.emit('authStateChange', this._authState);
     return this._authState;
@@ -104,19 +100,19 @@ class AuthService {
 
   async updateAuthState() {
     // avoid concurrent updates
-    if( this._authStatePending ) { 
-      return this._authStatePending.promise;
+    if( this._authStateUpdatePending ) { 
+      return this._authStateUpdatePending.promise;
     }
 
     // create a promise to return in case of multiple parallel requests
-    this._authStatePending = {};
-    this._authStatePending.promise  = new Promise( (resolve) => {
+    this._authStateUpdatePending = {};
+    this._authStateUpdatePending.promise  = new Promise( (resolve) => {
       // Promise can only resolve any error is in the resolve value
       // and uncaught exceptions make Front SDKs angry
-      this._authStatePending.resolve = resolve;
+      this._authStateUpdatePending.resolve = resolve;
     });
     // copy to return after emitAuthState has cleared the pending object
-    const authStatePromise = this._authStatePending.promise;
+    const authStateUpdatePromise = this._authStateUpdatePending.promise;
 
     try { 
       const accessToken = await this.getAccessToken();
@@ -138,7 +134,8 @@ class AuthService {
         accessToken: null,
       });
     } 
-    return authStatePromise;
+    authStateUpdatePending.resolve(this._authState);
+    return authStateUpdatePromise;
   }
 
   async getUser() {
