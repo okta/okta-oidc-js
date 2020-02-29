@@ -23,7 +23,7 @@ const Security = (props) => {
     const unsub = authService.on('authStateChange', (newAuthState) => { 
       setAuthState(newAuthState);
     });
-    authService.updateAuthState(); // Force an authStateChange event to set the initial state
+    setAuthState(authService.getAuthState());
     return unsub;
   }, [authService]);
 

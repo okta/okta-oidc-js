@@ -497,7 +497,11 @@ Components get this object as a passed prop using the [withOktaAuth][] HOC or us
 
 ### `authService`
 
-Components can get this object as a passed prop using the [withOktaAuth][] HOC or using the [useOktaAuth][] React Hook.  The `authService` object provides methods for managing tokens and auth state. All of the methods except `authService.on()` return Promises.  
+Components can get this object as a passed prop using the [withOktaAuth][] HOC or using the [useOktaAuth][] React Hook.  The `authService` object provides methods for managing tokens and auth state. All of the methods except `authService.on()` and `authService.getAuthState()` return Promises.  
+
+#### `authService.getAuthState()`
+
+(synchronous method) Returns the last known `authState`.  The authState is re-evaluated when `authService.updateAuthState()` is called.
 
 #### `authService.getUser()`
 
@@ -553,7 +557,7 @@ Returns the internal [TokenManager](https://github.com/okta/okta-auth-js#tokenma
 
 #### `authService.updateAuthState()`
 
-Triggers a re-evaluation of whether a user is considered authenticated.  Normally only used to set the initial authorization state, but might be need to be triggered manually for users that pass overrides to `isAuthenticated` to the Security component or to the `Auth` constructor.  Does NOT perform a login, simply re-evaluates the current authenticated status. An 'authStateChange' event is emitted once the re-evaluation is complete. 
+Triggers a re-evaluation of whether a user is considered authenticated.  Might be need to be triggered manually for users that pass overrides to `isAuthenticated` to the Security component or to the `Auth` constructor.  Does NOT perform a login, simply re-evaluates the current authenticated status. An 'authStateChange' event is emitted once the re-evaluation is complete. 
 
 #### `authService.on(eventName, callback)`
 

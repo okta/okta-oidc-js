@@ -48,6 +48,7 @@ class AuthService {
     this.updateAuthState = this.updateAuthState.bind(this);
     this.clearAuthState = this.clearAuthState.bind(this);
     this.emitAuthState = this.emitAuthState.bind(this);
+    this.getAuthState = this.getAuthState.bind(this);
     this.getUser = this.getUser.bind(this);
     this.getIdToken = this.getIdToken.bind(this);
     this.getAccessToken = this.getAccessToken.bind(this);
@@ -60,6 +61,7 @@ class AuthService {
     this._subscriberCount = 0;
 
     this.clearAuthState();
+    this.updateAuthState();
   }
 
   getTokenManager() {
@@ -106,7 +108,11 @@ class AuthService {
 
   emitAuthState(state) { 
     this._authState = state;
-    this.emit('authStateChange', this._authState);
+    this.emit('authStateChange', this.getAuthState());
+    return this.getAuthState();
+  }
+
+  getAuthState() { 
     return this._authState;
   }
 
@@ -149,7 +155,7 @@ class AuthService {
         accessToken: null,
       });
     } 
-    authStateUpdate.resolve(this._authState);
+    authStateUpdate.resolve(this.getAuthState());
     return authStateUpdate.promise;
   }
 
