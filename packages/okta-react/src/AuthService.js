@@ -42,6 +42,7 @@ class AuthService {
     this._oktaAuth.userAgent = `${packageInfo.name}/${packageInfo.version} ${this._oktaAuth.userAgent}`;
     this._config = authConfig; // use normalized config
     this._listeners = {};
+    this._pending = {}; // manage overlapping async calls 
 
     this.handleAuthentication = this.handleAuthentication.bind(this);
     this.updateAuthState = this.updateAuthState.bind(this);
@@ -66,7 +67,11 @@ class AuthService {
   }
 
   async handleAuthentication() {
+    if(this._pending.handleAuthentication) { 
+      return null;
+    }
     try { 
+      this._pending.handleAuthentication = true;
       let tokens = await this._oktaAuth.token.parseFromUrl();
       tokens = Array.isArray(tokens) ? tokens : [tokens];    
 
@@ -77,15 +82,22 @@ class AuthService {
           this._oktaAuth.tokenManager.add('accessToken', token);
         }
       }
-      return await this.updateAuthState();
+      const authState = await this.updateAuthState();
+      if(authState.isAuthorized) { 
+        const location = this.getFromUri();
+        window.location.assign(location);
+      }
+      this._pending.handleAuthentication = null;
+      return authState;
     } catch(error) { 
+      this._pending.handleAuthentication = null;
       return this.emitAuthState({ 
         isAuthenticated: false,
         error,
         idToken: null,
         accessToken: null,
       });
-    }
+    } 
   }
 
   clearAuthState(state={}) { 
@@ -100,19 +112,19 @@ class AuthService {
 
   async updateAuthState() {
     // avoid concurrent updates
-    if( this._authStateUpdatePending ) { 
-      return this._authStateUpdatePending.promise;
+    if( this._pending.authStateUpdate ) { 
+      return this._pending.authStateUpdate.promise;
     }
 
     // create a promise to return in case of multiple parallel requests
-    this._authStateUpdatePending = {};
-    this._authStateUpdatePending.promise  = new Promise( (resolve) => {
+    this._pending.authStateUpdate = {};
+    this._pending.authStateUpdate.promise  = new Promise( (resolve) => {
       // Promise can only resolve any error is in the resolve value
       // and uncaught exceptions make Front SDKs angry
-      this._authStateUpdatePending.resolve = resolve;
+      this._pending.authStateUpdate.resolve = resolve;
     });
     // copy to return after emitAuthState has cleared the pending object
-    const authStateUpdatePromise = this._authStateUpdatePending.promise;
+    const authStateUpdate = this._pending.authStateUpdate;
 
     try { 
       const accessToken = await this.getAccessToken();
@@ -122,14 +134,14 @@ class AuthService {
       const isAuthenticated = this._config.isAuthenticated ? await this._config.isAuthenticated() : !! ( accessToken || idToken );
 
 
-      this._authStateUpdatePending = null;
+      this._pending.authStateUpdate = null;
       this.emitAuthState({ 
         isAuthenticated,
         idToken,
         accessToken,
       });
     } catch (error) { 
-      this._authStateUpdatePending = null;
+      this._pending.authStateUpdate = null;
       this.emitAuthState({ 
         isAuthenticated: false,
         error,
@@ -137,8 +149,8 @@ class AuthService {
         accessToken: null,
       });
     } 
-    authStateUpdatePending.resolve(this._authState);
-    return authStateUpdatePromise;
+    authStateUpdate.resolve(this._authState);
+    return authStateUpdate.promise;
   }
 
   async getUser() {
