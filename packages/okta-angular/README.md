@@ -220,7 +220,10 @@ import {
   ...
 } from '@okta/okta-angular';
 
-export function onAuthRequired(oktaAuth, router) {
+export function onAuthRequired(oktaAuth, injector) {
+  // Use injector to access any service available within your application
+  const router = injector.get(Router);
+
   // Redirect the user to your custom login page
   router.navigate(['/custom-login']);
 }
@@ -334,13 +337,13 @@ Parses the tokens returned as hash fragments in the OAuth 2.0 Redirect URI, then
 
 Terminates the user's session in Okta and clears all stored tokens. Accepts an optional `uri` parameter to push the user to after logout.
 
-#### `oktaAuth.setFromUri(uri, queryParams)`
+#### `oktaAuth.setFromUri(uri)`
 
-Used to capture the current URL state before a redirect occurs. Used primarily for custom [`canActivate`](https://angular.io/api/router/CanActivate) navigation guards.
+Used to capture the current URL state before a redirect occurs. Used by custom [`canActivate`](https://angular.io/api/router/CanActivate) navigation guards.
 
 #### `oktaAuth.getFromUri()`
 
-Returns the stored URI and query parameters stored when the `OktaAuthGuard` and/or `setFromUri` was used.
+Returns the URI stored when the `OktaAuthGuard` and/or `setFromUri` was used.
 
 #### `oktaAuth.getTokenManager()`
 

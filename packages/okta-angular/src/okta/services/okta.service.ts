@@ -10,18 +10,16 @@
  * See the License for the specific language governing permissions and limitations under the License.
  */
 
-import { Inject, Injectable } from '@angular/core';
-import { Router, NavigationExtras } from '@angular/router';
+import { Inject, Injectable, Injector } from '@angular/core';
 import {
   assertIssuer,
   assertClientId,
   assertRedirectUri,
-  buildConfigObject
 } from '@okta/configuration-validation';
 
 import { OKTA_CONFIG, OktaConfig, AuthRequiredFunction } from '../models/okta.config';
 import { UserClaims } from '../models/user-claims';
-import { TokenManager } from '../models/token-manager';
+import { TokenManager, AccessToken, IDToken } from '../models/token-manager';
 
 import packageInfo from '../packageInfo';
 
@@ -38,14 +36,14 @@ export class OktaAuthService {
     private observers: Observer<boolean>[];
     $authenticationState: Observable<boolean>;
 
-    constructor(@Inject(OKTA_CONFIG) private auth: OktaConfig, private router: Router) {
+    constructor(@Inject(OKTA_CONFIG) config: OktaConfig, private injector: Injector) {
       this.observers = [];
 
       /**
        * Cache the auth config.
        */
-      this.config = buildConfigObject(auth); // use normalized config object
-      this.config.scopes = this.config.scopes || [];
+      this.config = Object.assign({}, config);
+      this.config.scopes = this.config.scopes || ['openid', 'email'];
 
       // Automatically enter login flow if session has expired or was ended outside the application
       // The default behavior can be overriden by setting your own `onSessionExpired` function on the OktaConfig
@@ -70,10 +68,10 @@ export class OktaAuthService {
     }
 
     login(fromUri?: string, additionalParams?: object) {
-      this.setFromUri(fromUri || this.router.url);
-      const onAuthRequired: AuthRequiredFunction | undefined = this.getOktaConfig().onAuthRequired;
+      this.setFromUri(fromUri);
+      const onAuthRequired: AuthRequiredFunction | undefined = this.config.onAuthRequired;
       if (onAuthRequired) {
-        return onAuthRequired(this, this.router);
+        return onAuthRequired(this, this.injector);
       }
       return this.loginRedirect(undefined, additionalParams);
     }
@@ -83,7 +81,8 @@ export class OktaAuthService {
     }
 
     /**
-     * Checks if there is an access token and id token
+     * Checks if there is an access token OR an id token
+     * A custom method may be provided on config to override this logic
      */
     async isAuthenticated(): Promise<boolean> {
       // Support a user-provided method to check authentication
@@ -105,7 +104,7 @@ export class OktaAuthService {
      */
     async getAccessToken(): Promise<string | undefined>  {
       try {
-        const accessToken = await this.oktaAuth.tokenManager.get('accessToken');
+        const accessToken: AccessToken = await this.oktaAuth.tokenManager.get('accessToken') as AccessToken;
         return accessToken.accessToken;
       } catch (err) {
         // The user no longer has an existing SSO session in the browser.
@@ -120,7 +119,7 @@ export class OktaAuthService {
      */
     async getIdToken(): Promise<string | undefined> {
       try {
-        const idToken = await this.oktaAuth.tokenManager.get('idToken');
+        const idToken: IDToken = await this.oktaAuth.tokenManager.get('idToken') as IDToken;
         return idToken.idToken;
       } catch (err) {
         // The user no longer has an existing SSO session in the browser.
@@ -135,17 +134,13 @@ export class OktaAuthService {
      * accessToken is provided or parses the available idToken.
      */
     async getUser(): Promise<UserClaims|undefined> {
-      const accessToken = await this.oktaAuth.tokenManager.get('accessToken');
-      const idToken = await this.oktaAuth.tokenManager.get('idToken');
-      if (accessToken && idToken) {
-        const userinfo = await this.oktaAuth.token.getUserInfo(accessToken);
-        if (userinfo.sub === idToken.claims.sub) {
-          // Only return the userinfo response if subjects match to
-          // mitigate token substitution attacks
-          return userinfo;
-        }
+      const accessToken: AccessToken = await this.oktaAuth.tokenManager.get('accessToken') as AccessToken;
+      const idToken: IDToken = await this.oktaAuth.tokenManager.get('idToken') as IDToken;
+      if (!accessToken || !idToken) {
+        // Returns raw claims from idToken if there is no accessToken.
+        return idToken ? idToken.claims : undefined;
       }
-      return idToken ? idToken.claims : undefined;
+      return this.oktaAuth.token.getUserInfo();
     }
 
     /**
@@ -165,12 +160,10 @@ export class OktaAuthService {
         this.setFromUri(fromUri);
       }
 
-      // Normalize params, set defaults
-      const params = buildConfigObject(additionalParams);
-      params.scopes = params.scopes || this.config.scopes;
-      params.responseType = params.responseType
-        || this.config.responseType
-        || ['id_token', 'token'];
+      const params = Object.assign({
+        scopes: this.config.scopes,
+        responseType: this.config.responseType
+      }, additionalParams);
 
       return this.oktaAuth.token.getWithRedirect(params); // can throw
     }
@@ -180,60 +173,40 @@ export class OktaAuthService {
      * @param uri
      * @param queryParams
      */
-    setFromUri(uri: string, queryParams?: object) {
-      const json = JSON.stringify({
-        uri: uri,
-        params: queryParams
-      });
-      localStorage.setItem('referrerPath', json);
+    setFromUri(fromUri?: string) {
+      // Use current location if fromUri was not passed
+      fromUri = fromUri || window.location.href;
+      // If a relative path was passed, convert to absolute URI
+      if (fromUri.charAt(0) === '/') {
+        fromUri = window.location.origin + fromUri;
+      }
+      sessionStorage.setItem('referrerPath', fromUri);
     }
 
     /**
      * Returns the referrer path from localStorage or app root.
      */
-    getFromUri(): { uri: string, extras: NavigationExtras } {
-      const referrerPath = localStorage.getItem('referrerPath');
-      localStorage.removeItem('referrerPath');
-
-      let path;
-      if (referrerPath) {
-          path = JSON.parse(referrerPath);
-      }
-      if (!path) {
-        path = { uri: '/', params: {} };
-      }
-
-      const navigationExtras: NavigationExtras = {
-        queryParams: path.params
-      };
-
-      return {
-        uri: path.uri,
-        extras: navigationExtras
-      };
+    getFromUri(): string {
+      const fromUri = sessionStorage.getItem('referrerPath') || window.location.origin;
+      sessionStorage.removeItem('referrerPath');
+      return fromUri;
     }
 
     /**
      * Parses the tokens from the callback URL.
      */
     async handleAuthentication(): Promise<void> {
-      const tokens = await this.oktaAuth.token.parseFromUrl();
-      tokens.forEach(token => {
-        if (token.idToken) {
-          this.oktaAuth.tokenManager.add('idToken', token);
-        }
-        if (token.accessToken) {
-          this.oktaAuth.tokenManager.add('accessToken', token);
-        }
-      });
+      const res = await this.oktaAuth.token.parseFromUrl();
+      const tokens = res.tokens;
+      if (tokens.accessToken) {
+        this.oktaAuth.tokenManager.add('accessToken', tokens.accessToken as AccessToken);
+      }
+      if (tokens.idToken) {
+        this.oktaAuth.tokenManager.add('idToken', tokens.idToken as IDToken);
+      }
       if (await this.isAuthenticated()) {
         this.emitAuthenticationState(true);
       }
-      /**
-       * Navigate back to the initial view or root of application.
-       */
-      const fromUri = this.getFromUri();
-      this.router.navigate([fromUri.uri], fromUri.extras);
     }
 
     /**
@@ -242,17 +215,20 @@ export class OktaAuthService {
      * @param options
      */
     async logout(options?: any): Promise<void> {
-      let uri = null;
+      let redirectUri = null;
       options = options || {};
       if (typeof options === 'string') {
-        uri = options;
-        options = {};
+        redirectUri = options;
+        // If a relative path was passed, convert to absolute URI
+        if (redirectUri.charAt(0) === '/') {
+          redirectUri = window.location.origin + redirectUri;
+        }
+        options = {
+          postLogoutRedirectUri: redirectUri
+        };
       }
       await this.oktaAuth.signOut(options);
       this.emitAuthenticationState(false);
-      if (!options.postLogoutRedirectUri && !this.config.postLogoutRedirectUri) {
-        this.router.navigate([uri || '/']);
-      }
     }
 
     /**

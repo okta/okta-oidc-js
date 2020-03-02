@@ -10,12 +10,11 @@
  * See the License for the specific language governing permissions and limitations under the License.
  */
 
-import { Injectable } from '@angular/core';
+import { Injectable, Injector } from '@angular/core';
 import {
   CanActivate,
   ActivatedRouteSnapshot,
   RouterStateSnapshot,
-  Router
 } from '@angular/router';
 
 import { OktaAuthService } from './services/okta.service';
@@ -23,7 +22,7 @@ import { AuthRequiredFunction } from './models/okta.config';
 
 @Injectable()
 export class OktaAuthGuard implements CanActivate {
-  constructor(private oktaAuth: OktaAuthService, private router: Router) { }
+  constructor(private oktaAuth: OktaAuthService, private injector: Injector) { }
 
   /**
    * Gateway for protected route. Returns true if there is a valid accessToken,
@@ -45,11 +44,10 @@ export class OktaAuthGuard implements CanActivate {
     /**
      * Store the current path
      */
-    const path = state.url.split(/[?#]/)[0];
-    this.oktaAuth.setFromUri(path, route.queryParams);
+    this.oktaAuth.setFromUri(state.url);
 
     if (onAuthRequired) {
-      onAuthRequired(this.oktaAuth, this.router);
+      onAuthRequired(this.oktaAuth, this.injector);
     } else {
       this.oktaAuth.loginRedirect();
     }

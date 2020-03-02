@@ -1,9 +1,17 @@
 declare module '@okta/okta-auth-js';
 
+declare interface TokenHash {
+  [key: string] : Token;
+}
+declare interface ParseFromUrlResponse {
+  tokens: TokenHash;
+  state: string;
+}
+
 declare interface TokenAPI {
-  getUserInfo(accessToken: Token): Promise;
-  getWithRedirect(params: object): Promise;
-  parseFromUrl(): Token[]
+  getUserInfo(accessToken?: AccessToken, idToken?: IDToken): Promise;
+  getWithRedirect(params?: object): Promise;
+  parseFromUrl(): ParseFromUrlResponse;
 }
 
 declare class OktaAuth {

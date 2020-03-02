@@ -10,13 +10,10 @@
  * See the License for the specific language governing permissions and limitations under the License.
  */
 
-import { InjectionToken } from '@angular/core';
-
-import { Router } from '@angular/router';
-
+import { InjectionToken, Injector } from '@angular/core';
 import { OktaAuthService } from '../services/okta.service';
 
-export type AuthRequiredFunction = (oktaAuth: OktaAuthService, router: Router) => void;
+export type AuthRequiredFunction = (oktaAuth: OktaAuthService, injector: Injector) => void;
 export type IsAuthenticatedFunction = () => Promise<boolean>;
 export type OnSessionExpiredFunction = () => void;
 

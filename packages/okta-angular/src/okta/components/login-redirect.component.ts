@@ -10,13 +10,13 @@
  * See the License for the specific language governing permissions and limitations under the License.
  */
 
-import { Component } from '@angular/core';
-
+import { Component, OnInit } from '@angular/core';
 import { OktaAuthService } from '../services/okta.service';
 
 @Component({ template: `` })
-export class OktaLoginRedirectComponent {
-  constructor(private okta: OktaAuthService) {
-    okta.loginRedirect();
+export class OktaLoginRedirectComponent implements OnInit {
+  constructor(private okta: OktaAuthService) {}
+  async ngOnInit() {
+    return this.okta.loginRedirect();
   }
 }
