@@ -554,9 +554,7 @@ authService.redirect({
 
 #### `authService.updateAuthState()`
 
-(async method) Triggers a re-evaluation of whether a user is considered authenticated.  Might be need to be triggered manually for users that pass overrides to `isAuthenticated` to the Security component or to the `Auth` constructor.  Does NOT perform a login, simply re-evaluates the current authenticated status. An 'authStateChange' event is emitted once the re-evaluation is complete. 
-
-To get the updated auth status you must call [authService.getAuthState()](#authservicegetauthstate) AFTER the `authStateChange` event has been emitted.  For straight-forward React applications using the authState in the front end, this is done for you in the `<Security>` component and the `authState` reported by the [useOktaAuth()](#useoktaauth) React Hook or [withOktaAuth()](#useoktaauth) HOC will automatically refresh to the latest [authState](#authstate).
+(async method) Triggers a re-evaluation of whether a user is considered authenticated.  Might be need to be triggered manually for users that pass overrides to `onAuthRequired` to the Security component or to the `Auth` constructor.  Does NOT perform a login, simply re-evaluates the current authenticated status. An 'authStateChange' event is emitted once the re-evaluation is complete. 
 
 #### `authService.on(eventName, callback)`
 
@@ -600,7 +598,7 @@ Any component that was using `withAuth()` to get the `auth` object and called th
 **OR**
 2. Remove the use of `withAuth()` and instead use the [useOktaAuth()](#useoktaauth) React Hook to get the [authService](#authservice) and [authState](#authstate) objects.  Any use of the `auth` methods (`.isAuthenticated()`, `.getAccessToken()`, and `.getIdToken()`) should change to use the already calculated properties of [authState](#authstate).
 
-Either of these options needs to be a descendant of a `<Security>` component to have the necessary context.
+To use either of these options, your component must be a descendant of a `<Security>` component, in order to have the necessary context.
 
 These changes should result in less complexity within your components as these values are now syncrhonously available after the initial determination.
 
