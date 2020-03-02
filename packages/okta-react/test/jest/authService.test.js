@@ -221,18 +221,18 @@ describe('AuthService', () => {
   
   describe('TokenManager', () => {
     it('Exposes the token manager', () => {
-      const service = new AuthService(validConfig);
-      const val = service.getTokenManager();
-      expect(val).toBeTruthy();
-      expect(val).toBe(service._oktaAuth.tokenManager);
+      const authService = new AuthService(validConfig);
+      const tokenManager = authService.getTokenManager();
+      expect(tokenManager).toBeTruthy();
+      expect(tokenManager).toBe(authService._oktaAuth.tokenManager);
     });
   });
 
   describe('onSessionExpired', () => {
     it('By default, sets a handler for "onSessionExpired" which calls login()', () => {
       jest.spyOn(AuthService.prototype, 'login').mockReturnValue(undefined);
-      const service = new AuthService(validConfig);
-      const config = service._config;
+      const authService = new AuthService(validConfig);
+      const config = authService._config;
       expect(config.onSessionExpired).toBeDefined();
       config.onSessionExpired();
       expect(AuthService.prototype.login).toHaveBeenCalled();
@@ -241,8 +241,8 @@ describe('AuthService', () => {
     it('Accepts custom function "onSessionExpired" via config which disables default handler', () => {
       jest.spyOn(AuthService.prototype, 'login').mockReturnValue(undefined);
       const onSessionExpired = jest.fn();
-      const service = new AuthService(extendConfig({ onSessionExpired }));
-      const config = service._config;
+      const authService = new AuthService(extendConfig({ onSessionExpired }));
+      const config = authService._config;
       expect(config.onSessionExpired).toBe(onSessionExpired);
       config.onSessionExpired();
       expect(onSessionExpired).toHaveBeenCalled();
@@ -253,64 +253,64 @@ describe('AuthService', () => {
   describe('logout', () => {
 
     test('by default, it will set history location to "/"', async () => {
-      const auth = new AuthService({
+      const authService = new AuthService({
         issuer: 'https://foo/oauth2/default',
         client_id: 'foo',
         redirect_uri: 'foo',
       });
-      await auth.logout();
+      await authService.logout();
       expect(window.location.assign).toHaveBeenCalledWith(window.location.origin + '/');
     });
 
     test('can pass unknown options without affecting default', async () => {
-      const auth = new AuthService({
+      const authService = new AuthService({
         issuer: 'https://foo/oauth2/default',
         client_id: 'foo',
         redirect_uri: 'foo',
       });
-      await auth.logout({ foo: 'bar' });
+      await authService.logout({ foo: 'bar' });
       expect(window.location.assign).toHaveBeenCalledWith(window.location.origin + '/');
     });
 
     test('if a string is passed, it will be used as history path', async () => {
-      const auth = new AuthService({
+      const authService = new AuthService({
         issuer: 'https://foo/oauth2/default',
         client_id: 'foo',
         redirect_uri: 'foo',
       });
       const testPath = '/fake/blah';
-      await auth.logout(testPath);
+      await authService.logout(testPath);
       expect(window.location.assign).toHaveBeenCalledWith(window.location.origin + testPath);
     });
 
     test('Will not update history if "postLogoutRedirectUri" is in options passed to logout()', async () => {
-      const auth = new AuthService({
+      const authService = new AuthService({
         issuer: 'https://foo/oauth2/default',
         client_id: 'foo',
         redirect_uri: 'foo',
       });
       const postLogoutRedirectUri = 'http://fake/after';
-      await auth.logout({ postLogoutRedirectUri });
+      await authService.logout({ postLogoutRedirectUri });
       expect(window.location.assign).not.toHaveBeenCalled();
       expect(mockAuthJsInstance.signOut).toHaveBeenCalledWith({ postLogoutRedirectUri });
     });
 
     test('Will not update history if "postLogoutRedirectUri" is in options passed to constructor', async () => {
       const postLogoutRedirectUri = 'http://fake/after';
-      const auth = new AuthService({
+      const authService = new AuthService({
         issuer: 'https://foo/oauth2/default',
         client_id: 'foo',
         redirect_uri: 'foo',
         postLogoutRedirectUri
       });
       jest.spyOn(window.location, 'assign');
-      await auth.logout();
+      await authService.logout();
       expect(window.location.assign).not.toHaveBeenCalled();
       expect(mockAuthJsInstance.signOut).toHaveBeenCalledWith({});
     });
 
     test('returns a promise', async () => {
-      const auth = new AuthService({
+      const authService = new AuthService({
         issuer: 'https://foo/oauth2/default',
         client_id: 'foo',
         redirect_uri: 'foo',
@@ -318,7 +318,7 @@ describe('AuthService', () => {
           push: jest.fn()
         }
       });
-      const res = auth.logout();
+      const res = authService.logout();
       expect(typeof res.then).toBe('function');
       expect(typeof res.catch).toBe('function');
       return res;
@@ -327,12 +327,12 @@ describe('AuthService', () => {
     test('can throw', async () => {
       const testError = new Error('test error');
       mockAuthJsInstance.signOut = jest.fn().mockReturnValue(Promise.reject(testError));
-      const auth = new AuthService({
+      const authService = new AuthService({
         issuer: 'https://foo/oauth2/default',
         client_id: 'foo',
         redirect_uri: 'foo',
       });
-      return auth.logout()
+      return authService.logout()
         .catch(e => {
           expect(e).toBe(testError);
         })
@@ -343,33 +343,33 @@ describe('AuthService', () => {
   });
 
   test('sets the right user agent on AuthJS', () => {
-    const auth = new AuthService({
+    const authService = new AuthService({
       issuer: 'https://foo/oauth2/default',
       client_id: 'foo',
       redirect_uri: 'foo'
     });
     const expectedUserAgent = `${pkg.name}/${pkg.version} okta-auth-js`;
-    expect(auth._oktaAuth.userAgent).toMatch(expectedUserAgent);
+    expect(authService._oktaAuth.userAgent).toMatch(expectedUserAgent);
   });
 
   test('can retrieve an accessToken from the tokenManager', async (done) => {
-    const auth = new AuthService({
+    const authService = new AuthService({
       issuer: 'https://foo/oauth2/default',
       client_id: 'foo',
       redirect_uri: 'foo'
     });
-    const accessToken = await auth.getAccessToken();
+    const accessToken = await authService.getAccessToken();
     expect(accessToken).toBe(accessTokenParsed.accessToken);
     done();
   });
 
   test('builds the authorize request with correct params', () => {
-    const auth = new AuthService({
+    const authService = new AuthService({
       issuer: 'https://foo/oauth2/default',
       client_id: 'foo',
       redirect_uri: 'foo'
     });
-    auth.redirect();
+    authService.redirect();
     expect(mockAuthJsInstance.token.getWithRedirect).toHaveBeenCalledWith({
       responseType: ['id_token', 'token'],
       scopes: ['openid', 'email', 'profile']
@@ -377,13 +377,13 @@ describe('AuthService', () => {
   });
 
   test('can override the authorize request builder scope with config params', () => {
-    const auth = new AuthService({
+    const authService = new AuthService({
       issuer: 'https://foo/oauth2/default',
       client_id: 'foo',
       redirect_uri: 'foo',
       scope: ['openid', 'foo']
     });
-    auth.redirect();
+    authService.redirect();
     expect(mockAuthJsInstance.token.getWithRedirect).toHaveBeenCalledWith({
       responseType: ['id_token', 'token'],
       scopes: ['openid', 'foo']
@@ -391,13 +391,13 @@ describe('AuthService', () => {
   });
 
   test('can override the authorize request builder responseType with config params', () => {
-    const auth = new AuthService({
+    const authService = new AuthService({
       issuer: 'https://foo/oauth2/default',
       client_id: 'foo',
       redirect_uri: 'foo',
       response_type: ['id_token']
     });
-    auth.redirect();
+    authService.redirect();
     expect(mockAuthJsInstance.token.getWithRedirect).toHaveBeenCalledWith({
       responseType: ['id_token'],
       scopes: ['openid', 'email', 'profile']
@@ -405,7 +405,7 @@ describe('AuthService', () => {
   });
 
   test('can override the authorize request builder with redirect params', () => {
-    const auth = new AuthService({
+    const authService = new AuthService({
       issuer: 'https://foo/oauth2/default',
       client_id: 'foo',
       redirect_uri: 'foo'
@@ -414,12 +414,12 @@ describe('AuthService', () => {
       scopes: ['openid', 'foo'],
       responseType: ['fake'],
     };
-    auth.redirect(overrides);
+    authService.redirect(overrides);
     expect(mockAuthJsInstance.token.getWithRedirect).toHaveBeenCalledWith(overrides);
   });
 
   test('redirect params: can use legacy param format (scope string)', () => {
-    const auth = new AuthService({
+    const authService = new AuthService({
       issuer: 'https://foo/oauth2/default',
       client_id: 'foo',
       redirect_uri: 'foo'
@@ -428,7 +428,7 @@ describe('AuthService', () => {
       scope: 'openid foo',
       response_type: ['fake']
     };
-    auth.redirect(overrides);
+    authService.redirect(overrides);
     expect(mockAuthJsInstance.token.getWithRedirect).toHaveBeenCalledWith(Object.assign(overrides, {
       scopes: ['openid', 'foo'],
       responseType: ['fake'],
@@ -436,7 +436,7 @@ describe('AuthService', () => {
   });
 
   test('redirect params: can use legacy param format (scope array)', () => {
-    const auth = new AuthService({
+    const authService = new AuthService({
       issuer: 'https://foo/oauth2/default',
       client_id: 'foo',
       redirect_uri: 'foo'
@@ -445,20 +445,20 @@ describe('AuthService', () => {
       scope: ['openid', 'foo'],
       response_type: ['fake']
     };
-    auth.redirect(overrides);
+    authService.redirect(overrides);
     expect(mockAuthJsInstance.token.getWithRedirect).toHaveBeenCalledWith(Object.assign(overrides, {
       scopes: ['openid', 'foo'],
       responseType: ['fake'],
     }));
   });
 
-  test('can append the authorize request builder with additionalParams through auth.redirect', async () => {
-    const auth = new AuthService({
+  test('can append the authorize request builder with additionalParams through authService.redirect', async () => {
+    const authService = new AuthService({
       issuer: 'https://foo/oauth2/default',
       client_id: 'foo',
       redirect_uri: 'foo'
     });
-    await auth.redirect({foo: 'bar'});
+    await authService.redirect({foo: 'bar'});
     expect(mockAuthJsInstance.token.getWithRedirect).toHaveBeenCalledWith({
       responseType: ['id_token', 'token'],
       scopes: ['openid', 'email', 'profile'],
@@ -466,13 +466,13 @@ describe('AuthService', () => {
     });
   });
 
-  test('can append the authorize request builder with additionalParams through auth.login', async () => {
-    const auth = new AuthService({
+  test('can append the authorize request builder with additionalParams through authService.login', async () => {
+    const authService = new AuthService({
       issuer: 'https://foo/oauth2/default',
       client_id: 'foo',
       redirect_uri: 'foo'
     });
-    await auth.login('/', {foo: 'bar'});
+    await authService.login('/', {foo: 'bar'});
     expect(mockAuthJsInstance.token.getWithRedirect).toHaveBeenCalledWith({
       responseType: ['id_token', 'token'],
       scopes: ['openid', 'email', 'profile'],
@@ -485,8 +485,8 @@ describe('AuthService', () => {
       localStorage.setItem('secureRouterReferrerPath', '');
       expect(localStorage.getItem('secureRouterReferrerPath')).toBe('');
       const fromUri = 'http://localhost/foo/random';
-      const auth = new AuthService(validConfig);
-      auth.setFromUri(fromUri);
+      const authService = new AuthService(validConfig);
+      authService.setFromUri(fromUri);
       const val = localStorage.getItem('secureRouterReferrerPath');
       expect(val).toBe(fromUri);
     });
@@ -494,8 +494,8 @@ describe('AuthService', () => {
     it('Saves the window.location.href by default', () => {
       localStorage.setItem('secureRouterReferrerPath', '');
       expect(localStorage.getItem('secureRouterReferrerPath')).toBe('');
-      const auth = new AuthService(validConfig);
-      auth.setFromUri();
+      const authService = new AuthService(validConfig);
+      authService.setFromUri();
       const val = localStorage.getItem('secureRouterReferrerPath');
       expect(val).toBe(window.location.href);
     });
@@ -506,8 +506,8 @@ describe('AuthService', () => {
     test('clears referrer from localStorage', () => {
       const TEST_VALUE = 'foo-bar';
       localStorage.setItem('secureRouterReferrerPath', TEST_VALUE );
-      const auth = new AuthService(validConfig);
-      const res = auth.getFromUri();
+      const authService = new AuthService(validConfig);
+      const res = authService.getFromUri();
       expect(res).toBe(TEST_VALUE);
       expect(localStorage.getItem('referrerPath')).not.toBeTruthy();
     });
@@ -515,47 +515,47 @@ describe('AuthService', () => {
 
   describe('login()', () => {
     it('By default, it will call redirect()', async () => {
-      const auth = new AuthService({
+      const authService = new AuthService({
         issuer: 'https://foo/oauth2/default',
         clientId: 'foo',
         redirectUri: 'https://foo/redirect',
       });
       const expectedVal = 'fakey';
-      jest.spyOn(auth, 'redirect').mockReturnValue(expectedVal);
+      jest.spyOn(authService, 'redirect').mockReturnValue(expectedVal);
   
-      const retVal = await auth.login('/');
+      const retVal = await authService.login('/');
       expect(retVal).toBe(expectedVal);
-      expect(auth.redirect).toHaveBeenCalled();
+      expect(authService.redirect).toHaveBeenCalled();
     });
   
     it('will call a custom method "onAuthRequired" instead of redirect()', async () => {
       const expectedVal = 'fakey';
       const onAuthRequired = jest.fn().mockReturnValue(expectedVal);
-      const auth = new AuthService({
+      const authService = new AuthService({
         issuer: 'https://foo/oauth2/default',
         clientId: 'foo',
         redirectUri: 'https://foo/redirect',
         onAuthRequired,
       });
-      jest.spyOn(auth, 'redirect');
+      jest.spyOn(authService, 'redirect');
   
-      const retVal = await auth.login('/');
+      const retVal = await authService.login('/');
       expect(retVal).toBe(expectedVal);
-      expect(onAuthRequired).toHaveBeenCalledWith(auth);
-      expect(auth.redirect).not.toHaveBeenCalled();
+      expect(onAuthRequired).toHaveBeenCalledWith(authService);
+      expect(authService.redirect).not.toHaveBeenCalled();
     });
   });
 
   describe('AuthState tracking', () => { 
 
     it('has an authState of pending initially', async () => { 
-      const auth = new AuthService({
+      const authService = new AuthService({
         issuer: 'https://foo/oauth2/default',
         clientId: 'foo',
         redirectUri: 'https://foo/redirect',
       });
   
-      expect(auth._authState).toEqual({
+      expect(authService._authState).toEqual({
         isPending: true,
         isAuthenticated: null,
         idToken: null,
@@ -564,31 +564,31 @@ describe('AuthService', () => {
     });
 
     it('allows subscribing to an "authStateChange" event', async () => { 
-      const auth = new AuthService({
+      const authService = new AuthService({
         issuer: 'https://foo/oauth2/default',
         clientId: 'foo',
         redirectUri: 'https://foo/redirect',
       });
       const callback = jest.fn();
 
-      expect(Object.values(auth._listeners.authStateChange).length).toBe(0);
-      auth.on('authStateChange', callback);
-      expect(Object.values(auth._listeners.authStateChange).length).toBe(1);
-      auth.emit('authStateChange', "test");
-      expect(callback).toHaveBeenCalledWith("test");
+      expect(Object.values(authService._listeners.authStateChange).length).toBe(0);
+      authService.on('authStateChange', callback);
+      expect(Object.values(authService._listeners.authStateChange).length).toBe(1);
+      authService.emit('authStateChange');
+      expect(callback).toHaveBeenCalled();
     });
 
     it('emits an "authStateChange" event when updateAuthState() is called', async () => { 
-      const auth = new AuthService({
+      const authService = new AuthService({
         issuer: 'https://foo/oauth2/default',
         clientId: 'foo',
         redirectUri: 'https://foo/redirect',
       });
       let resolve;
       const wasCalled = new Promise( (res) => resolve = res );
-      auth.on('authStateChange', authState => resolve(authState) );
+      authService.on('authStateChange', () => resolve(authService.getAuthState()) );
 
-      auth.updateAuthState();
+      authService.updateAuthState();
       return wasCalled.then( authState => {
         expect(authState).toEqual({ 
           isAuthenticated: true,
@@ -599,16 +599,16 @@ describe('AuthService', () => {
     });
 
     it('emits an authState of pending when clearAuthState() is called', async () => { 
-      const auth = new AuthService({
+      const authService = new AuthService({
         issuer: 'https://foo/oauth2/default',
         clientId: 'foo',
         redirectUri: 'https://foo/redirect',
       });
       let resolve;
       const wasCalled = new Promise( (res) => resolve = res );
-      auth.on('authStateChange', authState => resolve(authState) );
+      authService.on('authStateChange', authState => resolve(authState) );
 
-      auth.clearAuthState();
+      authService.clearAuthState();
       return wasCalled.then( authState => {
         expect(authState).toEqual({ 
           isPending: true,
@@ -620,18 +620,18 @@ describe('AuthService', () => {
     });
 
     it('emits an authState of isAuthenticated when the TokenManager returns an access token', async () => { 
-      const auth = new AuthService({
+      const authService = new AuthService({
         issuer: 'https://foo/oauth2/default',
         clientId: 'foo',
         redirectUri: 'https://foo/redirect',
       });
-      jest.spyOn(auth, 'getIdToken').mockReturnValue(Promise.resolve(null));
+      jest.spyOn(authService, 'getIdToken').mockReturnValue(Promise.resolve(null));
       
       let resolve;
       const wasCalled = new Promise( (res) => resolve = res );
-      auth.on('authStateChange', authState => resolve(authState) );
+      authService.on('authStateChange', authState => resolve(authState) );
       
-      auth.updateAuthState();
+      authService.updateAuthState();
       return wasCalled.then( authState => { 
         expect(authState).toEqual({ 
           isAuthenticated: true, 
@@ -642,18 +642,18 @@ describe('AuthService', () => {
     });
 
     it('emits an authState of isAuthenticated when the TokenManager returns an id token', async () => { 
-      const auth = new AuthService({
+      const authService = new AuthService({
         issuer: 'https://foo/oauth2/default',
         clientId: 'foo',
         redirectUri: 'https://foo/redirect',
       });
-      jest.spyOn(auth, 'getAccessToken').mockReturnValue(Promise.resolve(null));
+      jest.spyOn(authService, 'getAccessToken').mockReturnValue(Promise.resolve(null));
       
       let resolve;
       const wasCalled = new Promise( (res) => resolve = res );
-      auth.on('authStateChange', authState => resolve(authState) );
+      authService.on('authStateChange', authState => resolve(authState) );
       
-      auth.updateAuthState();
+      authService.updateAuthState();
       return wasCalled.then( authState => { 
         expect(authState).toEqual({ 
           isAuthenticated: true, 
@@ -664,19 +664,19 @@ describe('AuthService', () => {
     });
 
     it('emits an authState where isAuthenticated is false when the the TokenManager does not return an access token or an id token', async () => { 
-      const auth = new AuthService({
+      const authService = new AuthService({
         issuer: 'https://foo/oauth2/default',
         clientId: 'foo',
         redirectUri: 'https://foo/redirect',
       });
-      jest.spyOn(auth, 'getAccessToken').mockReturnValue(Promise.resolve(null));
-      jest.spyOn(auth, 'getIdToken').mockReturnValue(Promise.resolve(null));
+      jest.spyOn(authService, 'getAccessToken').mockReturnValue(Promise.resolve(null));
+      jest.spyOn(authService, 'getIdToken').mockReturnValue(Promise.resolve(null));
       
       let resolve;
       const wasCalled = new Promise( (res) => resolve = res );
-      auth.on('authStateChange', authState => resolve(authState) );
+      authService.on('authStateChange', authState => resolve(authState) );
       
-      auth.updateAuthState();
+      authService.updateAuthState();
       return wasCalled.then( authState => { 
         expect(authState).toEqual({ 
           isAuthenticated: false, 
@@ -689,20 +689,20 @@ describe('AuthService', () => {
     it('emits an authenticated authState if the override isAuthenticated() callback returns true', async () => { 
       const isAuthenticated = jest.fn().mockReturnValue(Promise.resolve(true));
 
-      const auth = new AuthService({
+      const authService = new AuthService({
         issuer: 'https://foo/oauth2/default',
         clientId: 'foo',
         redirectUri: 'https://foo/redirect',
         isAuthenticated,
       });
-      jest.spyOn(auth, 'getAccessToken').mockReturnValue(Promise.resolve(null));
-      jest.spyOn(auth, 'getIdToken').mockReturnValue(Promise.resolve(null));
+      jest.spyOn(authService, 'getAccessToken').mockReturnValue(Promise.resolve(null));
+      jest.spyOn(authService, 'getIdToken').mockReturnValue(Promise.resolve(null));
       
       let resolve;
       const wasCalled = new Promise( (res) => resolve = res );
-      auth.on('authStateChange', authState => resolve(authState) );
+      authService.on('authStateChange', authState => resolve(authState) );
       
-      auth.updateAuthState();
+      authService.updateAuthState();
       return wasCalled.then( authState => { 
         expect(isAuthenticated).toHaveBeenCalled();
         expect(authState).toEqual({ 
@@ -716,20 +716,20 @@ describe('AuthService', () => {
     it('emits an authState that is not authenticated if override isAuthenticated() callback returns false', async () => { 
       const isAuthenticated = jest.fn().mockReturnValue( Promise.resolve(false));
 
-      const auth = new AuthService({
+      const authService = new AuthService({
         issuer: 'https://foo/oauth2/default',
         clientId: 'foo',
         redirectUri: 'https://foo/redirect',
         isAuthenticated,
       });
-      jest.spyOn(auth, 'getAccessToken').mockReturnValue(Promise.resolve(null));
-      jest.spyOn(auth, 'getIdToken').mockReturnValue(Promise.resolve(null));
+      jest.spyOn(authService, 'getAccessToken').mockReturnValue(Promise.resolve(null));
+      jest.spyOn(authService, 'getIdToken').mockReturnValue(Promise.resolve(null));
       
       let resolve;
       const wasCalled = new Promise( (res) => resolve = res );
-      auth.on('authStateChange', authState => resolve(authState) );
+      authService.on('authStateChange', authState => resolve(authState) );
       
-      auth.updateAuthState();
+      authService.updateAuthState();
       return wasCalled.then( authState => { 
         expect(isAuthenticated).toHaveBeenCalled();
         expect(authState).toEqual({ 
@@ -743,20 +743,20 @@ describe('AuthService', () => {
     it('emits an authState that is not authenticated if override isAuthenticated() callback rejects', async () => { 
       const isAuthenticated = jest.fn().mockReturnValue( Promise.reject('!!!!11eleventy-one!'));
 
-      const auth = new AuthService({
+      const authService = new AuthService({
         issuer: 'https://foo/oauth2/default',
         clientId: 'foo',
         redirectUri: 'https://foo/redirect',
         isAuthenticated,
       });
-      jest.spyOn(auth, 'getAccessToken').mockReturnValue(Promise.resolve(null));
-      jest.spyOn(auth, 'getIdToken').mockReturnValue(Promise.resolve(null));
+      jest.spyOn(authService, 'getAccessToken').mockReturnValue(Promise.resolve(null));
+      jest.spyOn(authService, 'getIdToken').mockReturnValue(Promise.resolve(null));
       
       let resolve;
       const wasCalled = new Promise( (res) => resolve = res );
-      auth.on('authStateChange', authState => resolve(authState) );
+      authService.on('authStateChange', authState => resolve(authState) );
       
-      auth.updateAuthState();
+      authService.updateAuthState();
       return wasCalled.then( authState => { 
         expect(isAuthenticated).toHaveBeenCalled();
         expect(authState).toEqual({ 
@@ -769,43 +769,45 @@ describe('AuthService', () => {
     });
 
     it('concurrent calls to "updateAuthState" will share the same execution', () => {
-      const auth = new AuthService({
+      const authService = new AuthService({
         issuer: 'https://foo/oauth2/default',
         clientId: 'foo',
         redirectUri: 'https://foo/redirect',
       });
       let resolvePromise;
-      jest.spyOn(auth, 'getAccessToken').mockImplementation(() => {
+      jest.spyOn(authService, 'getAccessToken').mockImplementation(() => {
         return new Promise(resolve => {
           resolvePromise = resolve;
         });
       });
-      jest.spyOn(auth, 'emitAuthState');
-      jest.spyOn(auth, 'getIdToken');
-      const p1 = auth.updateAuthState();
-      const p2 = auth.updateAuthState();
+      jest.spyOn(authService, 'emitAuthState');
+      jest.spyOn(authService, 'getIdToken');
+      const p1 = authService.updateAuthState();
+      const p2 = authService.updateAuthState();
 
-      expect(auth.getIdToken).not.toHaveBeenCalled();
-      resolvePromise('fake');
+      expect(authService.getIdToken).not.toHaveBeenCalled();
+      resolvePromise('fake access token');
       return p1
-        .then(authState => {
-          expect(authState.accessToken).toBe('fake');
+        .then(() => {
+          const authState = authService.getAuthState();
+          expect(authState.accessToken).toBe('fake access token');
           return p2;
         })
-        .then(authState => {
-          expect(authState.accessToken).toBe('fake');
-          expect(auth.emitAuthState).toHaveBeenCalledTimes(1);
-          expect(auth.emitAuthState).toHaveBeenCalledWith(authState);
-          expect(auth.getAccessToken).toHaveBeenCalledTimes(1);
-          expect(auth.getIdToken).toHaveBeenCalledTimes(1);
+        .then(() => {
+          const authState = authService.getAuthState();
+          expect(authState.accessToken).toBe('fake access token');
+          expect(authService.emitAuthState).toHaveBeenCalledTimes(1);
+          expect(authService.emitAuthState).toHaveBeenCalledWith(authState);
+          expect(authService.getAccessToken).toHaveBeenCalledTimes(1);
+          expect(authService.getIdToken).toHaveBeenCalledTimes(1);
         });
     });
   });
 
   describe('handleAuthentication', () => {
-    let auth;
+    let authService;
     beforeEach(() => {
-      auth = new AuthService({
+      authService = new AuthService({
         issuer: 'https://foo/oauth2/default',
         clientId: 'foo',
         redirectUri: 'https://foo/redirect',
@@ -818,36 +820,38 @@ describe('AuthService', () => {
       const idToken = {
         idToken: 'fake id'
       };
-      jest.spyOn(auth._oktaAuth.token, 'parseFromUrl').mockReturnValue([accessToken, idToken]);
-      jest.spyOn(auth._oktaAuth.tokenManager, 'add');
-      return auth.handleAuthentication()
+      jest.spyOn(authService._oktaAuth.token, 'parseFromUrl').mockReturnValue([accessToken, idToken]);
+      jest.spyOn(authService._oktaAuth.tokenManager, 'add');
+      return authService.handleAuthentication()
         .then(() => {
-          expect(auth._oktaAuth.tokenManager.add).toHaveBeenCalledTimes(2);
-          expect(auth._oktaAuth.tokenManager.add.mock.calls[0]).toEqual(['accessToken', accessToken]);
-          expect(auth._oktaAuth.tokenManager.add.mock.calls[1]).toEqual(['idToken', idToken]);
+          expect(authService._oktaAuth.tokenManager.add).toHaveBeenCalledTimes(2);
+          expect(authService._oktaAuth.tokenManager.add.mock.calls[0]).toEqual(['accessToken', accessToken]);
+          expect(authService._oktaAuth.tokenManager.add.mock.calls[1]).toEqual(['idToken', idToken]);
         });
     });
+
     it('redirects if isAuthenticated', () => {
       const mockLocation = 'http://localhost/fake-redirect';
       const mockAuthState = {
         isAuthenticated: true
       };
       jest.spyOn(window.location, 'assign');
-      jest.spyOn(auth, 'getFromUri').mockReturnValue(mockLocation);
-      jest.spyOn(auth, 'updateAuthState').mockReturnValue(Promise.resolve(mockAuthState));
-      jest.spyOn(auth._oktaAuth.token, 'parseFromUrl').mockReturnValue(Promise.resolve([]));
-      return auth.handleAuthentication()
+      jest.spyOn(authService, 'getFromUri').mockReturnValue(mockLocation);
+      jest.spyOn(authService, 'updateAuthState').mockReturnValue(Promise.resolve(mockAuthState));
+      jest.spyOn(authService._oktaAuth.token, 'parseFromUrl').mockReturnValue(Promise.resolve([]));
+      return authService.handleAuthentication()
         .then(() => {
           expect(window.location.assign).toHaveBeenCalledWith(mockLocation);
         });
     });
-    it('emits authState with an error if parseFromUrl throws', () => {
+
+    it('emits authState with an error if parseFromUrl throws', async () => {
       const error = new Error('a test error');
-      jest.spyOn(auth, 'emitAuthState');
-      jest.spyOn(auth._oktaAuth.token, 'parseFromUrl').mockReturnValue(Promise.reject(error));
-      return auth.handleAuthentication()
+      jest.spyOn(authService, 'emitAuthState');
+      jest.spyOn(authService._oktaAuth.token, 'parseFromUrl').mockReturnValue(Promise.reject(error));
+      return authService.handleAuthentication()
         .then(() => {
-          expect(auth.emitAuthState).toHaveBeenCalledWith({
+          expect(authService.emitAuthState).toHaveBeenCalledWith({
             isAuthenticated: false,
             error,
             idToken: null,
@@ -855,31 +859,22 @@ describe('AuthService', () => {
           });
         });
     });
-    it('concurrency: only the first call to "handleAuthentication" will perform the logic and receive an update', () => {
-      let resolvePromise;
-      jest.spyOn(auth._oktaAuth.token, 'parseFromUrl').mockImplementation(() => {
-        return new Promise(resolve => {
-          resolvePromise = resolve;
-        });
-      });
-      const mockAuthState = {
-        isAuthenticated: false
-      }
-      jest.spyOn(auth, 'updateAuthState').mockReturnValue(Promise.resolve(mockAuthState));
-      jest.spyOn(auth, 'emitAuthState');
-      const p1 = auth.handleAuthentication();
-      const p2 = auth.handleAuthentication();
-      expect(auth.updateAuthState).not.toHaveBeenCalled();
-      resolvePromise([]);
+
+    it('concurrency: only the first call to "handleAuthentication" will perform the logic and receive an update', async () => {
+      let resolveParsePromise;
+      jest.spyOn(authService._oktaAuth.token, 'parseFromUrl').mockImplementation(() => new Promise(resolve => {
+        resolveParsePromise = resolve;
+      }));
+      jest.spyOn(authService, 'updateAuthState').mockReturnValue(Promise.resolve());
+      const p1 = authService.handleAuthentication();
+      const p2 = authService.handleAuthentication();
+      expect(authService.updateAuthState).not.toHaveBeenCalled();
+      resolveParsePromise([]);
       return p1
-        .then(authState => {
-          expect(authState).toBe(mockAuthState);
-          return p2;
-        })
-        .then(authState => {
-          expect(authState).toBe(null); // 2nd caller gets nothing
-          expect(auth._oktaAuth.token.parseFromUrl).toHaveBeenCalledTimes(1);
-          expect(auth.updateAuthState).toHaveBeenCalledTimes(1);
+        .then(() => p2) // make sure both are finished
+        .then(() => {
+          expect(authService._oktaAuth.token.parseFromUrl).toHaveBeenCalledTimes(1);
+          expect(authService.updateAuthState).toHaveBeenCalledTimes(1);
         });
     });
   });

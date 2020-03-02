@@ -20,10 +20,10 @@ const Security = (props) => {
   const [authState, setAuthState] = useState(authService.getAuthState());
 
   useEffect( () => { 
-    const unsub = authService.on('authStateChange', (newAuthState) => { 
-      setAuthState(newAuthState);
+    const unsub = authService.on('authStateChange', () => {
+      setAuthState(authService.getAuthState());
     });
-    authService.updateAuthState();
+    authService.updateAuthState(); // Trigger an initial change event to make sure authState is latest
     return unsub;
   }, [authService]);
 

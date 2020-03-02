@@ -69,6 +69,7 @@ class AuthService {
 
   async handleAuthentication() {
     if(this._pending.handleAuthentication) { 
+      // Don't trigger second round
       return null;
     }
     try { 
@@ -89,26 +90,27 @@ class AuthService {
         window.location.assign(location);
       }
       this._pending.handleAuthentication = null;
-      return authState;
     } catch(error) { 
       this._pending.handleAuthentication = null;
-      return this.emitAuthState({ 
+      this.emitAuthState({ 
         isAuthenticated: false,
         error,
         idToken: null,
         accessToken: null,
       });
     } 
+    return;
   }
 
   clearAuthState(state={}) { 
     this.emitAuthState({ ...AuthService.DEFAULT_STATE, ...state });
+    return;
   }
 
   emitAuthState(state) { 
     this._authState = state;
     this.emit('authStateChange', this.getAuthState());
-    return this.getAuthState();
+    return;
   }
 
   getAuthState() { 
@@ -154,7 +156,7 @@ class AuthService {
         accessToken: null,
       });
     } 
-    authStateUpdate.resolve(this.getAuthState());
+    authStateUpdate.resolve();
     return authStateUpdate.promise;
   }
 

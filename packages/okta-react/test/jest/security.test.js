@@ -23,6 +23,7 @@ describe('<Security />', () => {
       getAuthState: jest.fn().mockImplementation(() => initialAuthState)
     };
   });
+
   it('gets initial state from authService and exposes it on the context', () => {
     const mockProps = {
       authService
@@ -42,6 +43,7 @@ describe('<Security />', () => {
     expect(authService.getAuthState).toHaveBeenCalled();
     expect(MyComponent).toHaveBeenCalled();
   });
+
   it('calls updateAuthState and updates the context', () => {
     const newAuthState = {
       fromUpdateAuthState: true
@@ -52,12 +54,14 @@ describe('<Security />', () => {
       callback = fn;
     });
     authService.updateAuthState.mockImplementation(() => {
-      callback(newAuthState);
+      authService.getAuthState.mockImplementation(() => newAuthState);
+      callback();
     });
     const mockProps = {
       authService
     };
     let call = 1;
+
     const MyComponent = jest.fn().mockImplementation(() => {
       const oktaProps = useOktaAuth();
       if (call === 1) {
@@ -68,6 +72,7 @@ describe('<Security />', () => {
       call++;
       return null; 
     });
+
     mount(
       <MemoryRouter>
         <Security {...mockProps}>
@@ -75,24 +80,34 @@ describe('<Security />', () => {
         </Security>
       </MemoryRouter>
     );
+
     expect(authService.on).toHaveBeenCalledTimes(1);
     expect(authService.updateAuthState).toHaveBeenCalledTimes(1);
     expect(MyComponent).toHaveBeenCalledTimes(2);
   });
+
   it('subscribes to "authStateChange" and updates the context', () => {
-    const firstUpdate = {
-      fromUpdateAuthState: true
-    };
-    const secondUpdate = {
-      fromEventDispatch: true
-    };
+    const mockAuthStates = [
+      initialAuthState,
+      {
+        fromUpdateAuthState: true
+      },
+      {
+        fromEventDispatch: true
+      }
+    ];
     let callback;
+    let stateCount = 0;
+    authService.getAuthState.mockImplementation( () => { 
+      return mockAuthStates[stateCount];
+    });
     authService.on.mockImplementation((eventName, fn) => {
       expect(eventName).toBe('authStateChange');
       callback = fn;
     });
     authService.updateAuthState.mockImplementation(() => {
-      callback(firstUpdate);
+      stateCount++;
+      callback();
     });
     const mockProps = {
       authService
@@ -103,9 +118,9 @@ describe('<Security />', () => {
       if (call === 1) {
         expect(oktaProps.authState).toBe(initialAuthState);
       } else if (call === 2) {
-        expect(oktaProps.authState).toBe(firstUpdate);
+        expect(oktaProps.authState).toBe(mockAuthStates[1]);
       } else if (call === 3) {
-        expect(oktaProps.authState).toBe(secondUpdate);
+        expect(oktaProps.authState).toBe(mockAuthStates[2]);
       }
       call++;
       return null; 
@@ -122,10 +137,12 @@ describe('<Security />', () => {
     expect(MyComponent).toHaveBeenCalledTimes(2);
     MyComponent.mockClear();
     act(() => {
-      callback(secondUpdate);
+      stateCount++;
+      callback();
     });
     expect(MyComponent).toHaveBeenCalledTimes(1);
   });
+
   it('should accept a className prop and render a component using the className', () => {
     const mockProps = {
       authService
