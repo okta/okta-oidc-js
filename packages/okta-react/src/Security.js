@@ -17,13 +17,13 @@ import OktaContext from './OktaContext';
 const Security = (props) => { 
 
   const [authService] = useState( props.authService || new AuthService(props) );
-  const [authState, setAuthState] = useState({...AuthService.DEFAULT_STATE});
+  const [authState, setAuthState] = useState(authService.getAuthState());
 
   useEffect( () => { 
     const unsub = authService.on('authStateChange', (newAuthState) => { 
       setAuthState(newAuthState);
     });
-    authService.updateAuthState(); // Force an authStateChange event to set the initial state
+    authService.updateAuthState();
     return unsub;
   }, [authService]);
 

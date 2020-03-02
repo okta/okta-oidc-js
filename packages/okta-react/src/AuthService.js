@@ -42,11 +42,13 @@ class AuthService {
     this._oktaAuth.userAgent = `${packageInfo.name}/${packageInfo.version} ${this._oktaAuth.userAgent}`;
     this._config = authConfig; // use normalized config
     this._listeners = {};
+    this._pending = {}; // manage overlapping async calls 
 
     this.handleAuthentication = this.handleAuthentication.bind(this);
     this.updateAuthState = this.updateAuthState.bind(this);
     this.clearAuthState = this.clearAuthState.bind(this);
     this.emitAuthState = this.emitAuthState.bind(this);
+    this.getAuthState = this.getAuthState.bind(this);
     this.getUser = this.getUser.bind(this);
     this.getIdToken = this.getIdToken.bind(this);
     this.getAccessToken = this.getAccessToken.bind(this);
@@ -66,7 +68,11 @@ class AuthService {
   }
 
   async handleAuthentication() {
+    if(this._pending.handleAuthentication) { 
+      return null;
+    }
     try { 
+      this._pending.handleAuthentication = true;
       let tokens = await this._oktaAuth.token.parseFromUrl();
       tokens = Array.isArray(tokens) ? tokens : [tokens];    
 
@@ -77,15 +83,22 @@ class AuthService {
           this._oktaAuth.tokenManager.add('accessToken', token);
         }
       }
-      return await this.updateAuthState();
+      const authState = await this.updateAuthState();
+      if(authState.isAuthenticated) { 
+        const location = this.getFromUri();
+        window.location.assign(location);
+      }
+      this._pending.handleAuthentication = null;
+      return authState;
     } catch(error) { 
+      this._pending.handleAuthentication = null;
       return this.emitAuthState({ 
         isAuthenticated: false,
         error,
         idToken: null,
         accessToken: null,
       });
-    }
+    } 
   }
 
   clearAuthState(state={}) { 
@@ -94,11 +107,30 @@ class AuthService {
 
   emitAuthState(state) { 
     this._authState = state;
-    this.emit('authStateChange', this._authState);
+    this.emit('authStateChange', this.getAuthState());
+    return this.getAuthState();
+  }
+
+  getAuthState() { 
     return this._authState;
   }
 
   async updateAuthState() {
+    // avoid concurrent updates
+    if( this._pending.authStateUpdate ) { 
+      return this._pending.authStateUpdate.promise;
+    }
+
+    // create a promise to return in case of multiple parallel requests
+    this._pending.authStateUpdate = {};
+    this._pending.authStateUpdate.promise  = new Promise( (resolve) => {
+      // Promise can only resolve any error is in the resolve value
+      // and uncaught exceptions make Front SDKs angry
+      this._pending.authStateUpdate.resolve = resolve;
+    });
+    // copy to return after emitAuthState has cleared the pending object
+    const authStateUpdate = this._pending.authStateUpdate;
+
     try { 
       const accessToken = await this.getAccessToken();
       const idToken = await this.getIdToken();
@@ -106,20 +138,24 @@ class AuthService {
       // Use external check, or default to isAuthenticated if either the access or id token exist
       const isAuthenticated = this._config.isAuthenticated ? await this._config.isAuthenticated() : !! ( accessToken || idToken );
 
+
+      this._pending.authStateUpdate = null;
       this.emitAuthState({ 
         isAuthenticated,
         idToken,
         accessToken,
       });
     } catch (error) { 
+      this._pending.authStateUpdate = null;
       this.emitAuthState({ 
         isAuthenticated: false,
         error,
         idToken: null,
         accessToken: null,
       });
-    }
-    return this._authState;
+    } 
+    authStateUpdate.resolve(this.getAuthState());
+    return authStateUpdate.promise;
   }
 
   async getUser() {

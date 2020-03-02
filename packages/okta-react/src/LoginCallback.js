@@ -10,22 +10,15 @@
  * See the License for the specific language governing permissions and limitations under the License.
  */
 
-import { useEffect } from 'react';
+import React, { useEffect } from 'react';
 import { useOktaAuth } from './OktaContext';
 
 const LoginCallback = () => { 
   const { authService, authState } = useOktaAuth();
 
   useEffect( () => {
-    if(authState.isPending) { 
-      authService.handleAuthentication();
-    }
-
-    if( authState.isAuthenticated ) { 
-      const location = authService.getFromUri();
-      window.location.assign(location);
-    }
-  }, [authService, authState]);
+    authService.handleAuthentication();
+  }, [authService]);
 
   if(authState.error) { 
     return <p>${authState.error}</p>;
