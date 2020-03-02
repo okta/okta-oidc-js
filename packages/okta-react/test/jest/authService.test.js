@@ -837,7 +837,9 @@ describe('AuthService', () => {
       };
       jest.spyOn(window.location, 'assign');
       jest.spyOn(authService, 'getFromUri').mockReturnValue(mockLocation);
-      jest.spyOn(authService, 'updateAuthState').mockReturnValue(Promise.resolve(mockAuthState));
+      jest.spyOn(authService, 'updateAuthState').mockImplementation( () => { 
+        jest.spyOn(authService, 'getAuthState').mockReturnValue(mockAuthState);
+      });
       jest.spyOn(authService._oktaAuth.token, 'parseFromUrl').mockReturnValue(Promise.resolve([]));
       return authService.handleAuthentication()
         .then(() => {

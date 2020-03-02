@@ -84,7 +84,8 @@ class AuthService {
           this._oktaAuth.tokenManager.add('accessToken', token);
         }
       }
-      const authState = await this.updateAuthState();
+      await this.updateAuthState();
+      const authState = this.getAuthState();
       if(authState.isAuthenticated) { 
         const location = this.getFromUri();
         window.location.assign(location);
