@@ -192,6 +192,7 @@ describe('AuthService', () => {
     mockAuthJsInstance = {
       userAgent: 'okta-auth-js',
       tokenManager: {
+          add: jest.fn(),
           get: jest.fn().mockImplementation(tokenName => {
             if (tokenName === 'idToken') {
               return Promise.resolve(idTokenParsed);
@@ -203,7 +204,8 @@ describe('AuthService', () => {
           }),
       },
       token: {
-        getWithRedirect: jest.fn()
+        getWithRedirect: jest.fn(),
+        parseFromUrl: jest.fn()
       },
       signOut: jest.fn().mockReturnValue(Promise.resolve())
     };
@@ -712,7 +714,7 @@ describe('AuthService', () => {
     });
 
     it('emits an authState that is not authenticated if override isAuthenticated() callback returns false', async () => { 
-      const isAuthenticated = jest.fn().mockReturnValue( Promise.resolve(false));;
+      const isAuthenticated = jest.fn().mockReturnValue( Promise.resolve(false));
 
       const auth = new AuthService({
         issuer: 'https://foo/oauth2/default',
@@ -739,7 +741,7 @@ describe('AuthService', () => {
     });
 
     it('emits an authState that is not authenticated if override isAuthenticated() callback rejects', async () => { 
-      const isAuthenticated = jest.fn().mockReturnValue( Promise.reject('!!!!11eleventy-one!'));;
+      const isAuthenticated = jest.fn().mockReturnValue( Promise.reject('!!!!11eleventy-one!'));
 
       const auth = new AuthService({
         issuer: 'https://foo/oauth2/default',
@@ -766,5 +768,119 @@ describe('AuthService', () => {
       });
     });
 
+    it('concurrent calls to "updateAuthState" will share the same execution', () => {
+      const auth = new AuthService({
+        issuer: 'https://foo/oauth2/default',
+        clientId: 'foo',
+        redirectUri: 'https://foo/redirect',
+      });
+      let resolvePromise;
+      jest.spyOn(auth, 'getAccessToken').mockImplementation(() => {
+        return new Promise(resolve => {
+          resolvePromise = resolve;
+        });
+      });
+      jest.spyOn(auth, 'emitAuthState');
+      jest.spyOn(auth, 'getIdToken');
+      const p1 = auth.updateAuthState();
+      const p2 = auth.updateAuthState();
+
+      expect(auth.getIdToken).not.toHaveBeenCalled();
+      resolvePromise('fake');
+      return p1
+        .then(authState => {
+          expect(authState.accessToken).toBe('fake');
+          return p2;
+        })
+        .then(authState => {
+          expect(authState.accessToken).toBe('fake');
+          expect(auth.emitAuthState).toHaveBeenCalledTimes(1);
+          expect(auth.emitAuthState).toHaveBeenCalledWith(authState);
+          expect(auth.getAccessToken).toHaveBeenCalledTimes(1);
+          expect(auth.getIdToken).toHaveBeenCalledTimes(1);
+        });
+    });
+  });
+
+  describe('handleAuthentication', () => {
+    let auth;
+    beforeEach(() => {
+      auth = new AuthService({
+        issuer: 'https://foo/oauth2/default',
+        clientId: 'foo',
+        redirectUri: 'https://foo/redirect',
+      });
+    })
+    it('puts tokens in the TokenManager', () => {
+      const accessToken = {
+        accessToken: 'fake access'
+      };
+      const idToken = {
+        idToken: 'fake id'
+      };
+      jest.spyOn(auth._oktaAuth.token, 'parseFromUrl').mockReturnValue([accessToken, idToken]);
+      jest.spyOn(auth._oktaAuth.tokenManager, 'add');
+      return auth.handleAuthentication()
+        .then(() => {
+          expect(auth._oktaAuth.tokenManager.add).toHaveBeenCalledTimes(2);
+          expect(auth._oktaAuth.tokenManager.add.mock.calls[0]).toEqual(['accessToken', accessToken]);
+          expect(auth._oktaAuth.tokenManager.add.mock.calls[1]).toEqual(['idToken', idToken]);
+        });
+    });
+    it('redirects if isAuthenticated', () => {
+      const mockLocation = 'http://localhost/fake-redirect';
+      const mockAuthState = {
+        isAuthenticated: true
+      };
+      jest.spyOn(window.location, 'assign');
+      jest.spyOn(auth, 'getFromUri').mockReturnValue(mockLocation);
+      jest.spyOn(auth, 'updateAuthState').mockReturnValue(Promise.resolve(mockAuthState));
+      jest.spyOn(auth._oktaAuth.token, 'parseFromUrl').mockReturnValue(Promise.resolve([]));
+      return auth.handleAuthentication()
+        .then(() => {
+          expect(window.location.assign).toHaveBeenCalledWith(mockLocation);
+        });
+    });
+    it('emits authState with an error if parseFromUrl throws', () => {
+      const error = new Error('a test error');
+      jest.spyOn(auth, 'emitAuthState');
+      jest.spyOn(auth._oktaAuth.token, 'parseFromUrl').mockReturnValue(Promise.reject(error));
+      return auth.handleAuthentication()
+        .then(() => {
+          expect(auth.emitAuthState).toHaveBeenCalledWith({
+            isAuthenticated: false,
+            error,
+            idToken: null,
+            accessToken: null,
+          });
+        });
+    });
+    it('concurrency: only the first call to "handleAuthentication" will perform the logic and receive an update', () => {
+      let resolvePromise;
+      jest.spyOn(auth._oktaAuth.token, 'parseFromUrl').mockImplementation(() => {
+        return new Promise(resolve => {
+          resolvePromise = resolve;
+        });
+      });
+      const mockAuthState = {
+        isAuthenticated: false
+      }
+      jest.spyOn(auth, 'updateAuthState').mockReturnValue(Promise.resolve(mockAuthState));
+      jest.spyOn(auth, 'emitAuthState');
+      const p1 = auth.handleAuthentication();
+      const p2 = auth.handleAuthentication();
+      expect(auth.updateAuthState).not.toHaveBeenCalled();
+      resolvePromise([]);
+      return p1
+        .then(authState => {
+          expect(authState).toBe(mockAuthState);
+          return p2;
+        })
+        .then(authState => {
+          expect(authState).toBe(null); // 2nd caller gets nothing
+          expect(auth._oktaAuth.token.parseFromUrl).toHaveBeenCalledTimes(1);
+          expect(auth.updateAuthState).toHaveBeenCalledTimes(1);
+        });
+    });
   });
 });

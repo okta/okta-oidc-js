@@ -5,13 +5,87 @@ import SecureRoute from '../../src/SecureRoute';
 import Security from '../../src/Security';
 
 describe('<SecureRoute />', () => {
-  const mockProps = {
-    authService: {
+  let authService;
+  let authState;
+  let mockProps;
+  beforeEach(() => {
+    authState = {
+      isPending: true
+    };
+    authService = {
       on: jest.fn(),
       updateAuthState: jest.fn(),
-    },
-  };
-
+      getAuthState: jest.fn().mockImplementation(() => authState),
+      login: jest.fn()
+    };
+    mockProps = { authService };
+  });
+  describe('isAuthenticated: true', () => {
+    beforeEach(() => {
+      authState.isAuthenticated = true;
+    });
+    it('will render wrapped component', () => {
+      const MyComponent = function() { return <div>hello world</div>; };
+      const wrapper = mount(
+        <MemoryRouter>
+          <Security {...mockProps}>
+            <SecureRoute
+              component={MyComponent}
+            />
+          </Security>
+        </MemoryRouter>
+      );
+      expect(wrapper.find(MyComponent).html()).toBe('<div>hello world</div>');
+    });
+  });
+  describe('isAuthenticated: false', () => {
+    beforeEach(() => {
+      authState.isAuthenticated = false;
+    });
+    it('will not render wrapped component', () => {
+      const MyComponent = function() { return <div>hello world</div>; };
+      const wrapper = mount(
+        <MemoryRouter>
+          <Security {...mockProps}>
+            <SecureRoute
+              component={MyComponent}
+            />
+          </Security>
+        </MemoryRouter>
+      );
+      expect(wrapper.find(MyComponent).length).toBe(0);
+    });
+    describe('isPending: false', () => {
+      beforeEach(() => {
+        authState.isPending = false;
+      });
+      it('calls login()', () => {
+        mount(
+          <MemoryRouter>
+            <Security {...mockProps}>
+              <SecureRoute />
+            </Security>
+          </MemoryRouter>
+        );
+        expect(authService.login).toHaveBeenCalled();
+      });
+    });
+    describe('isPending: true', () => {
+      beforeEach(() => {
+        authState.isPending = true;
+      });
+      it('does not call login()', () => {
+        mount(
+          <MemoryRouter>
+            <Security {...mockProps}>
+              <SecureRoute />
+            </Security>
+          </MemoryRouter>
+        );
+        expect(authService.login).not.toHaveBeenCalled();
+      });
+    });
+  });
   it('should accept a "path" prop and render a component', () => {
     const wrapper = mount(
       <MemoryRouter>
