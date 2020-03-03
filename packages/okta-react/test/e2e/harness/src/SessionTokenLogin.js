@@ -12,9 +12,9 @@
 
 import React, { Component } from 'react';
 import OktaAuth from '@okta/okta-auth-js';
-import { withAuth } from '@okta/okta-react';
+import { withOktaAuth } from '@okta/okta-react';
 
-export default withAuth(class SessionTokenLogin extends Component {
+export default withOktaAuth(class SessionTokenLogin extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -29,7 +29,7 @@ export default withAuth(class SessionTokenLogin extends Component {
   }
 
   componentWillMount() {
-    const origin = new URL(this.props.auth._config.issuer).origin;
+    const origin = new URL(this.props.authService._config.issuer).origin;
     this.oktaAuth = new OktaAuth({
       url: origin
     });
@@ -44,7 +44,7 @@ export default withAuth(class SessionTokenLogin extends Component {
       this.setState({
         sessionToken: res.sessionToken
       });
-      this.props.auth.redirect({sessionToken: res.sessionToken});
+      this.props.authService.redirect({sessionToken: res.sessionToken});
     })
     .catch(err => {
       console.log('Found an error', err);

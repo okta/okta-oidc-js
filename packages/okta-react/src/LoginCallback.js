@@ -1,4 +1,4 @@
-/*!
+/*
  * Copyright (c) 2017-Present, Okta, Inc. and/or its affiliates. All rights reserved.
  * The Okta software accompanied by this notice is provided pursuant to the Apache License, Version 2.0 (the "License.")
  *
@@ -10,14 +10,21 @@
  * See the License for the specific language governing permissions and limitations under the License.
  */
 
-import { Component } from 'react';
-import { withOktaAuth } from '@okta/okta-react';
+import React, { useEffect } from 'react';
+import { useOktaAuth } from './OktaContext';
 
-export default withOktaAuth(class CustomLogin extends Component {
-  componentDidMount() {
-    this.props.authService.redirect();
+const LoginCallback = () => { 
+  const { authService, authState } = useOktaAuth();
+
+  useEffect( () => {
+    authService.handleAuthentication();
+  }, [authService]);
+
+  if(authState.error) { 
+    return <p>${authState.error}</p>;
   }
-  render() {
-    return null;
-  }
-});
+
+  return null;
+};
+
+export default LoginCallback;

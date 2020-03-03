@@ -1,11 +1,12 @@
 {
   "name": "@okta/okta-react-test-harness",
-  "version": "0.0.7",
+  "version": "0.0.8",
   "private": true,
   "dependencies": {
-    "react": "^16.3.2",
-    "react-dom": "^16.3.2",
-    "react-scripts": "^2.1.8"
+    "react": "^16.8.0",
+    "react-dom": "^16.8.0",
+    "react-router-dom": "^5.1.2",
+    "react-scripts": "3.4.0"
   },
   "devDependencies": {
     "babel-cli": "^6.26.0",

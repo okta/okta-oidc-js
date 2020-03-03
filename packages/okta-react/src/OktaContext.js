@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2017-Present, Okta, Inc. and/or its affiliates. All rights reserved.
+ * Copyright (c) 2020-Present, Okta, Inc. and/or its affiliates. All rights reserved.
  * The Okta software accompanied by this notice is provided pursuant to the Apache License, Version 2.0 (the "License.")
  *
  * You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0.
@@ -9,20 +9,10 @@
  *
  * See the License for the specific language governing permissions and limitations under the License.
  */
+import React, { useContext } from 'react';
 
-import React from 'react';
-import Secure from './Secure';
+const OktaContext = React.createContext();
 
-const withAuth = Component => {
-  const C = props => (
-    <Secure render={secureComponentProps => (
-      <Component {...props} {...secureComponentProps}/>
-    )}/>
-  );
+export const useOktaAuth = () => useContext(OktaContext);
 
-  C.displayName = `withAuth(${Component.displayName || Component.name})`;
-
-  return C;
-};
-
-export default withAuth;
+export default OktaContext;

@@ -12,41 +12,32 @@
 
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
-import { withAuth } from '@okta/okta-react';
+import { withOktaAuth } from '@okta/okta-react';
 
-export default withAuth(class Home extends Component {
+export default withOktaAuth(class Home extends Component {
   constructor(props) {
     super(props);
 
     this.state = {
-      authenticated: null,
       renewMessage: '',
     };
 
-    this.checkAuthentication = this.checkAuthentication.bind(this);
     this.login = this.login.bind(this);
     this.logout = this.logout.bind(this);
     this.renewIdToken = this.renewToken.bind(this, 'idToken');
     this.renewAccessToken = this.renewToken.bind(this, 'accessToken');
   }
 
-  async checkAuthentication() {
-    const authenticated = await this.props.auth.isAuthenticated();
-    if (authenticated !== this.state.authenticated) {
-      this.setState({ authenticated });
-    }
-  }
-
   async login() {
-    this.props.auth.login('/protected');
+    this.props.authService.login('/protected');
   }
 
   async logout() {
-    this.props.auth.logout('/');
+    this.props.authService.logout('/');
   }
 
   renewToken(tokenName) {
-    const tokenManager = this.props.auth.getTokenManager();
+    const tokenManager = this.props.authService.getTokenManager();
     tokenManager.renew(tokenName)
       .then(() => {
         this.setState({
@@ -60,24 +51,16 @@ export default withAuth(class Home extends Component {
       });
   }
 
-  componentDidMount() {
-    this.checkAuthentication();
-  }
-
-  componentDidUpdate() {
-    this.checkAuthentication();
-  }
-
   render() {
-    if (this.state.authenticated === null) {
+    if (this.props.authState.isPending) {
       return null;
     }
 
-    const button = this.state.authenticated ?
+    const button = this.props.authState.isAuthenticated ?
       <button id="logout-button" onClick={this.logout}>Logout</button> :
       <button id="login-button" onClick={this.login}>Login</button>;
 
-    const pkce = this.props.auth._oktaAuth.options.pkce;
+    const pkce = this.props.authService._oktaAuth.options.pkce;
 
     return (
       <div>
@@ -87,8 +70,8 @@ export default withAuth(class Home extends Component {
         <Link to='/protected'>Protected</Link><br/>
         <Link to='/sessionToken-login'>Session Token Login</Link><br/>
         {button}
-        { this.state.authenticated ? <button id="renew-id-token-button" onClick={this.renewIdToken}>Renew ID Token</button> : null }
-        { this.state.authenticated ? <button id="renew-access-token-button" onClick={this.renewAccessToken}>Renew Access Token</button> : null }
+        { this.props.authState.isAuthenticated ? <button id="renew-id-token-button" onClick={this.renewIdToken}>Renew ID Token</button> : null }
+        { this.props.authState.isAuthenticated ? <button id="renew-access-token-button" onClick={this.renewAccessToken}>Renew Access Token</button> : null }
         <div id="renew-message">
           { this.state.renewMessage }
         </div>

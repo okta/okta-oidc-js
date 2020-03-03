@@ -19,9 +19,7 @@ import OktaAuth from '@okta/okta-auth-js';
 
 import packageInfo from './packageInfo';
 
-const containsAuthTokens = /id_token|access_token|code/;
-
-export default class Auth {
+class AuthService {
   constructor(config) {
     const testing = {
       // If the config is undefined, cast it to false
@@ -43,16 +41,26 @@ export default class Auth {
     this._oktaAuth = new OktaAuth(authConfig);
     this._oktaAuth.userAgent = `${packageInfo.name}/${packageInfo.version} ${this._oktaAuth.userAgent}`;
     this._config = authConfig; // use normalized config
-    this._history = config.history;
+    this._listeners = {};
+    this._pending = {}; // manage overlapping async calls 
 
     this.handleAuthentication = this.handleAuthentication.bind(this);
-    this.isAuthenticated = this.isAuthenticated.bind(this);
+    this.updateAuthState = this.updateAuthState.bind(this);
+    this.clearAuthState = this.clearAuthState.bind(this);
+    this.emitAuthState = this.emitAuthState.bind(this);
+    this.getAuthState = this.getAuthState.bind(this);
     this.getUser = this.getUser.bind(this);
     this.getIdToken = this.getIdToken.bind(this);
     this.getAccessToken = this.getAccessToken.bind(this);
     this.login = this.login.bind(this);
     this.logout = this.logout.bind(this);
     this.redirect = this.redirect.bind(this);
+    this.emit = this.emit.bind(this);
+    this.on = this.on.bind(this);
+
+    this._subscriberCount = 0;
+
+    this.clearAuthState();
   }
 
   getTokenManager() {
@@ -60,28 +68,97 @@ export default class Auth {
   }
 
   async handleAuthentication() {
-    let tokens = await this._oktaAuth.token.parseFromUrl();
-    tokens = Array.isArray(tokens) ? tokens : [tokens];
-    for (let token of tokens) {
-      if (token.idToken) {
-        this._oktaAuth.tokenManager.add('idToken', token);
-      } else if (token.accessToken) {
-        this._oktaAuth.tokenManager.add('accessToken', token);
-      }
+    if(this._pending.handleAuthentication) { 
+      // Don't trigger second round
+      return null;
     }
+    try { 
+      this._pending.handleAuthentication = true;
+      let tokens = await this._oktaAuth.token.parseFromUrl();
+      tokens = Array.isArray(tokens) ? tokens : [tokens];    
+
+      for (let token of tokens) {
+        if (token.idToken) {
+          this._oktaAuth.tokenManager.add('idToken', token);
+        } else if (token.accessToken) {
+          this._oktaAuth.tokenManager.add('accessToken', token);
+        }
+      }
+      await this.updateAuthState();
+      const authState = this.getAuthState();
+      if(authState.isAuthenticated) { 
+        const location = this.getFromUri();
+        window.location.assign(location);
+      }
+      this._pending.handleAuthentication = null;
+    } catch(error) { 
+      this._pending.handleAuthentication = null;
+      this.emitAuthState({ 
+        isAuthenticated: false,
+        error,
+        idToken: null,
+        accessToken: null,
+      });
+    } 
+    return;
   }
 
-  async isAuthenticated() {
-    // Support a user-provided method to check authentication
-    if (this._config.isAuthenticated) {
-      return (this._config.isAuthenticated)();
+  clearAuthState(state={}) { 
+    this.emitAuthState({ ...AuthService.DEFAULT_STATE, ...state });
+    return;
+  }
+
+  emitAuthState(state) { 
+    this._authState = state;
+    this.emit('authStateChange', this.getAuthState());
+    return;
+  }
+
+  getAuthState() { 
+    return this._authState;
+  }
+
+  async updateAuthState() {
+    // avoid concurrent updates
+    if( this._pending.authStateUpdate ) { 
+      return this._pending.authStateUpdate.promise;
     }
 
-    // If there could be tokens in the url
-    if (location && location.hash && containsAuthTokens.test(location.hash)) return null;
+    // create a promise to return in case of multiple parallel requests
+    this._pending.authStateUpdate = {};
+    this._pending.authStateUpdate.promise  = new Promise( (resolve) => {
+      // Promise can only resolve any error is in the resolve value
+      // and uncaught exceptions make Front SDKs angry
+      this._pending.authStateUpdate.resolve = resolve;
+    });
+    // copy to return after emitAuthState has cleared the pending object
+    const authStateUpdate = this._pending.authStateUpdate;
 
-    // Return true if either the access or id token exist in client storage
-    return !!(await this.getAccessToken()) || !!(await this.getIdToken());
+    try { 
+      const accessToken = await this.getAccessToken();
+      const idToken = await this.getIdToken();
+
+      // Use external check, or default to isAuthenticated if either the access or id token exist
+      const isAuthenticated = this._config.isAuthenticated ? await this._config.isAuthenticated() : !! ( accessToken || idToken );
+
+
+      this._pending.authStateUpdate = null;
+      this.emitAuthState({ 
+        isAuthenticated,
+        idToken,
+        accessToken,
+      });
+    } catch (error) { 
+      this._pending.authStateUpdate = null;
+      this.emitAuthState({ 
+        isAuthenticated: false,
+        error,
+        idToken: null,
+        accessToken: null,
+      });
+    } 
+    authStateUpdate.resolve();
+    return authStateUpdate.promise;
   }
 
   async getUser() {
@@ -92,7 +169,7 @@ export default class Auth {
       if (userinfo.sub === idToken.claims.sub) {
         // Only return the userinfo response if subjects match to
         // mitigate token substitution attacks
-        return userinfo
+        return userinfo;
       }
     }
     return idToken ? idToken.claims : undefined;
@@ -126,9 +203,7 @@ export default class Auth {
     // Save the current url before redirect
     this.setFromUri(fromUri); // will save current location if fromUri is undefined
     if (this._config.onAuthRequired) {
-      const auth = this;
-      const history = this._history;
-      return this._config.onAuthRequired({ auth, history });
+      return this._config.onAuthRequired(this);
     }
     return this.redirect(additionalParams);
   }
@@ -140,11 +215,20 @@ export default class Auth {
       path = options;
       options = {};
     }
+
     return this._oktaAuth.signOut(options)
       .then(() => {
         if (!options.postLogoutRedirectUri && !this._config.postLogoutRedirectUri) {
-          this._history.push(path || '/');
+          let redirectUri = path || '/';
+          // If a relative path was passed, convert to absolute URI
+          if (redirectUri.charAt(0) === '/') {
+            redirectUri = window.location.origin + redirectUri;
+          }
+          window.location.assign(redirectUri);
         }
+      })
+      .finally( () => {
+        this.clearAuthState();
       });
   }
 
@@ -164,21 +248,44 @@ export default class Auth {
     return this._oktaAuth.token.getWithRedirect(params);
   }
 
-  setFromUri (fromUri) {
-    // Use current history location if fromUri was not passed
-    const referrerPath = fromUri
-      ? { pathname: fromUri }
-      : this._history.location;
-    localStorage.setItem(
-      'secureRouterReferrerPath',
-      JSON.stringify(referrerPath)
-      );
+  setFromUri(fromUri) {
+    // Use current location if fromUri was not passed
+    fromUri = fromUri || window.location.href;
+    // If a relative path was passed, convert to absolute URI
+    if (fromUri.charAt(0) === '/') {
+      fromUri = window.location.origin + fromUri;
+    }
+    localStorage.setItem( 'secureRouterReferrerPath', fromUri );
   }
 
-  getFromUri () {
+  getFromUri() {
     const referrerKey = 'secureRouterReferrerPath';
-    const location = JSON.parse(localStorage.getItem(referrerKey) || '{ "pathname": "/" }');
+    const location = localStorage.getItem(referrerKey) || window.location.origin;
     localStorage.removeItem(referrerKey);
     return location;
   }
+
+  on( event, callback ) {
+    const subscriberId = this._subscriberCount++;
+    this._listeners[event] = this._listeners[event] || {};
+    this._listeners[event][subscriberId] = callback;
+    return () => { 
+      delete this._listeners[event][subscriberId];
+    }
+  }
+
+  emit(event, message ) { 
+    this._listeners[event] = this._listeners[event] || {};
+    Object.values(this._listeners[event]).forEach( listener => listener(message) );
+  }
+  
 }
+
+AuthService.DEFAULT_STATE = { 
+  isPending: true,
+  isAuthenticated: null,
+  idToken: null,
+  accessToken: null,
+};
+
+export default AuthService;

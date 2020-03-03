@@ -1,3 +1,30 @@
+# 2.0.0
+
+### Features
+
+- Now offers synchronous access to the authentication state (after the first asynchronous determination)
+- Now offers the following React Hook (2.x requires React 16.8+)
+  - `useOktaAuth` 
+- Now can be used with other routers than react-router
+  - React Router 5 continues to be supported, but is now optional
+  - Routers other than React-Router will have to write their own version of `LoginCallback` component 
+
+### Breaking Changes
+- Requires React 16.8+
+- If using react-router, requires react-router 5+
+- See the `Migration from 1.x to 2.0` section of the README for details on migrating your applications
+  - `Auth.js` and the `auth` parameter to `<Security>` have been renamed to `AuthService.js` and `authService`
+  - `<ImplicitCallback>` has been replaced with `<LoginCallback>`
+  - `auth.IsAuthenticated()` has been removed
+    - instead use the `.isAuthenticated` property of the `authState` object
+  - `withAuth` has been replaced with `withOktaAuth`, which gives slightly different parameters
+    - provides `authService` instead of `auth`
+    - also provides the `authState` object
+  - the arguments passed to the optional `onAuthRequired()` callback provided to the `<Security>` component have changed
+  - error handling for authentication is now handled by putting the error into the `authState.error` property
+  - `auth.setFromUri()` is now `authService.setFromUri()` and is passed a string (instead of an object)
+  - `auth.getFromUri()` is now `authService.getFromUri()` and returns a string (instead of an object)
+
 # 1.4.1
 
 ### Bug Fixes

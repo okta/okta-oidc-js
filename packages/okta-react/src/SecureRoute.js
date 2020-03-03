@@ -10,84 +10,40 @@
  * See the License for the specific language governing permissions and limitations under the License.
  */
 
-import React, { Component } from 'react';
-import { Route } from 'react-router';
-import withAuth from './withAuth';
+import React from 'react';
+import { useOktaAuth } from './OktaContext';
+import { useHistory, Route } from 'react-router-dom';
 
+const RequireAuth = ({ children }) => { 
+  const { authService, authState } = useOktaAuth();
+  const history = useHistory();
 
-class RenderWrapper extends Component {
-  checkAuthentication() {
-    if (this.props.authenticated === false) {
-      this.props.login();
+  if(!authState.isAuthenticated) { 
+    if(!authState.isPending) { 
+      const fromUri = history.createHref(history.location);
+      authService.login(fromUri);
     }
+    return null;
   }
 
-  componentDidMount() {
-    this.checkAuthentication();
-  }
+  return (
+    <React.Fragment>
+      {children}
+    </React.Fragment>
+  );
 
-  componentDidUpdate() {
-    this.checkAuthentication();
-  }
+};
 
-  render() {
-    if (!this.props.authenticated) {
-      return null;
-    }
+const SecureRoute = ( {component, ...props} ) => { 
 
-    const C = this.props.component;
-    return this.props.render ? this.props.render(this.props.renderProps) : <C {...this.props.renderProps} />;
-  }
-}
+  const PassedComponent = component || function() { return null; };
+  const WrappedComponent = () => (<RequireAuth><PassedComponent/></RequireAuth>);
+  return (
+    <Route
+      { ...props }
+      render={ () => props.render ? props.render({...props, component: WrappedComponent}) : <WrappedComponent /> } 
+    />
+  );
+};
 
-class SecureRoute extends Component {
-  constructor(props) {
-    super(props);
-
-    this.state = {
-      authenticated: null
-    };
-
-    this.checkAuthentication = this.checkAuthentication.bind(this);
-    this.createRenderWrapper = this.createRenderWrapper.bind(this);
-
-    this.checkAuthentication();
-  }
-
-  async checkAuthentication() {
-    const authenticated = await this.props.auth.isAuthenticated();
-    if (authenticated !== this.state.authenticated) {
-      this.setState({ authenticated });
-    }
-  }
-
-  componentDidUpdate() {
-    this.checkAuthentication();
-  }
-
-  createRenderWrapper(renderProps) {
-    return (
-      <RenderWrapper
-        authenticated={this.state.authenticated}
-        login={this.props.auth.login}
-        component={this.props.component}
-        render={this.props.render}
-        renderProps={renderProps}
-      />
-    );
-  }
-
-  render() {
-    return (
-      <Route
-        path={this.props.path}
-        exact={this.props.exact}
-        strict={this.props.strict}
-        sensitive={this.props.sensitive}
-        render={this.createRenderWrapper}
-      />
-    );
-  }
-}
-
-export default withAuth(SecureRoute);
+export default SecureRoute;
