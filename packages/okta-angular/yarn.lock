@@ -412,16 +412,15 @@
   version "0.4.1"
   resolved "https://registry.yarnpkg.com/@okta/configuration-validation/-/configuration-validation-0.4.1.tgz#6fa4520bc96c27b3d7aedcb0523de1fbceee9105"
 
-"@okta/okta-auth-js@^2.11.2":
-  version "2.11.2"
-  resolved "https://registry.yarnpkg.com/@okta/okta-auth-js/-/okta-auth-js-2.11.2.tgz#d2d867e45eb98d453f156ec68c927bf1594277f6"
+"@okta/okta-auth-js@^3.0.0":
+  version "3.0.0"
+  resolved "https://registry.yarnpkg.com/@okta/okta-auth-js/-/okta-auth-js-3.0.0.tgz#8fc9d07e3e2906f6f2506fa92a483789892110fb"
+  integrity sha512-RD9R2JdNYKeg4OD6weRk/tHURVbC88L40ve2qZdbi1UrfdLyh3wlmrz5H/9H80my1t5JACZvUIR9MWnQaEapGA==
   dependencies:
     Base64 "0.3.0"
     cross-fetch "^3.0.0"
     js-cookie "2.2.0"
     node-cache "^4.2.0"
-    q "1.4.1"
-    reqwest "2.0.5"
     tiny-emitter "1.1.0"
     xhr2 "0.1.3"
 
@@ -4628,10 +4627,6 @@ punycode@^2.1.0, punycode@^2.1.1:
   version "2.1.1"
   resolved "https://registry.yarnpkg.com/punycode/-/punycode-2.1.1.tgz#b58b010ac40c22c5657616c8d2c2c02c7bf479ec"
 
-q@1.4.1:
-  version "1.4.1"
-  resolved "https://registry.yarnpkg.com/q/-/q-1.4.1.tgz#55705bcd93c5f3673530c2c2cbc0c2b3addc286e"
-
 qs@~6.5.2:
   version "6.5.2"
   resolved "https://registry.yarnpkg.com/qs/-/qs-6.5.2.tgz#cb3ae806e8740444584ef154ce8ee98d403f3e36"
@@ -4845,10 +4840,6 @@ require-directory@^2.1.1:
 require-main-filename@^2.0.0:
   version "2.0.0"
   resolved "https://registry.yarnpkg.com/require-main-filename/-/require-main-filename-2.0.0.tgz#d0b329ecc7cc0f61649f62215be69af54aa8989b"
-
-reqwest@2.0.5:
-  version "2.0.5"
-  resolved "https://registry.yarnpkg.com/reqwest/-/reqwest-2.0.5.tgz#00fb15ac4918c419ca82b43f24c78882e66039a1"
 
 resolve-cwd@^2.0.0:
   version "2.0.0"

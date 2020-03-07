@@ -10,24 +10,22 @@
  * See the License for the specific language governing permissions and limitations under the License.
  */
 
-import { ModuleWithProviders, NgModule } from '@angular/core';
-
+import { NgModule, Injector } from '@angular/core';
 import { OktaCallbackComponent } from './components/callback.component';
 import { OktaLoginRedirectComponent } from './components/login-redirect.component';
 import { OktaAuthService } from './services/okta.service';
 import { OktaAuthGuard } from './okta.guard';
-import { OktaConfig, OKTA_CONFIG } from './models/okta.config';
+import { OKTA_CONFIG } from './models/okta.config';
 import { createOktaService } from './createService';
-import { Router } from '@angular/router';
 
 @NgModule({
   declarations: [
     OktaCallbackComponent,
-    OktaLoginRedirectComponent
+    OktaLoginRedirectComponent,
   ],
   exports: [
     OktaCallbackComponent,
-    OktaLoginRedirectComponent
+    OktaLoginRedirectComponent,
   ],
   providers: [
     OktaAuthGuard,
@@ -36,20 +34,11 @@ import { Router } from '@angular/router';
       useFactory: createOktaService,
       deps: [
         OKTA_CONFIG,
-        Router
+        Injector
       ]
     }
   ]
 })
 export class OktaAuthModule {
-  // Deprecated. Your app should provide OKTA_CONFIG directly
-  static initAuth(config: OktaConfig): ModuleWithProviders {
-    return {
-      ngModule: OktaAuthModule,
-      providers: [
-        // Will NOT provide config when using AOT compiler. Your app module should provide this value statically in its providers section.
-        { provide: OKTA_CONFIG, useValue: config }
-      ]
-    };
-  }
+
 }

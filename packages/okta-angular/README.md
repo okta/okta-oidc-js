@@ -158,7 +158,7 @@ If a user does not have a valid session, they will be redirected to the Okta Log
 
 ### `OktaCallbackComponent`
 
-Handles the callback after the redirect. By default, it parses the tokens from the uri, stores them, then redirects to `/`. If a protected route (using [`OktaAuthGuard`](#oktaauthguard)) caused the redirect, then the callback redirects to the protected route. For more advanced cases, this component can be copied to your own source tree and modified as needed.
+Handles the callback after the redirect. By default, it parses the tokens from the uri, stores them, then redirects to `/`. If a protected route (using [`OktaAuthGuard`](#oktaauthguard)) caused the redirect, then the callback will redirect back to the protected route. If an error is thrown while processing tokens, the component will display the error and not perform any redirect. This logic can be customized by copying the component to your own source tree and modified as needed. For example, you may want to capture or display errors differently or provide a helpful link for your users in case they encounter an error on the callback route. The most common error is the user does not have permission to access the application. In this case, they may be able to contact an administrator to obtain access.
 
 You should define a route to handle the callback URL (`/implicit/callback` by default). Also add `OktaCallbackComponent` to the declarations section of in your `NgModule`.
 
@@ -220,7 +220,10 @@ import {
   ...
 } from '@okta/okta-angular';
 
-export function onAuthRequired(oktaAuth, router) {
+export function onAuthRequired(oktaAuth, injector) {
+  // Use injector to access any service available within your application
+  const router = injector.get(Router);
+
   // Redirect the user to your custom login page
   router.navigate(['/custom-login']);
 }
@@ -334,13 +337,13 @@ Parses the tokens returned as hash fragments in the OAuth 2.0 Redirect URI, then
 
 Terminates the user's session in Okta and clears all stored tokens. Accepts an optional `uri` parameter to push the user to after logout.
 
-#### `oktaAuth.setFromUri(uri, queryParams)`
+#### `oktaAuth.setFromUri(uri)`
 
-Used to capture the current URL state before a redirect occurs. Used primarily for custom [`canActivate`](https://angular.io/api/router/CanActivate) navigation guards.
+Used to capture the current URL state before a redirect occurs. Used by custom [`canActivate`](https://angular.io/api/router/CanActivate) navigation guards.
 
 #### `oktaAuth.getFromUri()`
 
-Returns the stored URI and query parameters stored when the `OktaAuthGuard` and/or `setFromUri` was used.
+Returns the URI stored when the `OktaAuthGuard` and/or `setFromUri` was used.
 
 #### `oktaAuth.getTokenManager()`
 

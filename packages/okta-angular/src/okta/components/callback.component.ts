@@ -10,16 +10,32 @@
  * See the License for the specific language governing permissions and limitations under the License.
  */
 
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 
 import { OktaAuthService } from '../services/okta.service';
 
-@Component({template: `` })
-export class OktaCallbackComponent {
-  constructor(private okta: OktaAuthService) {
+@Component({
+  template: `<div>{{error}}</div>`
+})
+export class OktaCallbackComponent implements OnInit {
+  error: string;
+
+  constructor(private okta: OktaAuthService) {}
+
+  async ngOnInit() {
     /**
      * Handles the response from Okta and parses tokens.
      */
-    okta.handleAuthentication();
+    return this.okta.handleAuthentication()
+      .then(() => {
+        /**
+         * Navigate back to the saved uri, or root of application.
+         */
+        const fromUri = this.okta.getFromUri();
+        window.location.replace(fromUri);
+      })
+      .catch(e => {
+        this.error = e.toString();
+      });
   }
 }

@@ -40,7 +40,7 @@ export class SessionTokenLoginComponent {
   constructor(private okta: OktaAuthService) {
     const baseUrl = environment.ISSUER.split('/oauth2')[0];
     this.oktaAuth = new OktaAuth({
-      url: baseUrl
+      issuer: baseUrl
     });
   }
 
@@ -49,9 +49,11 @@ export class SessionTokenLoginComponent {
       username: username,
       password: password
     })
-    .then(res => this.okta.loginRedirect('/', {
-      sessionToken: res.sessionToken
-    }))
+    .then(res => {
+      return this.okta.loginRedirect('/', {
+        sessionToken: res.sessionToken
+      });
+    })
     .catch(err => console.log('Found an error', err));
   }
 }
