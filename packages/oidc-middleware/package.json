@@ -20,7 +20,7 @@
     "test": "yarn lint && yarn test:unit && yarn test:e2e && yarn test:integration",
     "pretest:e2e": "../../scripts/update_se_drivers.sh",
     "test:e2e": "protractor test/e2e/protractor.conf.js",
-    "test:integration": "../../scripts/tck.sh 0.4.0-SNAPSHOT",
+    "test:integration": "../../scripts/tck.sh 0.4.0",
     "test:unit": "jest test/unit",
     "start": "node test/e2e/harness/start-server.js",
     "start:custom": "node test/e2e/harness/start-custom-login-server.js"
