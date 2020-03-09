@@ -1,3 +1,29 @@
+# 2.0.0
+
+[#690](https://github.com/okta/okta-oidc-js/pull/690)
+
+### Features
+
+- `OktaCallbackComponent` will catch and display exceptions thrown from `handleAuthentication()`
+- `onAuthRequired` callbacks will now receive the Angular injector as the 2nd parameter. This change allows logic using any services available within your application.
+
+### Bug Fixes
+
+- Saved URI is now stored in `sessionStorage` instead of `localStorage`. This fixes an issue which can occur when multiple instances of the app are loading at the same time.
+- `OktaCallbackComponent` uses `window.location.replace()` to complete the login flow after `handleAuthentication` completes. This fixes an issue where the user could navigate back to the callback hander.
+
+### Breaking Changes
+
+- Signature for `onAuthRequired` callback functions has changed. Callbacks will receive the `OktaAuthService` as the first argument, and the Angular `Injector` as the second argument.
+- Static initializer `OktaAuthModule.initAuth()` has been removed. `OKTA_CONFIG` should be provided directly by your module.
+- `getFromUri` now returns an absolute URI as a string
+- `setFromUri` takes a string. If it is a relative path, it will be converted to an absolute URI before being saved.
+- Legacy config formats are no longer supported. See [Configuration Reference](https://github.com/okta/okta-auth-js#configuration-reference) for supported values.
+
+### Other
+
+- Upgrades `@okta/okta-auth-js` to version 3.0.0
+
 # 1.4.0
 
 ### Features
