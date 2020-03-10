@@ -54,4 +54,8 @@ export class OktaAuthGuard implements CanActivate {
 
     return false;
   }
+
+  async canActivateChild(route: ActivatedRouteSnapshot, state: RouterStateSnapshot) {
+    return this.canActivate(route, state);
+  }
 }
