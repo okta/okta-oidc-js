@@ -21,7 +21,7 @@ const LoginCallback = () => {
   }, [authService]);
 
   if(authState.error) { 
-    return <p>${authState.error}</p>;
+    return <p>{authState.error.message}</p>;
   }
 
   return null;
