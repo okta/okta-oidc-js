@@ -112,7 +112,7 @@ oidcUtil.ensureAuthenticated = (context, options) => {
     if (negotiator.mediaType() === 'text/html') {
       ensureLoggedIn(options)(req, res, next);
     } else {
-      res.sendStatus(401);
+      res.sendStatus(406);
     }
   };
 };
