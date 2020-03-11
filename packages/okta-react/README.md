@@ -490,7 +490,8 @@ Components get this object as a passed prop using the [withOktaAuth](#withoktaau
 - `.accessToken`
     - the JWT accessToken for the currently authenticated user (if provided by the `scopes`)
 - `.error` 
-    - contains the error returned if an error occurs in `authService.handleAuthentication()` or `authService.updateAuthState()` (which includes any errors encountered when calling the optional `isAuthRequired()` callback provided to `<Security>`)
+    - An object returned if an error occurs in `authService.handleAuthentication()` or `authService.updateAuthState()` (which includes any errors encountered when calling the optional `isAuthRequired()` callback provided to `<Security>`). This object contains the following properties: `name`, `message`, `errorCode`, `errorSummary`, `errorLink`, `errorId`, `errorCauses`
+
 
 ### `authService`
 
