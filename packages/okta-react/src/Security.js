@@ -29,9 +29,7 @@ const Security = (props) => {
 
   return (
     <OktaContext.Provider value={ { authService, authState } }>
-      <div className={props.className}>
-        {props.children}
-      </div>
+      {props.children}
     </OktaContext.Provider>
   );
 };
