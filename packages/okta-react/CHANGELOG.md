@@ -1,3 +1,9 @@
+# 2.0.1
+
+### Bug Fixes
+
+- [#700](https://github.com/okta/okta-oidc-js/pull/700) LoginCallback: render error as string
+
 # 2.0.0
 
 ### Features
