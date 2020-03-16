@@ -152,6 +152,18 @@ The values you want to assert are always represented as an array (the right side
 
 NOTE: Currently, `.includes` is the only supported claim operator.
 
+## Custom JWKS URI
+
+Custom JWKS URI can be provided. It's useful when JWKS URI cannot be based on Issuer URI:
+
+```javascript
+const verifier = new OktaJwtVerifier({
+  issuer: 'https://{yourOktaDomain}',
+  clientId: '{clientId}',
+  jwksUri: 'https://https://{yourOktaDomain}/oauth2/v1/keys'
+});
+```
+
 ## Caching & Rate Limiting
 
 * By default, found keys are cached by key ID for one hour. This can be configured with the `cacheMaxAge` option for cache entries.
