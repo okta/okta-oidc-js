@@ -87,4 +87,39 @@ describe('jwt-verifier configuration validation', () => {
     expect(createInstance).not.toThrow();
   });
 
+  it('should return issuer-based jwks uri when custom jwksUri is not specified', () => {
+
+    const verifier = new OktaJwtVerifier({
+      issuer: 'https://foo',
+      clientId: '123456',
+    });
+
+    expect(verifier.jwksUri).toEqual('https://foo/v1/keys');
+  });
+
+  [undefined, ''].forEach(jwksUri =>
+    it(`should return issuer-based jwks uri when jwks custom uri is ${jwksUri}`, () => {
+
+      const verifier = new OktaJwtVerifier({
+        issuer: 'https://foo',
+        clientId: '123456',
+        jwksUri: jwksUri
+      });
+
+      expect(verifier.jwksUri).toEqual('https://foo/v1/keys');
+    })
+  );
+
+  it('should return custom jwks uri when specified', () => {
+
+    const customJwksUri = 'http://custom-jwks-uri/keys';
+
+    const verifier = new OktaJwtVerifier({
+      issuer: 'https://foo',
+      clientId: '123456',
+      jwksUri: customJwksUri
+    });
+
+    expect(verifier.jwksUri).toEqual(customJwksUri);
+  });
 });
