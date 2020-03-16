@@ -95,6 +95,10 @@ function verifyIssuer(expected, issuer) {
   }
 }
 
+function getJwksUri(options) {
+  return options.jwksUri ? options.jwksUri : options.issuer + '/v1/keys';
+}
+
 class OktaJwtVerifier {
   constructor(options = {}) {
     // Assert configuration options exist and are well-formed (not necessarily correct!)
@@ -105,8 +109,9 @@ class OktaJwtVerifier {
 
     this.claimsToAssert = options.assertClaims || {};
     this.issuer = options.issuer;
+    this.jwksUri = getJwksUri(options);
     this.jwksClient = jwksClient({
-      jwksUri: options.issuer + '/v1/keys',
+      jwksUri: this.jwksUri,
       cache: true,
       cacheMaxAge: options.cacheMaxAge || (60 * 60 * 1000),
       cacheMaxEntries: 3,
