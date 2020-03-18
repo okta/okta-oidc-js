@@ -459,7 +459,7 @@ class App extends Component {
 
 ### `useOktaAuth`
 
-`useOktaAuth()` is a React Hook that returns an object containing the [authState](#authState) object and the [authService][] object.  Class-based components will want to use the [withOktaAuth](#withoktaauth) HOC instead.  Using this hook will trigger a re-render when the authState object updates.  Components calling this hook need to be a child or descendant of a `<Security>` component to have the necessary context.
+`useOktaAuth()` is a React Hook that returns an object containing the [authState](#authState) object and the [authService](#authService) object.  Class-based components will want to use the [withOktaAuth](#withoktaauth) HOC instead.  Using this hook will trigger a re-render when the authState object updates.  Components calling this hook need to be a child or descendant of a `<Security>` component to have the necessary context.
 
 #### Using `useOktaAuth`
 ```jsx
