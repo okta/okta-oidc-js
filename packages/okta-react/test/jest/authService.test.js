@@ -820,13 +820,13 @@ describe('AuthService', () => {
       const idToken = {
         idToken: 'fake id'
       };
-      jest.spyOn(authService._oktaAuth.token, 'parseFromUrl').mockReturnValue([accessToken, idToken]);
+      jest.spyOn(authService._oktaAuth.token, 'parseFromUrl').mockReturnValue({ tokens: { accessToken, idToken }});
       jest.spyOn(authService._oktaAuth.tokenManager, 'add');
       return authService.handleAuthentication()
         .then(() => {
           expect(authService._oktaAuth.tokenManager.add).toHaveBeenCalledTimes(2);
-          expect(authService._oktaAuth.tokenManager.add.mock.calls[0]).toEqual(['accessToken', accessToken]);
-          expect(authService._oktaAuth.tokenManager.add.mock.calls[1]).toEqual(['idToken', idToken]);
+          expect(authService._oktaAuth.tokenManager.add.mock.calls[0]).toEqual(['idToken', idToken]);
+          expect(authService._oktaAuth.tokenManager.add.mock.calls[1]).toEqual(['accessToken', accessToken]);
         });
     });
 
@@ -840,7 +840,7 @@ describe('AuthService', () => {
       jest.spyOn(authService, 'updateAuthState').mockImplementation( () => { 
         jest.spyOn(authService, 'getAuthState').mockReturnValue(mockAuthState);
       });
-      jest.spyOn(authService._oktaAuth.token, 'parseFromUrl').mockReturnValue(Promise.resolve([]));
+      jest.spyOn(authService._oktaAuth.token, 'parseFromUrl').mockReturnValue(Promise.resolve({ tokens: {} }));
       return authService.handleAuthentication()
         .then(() => {
           expect(window.location.assign).toHaveBeenCalledWith(mockLocation);
@@ -871,7 +871,7 @@ describe('AuthService', () => {
       const p1 = authService.handleAuthentication();
       const p2 = authService.handleAuthentication();
       expect(authService.updateAuthState).not.toHaveBeenCalled();
-      resolveParsePromise([]);
+      resolveParsePromise({ tokens: {} });
       return p1
         .then(() => p2) // make sure both are finished
         .then(() => {

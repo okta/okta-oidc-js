@@ -1,4 +1,4 @@
-[Okta Auth SDK]: https://github.com/okta/okta-auth-js
+[allowing Okta Auth SDK]: https://github.com/okta/okta-auth-js
 [react-router]: https://github.com/ReactTraining/react-router
 [reach-router]: https://reach.tech/router
 [higher-order component]: https://reactjs.org/docs/higher-order-components.html
@@ -307,8 +307,8 @@ These options are used by `Security` to configure the [Auth service][]. The most
 - **postLogoutRedirectUri** | Specify the url where the browser should be redirected after [logout](#authservicelogouturi). This url must be added to the list of `Logout redirect URIs` on the application's `General Settings` tab.
 - **scopes** *(optional)* - Reserved for custom claims to be returned in the tokens. Default: `['openid', 'email', 'profile']`. For a list of scopes and claims, please see [Scope-dependent claims](https://developer.okta.com/standards/OIDC/index.html#scope-dependent-claims-not-always-returned) for more information.
 - **responseType** *(optional)* - Desired token types. Default: `['id_token', 'token']`.
-For PKCE flow, this should be left undefined or set to `['code']`.
-- **pkce** *(optional)* - If `true`, PKCE flow will be used
+  - For PKCE flow, this should be left undefined or set to `['code']`.
+- **pkce** *(optional)* - If `true` Authorization Code w/PKCE flow will be used.  See the [@okta/okta-auth-js README regarding PKCE OAuth2 Flow](https://github.com/okta/okta-auth-js#pkce-oauth-20-flow) for requirements, including any required polyfills.  If you are using the Implicit Flow, you should set `pkce: false`. Default: `true`.
 - **onAuthRequired** *(optional)* - callback function. Called when authentication is required. If this is not supplied, `okta-react` redirects to Okta. This callback will receive `auth` as the first function parameter. This is triggered when:
     1. [login](#authserviceloginfromuri-additionalparams) is called
     2. A `SecureRoute` is accessed without authentication

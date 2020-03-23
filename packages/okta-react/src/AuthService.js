@@ -74,16 +74,15 @@ class AuthService {
     }
     try { 
       this._pending.handleAuthentication = true;
-      let tokens = await this._oktaAuth.token.parseFromUrl();
-      tokens = Array.isArray(tokens) ? tokens : [tokens];    
+      const {tokens} = await this._oktaAuth.token.parseFromUrl();
 
-      for (let token of tokens) {
-        if (token.idToken) {
-          this._oktaAuth.tokenManager.add('idToken', token);
-        } else if (token.accessToken) {
-          this._oktaAuth.tokenManager.add('accessToken', token);
-        }
+      if (tokens.idToken) {
+        this._oktaAuth.tokenManager.add('idToken', tokens.idToken);
       }
+      if (tokens.accessToken) {
+        this._oktaAuth.tokenManager.add('accessToken', tokens.accessToken);
+      }
+
       await this.updateAuthState();
       const authState = this.getAuthState();
       if(authState.isAuthenticated) { 
