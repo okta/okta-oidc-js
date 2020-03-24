@@ -252,27 +252,38 @@ describe('AuthService', () => {
 
   describe('logout', () => {
 
-    test('by default, it will set history location to "/"', async () => {
+    test('defaults to passing an empty options to signOut', async () => {
       const authService = new AuthService({
         issuer: 'https://foo/oauth2/default',
         client_id: 'foo',
         redirect_uri: 'foo',
       });
       await authService.logout();
-      expect(window.location.assign).toHaveBeenCalledWith(window.location.origin + '/');
+      expect(mockAuthJsInstance.signOut).toHaveBeenCalledWith({});
     });
 
-    test('can pass unknown options without affecting default', async () => {
+    test('can pass options to signOut', async () => {
       const authService = new AuthService({
         issuer: 'https://foo/oauth2/default',
         client_id: 'foo',
         redirect_uri: 'foo',
       });
       await authService.logout({ foo: 'bar' });
-      expect(window.location.assign).toHaveBeenCalledWith(window.location.origin + '/');
+      expect(mockAuthJsInstance.signOut).toHaveBeenCalledWith({ foo: 'bar'});
     });
 
-    test('if a string is passed, it will be used as history path', async () => {
+    test('if an absolute url string is passed, it will be used as history path', async () => {
+      const authService = new AuthService({
+        issuer: 'https://foo/oauth2/default',
+        client_id: 'foo',
+        redirect_uri: 'foo',
+      });
+      const testPath = 'http://example.com/fake/blah';
+      await authService.logout(testPath);
+      expect(mockAuthJsInstance.signOut).toHaveBeenCalledWith({ postLogoutRedirectUri: testPath });
+    });
+
+    test('if a relative url string is passed, it will be converted to absolute', async () => {
       const authService = new AuthService({
         issuer: 'https://foo/oauth2/default',
         client_id: 'foo',
@@ -280,33 +291,7 @@ describe('AuthService', () => {
       });
       const testPath = '/fake/blah';
       await authService.logout(testPath);
-      expect(window.location.assign).toHaveBeenCalledWith(window.location.origin + testPath);
-    });
-
-    test('Will not update history if "postLogoutRedirectUri" is in options passed to logout()', async () => {
-      const authService = new AuthService({
-        issuer: 'https://foo/oauth2/default',
-        client_id: 'foo',
-        redirect_uri: 'foo',
-      });
-      const postLogoutRedirectUri = 'http://fake/after';
-      await authService.logout({ postLogoutRedirectUri });
-      expect(window.location.assign).not.toHaveBeenCalled();
-      expect(mockAuthJsInstance.signOut).toHaveBeenCalledWith({ postLogoutRedirectUri });
-    });
-
-    test('Will not update history if "postLogoutRedirectUri" is in options passed to constructor', async () => {
-      const postLogoutRedirectUri = 'http://fake/after';
-      const authService = new AuthService({
-        issuer: 'https://foo/oauth2/default',
-        client_id: 'foo',
-        redirect_uri: 'foo',
-        postLogoutRedirectUri
-      });
-      jest.spyOn(window.location, 'assign');
-      await authService.logout();
-      expect(window.location.assign).not.toHaveBeenCalled();
-      expect(mockAuthJsInstance.signOut).toHaveBeenCalledWith({});
+      expect(mockAuthJsInstance.signOut).toHaveBeenCalledWith({ postLogoutRedirectUri: window.location.origin + testPath });
     });
 
     test('returns a promise', async () => {
