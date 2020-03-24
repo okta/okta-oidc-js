@@ -1,3 +1,33 @@
+# 4.0.0
+
+### Breaking Changes
+
+- [#661](https://github.com/okta/okta-oidc-js/pull/661) Requires Node >= 10.13.0. Add support for Node 12. Update production dependencies:
+  - `openid-client@3.12.2` (was 2.5.0)
+  - `passport@0.4.1` (was 0.3.2)
+  - `@okta/configuration-validation@0.4.1` (was 0.2.0)
+
+# 3.0.0
+
+### Breaking Changes 
+
+See "Updating" in the README for migration steps
+
+- Logout callback route has been removed (`/logout/callback`). Local session is now cleared before redirect to Okta and the default logout redirect Uri is the app base URL. [#644](https://github.com/okta/okta-oidc-js/pull/644)
+
+# 2.1.0
+
+### Features
+
+- Support for Org Authorization Servers. [#590](https://github.com/okta/okta-oidc-js/pull/590) - See [composing your base url](https://developer.okta.com/docs/reference/api/oidc/#composing-your-base-url) for more information on Authorization Servers.
+
+### Bug Fixes
+- Errors during logout would cause the user to receive an empty page and remain logged in. [#585](https://github.com/okta/okta-oidc-js/pull/585) - 
+
+  Due to this bug, errors during logout were being incorrectly suppressed and would not have been seen by the server process. Instead, the user would see a blank page. With this fix, the user will be logged out correctly, but the error event will also now be emitted to the server process.
+
+  Your server code should be prepared to either log or ignore this error.
+
 # 2.0.0
 
 ### Features

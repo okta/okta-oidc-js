@@ -3,7 +3,7 @@
 [![npm version](https://img.shields.io/npm/v/@okta/jwt-verifier.svg?style=flat-square)](https://www.npmjs.com/package/@okta/jwt-verifier)
 [![build status](https://img.shields.io/travis/okta/okta-oidc-js/master.svg?style=flat-square)](https://travis-ci.org/okta/okta-oidc-js)
 
-This library verifies Okta access tokens (issued by Okta Custom Authorization servers) by fetching the public keys from the JWKS endpoint of the authorization server. If the access token is valid it will be converted to a JSON object and returned to your code. 
+This library verifies Okta access tokens (issued by [Okta Custom Authorization servers](https://developer.okta.com/docs/concepts/auth-servers/) by fetching the public keys from the JWKS endpoint of the authorization server. If the access token is valid it will be converted to a JSON object and returned to your code. 
 
 > Okta Custom Authorization Servers require the API Access Management license.  If you are using Okta Org Authorization Servers (which don’t require API Access Management) you can manually validate against the /introspect endpoint ( https://developer.okta.com/docs/reference/api/oidc/#introspect ). 
 
@@ -27,11 +27,7 @@ For information on how to upgrade between versions of the library, see UPGRADING
 ## How to use
 
 ```bash
-# npm
 npm install --save @okta/jwt-verifier
-
-# yarn
-yarn add @okta/jwt-verifier
 ```
 
 Create a verifier instance, bound to the issuer (authorization server URL):
@@ -133,4 +129,25 @@ const oktaJwtVerifier = new OktaJwtVerifier({
   cacheMaxAge: 60 * 60 * 1000, // 1 hour
   jwksRequestsPerMinute: 10
 });
+```
+
+## Testing
+Setup SPA and Web App in your Okta org and testing environment variables by following [Testing](https://github.com/okta/okta-oidc-js#testing) section in okta-oidc-js Monorepo's README.
+
+**NOTE:** 
+
+When create SPA application in your Okta org, please make sure all `Implicit` checks have been checked in `General Settings -> Application -> Allowed grant types` section.
+
+Command for running unit test:
+```
+yarn test:unit
+```
+
+## Contributing
+We welcome contributions to all of our open-source packages. Please see the [contribution guide](https://github.com/okta/okta-oidc-js/blob/master/CONTRIBUTING.md) to understand how to structure a contribution.
+
+### Installing dependencies for contributions
+We use [yarn](https://yarnpkg.com) for dependency management when developing this package:
+```
+yarn install
 ```

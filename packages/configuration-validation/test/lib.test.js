@@ -16,21 +16,68 @@ describe('Configuration Validation', () => {
     'find it: https://bit.ly/finding-okta-app-credentials';
 
   describe('buildConfigObject', () => {
-    it('returns correct config object when parameters are passed in camelCase', () => {
+
+    it('can be called with no arguments', () => {
+      expect(buildConfigObject()).toEqual({});
+    });
+
+    it('pass-through: empty config', () => {
+      const passedConfig = {};
+      expect(buildConfigObject(passedConfig)).toEqual(passedConfig);
+    });
+
+    it('pass-through: leaves config object unchanged when all parameters are passed in preferred format', () => {
       const passedConfig = {
         clientId: '{clientId}',
         issuer: '{issuer}',
         redirectUri: '{redirectUri}',
-        storage: '{storage}',
+        responseType: '{responseType}',
+        scopes: ['a', 'b', 'c'],
+        tokenManager: {
+          storage: '{storage}',
+          autoRenew: '{autoRenew}',
+          secure: true,
+        }
+      };
+
+      expect(buildConfigObject(passedConfig)).toEqual(passedConfig);
+    });
+
+    it('pass-through: Allows passing extra config properties at top-level', () => {
+      function f() {}
+      const passedConfig = {
+        onAuthComplete: f
+      }
+
+      expect(buildConfigObject(passedConfig)).toEqual(passedConfig);
+    });
+
+    it('pass-through: tokenManager section', () => {
+      const passedConfig = {
+        tokenManager: {
+          blar: 'foo',
+          storage: 'a',
+          autoRenew: false,
+        }
+      };
+
+      expect(buildConfigObject(passedConfig)).toEqual(passedConfig);
+    });
+
+    it('returns correct config object when parameters are passed in camelCase', () => {
+      const passedConfig = {
+        clientId: '{clientId}',
+        redirectUri: '{redirectUri}',
+        responseType: '{responseType}',
         autoRenew: '{autoRenew}'
       }
 
       expect(buildConfigObject(passedConfig)).toEqual({
         clientId: '{clientId}',
-        issuer: '{issuer}',
         redirectUri: '{redirectUri}',
+        responseType: '{responseType}',
+        autoRenew: '{autoRenew}',
         tokenManager: {
-          storage: '{storage}',
           autoRenew: '{autoRenew}'
         }
       });
@@ -39,19 +86,21 @@ describe('Configuration Validation', () => {
     it('returns correct config object when parameters are passed in underscore_case', () => {
       const passedConfig = {
         client_id: '{client_id}',
-        issuer: '{issuer}',
         redirect_uri: '{redirect_uri}',
-        storage: '{storage}',
+        response_type: '{response_type}',
         auto_renew: '{auto_renew}'
       }
 
       expect(buildConfigObject(passedConfig)).toEqual({
         clientId: '{client_id}',
-        issuer: '{issuer}',
+        client_id: '{client_id}',
         redirectUri: '{redirect_uri}',
+        redirect_uri: '{redirect_uri}',
+        responseType: '{response_type}',
+        response_type: '{response_type}',
+        auto_renew: '{auto_renew}',
         tokenManager: {
-          storage: '{storage}',
-          autoRenew: '{auto_renew}'
+          autoRenew: '{auto_renew}',
         }
       });
     });
@@ -60,22 +109,184 @@ describe('Configuration Validation', () => {
       const passedConfig = {
         clientId: '{clientId}',
         client_id: '{client_id}',
-        issuer: '{issuer}',
         redirectUri: '{redirectUri}',
         redirect_uri: '{redirect_uri}',
-        storage: '{storage}',
         autoRenew: '{autoRenew}',
         auto_renew: '{auto_renew}'
       }
 
       expect(buildConfigObject(passedConfig)).toEqual({
         clientId: '{clientId}',
-        issuer: '{issuer}',
+        client_id: '{client_id}',
         redirectUri: '{redirectUri}',
+        redirect_uri: '{redirect_uri}',
+        autoRenew: '{autoRenew}',
+        auto_renew: '{auto_renew}',
+        tokenManager: {
+          autoRenew: '{autoRenew}',
+        }
+      });
+    });
+
+    it('tokenManager section: accepts top-level "storage" prop', () => {
+      const passedConfig = {
+        storage: 'foo',
+      };
+
+      expect(buildConfigObject(passedConfig)).toEqual({
+        storage: 'foo',
+        tokenManager: {
+          storage: 'foo'
+        }
+      });
+    });
+
+    it('tokenManager section: will not overwrite "storage" prop if set within section', () => {
+      const passedConfig = {
+        storage: 'foo',
+        tokenManager: {
+          storage: 'bar'
+        }
+      };
+
+      expect(buildConfigObject(passedConfig)).toEqual({
+        storage: 'foo',
+        tokenManager: {
+          storage: 'bar'
+        }
+      });
+    });
+
+    it('tokenManager section: accepts top-level "autoRenew" prop', () => {
+      const passedConfig = {
+        autoRenew: true,
+      };
+
+      expect(buildConfigObject(passedConfig)).toEqual({
+        autoRenew: true,
+        tokenManager: {
+          autoRenew: true,
+        }
+      });
+    });
+
+    it('tokenManager section: will not overwrite "autoRenew" prop if set within section', () => {
+      const passedConfig = {
+        autoRenew: true,
+        tokenManager: {
+          autoRenew: false,
+        }
+      };
+
+      expect(buildConfigObject(passedConfig)).toEqual({
+        autoRenew: true,
+        tokenManager: {
+          autoRenew: false,
+        }
+      });
+    });
+
+    it('tokenManager section: Allows passing extra config to tokenManager + top-level props', () => {
+      const passedConfig = {
+        storage: '{storage}',
+        autoRenew: '{autoRenew}',
+        tokenManager: {
+          secure: true
+        }
+      }
+
+      expect(buildConfigObject(passedConfig)).toEqual({
+        storage: '{storage}',
+        autoRenew: '{autoRenew}',
         tokenManager: {
           storage: '{storage}',
-          autoRenew: '{autoRenew}'
+          autoRenew: '{autoRenew}',
+          secure: true
         }
+      });
+    });
+
+    it('Converts "scope" (string) to "scopes" (array)', () => {
+      const scope = 'a b c';
+      const passedConfig = {
+        scope
+      };
+
+      expect(buildConfigObject(passedConfig)).toEqual({
+        scopes: ['a', 'b', 'c'],
+        scope,
+      });
+    });
+
+    it('Converts "scope" (string) to "scopes" (array) (multiple spaces)', () => {
+      const scope = 'a  b  c';
+      const passedConfig = {
+        scope
+      };
+
+      expect(buildConfigObject(passedConfig)).toEqual({
+        scopes: ['a', 'b', 'c'],
+        scope,
+      });
+    });
+
+
+    it('Accepts "scope" (as an array)', () => {
+      const scope = ['a', 'b', 'c'];
+      const passedConfig = {
+        scope
+      };
+
+      expect(buildConfigObject(passedConfig)).toEqual({
+        scopes: scope,
+        scope,
+      });
+    });
+
+
+    it('Accepts single "responseType" (as a string)', () => {
+      const responseType = 'a';
+      const passedConfig = {
+        responseType
+      };
+
+      expect(buildConfigObject(passedConfig)).toEqual({
+        responseType: 'a'
+      });
+    });
+
+    it('Accepts multiple "responseType" (as a string) and converts to array', () => {
+      const responseType = 'a b';
+      const passedConfig = {
+        responseType
+      };
+
+      expect(buildConfigObject(passedConfig)).toEqual({
+        responseType: ['a', 'b']
+      });
+    });
+
+
+    it('Accepts multiple "responseType" (as a string) and converts to array (multi space)', () => {
+      const responseType = 'a   b   x';
+      const passedConfig = {
+        responseType
+      };
+
+      expect(buildConfigObject(passedConfig)).toEqual({
+        responseType: ['a', 'b', 'x']
+      });
+    });
+
+
+    it('Accepts multiple "responseType" (as an array)', () => {
+      const responseType = ['a', 'b'];
+      const passedConfig = {
+        responseType
+      };
+
+      expect(buildConfigObject(passedConfig)).toEqual({
+        responseType: ['a', 'b']
       });
     });
   });

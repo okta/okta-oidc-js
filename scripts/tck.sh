@@ -2,7 +2,7 @@
 
 if [ -z "$1" ]
   then
-    TCK_VERSION=0.5.4-SNAPSHOT
+    TCK_VERSION=0.5.5
   else
     TCK_VERSION=$1
 fi

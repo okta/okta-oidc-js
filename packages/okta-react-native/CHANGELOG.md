@@ -1,3 +1,51 @@
+# 1.3.0
+
+### Features
+- [`f734054`](https://github.com/okta/okta-oidc-js/commit/f7340542b31495a9921e576349093305e9831b9d) - `clearTokens` will remove all tokens from local storage
+
+# 1.2.3
+
+### Bug Fix
+- [`52bebbf`](https://github.com/okta/okta-oidc-js/commit/52bebbf21d668e729a6f674db2091380675df520) - Update Android OIDC dependency to 1.0.8
+
+# 1.2.2
+
+### Bug Fix
+- [`05a3033`](https://github.com/okta/okta-oidc-js/commit/05a3033ba68e5e45170e3d50ce7dba535e3bccb5) - `refreshTokens` should save the new tokens (iOS)
+
+# 1.2.1
+
+### Bug fix
+- [`05be754`](https://github.com/okta/okta-oidc-js/commit/05be7540a53e9c712cf108573451baa0124032f0) - Compilation error in Android bridge file
+
+# 1.2.0
+
+### Features
+- [`58618c8`](https://github.com/okta/okta-oidc-js/commit/32b9a99e3065c34cdcc97018075697356403f11d) - Added `authenticate(withSessionToken:)` public method
+
+# 1.1.0
+
+### Features
+- [`58618c8`](https://github.com/okta/okta-oidc-js/commit/58618c8a3f519c82a41f1cce58918bc98a459a2b) - Added support for React Native 0.60.x
+
+# 1.0.2
+
+### Features
+- [`c422f1d`](https://github.com/okta/okta-oidc-js/commit/c422f1d064acaa26f994564ffb2fa5585a83c4be#diff-2c20101038faa8ceda1dda5c3cde79d8) - Add Carthage support
+
+# 1.0.1
+
+### Features
+- [`138f068`](https://github.com/okta/okta-oidc-js/commit/138f068a64c62f754567919d79da2c67bbdb8969#diff-2c20101038faa8ceda1dda5c3cde79d8) - Make hardware backed key store configurable on android devices
+
+### Other
+- [`773bc9f`](https://github.com/okta/okta-oidc-js/commit/773bc9ff6bb2a440fb43439d17798224e57c0333#diff-2c20101038faa8ceda1dda5c3cde79d8) - Clears session client on android after user signs out
+
+# 1.0.0
+
+### Features
+- [`e8948a8`](https://github.com/okta/okta-oidc-js/commit/e8948a83ce5b0f0213c96739760c219eda250598#diff-2c20101038faa8ceda1dda5c3cde79d8) - Reworks the React Native SDK. This major version upgrade removes Expo/Unimodules dependencies, replaces with Native Modules acting as wrappers around [okta-oidc-android](https://github.com/okta/okta-oidc-android) and [okta-oidc-ios](https://github.com/okta/okta-oidc-ios), and introduces new usages. For more details, refer to the commit.
+
 # 0.1.2
 
 ### Other

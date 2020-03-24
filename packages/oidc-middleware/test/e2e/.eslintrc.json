@@ -1,0 +1,14 @@
+{
+  "extends": [
+    "plugin:protractor/recommended",
+    "plugin:jasmine/recommended"
+  ],
+  "plugins": [
+    "protractor",
+    "jasmine"
+  ],
+  "env": {
+    "jasmine": true,
+    "node": true
+  }
+}

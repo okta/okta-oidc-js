@@ -1,6 +1,4 @@
 /**
- * @export
- * @interface UserClaims
  *
  * This interface represents the union of possible known claims that are in an
  * ID Token or returned from the /userinfo response and depend on the

@@ -1,0 +1,9 @@
+{
+  "extends": "../../tsconfig.json",
+  "include": [
+    "./", "../support/tsconfig.spec.json"
+  ],
+  "compilerOptions": {
+    "resolveJsonModule": true
+  }
+}

@@ -1,3 +1,69 @@
+# 2.0.0
+
+[#690](https://github.com/okta/okta-oidc-js/pull/690)
+
+### Features
+
+- `OktaCallbackComponent` will catch and display exceptions thrown from `handleAuthentication()`
+- `onAuthRequired` callbacks will now receive the Angular injector as the 2nd parameter. This change allows logic using any services available within your application.
+
+### Bug Fixes
+
+- Saved URI is now stored in `sessionStorage` instead of `localStorage`. This fixes an issue which can occur when multiple instances of the app are loading at the same time.
+- `OktaCallbackComponent` uses `window.location.replace()` to complete the login flow after `handleAuthentication` completes. This fixes an issue where the user could navigate back to the callback hander.
+
+### Breaking Changes
+
+- Signature for `onAuthRequired` callback functions has changed. Callbacks will receive the `OktaAuthService` as the first argument, and the Angular `Injector` as the second argument.
+- Static initializer `OktaAuthModule.initAuth()` has been removed. `OKTA_CONFIG` should be provided directly by your module.
+- `getFromUri` now returns an absolute URI as a string
+- `setFromUri` takes a string. If it is a relative path, it will be converted to an absolute URI before being saved.
+- Legacy config formats are no longer supported. See [Configuration Reference](https://github.com/okta/okta-auth-js#configuration-reference) for supported values.
+
+### Other
+
+- Upgrades `@okta/okta-auth-js` to version 3.0.0
+
+# 1.4.0
+
+### Features
+
+- [#648](https://github.com/okta/okta-oidc-js/pull/648)
+  - Adds a default handler for onSessionExpired
+  - Adds a new option isAuthenticated which works with onAuthRequired
+  - Expose TokenManager
+  - Adds documentation for postLogoutRedirectUri
+
+# 1.3.1
+
+### Bug fixes
+
+- [#646](https://github.com/okta/okta-oidc-js/pull/646) - Fixes regression with AOT compilation. Also tested against Angular 9.
+
+# 1.3.0
+
+### Features
+
+- [`558696`](https://github.com/okta/okta-oidc-js/commit/5586962c137d7ef0788744dbf0c1dc9f7d411ad0) - Upgrades to `@okta/okta-auth-js@2.11` which includes new options for signout: [`3e8c65`](https://github.com/okta/okta-auth-js/commit/3e8c654b99de771549775eb566f9349c86ed89b6)
+
+# 1.2.3
+
+### Features
+
+- [`558696`](https://github.com/okta/okta-oidc-js/commit/5586962c137d7ef0788744dbf0c1dc9f7d411ad0) - Upgrades to `@okta/okta-auth-js@2.11` which includes new options for signout: [`3e8c65`](https://github.com/okta/okta-auth-js/commit/3e8c654b99de771549775eb566f9349c86ed89b6)
+
+# 1.2.2
+
+### Features
+
+- [`ef10d85`](https://github.com/okta/okta-oidc-js/commit/ef10d856fb6bceba26fac119f0d17db1aaf66a2c) - Support PKCE authorization flow
+
+### Other
+
+- [`654550`](https://github.com/okta/okta-oidc-js/commit/6545506921cbe6e8f15076e45e908f285a6e2f1e) - All configuration options are now accepted. See [Configuration Reference](https://github.com/okta/okta-auth-js#configuration-reference). Camel-case (clientId) is now the preferred syntax for all Okta OIDC libraries. Underscore syntax (client_id) will be deprecated in a future release.
+
+- [`a2a7b3e`](https://github.com/okta/okta-oidc-js/commit/a2a7b3e695d40e29d473be89e90340fbf5c4c56b) - Configuration property `scope` (string) is deprecated in favor of `scopes` (array). Normalize config format for the properties `responseType` and `scopes`, used in get token flows. Fully support deprecated config properties `request_type` and `scope` as previously documented and used within the okta-angular samples.
+
 # 1.2.1
 
 ### Other

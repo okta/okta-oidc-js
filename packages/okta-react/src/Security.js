@@ -10,34 +10,30 @@
  * See the License for the specific language governing permissions and limitations under the License.
  */
 
-import React, { Component } from 'react';
-import { withRouter } from 'react-router';
-import PropTypes from 'prop-types';
-import Auth from './Auth';
+import React, { useState, useEffect } from 'react';
+import AuthService from './AuthService';
+import OktaContext from './OktaContext';
 
-class Security extends Component {
-  constructor(props) {
-    super(props);
-    this.auth = props.auth || new Auth(props);
-  }
+const Security = (props) => { 
 
-  getChildContext() {
-    return {
-      auth: this.auth
-    };
-  }
+  const [authService] = useState( props.authService || new AuthService(props) );
+  const [authState, setAuthState] = useState(authService.getAuthState());
 
-  static childContextTypes = {
-    auth: PropTypes.object.isRequired
-  }
+  useEffect( () => { 
+    const unsub = authService.on('authStateChange', () => {
+      setAuthState(authService.getAuthState());
+    });
+    authService.updateAuthState(); // Trigger an initial change event to make sure authState is latest
+    return unsub;
+  }, [authService]);
 
-  render() {
-    return (
-      <div className={this.props.className}>
-        {this.props.children}
+  return (
+    <OktaContext.Provider value={ { authService, authState } }>
+      <div className={props.className}>
+        {props.children}
       </div>
-    );
-  }
-}
+    </OktaContext.Provider>
+  );
+};
 
-export default withRouter(Security);
+export default Security;

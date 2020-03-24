@@ -20,7 +20,7 @@ module.exports = class OktaSignInPage {
   }
 
   async waitUntilVisible() {
-    await browser.wait(EC.presenceOf(this.submit), 5000);
+    await browser.wait(EC.presenceOf(this.submit), 5000, 'wait for submit btn');
   }
 
   async signIn({username, password}) {

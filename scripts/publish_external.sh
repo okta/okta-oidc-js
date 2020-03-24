@@ -1,3 +1,5 @@
+# TODO: is this script used? "publish" is called by bacon.
+
 # undo permissions change on scripts/publish_external.sh
 git checkout -- scripts
 

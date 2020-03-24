@@ -11,18 +11,23 @@
  */
 
 import React, { Component } from 'react';
-import { withAuth } from '@okta/okta-react';
+import { withOktaAuth } from '@okta/okta-react';
 
-export default withAuth(class Protected extends Component {
+export default withOktaAuth(class Protected extends Component {
   constructor(props) {
     super(props);
     this.state = { userinfo: null };
+    this.logout = this.logout.bind(this);
   }
 
   async componentDidMount() {
-    const claims = await this.props.auth.getUser();
+    const claims = await this.props.authService.getUser();
     const userinfo = JSON.stringify(claims, null, 4);
     this.setState({ userinfo });
+  }
+
+  async logout() {
+    this.props.authService.logout('/');
   }
 
   render() {
@@ -30,6 +35,7 @@ export default withAuth(class Protected extends Component {
       <div>
         <div> Protected! </div>
         {this.state.userinfo && <pre id="userinfo-container"> {this.state.userinfo} </pre>}
+        <button id="logout-button" onClick={this.logout}>Logout</button>
       </div>
     );
   }

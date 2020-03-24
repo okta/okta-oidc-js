@@ -1,3 +1,87 @@
+# 2.0.1
+
+### Bug Fixes
+
+- [#700](https://github.com/okta/okta-oidc-js/pull/700) LoginCallback: render error as string
+
+# 2.0.0
+
+### Features
+
+- Now offers synchronous access to the authentication state (after the first asynchronous determination)
+- Now offers the following React Hook (2.x requires React 16.8+)
+  - `useOktaAuth` 
+- Now can be used with other routers than react-router
+  - React Router 5 continues to be supported, but is now optional
+  - Routers other than React-Router will have to write their own version of `LoginCallback` component 
+
+### Breaking Changes
+- Requires React 16.8+
+- If using react-router, requires react-router 5+
+- See the `Migration from 1.x to 2.0` section of the README for details on migrating your applications
+  - `Auth.js` and the `auth` parameter to `<Security>` have been renamed to `AuthService.js` and `authService`
+  - `<ImplicitCallback>` has been replaced with `<LoginCallback>`
+  - `auth.IsAuthenticated()` has been removed
+    - instead use the `.isAuthenticated` property of the `authState` object
+  - `withAuth` has been replaced with `withOktaAuth`, which gives slightly different parameters
+    - provides `authService` instead of `auth`
+    - also provides the `authState` object
+  - the arguments passed to the optional `onAuthRequired()` callback provided to the `<Security>` component have changed
+  - error handling for authentication is now handled by putting the error into the `authState.error` property
+  - `auth.setFromUri()` is now `authService.setFromUri()` and is passed a string (instead of an object)
+  - `auth.getFromUri()` is now `authService.getFromUri()` and returns a string (instead of an object)
+
+# 1.4.1
+
+### Bug Fixes
+
+- [#669](https://github.com/okta/okta-oidc-js/pull/669) - Fixes ImplicitCallback component so it will not attempt redirect unless `getFromUri` returns a value. This can occur if multiple instances of the component are mounted.
+
+# 1.4.0
+
+### Features
+
+- [#648](https://github.com/okta/okta-oidc-js/pull/648)
+  - Adds a default handler for onSessionExpired
+  - Adds a new option isAuthenticated which works with onAuthRequired
+  - Expose TokenManager
+  - Adds documentation for postLogoutRedirectUri
+
+# 1.3.1
+
+### Bug Fixes
+
+- [`3b95ed`](https://github.com/okta/okta-oidc-js/commit/3b95ed3533ad969bf96194933769f6091e018c3b) -  Changes from deprecated 'componentWillMount' to 'componentDidMount'
+
+# 1.3.0
+
+### Features
+
+- [`558696`](https://github.com/okta/okta-oidc-js/commit/5586962c137d7ef0788744dbf0c1dc9f7d411ad0) - Upgrades to `@okta/okta-auth-js@2.11` which includes new options for signout: [`3e8c65`](https://github.com/okta/okta-auth-js/commit/3e8c654b99de771549775eb566f9349c86ed89b6)
+
+# 1.2.3
+
+### Other
+- [`a2a7b3e`](https://github.com/okta/okta-oidc-js/commit/a2a7b3e695d40e29d473be89e90340fbf5c4c56b) - Configuration property `scope` (string) is deprecated in favor of `scopes` (array).
+
+### Bug Fixes
+
+- [`a2a7b3e`](https://github.com/okta/okta-oidc-js/commit/a2a7b3e695d40e29d473be89e90340fbf5c4c56b) - Normalize config format for the properties `responseType` and `scopes`, used in get token flows. Fully support deprecated config properties `request_type` and `scope` as previously documented and used within the okta-react samples.
+
+# 1.2.2
+
+### Features
+
+- [`0453f1d`](https://github.com/okta/okta-oidc-js/commit/0453f1d2ec13695b3ad73b01f5336bb4d606eff5) - Adds support for PKCE flow
+
+### Other
+
+- [`654550`](https://github.com/okta/okta-oidc-js/commit/6545506921cbe6e8f15076e45e908f285a6e2f1e) - All configuration options are now accepted. See [Configuration Reference](https://github.com/okta/okta-auth-js#configuration-reference). Camel-case (clientId) is now the preferred syntax for all Okta OIDC libraries. Underscore syntax (client_id) will be deprecated in a future release.
+
+# 1.2.1
+
+- internal version
+
 # 1.2.0
 
 ### Features

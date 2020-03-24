@@ -11,7 +11,7 @@
  */
 
 import { BrowserModule } from '@angular/platform-browser';
-import { NgModule } from '@angular/core';
+import { NgModule, Injector } from '@angular/core';
 import { Routes, RouterModule, Router } from '@angular/router';
 
 import { environment } from './../environments/environment';
@@ -24,7 +24,8 @@ import {
   OktaAuthModule,
   OktaAuthService,
   OktaCallbackComponent,
-  OktaLoginRedirectComponent
+  OktaLoginRedirectComponent,
+  OKTA_CONFIG
 } from '@okta/okta-angular';
 
 /**
@@ -34,11 +35,13 @@ import { ProtectedComponent } from './protected.component';
 import { AppComponent } from './app.component';
 import { SessionTokenLoginComponent } from './sessionToken-login.component';
 
-export function onNeedsAuthenticationGuard(oktaAuth: OktaAuthService, router: Router) {
+export function onNeedsAuthenticationGuard(oktaAuth: OktaAuthService, injector: Injector) {
+  const router = injector.get(Router);
   router.navigate(['/sessionToken-login']);
 }
 
-export function onNeedsGlobalAuthenticationGuard(oktaAuth: OktaAuthService, router: Router) {
+export function onNeedsGlobalAuthenticationGuard(oktaAuth: OktaAuthService, injector: Injector) {
+  const router = injector.get(Router);
   router.navigate(['/login']);
 }
 
@@ -53,6 +56,10 @@ const appRoutes: Routes = [
   },
   {
     path: 'implicit/callback',
+    component: OktaCallbackComponent
+  },
+  {
+    path: 'pkce/callback',
     component: OktaCallbackComponent
   },
   {
@@ -77,12 +84,18 @@ const appRoutes: Routes = [
   }
 ];
 
+// To perform end-to-end PKCE flow we must be configured on both ends: when the login is initiated, and on the callback
+// The login page is loaded with a query param. This will select a unique callback url
+// On the callback load we detect PKCE by inspecting the pathname
+const url = new URL(window.location.href);
+const pkce = !!url.searchParams.get('pkce') || url.pathname.indexOf('pkce/callback') >= 0;
+const redirectUri = window.location.origin + (pkce ? '/pkce/callback' : '/implicit/callback');
+
 const config = {
   issuer: environment.ISSUER,
-  redirectUri: environment.REDIRECT_URI,
+  pkce,
+  redirectUri,
   clientId: environment.CLIENT_ID,
-  scope: 'email',
-  responseType: 'id_token token',
   onAuthRequired: onNeedsGlobalAuthenticationGuard,
   testing: {
     disableHttpsCheck: false
@@ -99,13 +112,18 @@ if (environment.OKTA_TESTING_DISABLEHTTPSCHECK) {
   imports: [
     BrowserModule,
     RouterModule.forRoot(appRoutes),
-    OktaAuthModule.initAuth(config)
+    OktaAuthModule
   ],
   declarations: [
     AppComponent,
     ProtectedComponent,
     SessionTokenLoginComponent
   ],
+  providers: [{
+    provide: OKTA_CONFIG,
+    useValue: config
+  }],
   bootstrap: [ AppComponent ]
 })
+
 export class AppModule { }

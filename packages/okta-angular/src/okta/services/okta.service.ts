@@ -10,24 +10,23 @@
  * See the License for the specific language governing permissions and limitations under the License.
  */
 
-import { Inject, Injectable } from '@angular/core';
-import { Router, NavigationExtras } from '@angular/router';
+import { Inject, Injectable, Injector } from '@angular/core';
 import {
   assertIssuer,
   assertClientId,
   assertRedirectUri,
-  buildConfigObject
 } from '@okta/configuration-validation';
 
-import { OKTA_CONFIG, OktaConfig } from '../models/okta.config';
+import { OKTA_CONFIG, OktaConfig, AuthRequiredFunction } from '../models/okta.config';
 import { UserClaims } from '../models/user-claims';
+import { TokenManager, AccessToken, IDToken } from '../models/token-manager';
 
 import packageInfo from '../packageInfo';
 
 /**
  * Import the okta-auth-js library
  */
-import * as OktaAuth from '@okta/okta-auth-js';
+import OktaAuth from '@okta/okta-auth-js';
 import { Observable, Observer } from 'rxjs';
 
 @Injectable()
@@ -37,37 +36,62 @@ export class OktaAuthService {
     private observers: Observer<boolean>[];
     $authenticationState: Observable<boolean>;
 
-    constructor(@Inject(OKTA_CONFIG) private auth: OktaConfig, private router: Router) {
-      // Assert Configuration
-      assertIssuer(auth.issuer, auth.testing);
-      assertClientId(auth.clientId);
-      assertRedirectUri(auth.redirectUri)
-
+    constructor(@Inject(OKTA_CONFIG) config: OktaConfig, private injector: Injector) {
       this.observers = [];
-
-      this.oktaAuth = new OktaAuth(buildConfigObject(auth));
-
-      this.oktaAuth.userAgent = `${packageInfo.name}/${packageInfo.version} ${this.oktaAuth.userAgent}`;
-
-      /**
-       * Scrub scopes to ensure 'openid' is included
-       */
-      auth.scope = this.scrubScopes(auth.scope);
 
       /**
        * Cache the auth config.
        */
-      this.config = auth;
+      this.config = Object.assign({}, config);
+      this.config.scopes = this.config.scopes || ['openid', 'email'];
 
-      this.$authenticationState = new Observable((observer: Observer<boolean>) => {this.observers.push(observer)})
+      // Automatically enter login flow if session has expired or was ended outside the application
+      // The default behavior can be overriden by setting your own `onSessionExpired` function on the OktaConfig
+      if (!this.config.onSessionExpired) {
+        this.config.onSessionExpired = this.login.bind(this);
+      }
+
+      /**
+       * Scrub scopes to ensure 'openid' is included
+       */
+
+      this.scrubScopes(this.config.scopes);
+
+      // Assert Configuration
+      assertIssuer(this.config.issuer, this.config.testing);
+      assertClientId(this.config.clientId);
+      assertRedirectUri(this.config.redirectUri);
+
+      this.oktaAuth = new OktaAuth(this.config);
+      this.oktaAuth.userAgent = `${packageInfo.name}/${packageInfo.version} ${this.oktaAuth.userAgent}`;
+      this.$authenticationState = new Observable((observer: Observer<boolean>) => { this.observers.push(observer); });
+    }
+
+    login(fromUri?: string, additionalParams?: object) {
+      this.setFromUri(fromUri);
+      const onAuthRequired: AuthRequiredFunction | undefined = this.config.onAuthRequired;
+      if (onAuthRequired) {
+        return onAuthRequired(this, this.injector);
+      }
+      return this.loginRedirect(undefined, additionalParams);
+    }
+
+    getTokenManager(): TokenManager {
+      return this.oktaAuth.tokenManager;
     }
 
     /**
-     * Checks if there is an access token and id token
+     * Checks if there is an access token OR an id token
+     * A custom method may be provided on config to override this logic
      */
     async isAuthenticated(): Promise<boolean> {
-      const accessToken = await this.getAccessToken()
-      const idToken = await this.getIdToken()
+      // Support a user-provided method to check authentication
+      if (this.config.isAuthenticated) {
+        return (this.config.isAuthenticated)();
+      }
+
+      const accessToken = await this.getAccessToken();
+      const idToken = await this.getIdToken();
       return !!(accessToken || idToken);
     }
 
@@ -80,7 +104,7 @@ export class OktaAuthService {
      */
     async getAccessToken(): Promise<string | undefined>  {
       try {
-        const accessToken = await this.oktaAuth.tokenManager.get('accessToken');
+        const accessToken: AccessToken = await this.oktaAuth.tokenManager.get('accessToken') as AccessToken;
         return accessToken.accessToken;
       } catch (err) {
         // The user no longer has an existing SSO session in the browser.
@@ -95,7 +119,7 @@ export class OktaAuthService {
      */
     async getIdToken(): Promise<string | undefined> {
       try {
-        const idToken = await this.oktaAuth.tokenManager.get('idToken');
+        const idToken: IDToken = await this.oktaAuth.tokenManager.get('idToken') as IDToken;
         return idToken.idToken;
       } catch (err) {
         // The user no longer has an existing SSO session in the browser.
@@ -110,17 +134,13 @@ export class OktaAuthService {
      * accessToken is provided or parses the available idToken.
      */
     async getUser(): Promise<UserClaims|undefined> {
-      const accessToken = await this.oktaAuth.tokenManager.get('accessToken');
-      const idToken = await this.oktaAuth.tokenManager.get('idToken');
-      if (accessToken && idToken) {
-        const userinfo = await this.oktaAuth.token.getUserInfo(accessToken);
-        if (userinfo.sub === idToken.claims.sub) {
-          // Only return the userinfo response if subjects match to
-          // mitigate token substitution attacks
-          return userinfo;
-        }
+      const accessToken: AccessToken = await this.oktaAuth.tokenManager.get('accessToken') as AccessToken;
+      const idToken: IDToken = await this.oktaAuth.tokenManager.get('idToken') as IDToken;
+      if (!accessToken || !idToken) {
+        // Returns raw claims from idToken if there is no accessToken.
+        return idToken ? idToken.claims : undefined;
       }
-      return idToken ? idToken.claims : undefined;
+      return this.oktaAuth.token.getUserInfo();
     }
 
     /**
@@ -140,12 +160,12 @@ export class OktaAuthService {
         this.setFromUri(fromUri);
       }
 
-      this.oktaAuth.token.getWithRedirect({
-        responseType: (this.config.responseType || 'id_token token').split(' '),
-        // Convert scopes to list of strings
-        scopes: this.config.scope.split(' '),
-        ...additionalParams
-      });
+      const params = Object.assign({
+        scopes: this.config.scopes,
+        responseType: this.config.responseType
+      }, additionalParams);
+
+      return this.oktaAuth.token.getWithRedirect(params); // can throw
     }
 
     /**
@@ -153,78 +173,72 @@ export class OktaAuthService {
      * @param uri
      * @param queryParams
      */
-    setFromUri(uri: string, queryParams?: object) {
-      const json = JSON.stringify({
-        uri: uri,
-        params: queryParams
-      });
-      localStorage.setItem('referrerPath', json);
+    setFromUri(fromUri?: string) {
+      // Use current location if fromUri was not passed
+      fromUri = fromUri || window.location.href;
+      // If a relative path was passed, convert to absolute URI
+      if (fromUri.charAt(0) === '/') {
+        fromUri = window.location.origin + fromUri;
+      }
+      sessionStorage.setItem('referrerPath', fromUri);
     }
 
     /**
      * Returns the referrer path from localStorage or app root.
      */
-    getFromUri(): { uri: string, extras: NavigationExtras } {
-      const referrerPath = localStorage.getItem('referrerPath');
-      localStorage.removeItem('referrerPath');
-
-      const path = JSON.parse(referrerPath) || { uri: '/', params: {} };
-      const navigationExtras: NavigationExtras = {
-        queryParams: path.params
-      };
-
-      return {
-        uri: path.uri,
-        extras: navigationExtras
-      }
+    getFromUri(): string {
+      const fromUri = sessionStorage.getItem('referrerPath') || window.location.origin;
+      sessionStorage.removeItem('referrerPath');
+      return fromUri;
     }
 
     /**
      * Parses the tokens from the callback URL.
      */
     async handleAuthentication(): Promise<void> {
-      const tokens = await this.oktaAuth.token.parseFromUrl();
-      tokens.forEach(token => {
-        if (token.idToken) {
-          this.oktaAuth.tokenManager.add('idToken', token);
-        }
-        if (token.accessToken) {
-          this.oktaAuth.tokenManager.add('accessToken', token);
-        }
-      });
-      if(await this.isAuthenticated()) {
-        this.emitAuthenticationState(true)
+      const res = await this.oktaAuth.token.parseFromUrl();
+      const tokens = res.tokens;
+      if (tokens.accessToken) {
+        this.oktaAuth.tokenManager.add('accessToken', tokens.accessToken as AccessToken);
       }
-      /**
-       * Navigate back to the initial view or root of application.
-       */
-      const fromUri = this.getFromUri();
-      this.router.navigate([fromUri.uri], fromUri.extras);
+      if (tokens.idToken) {
+        this.oktaAuth.tokenManager.add('idToken', tokens.idToken as IDToken);
+      }
+      if (await this.isAuthenticated()) {
+        this.emitAuthenticationState(true);
+      }
     }
 
     /**
      * Clears the user session in Okta and removes
      * tokens stored in the tokenManager.
-     * @param uri
+     * @param options
      */
-    async logout(uri?: string): Promise<void> {
-      this.oktaAuth.tokenManager.clear();
-      await this.oktaAuth.signOut();
-      this.emitAuthenticationState(false)
-      this.router.navigate([uri || '/']);
+    async logout(options?: any): Promise<void> {
+      let redirectUri = null;
+      options = options || {};
+      if (typeof options === 'string') {
+        redirectUri = options;
+        // If a relative path was passed, convert to absolute URI
+        if (redirectUri.charAt(0) === '/') {
+          redirectUri = window.location.origin + redirectUri;
+        }
+        options = {
+          postLogoutRedirectUri: redirectUri
+        };
+      }
+      await this.oktaAuth.signOut(options);
+      this.emitAuthenticationState(false);
     }
 
     /**
      * Scrub scopes to ensure 'openid' is included
      * @param scopes
      */
-    scrubScopes(scopes: string): string {
-      if (!scopes) {
-        return 'openid email';
+    scrubScopes(scopes: string[]): void {
+      if (scopes.indexOf('openid') >= 0) {
+        return;
       }
-      if (scopes.indexOf('openid') === -1) {
-        return scopes + ' openid';
-      }
-      return scopes;
+      scopes.unshift('openid');
     }
 }

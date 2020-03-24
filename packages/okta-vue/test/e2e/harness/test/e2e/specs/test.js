@@ -6,7 +6,56 @@ module.exports = {
     this.devServer = browser.globals.devServerURL
   },
 
+  'PKCE: redirects to Okta for login when trying to access a protected page': function (browser) {
+    // Login flow
+    browser
+      .url(this.devServer + '/protected?pkce=1')
+      .waitForElementVisible('body', 5000)
+      .waitForElementVisible('#okta-signin-username', 5000)
+      .waitForElementVisible('#okta-signin-password', 5000)
+      .waitForElementVisible('#okta-signin-submit', 1000)
+      .setValue('#okta-signin-username', process.env.USERNAME)
+      .setValue('#okta-signin-password', process.env.PASSWORD)
+      .click('#okta-signin-submit')
+      .waitForElementVisible('#app', 20000)
+
+    // On the protected page
+    browser.expect.element('#logout-button').to.be.present.before(2000)
+    browser.expect.element('.protected').text.to.contain('Protected!').before(2000)
+    browser.expect.element('.protected .userinfo').text.to.contain('email').before(2000)
+    browser.assert.urlContains('/protected')
+
+    /// Sign out
+    browser.click('#logout-button')
+    browser.expect.element('#login-button').to.be.present.before(2000)
+    browser.end()
+  },
+
+  'PKCE: redirects to Okta for login': function (browser) {
+    // Login flow
+    browser
+      .url(this.devServer + '?pkce=1')
+      .waitForElementVisible('#app', 5000)
+      .click('#login-button')
+      .waitForElementVisible('#okta-signin-username', 5000)
+      .waitForElementVisible('#okta-signin-password', 5000)
+      .waitForElementVisible('#okta-signin-submit', 1000)
+      .setValue('#okta-signin-username', process.env.USERNAME)
+      .setValue('#okta-signin-password', process.env.PASSWORD)
+      .click('#okta-signin-submit')
+      .waitForElementVisible('#app', 20000)
+
+    // Verify we are logged in
+    browser.expect.element('#logout-button').to.be.present.before(2000)
+
+    /// Sign out
+    browser.click('#logout-button')
+    browser.expect.element('#login-button').to.be.present.before(2000)
+    browser.end()
+  },
+
   'redirects to Okta for login when trying to access a protected page': function (browser) {
+    // Login flow
     browser
       .url(this.devServer + '/protected')
       .waitForElementVisible('body', 5000)
@@ -16,18 +65,22 @@ module.exports = {
       .setValue('#okta-signin-username', process.env.USERNAME)
       .setValue('#okta-signin-password', process.env.PASSWORD)
       .click('#okta-signin-submit')
-      .waitForElementVisible('#app', 5000)
-      .pause(2000) // Wait for async token retrieval and userinfo to finish
-      .assert.urlContains('/protected')
-      .assert.elementPresent('#logout-button')
-      .assert.containsText('.protected', 'Protected!')
-      .pause(2000)
-      .assert.containsText('.protected .userinfo', 'email')
-      .click('#logout-button')
-      .end()
+      .waitForElementVisible('#app', 20000)
+
+    // On the protected page
+    browser.expect.element('#logout-button').to.be.present.before(2000)
+    browser.expect.element('.protected').text.to.contain('Protected!').before(2000)
+    browser.expect.element('.protected .userinfo').text.to.contain('email').before(2000)
+    browser.assert.urlContains('/protected')
+
+    /// Sign out
+    browser.click('#logout-button')
+    browser.expect.element('#login-button').to.be.present.before(2000)
+    browser.end()
   },
 
   'redirects to Okta for login': function (browser) {
+    // Login flow
     browser
       .url(this.devServer)
       .waitForElementVisible('#app', 5000)
@@ -38,14 +91,19 @@ module.exports = {
       .setValue('#okta-signin-username', process.env.USERNAME)
       .setValue('#okta-signin-password', process.env.PASSWORD)
       .click('#okta-signin-submit')
-      .waitForElementVisible('#app', 5000)
-      .pause(2000) // Wait for async token retrieval and userinfo to finish
-      .assert.elementPresent('#logout-button')
-      .click('#logout-button')
-      .end()
+      .waitForElementVisible('#app', 20000)
+
+    // Verify we are logged in
+    browser.expect.element('#logout-button').to.be.present.before(2000)
+
+    /// Sign out
+    browser.click('#logout-button')
+    browser.expect.element('#login-button').to.be.present.before(2000)
+    browser.end()
   },
 
   'allows passing sessionToken to skip Okta login': function (browser) {
+    // Login flow
     browser
       .url(this.devServer + '/sessionToken')
       .waitForElementVisible('#app', 5000)
@@ -54,10 +112,16 @@ module.exports = {
       .setValue('#username', process.env.USERNAME)
       .setValue('#password', process.env.PASSWORD)
       .click('#submit')
-      .waitForElementVisible('#logout-button', 5000)
-      .assert.urlContains('/protected')
-      .assert.elementPresent('#logout-button')
-      .click('#logout-button')
-      .end()
+      .waitForElementVisible('#logout-button', 20000)
+
+    // On the protected page
+    browser.expect.element('.protected').text.to.contain('Protected!').before(2000)
+    browser.expect.element('.protected .userinfo').text.to.contain('email').before(2000)
+    browser.assert.urlContains('/protected')
+
+    /// Sign out
+    browser.click('#logout-button')
+    browser.expect.element('#login-button').to.be.present.before(2000)
+    browser.end()
   }
 }

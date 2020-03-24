@@ -1,22 +1,18 @@
 {
   "name": "@okta/okta-react",
-  "version": "1.2.0",
+  "version": "2.0.1",
   "description": "React support for Okta",
   "main": "./dist/index.js",
   "scripts": {
     "build": "rimraf dist/ && yarn build:package-info && babel src -d dist",
-    "build:harness": "yarn --cwd test/e2e/harness install",
     "build:package-info": "node ../../util/write-package-info.js . src/packageInfo.js",
     "lint": "eslint src",
     "lint:watch": "esw -w lib/**",
     "prepare": "yarn build",
-    "prestart": "yarn build && yarn build:harness",
-    "pretest": "yarn build && yarn build:harness",
     "start": "yarn --cwd test/e2e/harness start",
     "test": "yarn lint && yarn test:unit && yarn test:e2e",
-    "pretest:e2e": "yarn build && yarn build:harness",
     "test:e2e": "yarn --cwd test/e2e/harness test",
-    "test:unit": "jest test/jest/"
+    "test:unit": "jest"
   },
   "repository": {
     "type": "git",
@@ -36,14 +32,14 @@
   },
   "homepage": "https://github.com/okta/okta-oidc-js#readme",
   "dependencies": {
-    "@okta/configuration-validation": "^0.3.0",
-    "@okta/okta-auth-js": "^2.0.0",
+    "@okta/configuration-validation": "^0.4.1",
+    "@okta/okta-auth-js": "^2.11.2",
     "babel-runtime": "^6.26.0",
     "prop-types": "^15.5.10"
   },
   "peerDependencies": {
-    "react": ">=15",
-    "react-router": ">=4"
+    "react": ">=16.8.0",
+    "react-router-dom": ">=5.1.0"
   },
   "devDependencies": {
     "babel-cli": "^6.26.0",
@@ -60,15 +56,16 @@
     "eslint-plugin-import": "^2.7.0",
     "eslint-plugin-jsx-a11y": "^6.0.2",
     "eslint-plugin-react": "^7.3.0",
+    "eslint-plugin-react-hooks": "^2.5.0",
     "eslint-watch": "^3.1.2",
     "jasmine-core": "~2.6.2",
     "jasmine-spec-reporter": "~4.1.0",
     "jest": "^23.6.0",
     "polished": "^1.7.0",
     "protractor": "^5.4.2",
-    "react": "^16.4.2",
-    "react-dom": "^16.4.2",
-    "react-router-dom": "^4.2.2",
+    "react": "^16.8.6",
+    "react-dom": "^16.8.6",
+    "react-router-dom": "^5.1.0",
     "rimraf": "^2.6.2",
     "styled-components": "^2.1.2",
     "webdriver-manager": "^12.1.4"
@@ -77,6 +74,10 @@
     "webdriver-manager": "^12.1.4"
   },
   "jest": {
+    "restoreMocks": true,
+    "roots": [
+      "./test/jest"
+    ],
     "setupFiles": [
       "./test/jest/setup.js"
     ],

@@ -10,12 +10,21 @@
  * See the License for the specific language governing permissions and limitations under the License.
  */
 
-import { InjectionToken } from '@angular/core';
+import { InjectionToken, Injector } from '@angular/core';
+import { OktaAuthService } from '../services/okta.service';
 
-import { AuthRequiredFunction } from './auth-required-function';
+export type AuthRequiredFunction = (oktaAuth: OktaAuthService, injector: Injector) => void;
+export type IsAuthenticatedFunction = () => Promise<boolean>;
+export type OnSessionExpiredFunction = () => void;
 
 export interface TestingObject {
   disableHttpsCheck: boolean;
+}
+
+export interface TokenManagerConfig {
+  autoRenew?: boolean;
+  secure?: boolean;
+  storage?: string;
 }
 
 export interface OktaConfig {
@@ -23,9 +32,15 @@ export interface OktaConfig {
   redirectUri?: string;
   clientId?: string;
   scope?: string;
-  responseType?: string;
+  scopes?: string[];
+  responseType?: any; // can be string or array
+  pkce?: boolean;
   onAuthRequired?: AuthRequiredFunction;
   testing?: TestingObject;
+  tokenManager?: TokenManagerConfig;
+  postLogoutRedirectUri?: string;
+  isAuthenticated?: IsAuthenticatedFunction;
+  onSessionExpired?: OnSessionExpiredFunction;
 }
 
 export const OKTA_CONFIG = new InjectionToken<OktaConfig>('okta.config.angular');

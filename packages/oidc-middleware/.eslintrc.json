@@ -1,0 +1,24 @@
+{
+  "extends": [
+    "eslint:recommended",
+    "plugin:promise/recommended",
+    "plugin:jasmine/recommended"
+  ],
+  "plugins": [
+    "promise",
+    "jasmine"
+  ],
+  "env": {
+    "browser": false,
+    "commonjs": true
+  },
+  "parserOptions": {
+    "ecmaVersion": 2017
+  },
+  "globals": {
+    "Promise": "readonly"
+  },
+  "rules": {
+    "jasmine/new-line-before-expect": 0
+  }
+}

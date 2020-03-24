@@ -25,13 +25,13 @@ module.exports = class HomePage {
 
   async waitUntilVisible() {
     const url = util.ensureTrailingSlash(constants.BASE_URI);
-    await browser.wait(EC.urlIs(url), 50000);
+    await browser.wait(EC.urlIs(url), 50000, 'wait for base url');
   }
 
   async performLogout() { 
     const logoutButton = $('#logout');
     await logoutButton.click();
-    await browser.wait(EC.not(EC.presenceOf(logoutButton)), 5000);
+    await browser.wait(EC.not(EC.presenceOf(logoutButton)), 5000, 'wait for logout button to disappear');
   }
 
   async getBodyText() {

@@ -5,9 +5,10 @@ module.exports = {
     'eslint:recommended',
     'plugin:react/recommended'
   ],
-  parser: "babel-eslint",
+  parser: 'babel-eslint',
   plugins: [
-    "react"
+    'react',
+    'react-hooks'
   ],
   env: {
     browser: true,
@@ -15,7 +16,9 @@ module.exports = {
     jest: true
   },
   rules: {
-    'react/prop-types': 0
+    'react/prop-types': 0,
+    'react-hooks/rules-of-hooks': 'error',
+    'react-hooks/exhaustive-deps': 'warn'
   },
   settings: {
     react: {

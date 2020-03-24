@@ -11,24 +11,21 @@
  */
 const fetch = require('node-fetch');
 const querystring = require('querystring');
-const uuid = require('uuid');
-
+const OIDCMiddlewareError = require('./OIDCMiddlewareError');
 const logout = module.exports;
 
-const makeErrorHandler = emitter => err => { 
-  if (err.type) { 
-    emitter.emit('error', `${err.type} - ${err.text}`);
-  } else {
+const makeErrorHandler = emitter => err => {
+  // Emit the errors outside the promise chain so they can be received by event listeners
+  setTimeout(function() {
     emitter.emit('error', err);
-  }
+  }, 1);
 };
 
 const makeAuthorizationHeader = ({ client_id, client_secret }) => 
   'Basic ' + Buffer.from(`${client_id}:${client_secret}`).toString('base64');
 
-const makeTokenRevoker = ({ issuer, client_id, client_secret, errorHandler }) => { 
+const makeTokenRevoker = ({ issuer, client_id, client_secret, errorHandler }) => {
   const revokeEndpoint = `${issuer}/v1/revoke`;
-
   return ({ token_hint, token }) => { 
     return fetch(revokeEndpoint, { 
       method: 'POST',
@@ -39,34 +36,40 @@ const makeTokenRevoker = ({ issuer, client_id, client_secret, errorHandler }) =>
       },
       body: querystring.stringify({token, token_type_hint: token_hint}),
     })
-      .then( r => r.ok ? r : r.text().then( e => Promise.reject({type: 'revokeError', message: e}) ))
-      .catch( errorHandler ); // catch and emit - this promise chain can never fail
+      // eslint-disable-next-line promise/no-nesting
+      .then( r => r.ok ? r : r.text().then(message => Promise.reject(new OIDCMiddlewareError('revokeError', message)) ))
+      .catch( errorHandler ) // catch and emit - this promise chain can never fail
   };
 };
 
 
 logout.forceLogoutAndRevoke = context => { 
   const emitter = context.emitter;
-  const { issuer, client_id, client_secret } = context.options;
+  let { issuer, client_id, client_secret } = context.options;
   const REVOKABLE_TOKENS = ['refresh_token', 'access_token'];
-
+  // Support ORG Authorization Server
+  if (issuer.indexOf('/oauth2') === -1) {
+    issuer = issuer + '/oauth2';
+  }
   const revokeToken = makeTokenRevoker({ issuer, client_id, client_secret, errorHandler: makeErrorHandler(emitter) });
-  return async (req, res, next) => { 
+  return async (req, res /*, next */) => {
     const tokens = req.userContext.tokens;
     const revokeIfExists = token_hint => tokens[token_hint] ? revokeToken({token_hint, token: tokens[token_hint]}) : null;
     const revokes = REVOKABLE_TOKENS.map( revokeIfExists );
-    // attempt all revokes before logout
+
+    // clear local session
+    req.logout();
+
+    // attempt all revokes
     await Promise.all(revokes); // these capture (emit) all rejections, no wrapping catch needed, no early fail of .all()
 
-    const state = uuid.v4();
     const params = {
-      state,
       id_token_hint: tokens.id_token,
       post_logout_redirect_uri: context.options.logoutRedirectUri,
     };
-    req.session[context.options.sessionKey] = { state };
 
-    const endOktaSessionEndpoint = `${context.options.issuer}/v1/logout?${querystring.stringify(params)}`;
+    // redirect to Okta to clear SSO session
+    const endOktaSessionEndpoint = `${issuer}/v1/logout?${querystring.stringify(params)}`;
     return res.redirect(endOktaSessionEndpoint);
   };
 };
