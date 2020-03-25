@@ -54,6 +54,7 @@ class AuthService {
     this.getAccessToken = this.getAccessToken.bind(this);
     this.login = this.login.bind(this);
     this.logout = this.logout.bind(this);
+    this._convertLogoutPathToOptions = this._convertLogoutPathToOptions.bind(this);
     this.redirect = this.redirect.bind(this);
     this.emit = this.emit.bind(this);
     this.on = this.on.bind(this);
@@ -74,16 +75,15 @@ class AuthService {
     }
     try { 
       this._pending.handleAuthentication = true;
-      let tokens = await this._oktaAuth.token.parseFromUrl();
-      tokens = Array.isArray(tokens) ? tokens : [tokens];    
+      const {tokens} = await this._oktaAuth.token.parseFromUrl();
 
-      for (let token of tokens) {
-        if (token.idToken) {
-          this._oktaAuth.tokenManager.add('idToken', token);
-        } else if (token.accessToken) {
-          this._oktaAuth.tokenManager.add('accessToken', token);
-        }
+      if (tokens.idToken) {
+        this._oktaAuth.tokenManager.add('idToken', tokens.idToken);
       }
+      if (tokens.accessToken) {
+        this._oktaAuth.tokenManager.add('accessToken', tokens.accessToken);
+      }
+
       await this.updateAuthState();
       const authState = this.getAuthState();
       if(authState.isAuthenticated) { 
@@ -164,15 +164,11 @@ class AuthService {
   async getUser() {
     const accessToken = await this._oktaAuth.tokenManager.get('accessToken');
     const idToken = await this._oktaAuth.tokenManager.get('idToken');
-    if (accessToken && idToken) {
-      const userinfo = await this._oktaAuth.token.getUserInfo(accessToken);
-      if (userinfo.sub === idToken.claims.sub) {
-        // Only return the userinfo response if subjects match to
-        // mitigate token substitution attacks
-        return userinfo;
-      }
+    if (!accessToken || !idToken) { 
+      return idToken ? idToken.claims : undefined;
     }
-    return idToken ? idToken.claims : undefined;
+
+    return this._oktaAuth.token.getUserInfo();
   }
 
   async getIdToken() {
@@ -208,28 +204,23 @@ class AuthService {
     return this.redirect(additionalParams);
   }
 
-  async logout(options) {
-    let path = null;
-    options = options || {};
-    if (typeof options === 'string') {
-      path = options;
-      options = {};
+  _convertLogoutPathToOptions(redirectUri) { 
+    if (typeof redirectUri !== 'string') {
+      return redirectUri;
     }
+    // If a relative path was passed, convert to absolute URI
+    if (redirectUri.charAt(0) === '/') {
+      redirectUri = window.location.origin + redirectUri;
+    }
+    return {
+      postLogoutRedirectUri: redirectUri,
+    };
+  }
 
-    return this._oktaAuth.signOut(options)
-      .then(() => {
-        if (!options.postLogoutRedirectUri && !this._config.postLogoutRedirectUri) {
-          let redirectUri = path || '/';
-          // If a relative path was passed, convert to absolute URI
-          if (redirectUri.charAt(0) === '/') {
-            redirectUri = window.location.origin + redirectUri;
-          }
-          window.location.assign(redirectUri);
-        }
-      })
-      .finally( () => {
-        this.clearAuthState();
-      });
+  async logout(options={}) {
+    options = this._convertLogoutPathToOptions(options);
+    await this._oktaAuth.signOut(options);
+    this.clearAuthState();
   }
 
   async redirect(additionalParams = {}) {

@@ -1,3 +1,15 @@
+# 3.0.0
+
+### Breaking Changes
+- Uses/requires @okta/okta-auth-js 3.x
+  - Notably, this means `pkce` now defaults to `true` 
+    - See the [@okta/okta-auth-js README regarding PKCE OAuth2 Flow](https://github.com/okta/okta-auth-js#pkce-oauth-20-flow) for requirements
+    - The settings for the Application on your Okta Admin Dashboard must include allowing PKCE
+    - If you are using the (previous default) Implicit Flow, you should set `pkce: false`
+- `<Security>` no longer creates a `<div>` wrapper around its children
+  - The `className` property of `<Security>` is no longer used
+  - Existing applications that rely on this `<div>` can add it themselves as a parent or direct child of `<Security>`
+
 # 2.0.1
 
 ### Bug Fixes
