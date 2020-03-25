@@ -86,7 +86,7 @@ describe('AuthService configuration', () => {
     expect(createInstance).toThrow()
   });
 
-  it('should throw if the client_id is not provided', () => {
+  it('should throw if the clientId is not provided', () => {
     function createInstance () {
       return new AuthService({
         issuer: 'https://foo/oauth2/default'
@@ -95,32 +95,32 @@ describe('AuthService configuration', () => {
     expect(createInstance).toThrow()
   });
 
-  it('should throw if a client_id matching {clientId} is provided', () => {
+  it('should throw if a clientId matching {clientId} is provided', () => {
     function createInstance () {
       return new AuthService({
         issuer: 'https://foo/oauth2/default',
-        client_id: '{clientId}',
+        clientId: '{clientId}',
       });
     }
     expect(createInstance).toThrow()
   });
 
-  it('should throw if the redirect_uri is not provided', () => {
+  it('should throw if the redirectUri is not provided', () => {
     function createInstance () {
       return new AuthService({
         issuer: 'https://foo/oauth2/default',
-        client_id: 'foo'
+        clientId: 'foo'
       });
     }
     expect(createInstance).toThrow();
   });
 
-  it('should throw if a redirect_uri matching {redirectUri} is provided', () => {
+  it('should throw if a redirectUri matching {redirectUri} is provided', () => {
     function createInstance () {
       return new AuthService({
         issuer: 'https://foo/oauth2/default',
-        client_id: 'foo',
-        redirect_uri: '{redirectUri}'
+        clientId: 'foo',
+        redirectUri: '{redirectUri}'
       });
     }
     expect(createInstance).toThrow();
@@ -255,8 +255,8 @@ describe('AuthService', () => {
     test('defaults to passing an empty options to signOut', async () => {
       const authService = new AuthService({
         issuer: 'https://foo/oauth2/default',
-        client_id: 'foo',
-        redirect_uri: 'foo',
+        clientId: 'foo',
+        redirectUri: 'foo',
       });
       await authService.logout();
       expect(mockAuthJsInstance.signOut).toHaveBeenCalledWith({});
@@ -265,8 +265,8 @@ describe('AuthService', () => {
     test('can pass options to signOut', async () => {
       const authService = new AuthService({
         issuer: 'https://foo/oauth2/default',
-        client_id: 'foo',
-        redirect_uri: 'foo',
+        clientId: 'foo',
+        redirectUri: 'foo',
       });
       await authService.logout({ foo: 'bar' });
       expect(mockAuthJsInstance.signOut).toHaveBeenCalledWith({ foo: 'bar'});
@@ -275,8 +275,8 @@ describe('AuthService', () => {
     test('if an absolute url string is passed, it will be used as history path', async () => {
       const authService = new AuthService({
         issuer: 'https://foo/oauth2/default',
-        client_id: 'foo',
-        redirect_uri: 'foo',
+        clientId: 'foo',
+        redirectUri: 'foo',
       });
       const testPath = 'http://example.com/fake/blah';
       await authService.logout(testPath);
@@ -286,8 +286,8 @@ describe('AuthService', () => {
     test('if a relative url string is passed, it will be converted to absolute', async () => {
       const authService = new AuthService({
         issuer: 'https://foo/oauth2/default',
-        client_id: 'foo',
-        redirect_uri: 'foo',
+        clientId: 'foo',
+        redirectUri: 'foo',
       });
       const testPath = '/fake/blah';
       await authService.logout(testPath);
@@ -297,8 +297,8 @@ describe('AuthService', () => {
     test('returns a promise', async () => {
       const authService = new AuthService({
         issuer: 'https://foo/oauth2/default',
-        client_id: 'foo',
-        redirect_uri: 'foo',
+        clientId: 'foo',
+        redirectUri: 'foo',
         history: {
           push: jest.fn()
         }
@@ -314,8 +314,8 @@ describe('AuthService', () => {
       mockAuthJsInstance.signOut = jest.fn().mockReturnValue(Promise.reject(testError));
       const authService = new AuthService({
         issuer: 'https://foo/oauth2/default',
-        client_id: 'foo',
-        redirect_uri: 'foo',
+        clientId: 'foo',
+        redirectUri: 'foo',
       });
       return authService.logout()
         .catch(e => {
@@ -330,8 +330,8 @@ describe('AuthService', () => {
   test('sets the right user agent on AuthJS', () => {
     const authService = new AuthService({
       issuer: 'https://foo/oauth2/default',
-      client_id: 'foo',
-      redirect_uri: 'foo'
+      clientId: 'foo',
+      redirectUri: 'foo'
     });
     const expectedUserAgent = `${pkg.name}/${pkg.version} okta-auth-js`;
     expect(authService._oktaAuth.userAgent).toMatch(expectedUserAgent);
@@ -340,8 +340,8 @@ describe('AuthService', () => {
   test('can retrieve an accessToken from the tokenManager', async (done) => {
     const authService = new AuthService({
       issuer: 'https://foo/oauth2/default',
-      client_id: 'foo',
-      redirect_uri: 'foo'
+      clientId: 'foo',
+      redirectUri: 'foo'
     });
     const accessToken = await authService.getAccessToken();
     expect(accessToken).toBe(accessTokenParsed.accessToken);
@@ -351,8 +351,8 @@ describe('AuthService', () => {
   test('builds the authorize request with correct params', () => {
     const authService = new AuthService({
       issuer: 'https://foo/oauth2/default',
-      client_id: 'foo',
-      redirect_uri: 'foo'
+      clientId: 'foo',
+      redirectUri: 'foo'
     });
     authService.redirect();
     expect(mockAuthJsInstance.token.getWithRedirect).toHaveBeenCalledWith({
@@ -364,8 +364,8 @@ describe('AuthService', () => {
   test('can override the authorize request builder scope with config params', () => {
     const authService = new AuthService({
       issuer: 'https://foo/oauth2/default',
-      client_id: 'foo',
-      redirect_uri: 'foo',
+      clientId: 'foo',
+      redirectUri: 'foo',
       scope: ['openid', 'foo']
     });
     authService.redirect();
@@ -378,8 +378,8 @@ describe('AuthService', () => {
   test('can override the authorize request builder responseType with config params', () => {
     const authService = new AuthService({
       issuer: 'https://foo/oauth2/default',
-      client_id: 'foo',
-      redirect_uri: 'foo',
+      clientId: 'foo',
+      redirectUri: 'foo',
       response_type: ['id_token']
     });
     authService.redirect();
@@ -392,8 +392,8 @@ describe('AuthService', () => {
   test('can override the authorize request builder with redirect params', () => {
     const authService = new AuthService({
       issuer: 'https://foo/oauth2/default',
-      client_id: 'foo',
-      redirect_uri: 'foo'
+      clientId: 'foo',
+      redirectUri: 'foo'
     });
     const overrides = {
       scopes: ['openid', 'foo'],
@@ -406,8 +406,8 @@ describe('AuthService', () => {
   test('redirect params: can use legacy param format (scope string)', () => {
     const authService = new AuthService({
       issuer: 'https://foo/oauth2/default',
-      client_id: 'foo',
-      redirect_uri: 'foo'
+      clientId: 'foo',
+      redirectUri: 'foo'
     });
     const overrides = {
       scope: 'openid foo',
@@ -423,8 +423,8 @@ describe('AuthService', () => {
   test('redirect params: can use legacy param format (scope array)', () => {
     const authService = new AuthService({
       issuer: 'https://foo/oauth2/default',
-      client_id: 'foo',
-      redirect_uri: 'foo'
+      clientId: 'foo',
+      redirectUri: 'foo'
     });
     const overrides = {
       scope: ['openid', 'foo'],
@@ -440,8 +440,8 @@ describe('AuthService', () => {
   test('can append the authorize request builder with additionalParams through authService.redirect', async () => {
     const authService = new AuthService({
       issuer: 'https://foo/oauth2/default',
-      client_id: 'foo',
-      redirect_uri: 'foo'
+      clientId: 'foo',
+      redirectUri: 'foo'
     });
     await authService.redirect({foo: 'bar'});
     expect(mockAuthJsInstance.token.getWithRedirect).toHaveBeenCalledWith({
@@ -454,8 +454,8 @@ describe('AuthService', () => {
   test('can append the authorize request builder with additionalParams through authService.login', async () => {
     const authService = new AuthService({
       issuer: 'https://foo/oauth2/default',
-      client_id: 'foo',
-      redirect_uri: 'foo'
+      clientId: 'foo',
+      redirectUri: 'foo'
     });
     await authService.login('/', {foo: 'bar'});
     expect(mockAuthJsInstance.token.getWithRedirect).toHaveBeenCalledWith({

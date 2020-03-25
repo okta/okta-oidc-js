@@ -7,9 +7,9 @@ import { useOktaAuth } from '../../src/OktaContext';
 
 describe('<Security />', () => {
   const VALID_CONFIG = {
-    issuer: 'https://foo/oauth2/default',
-    client_id: 'foo',
-    redirect_uri: 'https://foo'
+    issuer: 'https://example.com/oauth2/default',
+    clientId: 'foo',
+    redirectUri: 'https://example.com'
   };
   let authService;
   let initialAuthState;
