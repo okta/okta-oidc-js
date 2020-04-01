@@ -338,7 +338,7 @@ describe('handleAuthentication', () => {
   function bootstrap (tokens) {
     mockAuthJsInstance = extendMockAuthJS({
       token: {
-        parseFromUrl: jest.fn().mockReturnValue(Promise.resolve(tokens))
+        parseFromUrl: jest.fn().mockReturnValue(Promise.resolve({ tokens }))
       },
       tokenManager: {
         add: jest.fn()
@@ -353,13 +353,13 @@ describe('handleAuthentication', () => {
   it('stores accessToken and idToken', async () => {
     var accessToken = { accessToken: 'X' }
     var idToken = { idToken: 'Y' }
-    bootstrap([
+    bootstrap({
       accessToken,
       idToken
-    ])
+    })
     await auth.handleAuthentication()
-    expect(mockAuthJsInstance.tokenManager.add).toHaveBeenNthCalledWith(1, 'accessToken', accessToken)
-    expect(mockAuthJsInstance.tokenManager.add).toHaveBeenNthCalledWith(2, 'idToken', idToken)
+    expect(mockAuthJsInstance.tokenManager.add).toHaveBeenNthCalledWith(1, 'idToken', idToken)
+    expect(mockAuthJsInstance.tokenManager.add).toHaveBeenNthCalledWith(2, 'accessToken', accessToken)
   })
 })
 
@@ -479,32 +479,6 @@ describe('getUser', () => {
     })
     await auth.getUser()
     expect(mockAuthJsInstance.token.getUserInfo).toHaveBeenCalled()
-  })
-
-  test('idToken and accessToken: matching sub returns userInfo', async () => {
-    const sub = 'fake'
-    const userInfo = { sub }
-    const claims = { sub }
-    bootstrap({
-      accessToken: {},
-      idToken: { claims },
-      userInfo
-    })
-    const val = await auth.getUser()
-    expect(val).toBe(userInfo)
-  })
-
-  test('idToken and accessToken: mis-matching sub returns claims', async () => {
-    const sub = 'fake'
-    const userInfo = { sub: 'not-fake?' }
-    const claims = { sub }
-    bootstrap({
-      accessToken: {},
-      idToken: { claims },
-      userInfo
-    })
-    const val = await auth.getUser()
-    expect(val).toBe(claims)
   })
 })
 

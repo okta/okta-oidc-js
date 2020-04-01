@@ -14,11 +14,8 @@ export default function initConfig (options) {
   assertClientId(auth.clientId)
   assertRedirectUri(auth.redirectUri)
 
-  // Ensure "openid" exists in the scopes
-  auth.scopes = auth.scopes || []
-  if (auth.scopes.indexOf('openid') < 0) {
-    auth.scopes.unshift('openid')
-  }
+  // Default scopes, override as needed
+  auth.scopes = ['openid', 'email', 'profile']
 
   // Set default responseType if not specified
   auth.responseType = auth.responseType || ['id_token', 'token']
