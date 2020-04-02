@@ -41,7 +41,7 @@ describe('Auth constructor', () => {
     })
   })
 
-  test('sets the right user agent on AuthJS', () => {
+  it('sets the right user agent on AuthJS', () => {
     const expectedUserAgent = `${pkg.name}/${pkg.version} foo`
     createAuth()
     expect(mockAuthJsInstance.userAgent).toMatch(expectedUserAgent)
@@ -50,26 +50,8 @@ describe('Auth constructor', () => {
   it('sets the right scope and response_type when constructing AuthJS instance', () => {
     createAuth()
     expect(AuthJS).toHaveBeenCalledWith(Object.assign({}, baseConfig, {
-      scopes: ['openid'],
+      scopes: ['openid', 'email', 'profile'],
       responseType: ['id_token', 'token'],
-      onSessionExpired: expect.any(Function)
-    }))
-  })
-
-  test('sets the right scope and response_type overrides (legacy config)', async () => {
-    const legacyConfig = {
-      issuer: 'https://foo',
-      client_id: 'foo',
-      redirect_uri: 'foo',
-      scope: 'foo bar',
-      response_type: 'token foo'
-    }
-    createAuth(legacyConfig)
-    expect(AuthJS).toHaveBeenCalledWith(Object.assign({}, legacyConfig, {
-      clientId: 'foo',
-      redirectUri: 'foo',
-      scopes: ['openid', 'foo', 'bar'],
-      responseType: ['token', 'foo'],
       onSessionExpired: expect.any(Function)
     }))
   })
@@ -79,7 +61,7 @@ describe('Auth constructor', () => {
       responseType: ['fake']
     }))
     expect(AuthJS).toHaveBeenCalledWith(Object.assign({}, baseConfig, {
-      scopes: ['openid'],
+      scopes: ['openid', 'email', 'profile'],
       responseType: ['fake'],
       onSessionExpired: expect.any(Function)
     }))
@@ -246,25 +228,25 @@ describe('logout', () => {
     auth = createAuth()
   })
 
-  test('calls "signOut', async () => {
+  it('calls "signOut', async () => {
     await auth.logout()
     expect(mockAuthJsInstance.signOut).toHaveBeenCalled()
   })
 
-  test('passes options', async () => {
+  it('passes options', async () => {
     const options = { foo: 'bar' }
     await auth.logout(options)
     expect(mockAuthJsInstance.signOut).toHaveBeenCalledWith(options)
   })
 
-  test('returns a promise', async () => {
+  it('returns a promise', async () => {
     const res = auth.logout()
     expect(typeof res.then).toBe('function')
     expect(typeof res.catch).toBe('function')
     return res
   })
 
-  test('can throw', async () => {
+  it('can throw', async () => {
     const testError = new Error('test error')
     signoutRes = Promise.reject(testError)
     return auth.logout()
@@ -285,7 +267,7 @@ describe('isAuthenticated', () => {
     })
     auth = createAuth(extendConfig(config))
   }
-  test('isAuthenticated() returns false when the TokenManager throws an error', async () => {
+  it('isAuthenticated() returns false when the TokenManager throws an error', async () => {
     bootstrap()
     mockAuthJsInstance.tokenManager = {
       get: jest.fn().mockImplementation(() => {
@@ -297,7 +279,7 @@ describe('isAuthenticated', () => {
     expect(authenticated).toBeFalsy()
   })
 
-  test('isAuthenticated() returns false when the TokenManager does not return an access token', async () => {
+  it('isAuthenticated() returns false when the TokenManager does not return an access token', async () => {
     bootstrap()
     mockAuthJsInstance.tokenManager = {
       get: jest.fn().mockImplementation(() => {
@@ -308,7 +290,7 @@ describe('isAuthenticated', () => {
     expect(authenticated).toBeFalsy()
   })
 
-  test('isAuthenticated() returns true when the TokenManager returns an access token', async () => {
+  it('isAuthenticated() returns true when the TokenManager returns an access token', async () => {
     bootstrap()
     mockAuthJsInstance.tokenManager = {
       get: jest.fn().mockReturnValue(Promise.resolve({ accessToken: 'fake' }))
@@ -338,7 +320,7 @@ describe('handleAuthentication', () => {
   function bootstrap (tokens) {
     mockAuthJsInstance = extendMockAuthJS({
       token: {
-        parseFromUrl: jest.fn().mockReturnValue(Promise.resolve(tokens))
+        parseFromUrl: jest.fn().mockReturnValue(Promise.resolve({ tokens }))
       },
       tokenManager: {
         add: jest.fn()
@@ -353,18 +335,18 @@ describe('handleAuthentication', () => {
   it('stores accessToken and idToken', async () => {
     var accessToken = { accessToken: 'X' }
     var idToken = { idToken: 'Y' }
-    bootstrap([
+    bootstrap({
       accessToken,
       idToken
-    ])
+    })
     await auth.handleAuthentication()
-    expect(mockAuthJsInstance.tokenManager.add).toHaveBeenNthCalledWith(1, 'accessToken', accessToken)
-    expect(mockAuthJsInstance.tokenManager.add).toHaveBeenNthCalledWith(2, 'idToken', idToken)
+    expect(mockAuthJsInstance.tokenManager.add).toHaveBeenNthCalledWith(1, 'idToken', idToken)
+    expect(mockAuthJsInstance.tokenManager.add).toHaveBeenNthCalledWith(2, 'accessToken', accessToken)
   })
 })
 
 describe('setFromUri', () => {
-  test('sets referrer in localStorage', () => {
+  it('sets referrer in localStorage', () => {
     const TEST_VALUE = 'foo-bar'
     localStorage.setItem('referrerPath', '')
     const auth = createAuth()
@@ -374,7 +356,7 @@ describe('setFromUri', () => {
 })
 
 describe('getFromUri', () => {
-  test('cleares referrer from localStorage', () => {
+  it('cleares referrer from localStorage', () => {
     const TEST_VALUE = 'foo-bar'
     localStorage.setItem('referrerPath', TEST_VALUE)
     const auth = createAuth()
@@ -399,7 +381,7 @@ describe('getAccessToken', () => {
     auth = createAuth()
   }
 
-  test('can retrieve an accessToken from the tokenManager', async () => {
+  it('can retrieve an accessToken from the tokenManager', async () => {
     const accessToken = { accessToken: 'fake' }
     bootstrap(accessToken)
     const val = await auth.getAccessToken()
@@ -423,7 +405,7 @@ describe('getIdToken', () => {
     auth = createAuth()
   }
 
-  test('can retrieve an idToken from the tokenManager', async () => {
+  it('can retrieve an idToken from the tokenManager', async () => {
     const idToken = { idToken: 'fake' }
     bootstrap(idToken)
     const val = await auth.getIdToken()
@@ -456,13 +438,13 @@ describe('getUser', () => {
     auth = createAuth()
   }
 
-  test('no tokens: returns undefined', async () => {
+  it('no tokens: returns undefined', async () => {
     bootstrap()
     const val = await auth.getUser()
     expect(val).toBe(undefined)
   })
 
-  test('idToken only: returns claims', async () => {
+  it('idToken only: returns claims', async () => {
     const claims = { foo: 'bar' }
     bootstrap({
       idToken: { claims }
@@ -471,7 +453,7 @@ describe('getUser', () => {
     expect(val).toBe(claims)
   })
 
-  test('idToken and accessToken: calls getUserInfo', async () => {
+  it('idToken and accessToken: calls getUserInfo', async () => {
     bootstrap({
       accessToken: {},
       idToken: { claims: {} },
@@ -479,32 +461,6 @@ describe('getUser', () => {
     })
     await auth.getUser()
     expect(mockAuthJsInstance.token.getUserInfo).toHaveBeenCalled()
-  })
-
-  test('idToken and accessToken: matching sub returns userInfo', async () => {
-    const sub = 'fake'
-    const userInfo = { sub }
-    const claims = { sub }
-    bootstrap({
-      accessToken: {},
-      idToken: { claims },
-      userInfo
-    })
-    const val = await auth.getUser()
-    expect(val).toBe(userInfo)
-  })
-
-  test('idToken and accessToken: mis-matching sub returns claims', async () => {
-    const sub = 'fake'
-    const userInfo = { sub: 'not-fake?' }
-    const claims = { sub }
-    bootstrap({
-      accessToken: {},
-      idToken: { claims },
-      userInfo
-    })
-    const val = await auth.getUser()
-    expect(val).toBe(claims)
   })
 })
 

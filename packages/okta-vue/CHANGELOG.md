@@ -1,3 +1,16 @@
+# 2.0.0
+
+### Breaking Changes
+
+- Uses/requires `@okta/okta-auth-js 3.x`
+  - The `pkce` option now defaults to `true`, using the Authorization Code w/PKCE flow
+    - Those using the (previous default) Implicit Flow should pass `pkce: false` to their config
+    - See the [@okta/okta-auth-js README regarding PKCE OAuth2 Flow](https://github.com/okta/okta-auth-js#pkce-oauth-20-flow) for PKCE requirements
+      - Which include the Application settings in the Okta Admin Dashboard allowing for PKCE
+- The previously deprecated `scope` option is now fully unsupported
+- The `scopes` option now defaults to `['openid', 'email', 'profile']` instead of the previous `['openid']`
+  - This default continues to be overridden by any explicit `scopes` passed in the config
+
 # 1.3.0
 
 ### Features
