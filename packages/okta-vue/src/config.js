@@ -17,8 +17,8 @@ export default function initConfig (options) {
   // Default scopes, override as needed
   auth.scopes = auth.scopes || ['openid', 'email', 'profile']
   // Force 'openid' as a scope
-  if(!auth.scopes.includes('openid')) { 
-    auth.scopes.unshift('openid');
+  if (!auth.scopes.includes('openid')) {
+    auth.scopes.unshift('openid')
   }
 
   // Set default responseType if not specified
