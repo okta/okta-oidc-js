@@ -24,11 +24,12 @@ All of these features are supported by this SDK. Additionally, using this SDK, y
 
 > This SDK does not provide any UI components.
 
+> This SDK does not currently support Server Side Rendering (SSR)
+
 This library currently supports:
 
 - [OAuth 2.0 Implicit Flow](https://tools.ietf.org/html/rfc6749#section-1.3.2)
-- [OAuth 2.0 Authorization Code Flow](https://tools.ietf.org/html/rfc6749#section-1.3.1)
-- [Proof Key for Code Exchange (PKCE)](https://tools.ietf.org/html/rfc7636)
+- [OAuth 2.0 Authorization Code Flow](https://tools.ietf.org/html/rfc6749#section-1.3.1) with [Proof Key for Code Exchange (PKCE)](https://tools.ietf.org/html/rfc7636) 
 
 ## Getting Started
 
