@@ -12,7 +12,6 @@
 
 const passport = require('passport');
 const OpenIdClient = require('openid-client');
-const ensureLoggedIn = require('connect-ensure-login').ensureLoggedIn;
 const Negotiator = require('negotiator');
 const os = require('os');
 
@@ -102,15 +101,24 @@ oidcUtil.bootstrapPassportStrategy = context => {
   passport.use('oidc', oidcStrategy);
 };
 
-oidcUtil.ensureAuthenticated = (context, options) => {
-  options = options || context.options.routes.login.path;
+oidcUtil.ensureAuthenticated = (context, options = {}) => {
   return (req, res, next) => {
-    if (req.isAuthenticated && req.isAuthenticated()) {
+    const isAuthenticated = req.isAuthenticated && req.isAuthenticated();
+    if (isAuthenticated) {
       return next();
     }
     const negotiator = new Negotiator(req);
     if (negotiator.mediaType() === 'text/html') {
-      ensureLoggedIn(options)(req, res, next);
+      if (!isAuthenticated) {
+        if (req.session) {
+          req.session.returnTo = req.originalUrl || req.url;
+        }
+
+        const url = options.redirectTo || context.options.routes.login.path;
+        return res.redirect(url);
+      }
+
+      next();
     } else {
       res.sendStatus(401);
     }
