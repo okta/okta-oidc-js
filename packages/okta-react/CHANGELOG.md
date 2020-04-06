@@ -1,7 +1,7 @@
 # 3.0.1
 
 ### Bug Fixes 
-- `authState.isAuthenticated` was still `true` if one of `idToken` and `accessToken` had expried, now it is `false` if either is not valid
+- `authState.isAuthenticated` was still `true` if one of `idToken` and `accessToken` had expired, now it is `false` if either is not valid
 
 # 3.0.0
 
