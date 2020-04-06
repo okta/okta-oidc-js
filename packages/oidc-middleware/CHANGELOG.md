@@ -1,3 +1,11 @@
+# 4.0.1
+
+### Bug Fixes
+
+- [#731](https://github.com/okta/okta-oidc-js/pull/731) 
+  - Fix redirect issue after login 
+  - Remove dependency `connect-ensure-login`
+
 # 4.0.0
 
 ### Breaking Changes
