@@ -604,7 +604,7 @@ describe('AuthService', () => {
       });
     });
 
-    it('emits an authState of isAuthenticated when the TokenManager returns an access token', async () => { 
+    it('emits an authState of isAuthenticated when the TokenManager only returns an access token', async () => { 
       const authService = new AuthService({
         issuer: 'https://foo/oauth2/default',
         clientId: 'foo',
@@ -619,14 +619,14 @@ describe('AuthService', () => {
       authService.updateAuthState();
       return wasCalled.then( authState => { 
         expect(authState).toEqual({ 
-          isAuthenticated: true, 
+          isAuthenticated: false, 
           idToken: null,
           accessToken: 'i am a fake access token',
         });
       });
     });
 
-    it('emits an authState of isAuthenticated when the TokenManager returns an id token', async () => { 
+    it('emits an authState of isAuthenticated when the TokenManager only returns an id token', async () => { 
       const authService = new AuthService({
         issuer: 'https://foo/oauth2/default',
         clientId: 'foo',
@@ -641,9 +641,30 @@ describe('AuthService', () => {
       authService.updateAuthState();
       return wasCalled.then( authState => { 
         expect(authState).toEqual({ 
-          isAuthenticated: true, 
+          isAuthenticated: false, 
           idToken: 'i am a fake id token',
           accessToken: null,
+        });
+      });
+    });
+
+    it('emits an authState where isAuthenticated is true when the the TokenManager returns both access token and id token', async () => { 
+      const authService = new AuthService({
+        issuer: 'https://foo/oauth2/default',
+        clientId: 'foo',
+        redirectUri: 'https://foo/redirect',
+      });
+      
+      let resolve;
+      const wasCalled = new Promise( (res) => resolve = res );
+      authService.on('authStateChange', authState => resolve(authState) );
+      
+      authService.updateAuthState();
+      return wasCalled.then( authState => { 
+        expect(authState).toEqual({ 
+          isAuthenticated: true, 
+          idToken: 'i am a fake id token',
+          accessToken: 'i am a fake access token',
         });
       });
     });
