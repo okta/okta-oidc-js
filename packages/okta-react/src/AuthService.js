@@ -139,7 +139,7 @@ class AuthService {
       const idToken = await this.getIdToken();
 
       // Use external check, or default to isAuthenticated if either the access or id token exist
-      const isAuthenticated = this._config.isAuthenticated ? await this._config.isAuthenticated() : !! ( accessToken && idToken );
+      const isAuthenticated = this._config.isAuthenticated ? await this._config.isAuthenticated() : !! ( accessToken || idToken );
 
 
       this._pending.authStateUpdate = null;
