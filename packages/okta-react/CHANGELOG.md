@@ -1,3 +1,14 @@
+# Pending
+
+### Features
+
+- `<LoginCallback/>` now accepts an optional `errorComponent` prop that accepts a component that can be passed an `error` object.
+  - By default `<LoginCallback/>` will render with the `<OktaError/>` component
+
+### Bug Fixes
+
+- `<LoginCallback>` now triggers only after `authState.isPending` is false, removing the problem of as error message from parsing the tokens from the url being cleared by the pending `authState` determination. See [#719](https://github.com/okta/okta-oidc-js/issues/719)
+
 # 3.0.1
 
 ### Bug Fixes 
