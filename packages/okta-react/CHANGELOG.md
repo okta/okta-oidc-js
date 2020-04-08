@@ -1,4 +1,4 @@
-# Pending
+# 3.0.1
 
 ### Features
 
@@ -8,11 +8,6 @@
 ### Bug Fixes
 
 - `<LoginCallback>` now triggers only after `authState.isPending` is false, removing the problem of as error message from parsing the tokens from the url being cleared by the pending `authState` determination. See [#719](https://github.com/okta/okta-oidc-js/issues/719)
-
-# 3.0.1
-
-### Bug Fixes 
-- `authState.isAuthenticated` was still `true` if one of `idToken` and `accessToken` had expired, now it is `false` if either is not valid
 
 # 3.0.0
 
