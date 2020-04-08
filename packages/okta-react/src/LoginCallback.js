@@ -27,7 +27,6 @@ const LoginCallback = ({ errorComponent}) => {
   }, [authService, authStateReady]);
 
   if(authStateReady && authState.error) { 
-    // return errorReporter(authState.error);
     return <ErrorReporter error={authState.error}/>;
   }
 
