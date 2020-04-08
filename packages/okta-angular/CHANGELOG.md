@@ -19,6 +19,10 @@
 - `getFromUri` now returns an absolute URI as a string
 - `setFromUri` takes a string. If it is a relative path, it will be converted to an absolute URI before being saved.
 - Legacy config formats are no longer supported. See [Configuration Reference](https://github.com/okta/okta-auth-js#configuration-reference) for supported values.
+- The `pkce` option now defaults to `true`, using the Authorization Code w/PKCE flow
+  - Those using the (previous default) Implicit Flow should pass `pkce: false` to their config
+  - See the [@okta/okta-auth-js README regarding PKCE OAuth2 Flow](https://github.com/okta/okta-auth-js#pkce-oauth-20-flow) for PKCE requirements
+    - Which include the Application settings in the Okta Admin Dashboard allowing for PKCE
 
 ### Other
 

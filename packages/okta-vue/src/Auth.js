@@ -53,11 +53,14 @@ export default class Auth {
   }
 
   async handleAuthentication () {
-    const tokens = await this.oktaAuth.token.parseFromUrl()
-    tokens.forEach(token => {
-      if (token.accessToken) this.oktaAuth.tokenManager.add('accessToken', token)
-      if (token.idToken) this.oktaAuth.tokenManager.add('idToken', token)
-    })
+    const {tokens} = await this.oktaAuth.token.parseFromUrl()
+
+    if (tokens.idToken) {
+      this.oktaAuth.tokenManager.add('idToken', tokens.idToken)
+    }
+    if (tokens.accessToken) {
+      this.oktaAuth.tokenManager.add('accessToken', tokens.accessToken)
+    }
   }
 
   setFromUri (fromUri) {
@@ -97,15 +100,12 @@ export default class Auth {
   async getUser () {
     const accessToken = await this.oktaAuth.tokenManager.get('accessToken')
     const idToken = await this.oktaAuth.tokenManager.get('idToken')
-    if (accessToken && idToken) {
-      const userinfo = await this.oktaAuth.token.getUserInfo(accessToken)
-      if (userinfo.sub === idToken.claims.sub) {
-        // Only return the userinfo response if subjects match to
-        // mitigate token substitution attacks
-        return userinfo
-      }
+
+    if (!accessToken || !idToken) {
+      return idToken ? idToken.claims : undefined
     }
-    return idToken ? idToken.claims : undefined
+
+    return this.oktaAuth.token.getUserInfo()
   }
 
   authRedirectGuard () {
