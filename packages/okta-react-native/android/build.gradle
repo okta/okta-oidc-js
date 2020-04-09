@@ -70,6 +70,10 @@ repositories {
 dependencies {
     implementation 'com.facebook.react:react-native:+'
     implementation 'com.okta.android:oidc-androidx:1.0.8'
+    implementation 'com.okta.authn.sdk:okta-authn-sdk-api:1.0.0'
+    runtimeOnly 'com.okta.authn.sdk:okta-authn-sdk-impl:1.0.0'
+    runtimeOnly 'com.okta.sdk:okta-sdk-okhttp:1.5.2'
+    runtimeOnly 'com.squareup.okhttp3:okhttp:3.14.1'
 }
 
 def configureReactNativePom(def pom) {

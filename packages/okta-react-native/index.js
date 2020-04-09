@@ -49,7 +49,27 @@ export const createConfig = async({
   );
 } 
 
-export const signIn = async() => {
+/**
+ * SignIn function to handle both "browser signIn" and "custom signIn" scenarios.
+ * 
+ * @param   {Object} [cred] Credential object provides username and password.
+ * @param   {string} [cred.username]
+ * @param   {string} [cred.password]
+ * @return  {Promise} promise | undefined
+ * @throws  Will throw an error if empty cred object is provided.
+ */
+export const signIn = async (cred) => {
+  // Custom sign in
+  if (cred && typeof cred === 'object') {
+    const { username, password } = cred;
+    if (!username || !password) {
+      throw { code: 400, message: 'Invalid client inputs' };
+    }
+
+    return NativeModules.OktaSdkBridge.signIn(username, password);
+  }
+
+  // Browser sign in
   return NativeModules.OktaSdkBridge.signIn();
 }
 
