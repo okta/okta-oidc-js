@@ -49,6 +49,9 @@ import com.okta.oidc.net.response.UserInfo;
 import com.okta.oidc.storage.SharedPreferenceStorage;
 import com.okta.oidc.util.AuthorizationException;
 
+import java.net.MalformedURLException;
+import java.net.URL;
+
 public class OktaSdkBridgeModule extends ReactContextBaseJavaModule implements ActivityEventListener{
 
     private final ReactApplicationContext reactContext;
@@ -107,8 +110,9 @@ public class OktaSdkBridgeModule extends ReactContextBaseJavaModule implements A
                     .setRequireHardwareBackedKeyStore(requireHardwareBackedKeyStore)
                     .create();
 
+            String authnUrl = getAuthnUrl(discoveryUri);
             this.authnClient = AuthenticationClients.builder()
-                .setOrgUrl(discoveryUri)
+                .setOrgUrl(authnUrl)
                 .build();
 
             promise.resolve(true);
@@ -593,5 +597,10 @@ public class OktaSdkBridgeModule extends ReactContextBaseJavaModule implements A
         } catch (AuthorizationException e) {
             promise.reject(OktaSdkError.OKTA_OIDC_ERROR.getErrorCode(), e.getLocalizedMessage(), e);
         }
+    }
+
+    private String getAuthnUrl(String urlStr) throws MalformedURLException {
+        URL url = new URL(urlStr);
+        return url.getProtocol() + "://" + url.getHost();
     }
 }
