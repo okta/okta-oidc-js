@@ -12,13 +12,15 @@
 
 import Foundation
 import OktaOidc
+import OktaAuthSdk
 
 @objc(OktaSdkBridge)
 class OktaSdkBridge: RCTEventEmitter {
     
     var oktaOidc: OktaOidc?
     var config: OktaOidcConfig?
-    
+    var authnUrl: String?
+
     @objc
     func createConfig(_ clientId: String,
                       redirectUrl: String,
@@ -36,6 +38,7 @@ class OktaSdkBridge: RCTEventEmitter {
                 "scopes": scopes
                 ])
             oktaOidc = try OktaOidc(configuration: config)
+            authnUrl = self.getAuthnUrl(urlStr: discoveryUri)
             promiseResolver(true)
         } catch let error {
             promiseRejecter(OktaReactNativeError.oktaOidcError.errorCode, error.localizedDescription, error)
@@ -93,6 +96,27 @@ class OktaSdkBridge: RCTEventEmitter {
             self.sendEvent(withName: OktaSdkConstant.SIGN_IN_SUCCESS, body: dic)
         }
     }
+
+    @objc
+    func signIn(_ username: String, 
+                password: String, 
+                promiseResolver: @escaping RCTPromiseResolveBlock, 
+                promiseRejecter: @escaping RCTPromiseRejectBlock) -> Void {
+        let successBlock: (OktaAuthStatus) -> Void = { status in
+            let sessionToken = status.model.sessionToken
+            self.authenticate(sessionToken!, promiseResolver: promiseResolver, promiseRejecter: promiseRejecter)
+        }
+
+        let errorBlock: (OktaError) -> Void = { _ in
+            let error = OktaReactNativeError.signInFailed
+            promiseRejecter(error.errorCode, error.errorDescription, error)
+        }
+         OktaAuthSdk.authenticate(with: URL(string: authnUrl!)!,
+                                  username: username,
+                                  password: password,
+                                  onStatusChange: successBlock,
+                                  onError: errorBlock)
+    }
     
     @objc
     func signOut() {
@@ -146,7 +170,9 @@ class OktaSdkBridge: RCTEventEmitter {
     }
 
     @objc
-    func authenticate(_ sessionToken: String) {
+    func authenticate(_ sessionToken: String, 
+                      promiseResolver: @escaping RCTPromiseResolveBlock, 
+                      promiseRejecter: @escaping RCTPromiseRejectBlock) {
         guard let _ = config, let currOktaOidc = oktaOidc else {
             let error = OktaReactNativeError.notConfigured
             let errorDic = [
@@ -154,6 +180,7 @@ class OktaSdkBridge: RCTEventEmitter {
                 OktaSdkConstant.ERROR_MSG_KEY: error.errorDescription
             ]
             sendEvent(withName: OktaSdkConstant.ON_ERROR, body: errorDic)
+            promiseRejecter(error.errorCode, error.errorDescription, error)
             return
         }
         
@@ -164,6 +191,11 @@ class OktaSdkBridge: RCTEventEmitter {
                     OktaSdkConstant.ERROR_MSG_KEY: error.localizedDescription
                 ]
                 self.sendEvent(withName: OktaSdkConstant.ON_ERROR, body: errorDic)
+                promiseRejecter(
+                    errorDic[OktaSdkConstant.ERROR_CODE_KEY]!, 
+                    errorDic[OktaSdkConstant.ERROR_MSG_KEY]!, 
+                    error
+                )
                 return
             }
             
@@ -174,6 +206,7 @@ class OktaSdkBridge: RCTEventEmitter {
                     OktaSdkConstant.ERROR_MSG_KEY: error.errorDescription
                 ]
                 self.sendEvent(withName: OktaSdkConstant.ON_ERROR, body: errorDic)
+                promiseRejecter(error.errorCode, error.errorDescription, error)
                 return
             }
 
@@ -184,6 +217,7 @@ class OktaSdkBridge: RCTEventEmitter {
             ]
             
             self.sendEvent(withName: OktaSdkConstant.SIGN_IN_SUCCESS, body: dic)
+            promiseResolver(dic)
         }
     }
     
@@ -457,6 +491,15 @@ class OktaSdkBridge: RCTEventEmitter {
             
             promiseResolver(true)
         }
+    }
+
+    func getAuthnUrl(urlStr: String) -> String {
+        let components = URLComponents(string: urlStr)
+        if components == nil || components?.scheme == nil || components?.host == nil {
+            return ""
+        }
+        
+        return "\(components?.scheme ?? "https")://\(components?.host ?? "")"
     }
     
     override

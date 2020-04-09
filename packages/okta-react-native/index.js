@@ -90,7 +90,18 @@ export const getIdToken = async() => {
 }
 
 export const getUser = async() => {
-  return NativeModules.OktaSdkBridge.getUser();
+  return NativeModules.OktaSdkBridge.getUser()
+    .then(data => {
+      if (typeof data === 'string') {
+        try {
+          return JSON.parse(data);
+        } catch (e) {
+          throw { code: 500, message: 'Invalid response' };
+        }
+      }
+
+      return data;
+    });
 }
 
 export const getUserFromIdToken = async() => {

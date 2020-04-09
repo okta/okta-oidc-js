@@ -18,6 +18,14 @@ RCT_EXTERN_METHOD(createConfig:(NSString *)clientId redirectUrl:(NSString *)redi
 
 RCT_EXTERN_METHOD(signIn)
 
+RCT_EXTERN_METHOD(
+  signIn:
+  (NSString *)username 
+  password:(NSString *) password 
+  promiseResolver:(RCTPromiseResolveBlock *)promiseResolver 
+  promiseRejecter:(RCTPromiseRejectBlock *)promiseRejecter
+)
+
 RCT_EXTERN_METHOD(authenticate:(NSString *)sessionToken)
 
 RCT_EXTERN_METHOD(signOut)

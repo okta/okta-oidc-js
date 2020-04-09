@@ -22,6 +22,7 @@ public enum OktaReactNativeError: Error {
     case errorTokenType
     case errorPayload
     case noAccessToken
+    case signInFailed
 }
 
 extension OktaReactNativeError: LocalizedError {
@@ -45,6 +46,8 @@ extension OktaReactNativeError: LocalizedError {
             return NSLocalizedString("Error in retrieving payload", comment: "")
         case .noAccessToken:
             return NSLocalizedString("No access token found", comment: "")
+        case .signInFailed:
+            return NSLocalizedString("Sign in was not authorized", comment: "")
         }
     }
     public var errorCode: String? {
@@ -67,6 +70,8 @@ extension OktaReactNativeError: LocalizedError {
             return "-800"
         case .noAccessToken:
             return "-900"
+        case .signInFailed:
+            return "-1000"
         }
     }
 }
