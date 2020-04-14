@@ -184,10 +184,20 @@ describe('OktaReactNative', () => {
     });
 
     it('gets id token successfully', async () => {
-      mockGetUser.mockReturnValueOnce({
+      mockGetUser.mockResolvedValue({
         'name': 'Joe Doe',
         'sub': '00uid4BxXw6I6TV4m0g3',
       });
+      expect.assertions(1);
+      const data = await getUser();
+      expect(data).toEqual({
+        'name': 'Joe Doe',
+        'sub': '00uid4BxXw6I6TV4m0g3',
+      });
+    });
+
+    it('gets id token successfully from json string result', async () => {
+      mockGetUser.mockResolvedValue("{\"name\":\"Joe Doe\",\"sub\":\"00uid4BxXw6I6TV4m0g3\"}");
       expect.assertions(1);
       const data = await getUser();
       expect(data).toEqual({
