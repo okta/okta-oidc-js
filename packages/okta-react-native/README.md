@@ -193,7 +193,10 @@ await createConfig({
 
 ### `signIn`
 
-This async method will automatically redirect users to your Okta organziation for authentication. It will emit an event once a user successfully signs in. Make sure your event listeners are mounted and unmounted. Note: on iOS there isn't a `onCancelled` event. If the sign in process is cancelled, `onError` will be triggered. 
+This method will handle both `browser-sign-in` and `custom-sign-in` scenarios based on provided arguments.
+
+#### `browser-sign-in`
+`browser-sign-in` leverages device's native browser to automatically redirect users to your Okta organziation for authentication. By providing no argument, this method will trigger the `browser-sign-in` flow. It will emit an event once a user successfully signs in. Make sure your event listeners are mounted and unmounted. **Note**: on iOS there isn't a `onCancelled` event. If the sign in process is cancelled, `onError` will be triggered. 
 
 ```javascript
 signIn();
@@ -228,6 +231,21 @@ componentWillUnmount() {
 }
 
 ``` 
+
+#### `custom-sign-in`
+`custom-sign-in` provides the way to authenticate the user within the native application. By providing `cred` object with username and password fields, this method will retrieve `sessionToken` then exchange it for `accessToken`. Promise will be returned to handle success result and failures. Meanwhile, events will also be emitted as described in `browser-sign-in`.
+
+##### Sample Usage
+```javascript
+signIn({ username: "{username}", password: "{password}" })
+  .then(token => {
+    // consume accessToken from token.access_token
+  })
+  .catch(error => {
+    // handle error
+  })
+```
+
 
 ### `authenticate`
 
