@@ -127,7 +127,7 @@ class AuthService {
     // create a promise to return in case of multiple parallel requests
     this._pending.authStateUpdate = {};
     this._pending.authStateUpdate.promise  = new Promise( (resolve) => {
-      // Promise can only resolve any error is in the resolve value
+      // Promise can only resolve, any error is in the resolve value
       // and uncaught exceptions make Front SDKs angry
       this._pending.authStateUpdate.resolve = resolve;
     });
@@ -140,7 +140,6 @@ class AuthService {
 
       // Use external check, or default to isAuthenticated if either the access or id token exist
       const isAuthenticated = this._config.isAuthenticated ? await this._config.isAuthenticated() : !! ( accessToken || idToken );
-
 
       this._pending.authStateUpdate = null;
       this.emitAuthState({ 

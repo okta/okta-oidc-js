@@ -76,7 +76,7 @@ npm install --save @okta/okta-react
 `okta-react` provides the necessary tools to build an integration with most common React-based SPA routers.
 
 - [Security](#security) - Allows you to supply your OpenID Connect client [configuration](#configuration-options). Includes React context providers to allow the use of the [useOktaAuth](#useoktaauth) React Hook, or the [withOktaAuth](#useoktaauth) Higher Order Component wrapper.
-- [LoginCallback](#logincallback) - A simple component which handles the login callback when the user is redirected back to the application from the Okta login site.
+- [LoginCallback](#logincallback) - A simple component which handles the login callback when the user is redirected back to the application from the Okta login site.  `<LoginCallback>` accepts an optional prop `errorComponent` that will be used to format the output for any error in handling the callback.  This component will be passed an `error` prop that is an error describing the problem.  (see the `<OktaError>` component for the default rendering)
 
 Users of routers other than `react-router` can use [useOktaAuth](#useoktaauth) to see if a `authState.isPending` is false and `authState.isAuthenticated` is true.  If both are false, you can send them to login via `authService.login(...)`.  See the implementation of `<LoginCallback>` as an example.
 

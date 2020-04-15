@@ -2,9 +2,6 @@ import React from 'react';
 import { mount } from 'enzyme';
 import LoginCallback from '../../src/LoginCallback';
 import Security from '../../src/Security';
-import AuthSdkError from '@okta/okta-auth-js/lib/errors/AuthSdkError';
-import AuthApiError from '@okta/okta-auth-js/lib/errors/AuthApiError';
-import OAuthError from '@okta/okta-auth-js/lib/errors/OAuthError';
 
 describe('<LoginCallback />', () => {
   let authService;
@@ -33,7 +30,10 @@ describe('<LoginCallback />', () => {
     expect(wrapper.text()).toBe('');
   });
 
-  it('calls handleAuthentication', () => {
+  it('calls handleAuthentication when authState is resolved', () => {
+    authState.isPending = false;
+    authState.isAuthorized = true;
+
     mount(
       <Security {...mockProps}>
         <LoginCallback />
@@ -42,60 +42,65 @@ describe('<LoginCallback />', () => {
     expect(authService.handleAuthentication).toHaveBeenCalledTimes(1);
   });
 
-  it('renders empty by default', () => {
-    const wrapper = mount(
+  it('does not call handleAuthentication when authState.isPending', () => {
+    mount(
       <Security {...mockProps}>
         <LoginCallback />
       </Security>
     );
-    expect(wrapper.text()).toBe('');
+    expect(authService.handleAuthentication).toHaveBeenCalledTimes(0);
   });
 
   describe('shows errors', () => {
-    test('generic', () => {
-      const errorMessage = 'I am a test error message';
-      authState.error = new Error(errorMessage);
+    it('does not render errors without an error', () => { 
       const wrapper = mount(
         <Security {...mockProps}>
           <LoginCallback />
         </Security>
       );
-      expect(wrapper.text()).toBe(`Error: ${errorMessage}`);
+      expect(wrapper.text()).toBe('');
     });
-    test('AuthSdkError', () => {
-      const errorMessage = 'I am a test error message';
-      authState.error = new AuthSdkError(errorMessage);
+
+    it('does not render errors while authState.isPending', () => { 
+      authState.error = new Error('oh drat!');
       const wrapper = mount(
         <Security {...mockProps}>
           <LoginCallback />
         </Security>
       );
-      expect(wrapper.text()).toBe(`AuthSdkError: ${errorMessage}`);
+      expect(wrapper.text()).toBe('');
     });
-    test('AuthApiError', () => {
-      const errorSummary = 'I am a test error message';
-      authState.error = new AuthApiError({ errorSummary });
+
+    it('renders errors while authState is not pending and there is an error', () => { 
+      authState.isPending = false;
+      authState.isAuthenticated = true;
+      authState.error = new Error('oh drat!');
+
       const wrapper = mount(
         <Security {...mockProps}>
           <LoginCallback />
         </Security>
       );
-      expect(wrapper.text()).toBe(`AuthApiError: ${errorSummary}`);
+      expect(wrapper.text()).toBe('Error: oh drat!');
     });
-    test('OAuthError', () => {
-      const errorCode = 400;
-      const errorSummary = 'I am a test error message';
-      authState.error = new OAuthError(errorCode, errorSummary);
+
+    it('can be passed a custom component to render', () => { 
+      authState.isPending = false;
+      authState.isAuthenticated = true;
+      authState.error = { has: 'errorData' };
+
+      const MyErrorComponent = ({ error }) => { 
+        return (<p>Override: {error.has}</p>);
+      };
+
       const wrapper = mount(
         <Security {...mockProps}>
-          <LoginCallback />
+          <LoginCallback errorComponent={MyErrorComponent}/>
         </Security>
       );
-      expect(wrapper.text()).toBe(`OAuthError: ${errorSummary}`);
+      expect(wrapper.text()).toBe('Override: errorData');
     });
+
   });
-
-
-
 
 });
