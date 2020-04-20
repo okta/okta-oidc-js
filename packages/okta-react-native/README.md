@@ -46,14 +46,31 @@ These values will be used in your React application to setup the OpenID Connect 
 
 This library is available through [npm](https://www.npmjs.com/package/@okta/okta-react-native). To install it, simply add it to your project:
 
-```
-$ npm install @okta/okta-react-native --save
-$ react-native link @okta/okta-react-native
+Using NPM
+`npm install @okta/okta-react-native --save`
+
+Using Yarn
+`yarn add @okta/okta-react-native`
+
+#### Auto-linking installation (<= 0.60.0)
+
+***React Native < 0.60***: Make sure your `Podfile` looks like this:
+
+ ```   
+platform :ios, '11.0'
+
+target '{YourTargetName}' do
+
+  use_native_modules!
+
+end
 ```
 
-Perform the following Manual installation steps if you're not using `react-native link`.
+#### Manual installation (for React Native <= 0.59 only, React Native >= 0.60 skip this as auto-linking should work)
 
-#### Manual installation (Optional)
+If on a react native version lower than 0.59 you can run `react-native link @okta/okta-react-native` to link this package.
+
+Perform the following Manual installation steps if you're not using `react-native link` and are on a react native version less than 0.60.0.
 
 ##### iOS
 
@@ -90,7 +107,7 @@ To setup iOS, there are three steps that you must take.
 This library supports iOS version `11.0` and above. Go to your project -> `Build settings` -> `iOS Deployment Target`, and set it to at least version `11.0`.  
 
 #### Install Okta Open ID Connect iOS
-This library depends on the native [Okta OIDC iOS](https://github.com/okta/okta-oidc-ios) library. It is not distributed as part of the React Native library to keep your dependency management consistent. 
+This library depends on the native [Okta OIDC iOS](https://github.com/okta/okta-oidc-ios) library. It is not distributed as part of the React Native library to keep your dependency management consistent.
 
 You can currently add Okta OIDC iOS through CocoaPods:
 
@@ -113,7 +130,7 @@ You can currently add Okta OIDC iOS through CocoaPods:
    ```
 
    Then run `pod install`.
-   
+
 2. **Carthage**
    With [Carthage](https://github.com/Carthage/Carthage), add the following line to your Cartfile:
 
@@ -123,7 +140,7 @@ You can currently add Okta OIDC iOS through CocoaPods:
    Then run `carthage update --platform iOS`.
 
    Open project settings and choose your application target. Then open `Build Phases` and add `OktaOidc.framework` from `ios/Carthage/Build/iOS` into `Embed Frameworks` section
-   
+
 #### Swift Configuration
 Since React Native uses Objective-C, and Okta React Native library is a Swift wrapper, you will need to have at least one Swift file in your iOS project for the project to compile. To add a dummy Swift file, follow the following steps:
 
@@ -152,7 +169,7 @@ This library depends on the native [Okta OIDC Android](https://github.com/okta/o
       url  "https://dl.bintray.com/okta/com.okta.android"
     }
     ```
-    
+
 2. Make sure your `minSdkVersion` is `19` in `android/build.gradle`.
 
 #### Add redirect scheme
@@ -164,13 +181,15 @@ manifestPlaceholders = [
 ]
 ```
 
+*Note: You can not run two applications with the same identifier scheme on Android Emulator, this will throw a silent error.*
+
 ## Usage
 
 You will need the values from the OIDC client that you created in the previous step to set up. You will also need to know your Okta Org URL, which you can see on the home page of the Okta Developer console.
 
 Before calling any other method, it is important that you call `createConfig` to set up the configuration properly on the native modules.
 
-Importing methods would follow this pattern: 
+Importing methods would follow this pattern:
 
 ```javascript
 import { createConfig, signIn, signOut, getAccessToken } from '@okta/okta-react-native';
@@ -178,7 +197,7 @@ import { createConfig, signIn, signOut, getAccessToken } from '@okta/okta-react-
 
 ### `createConfig`
 
-This method will create a configured client on the native modules. Resolves `true` if successfully configures a client. Note: `requireHardwareBackedKeyStore` is a configurable setting only on android devices. If you're a developer testing on android emulators, set this field to `false`. 
+This method will create a configured client on the native modules. Resolves `true` if successfully configures a client. Note: `requireHardwareBackedKeyStore` is a configurable setting only on android devices. If you're a developer testing on android emulators, set this field to `false`.
 
 ```javascript
 await createConfig({
@@ -189,11 +208,11 @@ await createConfig({
   scopes: ["openid", "profile", "offline_access"],
   requireHardwareBackedKeyStore: true
 });
-``` 
+```
 
 ### `signIn`
 
-This async method will automatically redirect users to your Okta organziation for authentication. It will emit an event once a user successfully signs in. Make sure your event listeners are mounted and unmounted. Note: on iOS there isn't a `onCancelled` event. If the sign in process is cancelled, `onError` will be triggered. 
+This async method will automatically redirect users to your Okta organziation for authentication. It will emit an event once a user successfully signs in. Make sure your event listeners are mounted and unmounted. Note: on iOS there isn't a `onCancelled` event. If the sign in process is cancelled, `onError` will be triggered.
 
 ```javascript
 signIn();
@@ -227,11 +246,11 @@ componentWillUnmount() {
   this.onCancelled.remove();
 }
 
-``` 
+```
 
 ### `authenticate`
 
-If you already logged in to Okta and have a valid session token, you can complete authorization by calling `authenticate` method. It will emit an event once a user successfully signs in. Make sure your event listeners are mounted and unmounted. Note: on iOS there isn't a `onCancelled` event. If the `authenticate` process is cancelled, `onError` will be triggered. 
+If you already logged in to Okta and have a valid session token, you can complete authorization by calling `authenticate` method. It will emit an event once a user successfully signs in. Make sure your event listeners are mounted and unmounted. Note: on iOS there isn't a `onCancelled` event. If the `authenticate` process is cancelled, `onError` will be triggered.
 
 ```javascript
 authenticate({sessionToken: sessionToken});
@@ -255,7 +274,7 @@ await isAuthenticated();
 
 ##### Sample Response
 
-If authenticated: 
+If authenticated:
 
 ```javascript
 {
@@ -291,7 +310,7 @@ If an access token is available:
 
 ### `getIdToken`
 
-This method returns a promise that will return the identity token as a string. The promise will be rejected if no id token is available. 
+This method returns a promise that will return the identity token as a string. The promise will be rejected if no id token is available.
 
 ```javascript
 await getIdToken();
@@ -352,11 +371,11 @@ Sample user claims:
 
 ```javascript
 {
-  "sub": "00uid4BxXw6I6TV4m0g3", 
-  "name": "John Doe", 
+  "sub": "00uid4BxXw6I6TV4m0g3",
+  "name": "John Doe",
   "preferred_username": "john.doe@example.com"
-  "ver": 1, 
-  "iss": "https://dev-example.okta.com", 
+  "ver": 1,
+  "iss": "https://dev-example.okta.com",
   "aud": "00uid4BxXw6I6TV4m0g3",
   "auth_time": 1561679776,
   "exp": 1561683377,
@@ -399,7 +418,7 @@ await clearTokens();
 
 ### `introspectAccessToken`
 
-Introspect the access token. 
+Introspect the access token.
 
 ```javascript
 await introspectAccessToken();
@@ -411,7 +430,7 @@ Sample responses can be found [here](https://developer.okta.com/docs/reference/a
 
 ### `introspectIdToken`
 
-Introspect the id token. 
+Introspect the id token.
 
 ```javascript
 await introspectIdToken();
@@ -423,7 +442,7 @@ Sample responses can be found [here](https://developer.okta.com/docs/reference/a
 
 ### `introspectRefreshToken`
 
-Introspect the id token. 
+Introspect the id token.
 
 ```javascript
 await introspectRefreshToken();
@@ -436,7 +455,7 @@ Sample responses can be found [here](https://developer.okta.com/docs/reference/a
 
 ### `refreshTokens`
 
-Refreshes all tokens. Resolves with the refreshed tokens. 
+Refreshes all tokens. Resolves with the refreshed tokens.
 
 ```javascript
 await refreshTokens();
@@ -445,10 +464,10 @@ await refreshTokens();
 ##### Sample Response
 
 ```javascript
-{ 
-  "access_token": "{accessToken}", 
-  "id_token": "{idToken}", 
-  "refresh_token": "refreshToken" 
+{
+  "access_token": "{accessToken}",
+  "id_token": "{idToken}",
+  "refresh_token": "refreshToken"
 }
 ```
 
