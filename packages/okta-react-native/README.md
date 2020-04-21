@@ -10,6 +10,8 @@ This library follows the current best practice for native apps using:
 * [OAuth 2.0 Authorization Code Flow](https://tools.ietf.org/html/rfc6749#section-1.3.1)
 * [Proof Key for Code Exchange (PKCE)](https://tools.ietf.org/html/rfc7636)
 
+This library also exposes APIs to interact with [Authentication API](https://developer.okta.com/docs/api/resources/authn) directly to implement native UI for authentication.
+
 You can learn more on the [Okta + ReactNative](https://developer.okta.com/code/react-native/) page in our documentation. You can also download our [sample application](https://github.com/okta/samples-js-react-native/tree/master/browser-sign-in)
 
 ## Prerequisites
@@ -180,8 +182,11 @@ import { createConfig, signIn, signOut, getAccessToken } from '@okta/okta-react-
 
 This method will create a configured client on the native modules. Resolves `true` if successfully configures a client. Note: `requireHardwareBackedKeyStore` is a configurable setting only on android devices. If you're a developer testing on android emulators, set this field to `false`. 
 
+**Note**: `issuer` is an optional field in config, for more information please refer to [About the Issuer](https://github.com/okta/okta-auth-js/tree/master#about-the-issuer)
+
 ```javascript
 await createConfig({
+  issuer: "https://{yourOktaDomain}/oauth2/default", // optional
   clientId: "{clientId}",
   redirectUri: "{redirectUri}",
   endSessionRedirectUri: "{endSessionRedirectUri}",
@@ -191,12 +196,36 @@ await createConfig({
 });
 ``` 
 
+### `getAuthClient`
+
+This method will return an instance of [`@okta/okta-auth-js`](https://github.com/okta/okta-auth-js) client to communicate with Okta Authentication API. For more information, please checkout [Okta AuthJs Node JS and React Native Usage](https://github.com/okta/okta-auth-js#node-js-and-react-native-usage) section.
+
 ### `signIn`
 
-This async method will automatically redirect users to your Okta organziation for authentication. It will emit an event once a user successfully signs in. Make sure your event listeners are mounted and unmounted. Note: on iOS there isn't a `onCancelled` event. If the sign in process is cancelled, `onError` will be triggered. 
+This method will handle both `browser-sign-in` and `custom-sign-in` scenarios based on provided options.
+
+This async method will automatically redirect users to your Okta organziation for authentication. It will emit an event once a user successfully signs in. Make sure your event listeners are mounted and unmounted. Note: on iOS there isn't a `onCancelled` event. If the sign in process is cancelled, `onError` will be triggered.
+
+#### `browser-sign-in`
+`browser-sign-in` leverages device's native browser to automatically redirect users to your Okta organziation for authentication. By providing no argument, this method will trigger the `browser-sign-in` flow. It will emit an event once a user successfully signs in. Make sure your event listeners are mounted and unmounted. **Note**: on iOS there isn't a `onCancelled` event. If the sign in process is cancelled, `onError` will be triggered. 
 
 ```javascript
 signIn();
+```
+
+#### `custom-sign-in`
+`custom-sign-in` provides the way to authenticate the user within the native application. By providing `options` object with username and password fields, this method will retrieve `sessionToken` then exchange it for `accessToken`. 
+Both `Promise` and `Event listeners` are supported. This method is leveraging `@okta/okta-auth-js` SDK to perform authentication API request. For more information, please checkout [Okta AuthJs signIn options](https://github.com/okta/okta-auth-js#signinoptions) section.
+
+##### Sample Usage
+```javascript
+signIn({ username: "{username}", password: "{password}" })
+  .then(token => {
+    // consume accessToken from token.access_token
+  })
+  .catch(error => {
+    // handle error
+  })
 ```
 
 ##### Sample Usage

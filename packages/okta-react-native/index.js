@@ -13,8 +13,23 @@
 import { NativeModules, Platform, DeviceEventEmitter, NativeEventEmitter } from 'react-native';
 import { assertIssuer, assertClientId, assertRedirectUri } from '@okta/configuration-validation';
 import jwt from 'jwt-lite';
+import OktaAuth from '@okta/okta-auth-js';
+import Url from 'url-parse';
+import { version } from './package.json';
+
+let authClient;
+
+class OktaAuthError extends Error {
+  constructor(code, message, detail) {
+    super(message);
+
+    this.code = code;
+    this.detail = detail;
+  }
+}
 
 export const createConfig = async({
+  issuer,
   clientId,
   redirectUri, 
   endSessionRedirectUri, 
@@ -27,6 +42,14 @@ export const createConfig = async({
   assertClientId(clientId);
   assertRedirectUri(redirectUri);
   assertRedirectUri(endSessionRedirectUri);
+
+  const { origin } = Url(discoveryUri);
+  authClient = new OktaAuth({ 
+    issuer: issuer || origin,
+    userAgent: {
+      template: `@okta/okta-react-native/${version} $OKTA_AUTH_JS react-native/${version} ${Platform.OS}/${Platform.Version}`
+    } 
+  });
 
   if (Platform.OS === 'ios') {
     scopes = scopes.join(' ');
@@ -49,7 +72,40 @@ export const createConfig = async({
   );
 } 
 
-export const signIn = async() => {
+export const getAuthClient = () => {
+  if (!authClient) {
+    throw new OktaAuthError(
+      '-100', 
+      'OktaOidc client isn\'t configured, check if you have created a configuration with createConfig'
+    );
+  }
+  return authClient;
+}
+
+export const signIn = async(options) => {
+  // Custom sign in
+  if (options && typeof options === 'object') {
+    return authClient.signIn(options)
+      .then((transaction) => {
+        const { status, sessionToken } = transaction;
+        if (status !== 'SUCCESS') {
+          throw new Error('Transaction status other than "SUCCESS" has been return, please handle it properly by calling "authClient.tx.resume()"');
+        } 
+        return authenticate({ sessionToken });
+      })
+      .then(token => {
+        if (!token) {
+          throw new Error('Failed to get accessToken');
+        }
+
+        return token;
+      })
+      .catch(error => {
+        throw new OktaAuthError('-1000', 'Sign in was not authorized', error);
+      });
+  }
+
+  // Browser sign in
   return NativeModules.OktaSdkBridge.signIn();
 }
 
@@ -70,7 +126,18 @@ export const getIdToken = async() => {
 }
 
 export const getUser = async() => {
-  return NativeModules.OktaSdkBridge.getUser();
+  return NativeModules.OktaSdkBridge.getUser()
+    .then(data => {
+      if (typeof data === 'string') {
+        try {
+          return JSON.parse(data);
+        } catch (e) {
+          throw new OktaAuthError('-600', 'Okta Oidc error', e);
+        }
+      }
+
+      return data;
+    });
 }
 
 export const getUserFromIdToken = async() => {
