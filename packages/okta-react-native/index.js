@@ -15,7 +15,7 @@ import { assertIssuer, assertClientId, assertRedirectUri } from '@okta/configura
 import jwt from 'jwt-lite';
 import OktaAuth from '@okta/okta-auth-js';
 import Url from 'url-parse';
-import { version } from './package.json'
+import { version } from './package.json';
 
 let authClient;
 
@@ -67,7 +67,7 @@ export const getAuthClient = () => {
     throw { 
       code: "-100", 
       message: 'OktaOidc client isn\'t configured, check if you have created a configuration with createConfig' 
-    }
+    };
   }
   return authClient;
 }
@@ -95,7 +95,7 @@ export const signIn = async(options) => {
           code: "-1000", 
           message: "Sign in was not authorized", 
           detail: error
-        }
+        };
       });
   }
 

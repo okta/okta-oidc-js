@@ -191,12 +191,36 @@ await createConfig({
 });
 ``` 
 
+### `getAuthClient`
+
+This method will return an instance of [`@okta/okta-auth-js`](https://github.com/okta/okta-auth-js) client to communicate with Okta Authentication API. For more information, please checkout [Okta AuthJs Node JS and React Native Usage](https://github.com/okta/okta-auth-js#node-js-and-react-native-usage) section.
+
 ### `signIn`
 
-This async method will automatically redirect users to your Okta organziation for authentication. It will emit an event once a user successfully signs in. Make sure your event listeners are mounted and unmounted. Note: on iOS there isn't a `onCancelled` event. If the sign in process is cancelled, `onError` will be triggered. 
+This method will handle both `browser-sign-in` and `custom-sign-in` scenarios based on provided options.
+
+This async method will automatically redirect users to your Okta organziation for authentication. It will emit an event once a user successfully signs in. Make sure your event listeners are mounted and unmounted. Note: on iOS there isn't a `onCancelled` event. If the sign in process is cancelled, `onError` will be triggered.
+
+#### `browser-sign-in`
+`browser-sign-in` leverages device's native browser to automatically redirect users to your Okta organziation for authentication. By providing no argument, this method will trigger the `browser-sign-in` flow. It will emit an event once a user successfully signs in. Make sure your event listeners are mounted and unmounted. **Note**: on iOS there isn't a `onCancelled` event. If the sign in process is cancelled, `onError` will be triggered. 
 
 ```javascript
 signIn();
+```
+
+#### `custom-sign-in`
+`custom-sign-in` provides the way to authenticate the user within the native application. By providing `options` object with username and password fields, this method will retrieve `sessionToken` then exchange it for `accessToken`. 
+Both `Promise` and `Event listeners` are supported. This method is leveraging `@okta/okta-auth-js` SDK to perform authentication API request. For more information, please checkout [Okta AuthJs signIn options](https://github.com/okta/okta-auth-js#signinoptions) section.
+
+##### Sample Usage
+```javascript
+signIn({ username: "{username}", password: "{password}" })
+  .then(token => {
+    // consume accessToken from token.access_token
+  })
+  .catch(error => {
+    // handle error
+  })
 ```
 
 ##### Sample Usage

@@ -1,3 +1,11 @@
+#1.4.0
+
+### Features
+- [`63c0b89`](https://github.com/okta/okta-oidc-js/pull/751/commits/63c0b892ea1bea085ee594aab480e97c41969a32)
+  - Support primary authentication flow
+  - Add `getAuthClient` method to expose `@okta/okta-auth-js` client instance
+  - Add `Promise` support for `authenticate` method
+
 # 1.3.0
 
 ### Features
