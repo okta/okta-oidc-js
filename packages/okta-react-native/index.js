@@ -19,7 +19,17 @@ import { version } from './package.json';
 
 let authClient;
 
+class OktaAuthError extends Error {
+  constructor(code, message, detail) {
+    super(message);
+
+    this.code = code;
+    this.detail = detail;
+  }
+}
+
 export const createConfig = async({
+  issuer,
   clientId,
   redirectUri, 
   endSessionRedirectUri, 
@@ -35,7 +45,7 @@ export const createConfig = async({
 
   const { origin } = Url(discoveryUri);
   authClient = new OktaAuth({ 
-    issuer: origin,
+    issuer: issuer || origin,
     userAgent: {
       template: `@okta/okta-react-native/${version} $OKTA_AUTH_JS react-native/${version} ${Platform.OS}/${Platform.Version}`
     } 
@@ -64,10 +74,10 @@ export const createConfig = async({
 
 export const getAuthClient = () => {
   if (!authClient) {
-    throw { 
-      code: "-100", 
-      message: 'OktaOidc client isn\'t configured, check if you have created a configuration with createConfig' 
-    };
+    throw new OktaAuthError(
+      '-100', 
+      'OktaOidc client isn\'t configured, check if you have created a configuration with createConfig'
+    );
   }
   return authClient;
 }
@@ -91,11 +101,7 @@ export const signIn = async(options) => {
         return token;
       })
       .catch(error => {
-        throw {
-          code: "-1000", 
-          message: "Sign in was not authorized", 
-          detail: error
-        };
+        throw new OktaAuthError('-1000', 'Sign in was not authorized', error);
       });
   }
 
@@ -126,7 +132,7 @@ export const getUser = async() => {
         try {
           return JSON.parse(data);
         } catch (e) {
-          throw { code: "-600", message: 'Okta Oidc error' };
+          throw new OktaAuthError('-600', 'Okta Oidc error', e);
         }
       }
 

@@ -10,6 +10,8 @@ This library follows the current best practice for native apps using:
 * [OAuth 2.0 Authorization Code Flow](https://tools.ietf.org/html/rfc6749#section-1.3.1)
 * [Proof Key for Code Exchange (PKCE)](https://tools.ietf.org/html/rfc7636)
 
+This library also exposes APIs to interact with [Authentication API](https://developer.okta.com/docs/api/resources/authn) directly to implement native UI for authentication.
+
 You can learn more on the [Okta + ReactNative](https://developer.okta.com/code/react-native/) page in our documentation. You can also download our [sample application](https://github.com/okta/samples-js-react-native/tree/master/browser-sign-in)
 
 ## Prerequisites
@@ -180,8 +182,11 @@ import { createConfig, signIn, signOut, getAccessToken } from '@okta/okta-react-
 
 This method will create a configured client on the native modules. Resolves `true` if successfully configures a client. Note: `requireHardwareBackedKeyStore` is a configurable setting only on android devices. If you're a developer testing on android emulators, set this field to `false`. 
 
+**Note**: `issuer` is an optional field in config, for more information please refer to [About the Issuer](https://github.com/okta/okta-auth-js/tree/master#about-the-issuer)
+
 ```javascript
 await createConfig({
+  issuer: "https://{yourOktaDomain}/oauth2/default", // optional
   clientId: "{clientId}",
   redirectUri: "{redirectUri}",
   endSessionRedirectUri: "{endSessionRedirectUri}",
