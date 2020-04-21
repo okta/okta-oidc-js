@@ -2,7 +2,7 @@
 
 ### Bug Fixes
 
-- `autoRenew: false` at the top of a config (not in tokenManager) now actually passies into tokenManager.  The previous behavior caused problems with libraries (such as @okta/okta-auth-js) that tried to assign defaults of `true` to any params not explicitly set, as they would not see any explictly `false` setting.  
+- [#754] `autoRenew: false` at the top of a config (not in tokenManager) now actually passies into tokenManager.  The previous behavior caused problems with libraries (such as @okta/okta-auth-js) that tried to assign defaults of `true` to any params not explicitly set, as they would not see any explictly `false` setting.  
 
 # 0.4.1
 
