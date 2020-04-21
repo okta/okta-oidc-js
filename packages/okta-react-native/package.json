@@ -34,6 +34,7 @@
   "license": "Apache-2.0",
   "readmeFilename": "README.md",
   "peerDependencies": {
+    "events": "^3.1.0",
     "react": "^16.5.0",
     "react-native": "^0.60.0"
   },
@@ -48,7 +49,9 @@
   },
   "dependencies": {
     "@okta/configuration-validation": "^0.3.0",
-    "jwt-lite": "^1.1.2"
+    "@okta/okta-auth-js": "3.1.0",
+    "jwt-lite": "^1.1.2",
+    "url-parse": "^1.4.7"
   },
   "jest": {
     "automock": false,

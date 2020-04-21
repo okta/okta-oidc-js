@@ -146,7 +146,9 @@ class OktaSdkBridge: RCTEventEmitter {
     }
 
     @objc
-    func authenticate(_ sessionToken: String) {
+    func authenticate(_ sessionToken: String,
+                      promiseResolver: @escaping RCTPromiseResolveBlock,
+                      promiseRejecter: @escaping RCTPromiseRejectBlock) {
         guard let _ = config, let currOktaOidc = oktaOidc else {
             let error = OktaReactNativeError.notConfigured
             let errorDic = [
@@ -154,6 +156,8 @@ class OktaSdkBridge: RCTEventEmitter {
                 OktaSdkConstant.ERROR_MSG_KEY: error.errorDescription
             ]
             sendEvent(withName: OktaSdkConstant.ON_ERROR, body: errorDic)
+            promiseRejecter(errorDic[OktaSdkConstant.ERROR_CODE_KEY]!, 
+                errorDic[OktaSdkConstant.ERROR_MSG_KEY]!, error)
             return
         }
         
@@ -164,6 +168,8 @@ class OktaSdkBridge: RCTEventEmitter {
                     OktaSdkConstant.ERROR_MSG_KEY: error.localizedDescription
                 ]
                 self.sendEvent(withName: OktaSdkConstant.ON_ERROR, body: errorDic)
+                promiseRejecter(errorDic[OktaSdkConstant.ERROR_CODE_KEY]!, 
+                    errorDic[OktaSdkConstant.ERROR_MSG_KEY]!, error)
                 return
             }
             
@@ -174,6 +180,8 @@ class OktaSdkBridge: RCTEventEmitter {
                     OktaSdkConstant.ERROR_MSG_KEY: error.errorDescription
                 ]
                 self.sendEvent(withName: OktaSdkConstant.ON_ERROR, body: errorDic)
+                promiseRejecter(errorDic[OktaSdkConstant.ERROR_CODE_KEY]!, 
+                    errorDic[OktaSdkConstant.ERROR_MSG_KEY]!, error)
                 return
             }
 
@@ -184,6 +192,7 @@ class OktaSdkBridge: RCTEventEmitter {
             ]
             
             self.sendEvent(withName: OktaSdkConstant.SIGN_IN_SUCCESS, body: dic)
+            promiseResolver(dic)
         }
     }
     

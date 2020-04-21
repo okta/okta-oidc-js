@@ -13,6 +13,11 @@
 import { NativeModules, Platform, DeviceEventEmitter, NativeEventEmitter } from 'react-native';
 import { assertIssuer, assertClientId, assertRedirectUri } from '@okta/configuration-validation';
 import jwt from 'jwt-lite';
+import OktaAuth from '@okta/okta-auth-js';
+import Url from 'url-parse';
+import { version } from './package.json'
+
+let authClient;
 
 export const createConfig = async({
   clientId,
@@ -27,6 +32,14 @@ export const createConfig = async({
   assertClientId(clientId);
   assertRedirectUri(redirectUri);
   assertRedirectUri(endSessionRedirectUri);
+
+  const { origin } = Url(discoveryUri);
+  authClient = new OktaAuth({ 
+    issuer: origin,
+    userAgent: {
+      template: `@okta/okta-react-native/${version} $OKTA_AUTH_JS react-native/${version} ${Platform.OS}/${Platform.Version}`
+    } 
+  });
 
   if (Platform.OS === 'ios') {
     scopes = scopes.join(' ');
@@ -49,7 +62,44 @@ export const createConfig = async({
   );
 } 
 
-export const signIn = async() => {
+export const getAuthClient = () => {
+  if (!authClient) {
+    throw { 
+      code: "-100", 
+      message: 'OktaOidc client isn\'t configured, check if you have created a configuration with createConfig' 
+    }
+  }
+  return authClient;
+}
+
+export const signIn = async(options) => {
+  // Custom sign in
+  if (options && typeof options === 'object') {
+    return authClient.signIn(options)
+      .then((transaction) => {
+        const { status, sessionToken } = transaction;
+        if (status !== 'SUCCESS') {
+          throw new Error('Transaction status other than "SUCCESS" has been return, please handle it properly by calling "authClient.tx.resume()"');
+        } 
+        return authenticate({ sessionToken });
+      })
+      .then(token => {
+        if (!token) {
+          throw new Error('Failed to get accessToken');
+        }
+
+        return token;
+      })
+      .catch(error => {
+        throw {
+          code: "-1000", 
+          message: "Sign in was not authorized", 
+          detail: error
+        }
+      });
+  }
+
+  // Browser sign in
   return NativeModules.OktaSdkBridge.signIn();
 }
 
@@ -70,7 +120,18 @@ export const getIdToken = async() => {
 }
 
 export const getUser = async() => {
-  return NativeModules.OktaSdkBridge.getUser();
+  return NativeModules.OktaSdkBridge.getUser()
+    .then(data => {
+      if (typeof data === 'string') {
+        try {
+          return JSON.parse(data);
+        } catch (e) {
+          throw { code: "-600", message: 'Okta Oidc error' };
+        }
+      }
+
+      return data;
+    });
 }
 
 export const getUserFromIdToken = async() => {
