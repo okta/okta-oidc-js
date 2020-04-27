@@ -47,9 +47,9 @@ configUtil.buildConfigObject = (config) => {
 
   // Legacy support: allow TokenManager config 'autoRenew' and 'storage' to be defined at top-level
   let tokenManager = config.tokenManager;
-  const autoRenew = config.autoRenew || config.auto_renew;
+  const autoRenew = ( config.autoRenew !== undefined ? config.autoRenew : config.auto_renew); // Only check legacy property if necessary
   const storage = config.storage;
-  if (storage || autoRenew) {
+  if (storage !== undefined || autoRenew !== undefined ) {
     // Properties already defined within the "tokenManager" section will not be overwritten
     tokenManager = merge({
       autoRenew: autoRenew,
