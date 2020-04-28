@@ -43,6 +43,20 @@ describe('Configuration Validation', () => {
       expect(buildConfigObject(passedConfig)).toEqual(passedConfig);
     });
 
+    it('does not allow "autoRenew: false" to be overridden by undefined "auto_renew"', () => { 
+      const passedConfig = {
+        autoRenew: false,
+      };
+
+      expect(buildConfigObject(passedConfig)).toEqual({
+        autoRenew: false,
+        tokenManager: { 
+          autoRenew: false
+        },
+      });
+    });
+
+
     it('pass-through: Allows passing extra config properties at top-level', () => {
       function f() {}
       const passedConfig = {
