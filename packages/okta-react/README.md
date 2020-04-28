@@ -484,7 +484,7 @@ Components get this object as a passed prop using the [withOktaAuth](#withoktaau
 - `.isPending` 
     - true in the time after page load (first render) but before the asynchronous methods to see if the tokenManager is aware of a current authentication.  
 - `.isAuthenticated`
-    - true if the user is considered authenticated.  Normally this is true if either an idToken or an accessToken is present in the tokenManager, but this behavior can be overriden if you passed an `isAuthenticated` callback to the Security component (or to the Auth instance you passed to the Security component)
+    - true if the user is considered authenticated.  Normally this is true if either an idToken or an accessToken is present in the tokenManager, but this behavior can be overridden if you passed an `isAuthenticated` callback to the Security component (or to the Auth instance you passed to the Security component)
 - `.idToken`
     - the JWT idToken for the currently authenticated user (if provided by the `scopes`)
 - `.accessToken`
@@ -561,7 +561,7 @@ authService.redirect({
 (synchronous method) Subscribes a callback that will be called when the named event happens.  Returns a function to remove the callback from the list of subscribers.  The `<Security>` component manages this and supplies updates via the [withOktaAuth()](#withoktauth) HOC and the [useAuthState()](#useoktaauth) React Hook, so Devs normally don't need to subscribe to any events and instead rely on the re-renders that automatically trigger from changes in props/hook state.
 
 Known events:
-- 'authStateChange' - Emitted when the authState is re-evalated.  The callback will be called when the `authState` has been updated.  The updated [authState](#authstate) MUST be read from [authService.getAuthState](#authservicegetauthstate) after the `authStateChange` event to get the new state.
+- 'authStateChange' - Emitted when the authState is re-evaluated.  The callback will be called when the `authState` has been updated.  The updated [authState](#authstate) MUST be read from [authService.getAuthState](#authservicegetauthstate) after the `authStateChange` event to get the new state.
 
 #### `authService.clearAuthState()`
 
@@ -600,7 +600,7 @@ Any component that was using `withAuth()` to get the `auth` object and called th
 
 To use either of these options, your component must be a descendant of a `<Security>` component, in order to have the necessary context.
 
-These changes should result in less complexity within your components as these values are now syncrhonously available after the initial determination.
+These changes should result in less complexity within your components as these values are now synchronously available after the initial determination.
 
 If you need access to the `authService` instance directly, it is provided by [withOktaAuth()](#withoktaauth) as a prop or is available via the [useOktaAuth()](#useoktaauth) React Hook.  You can use the examples in this README to see how to use [authService](#authservice) to perform common tasks such as login/logout, or inspect the provided `<LoginCallback>` component to see an example of the use of the `authService` managing the redirect from the Okta site.  
 
