@@ -40,7 +40,7 @@
     "license": "Apache-2.0",
     "dependencies": {
         "@okta/configuration-validation": "^0.4.1",
-        "@okta/okta-auth-js": "^3.0.0",
+        "@okta/okta-auth-js": "^3.1.1",
         "tslib": "^1.9.0"
     },
     "devDependencies": {
