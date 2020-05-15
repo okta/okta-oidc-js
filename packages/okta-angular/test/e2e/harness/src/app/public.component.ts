@@ -10,11 +10,23 @@
  * See the License for the specific language governing permissions and limitations under the License.
  */
 
-import { browser, ExpectedConditions } from 'protractor';
-import { AppPage } from './app.po';
+import { Component, OnInit } from '@angular/core';
+import { OktaAuthService } from '@okta/okta-angular';
 
-export class LoginPage extends AppPage {
-  constructor() {
-    super('/login');
+@Component({
+  selector: 'app-public',
+  template: `
+  <div id="public-message">
+  {{ message }}
+  </div>
+  <router-outlet></router-outlet>
+  `
+})
+export class PublicComponent {
+  message;
+
+  constructor(public oktaAuth: OktaAuthService) {
+    this.message = 'Public!';
   }
+
 }

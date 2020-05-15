@@ -10,11 +10,19 @@
  * See the License for the specific language governing permissions and limitations under the License.
  */
 
-import { browser, ExpectedConditions } from 'protractor';
+import { element, by } from 'protractor';
 import { AppPage } from './app.po';
 
-export class LoginPage extends AppPage {
+export class PublicPage extends AppPage {
   constructor() {
-    super('/login');
+    super('/public');
+  }
+
+  getPublicArea() {
+    return element(by.tagName('app-public'));
+  }
+
+  getPrivateArea() {
+    return element(by.tagName('app-secure'));
   }
 }

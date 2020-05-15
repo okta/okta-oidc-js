@@ -15,3 +15,4 @@ export { OktaSignInPage } from './page-objects/okta-signin.po';
 export { LoginPage } from './page-objects/login.po';
 export { ProtectedPage } from './page-objects/protected.po';
 export { SessionTokenSignInPage } from './page-objects/sessionToken-signin.po';
+export { PublicPage } from './page-objects/public.po';
