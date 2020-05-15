@@ -1,7 +1,7 @@
 {
     "name": "@okta/okta-angular",
     "private": true,
-    "version": "2.2.0",
+    "version": "3.0.0",
     "description": "Angular support for Okta",
     "main": "./bundles/okta-angular.umd.js",
     "module": "./fesm5/okta-angular.js",
@@ -12,6 +12,7 @@
     "fesm2015": "./fesm2015/okta-angular.js",
     "typings": "./okta-angular.d.ts",
     "scripts": {
+        "clean": "rimraf dist/",
         "build:package-info": "node ../../util/write-package-info.js . src/okta/packageInfo.ts",
         "lint": "tslint -p tsconfig.json -t stylish src/**/*.ts",
         "prebuild": "yarn build:package-info",
@@ -39,8 +40,8 @@
     ],
     "license": "Apache-2.0",
     "dependencies": {
-        "@okta/configuration-validation": "^0.4.1",
-        "@okta/okta-auth-js": "^3.2.3",
+        "@okta/configuration-validation": "^1.0.0",
+        "@okta/okta-auth-js": "^4.0.0",
         "tslib": "^1.9.0"
     },
     "devDependencies": {
@@ -67,6 +68,7 @@
         "jest-preset-angular": "^7.1.1",
         "raw-loader": "1.0.0",
         "reflect-metadata": "0.1.13",
+        "rimraf": "^3.0.2",
         "rollup": "1.29.0",
         "rollup-plugin-license": "0.8.1",
         "rollup-plugin-sourcemaps": "0.4.2",
@@ -74,7 +76,7 @@
         "shelljs": "0.8.3",
         "source-map-loader": "0.2.4",
         "to-string-loader": "1.1.5",
-        "ts-loader": "6.0.1",
+        "ts-loader": "^8.0.3",
         "tsickle": "0.33.0",
         "tslint": "5.16.0",
         "tslint-angular": "3.0.2",
@@ -92,6 +94,9 @@
         "rxjs": ">=5.4.3"
     },
     "jest": {
+        "moduleNameMapper": {
+            "@okta/okta-auth-js": "<rootDir>/node_modules/@okta/okta-auth-js/dist/okta-auth-js.umd.js"
+        },
         "restoreMocks": true,
         "transform": {
             "^.+\\.(ts|html)$": "ts-jest"
@@ -102,13 +107,15 @@
         ],
         "globals": {
             "ts-jest": {
-                "tsConfig": "<rootDir>/tsconfig.spec.json"
+                "tsConfig": "<rootDir>/test/spec/tsconfig.spec.json"
             }
         },
         "preset": "jest-preset-angular",
-        "rootDir": "./test/spec",
+        "roots": [
+            "./test/spec"
+        ],
         "setupFilesAfterEnv": [
-            "../support/setupJest.ts"
+            "<rootDir>/test/support/setupJest.ts"
         ]
     },
     "sideEffects": false
