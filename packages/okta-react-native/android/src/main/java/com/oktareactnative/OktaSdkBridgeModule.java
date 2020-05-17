@@ -69,7 +69,8 @@ public class OktaSdkBridgeModule extends ReactContextBaseJavaModule implements A
                              String discoveryUri,
                              ReadableArray scopes,
                              Boolean requireHardwareBackedKeyStore,
-                             Promise promise
+                             Promise promise,
+                             List<String> supportedBrowsers
     ) {
 
         try {
@@ -92,6 +93,7 @@ public class OktaSdkBridgeModule extends ReactContextBaseJavaModule implements A
                     .withContext(reactContext)
                     .withStorage(new SharedPreferenceStorage(reactContext))
                     .setRequireHardwareBackedKeyStore(requireHardwareBackedKeyStore)
+                    .supportedBrowsers(supportedBrowsers != null && supportedBrowsers.Count() > 0 ? supportedBrowsers : [])
                     .create();
 
             this.authClient = new Okta.AuthBuilder()
