@@ -192,6 +192,7 @@ await createConfig({
   endSessionRedirectUri: "{endSessionRedirectUri}",
   discoveryUri: "https://{yourOktaDomain}",
   scopes: ["openid", "profile", "offline_access"],
+  supportedBrowsers: ["org.mozilla.firefox", "com.sec.android.app.sbrowser"], // available for Android only
   requireHardwareBackedKeyStore: true
 });
 ``` 
