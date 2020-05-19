@@ -128,7 +128,7 @@ For PKCE flow, this should be left undefined or set to `['code']`.
 
 The top-level Angular module which provides these components and services:
 
-- [`OktaAuthGuard`](#oktaauthguard) - A navigation guard using [CanActivate](https://angular.io/api/router/CanActivate) to grant access to a page only after successful authentication.
+- [`OktaAuthGuard`](#oktaauthguard) - A navigation guard implementing [CanActivate](https://angular.io/api/router/CanActivate) and [CanActivateChild](https://angular.io/api/router/CanActivateChild) to grant access to a page (and/or its children) only after successful authentication.
 - [`OktaCallbackComponent`](#oktacallbackcomponent) - Handles the implicit flow callback by parsing tokens from the URL and storing them automatically.
 - [`OktaLoginRedirectComponent`](#oktaloginredirectcomponent) - Redirects users to the Okta Hosted Login Page for authentication.
 - [`OktaAuthService`](#oktaauthservice) - Highest-level service containing the `okta-angular` public methods.
@@ -149,7 +149,35 @@ const appRoutes: Routes = [
   {
     path: 'protected',
     component: MyProtectedComponent,
-    canActivate: [ OktaAuthGuard ]
+    canActivate: [ OktaAuthGuard ],
+    children: [{
+      // children of a protected route are also protected
+      path: 'also-protected'
+    }]
+  },
+  ...
+]
+```
+
+You can use `canActivateChild` to protect children of an unprotected route:
+
+```typescript
+// myApp.module.ts
+
+import {
+  OktaAuthGuard,
+  ...
+} from '@okta/okta-angular';
+
+const appRoutes: Routes = [
+  {
+    path: 'public',
+    component: MyPublicComponent,
+    canActivateChild: [ OktaAuthGuard ],
+    children: [{
+      path: 'protected',
+      component: MyProtectedComponent
+    }]
   },
   ...
 ]

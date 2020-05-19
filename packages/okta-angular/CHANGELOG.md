@@ -1,3 +1,9 @@
+# PENDING
+
+### Features
+
+[#776](https://github.com/okta/okta-oidc-js/pull/776) `OktaAuthGuard` now implements `canActivateChild`
+
 # 2.0.0
 
 [#690](https://github.com/okta/okta-oidc-js/pull/690)

@@ -17,6 +17,7 @@ import {
   OktaSignInPage,
   LoginPage,
   ProtectedPage,
+  PublicPage,
   SessionTokenSignInPage
 } from './page-objects';
 
@@ -29,6 +30,7 @@ describe('Angular + Okta App', () => {
   let loginPage: LoginPage;
   let protectedPage: ProtectedPage;
   let sessionTokenSignInPage: SessionTokenSignInPage;
+  let publicPage: PublicPage;
 
   beforeEach(() => {
     page = new AppPage();
@@ -36,6 +38,7 @@ describe('Angular + Okta App', () => {
     oktaLoginPage = new OktaSignInPage();
     protectedPage = new ProtectedPage();
     sessionTokenSignInPage = new SessionTokenSignInPage();
+    publicPage = new PublicPage();
   });
 
   describe('implicit flow', () => {
@@ -90,7 +93,7 @@ describe('Angular + Okta App', () => {
         password: environment.PASSWORD
       });
 
-      loginPage.waitUntilVisible();
+      loginPage.waitUntilLoggedIn();
       expect(loginPage.getLogoutButton().isPresent()).toBeTruthy();
 
       // Logout
@@ -153,7 +156,7 @@ describe('Angular + Okta App', () => {
         password: environment.PASSWORD
       });
 
-      loginPage.waitUntilVisible();
+      loginPage.waitUntilLoggedIn();
       expect(loginPage.getLogoutButton().isPresent()).toBeTruthy();
 
       // Logout
@@ -185,6 +188,32 @@ describe('Angular + Okta App', () => {
     });
   });
 
+  describe('child route guard', () => {
+    it('displays the parent route without authentication', () => {
+      publicPage.navigateTo();
+      publicPage.waitUntilVisible();
+      expect(publicPage.getLoginButton().isPresent()).toBeTruthy();
+      expect(publicPage.getPublicArea().isPresent()).toBeTruthy();
+      publicPage.waitUntilTextVisible('public-message', 'Public!');
+      expect(publicPage.getPrivateArea().isPresent()).toBeFalsy();
+    });
 
+    it('displays the child route with authentication', () => {
+      publicPage.navigateTo('/private');
+
+      oktaLoginPage.waitUntilVisible(environment.ISSUER);
+      oktaLoginPage.signIn({
+        username: environment.USERNAME,
+        password: environment.PASSWORD
+      });
+
+      publicPage.waitUntilVisible();
+      expect(page.getLogoutButton().isPresent()).toBeTruthy();
+      expect(publicPage.getPublicArea().isPresent()).toBeTruthy();
+      publicPage.waitUntilTextVisible('public-message', 'Public!');
+      expect(publicPage.getPrivateArea().isPresent()).toBeTruthy();
+      publicPage.waitUntilTextVisible('userinfo-container', 'email');
+    });
+  });
 
 });

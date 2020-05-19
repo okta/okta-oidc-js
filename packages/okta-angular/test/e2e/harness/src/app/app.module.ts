@@ -34,6 +34,7 @@ import {
 import { ProtectedComponent } from './protected.component';
 import { AppComponent } from './app.component';
 import { SessionTokenLoginComponent } from './sessionToken-login.component';
+import { PublicComponent } from './public.component';
 
 export function onNeedsAuthenticationGuard(oktaAuth: OktaAuthService, injector: Injector) {
   const router = injector.get(Router);
@@ -69,8 +70,8 @@ const appRoutes: Routes = [
     children: [
       {
         path: 'foo',
-        component: ProtectedComponent,
-        canActivate: [ OktaAuthGuard ]
+        component: ProtectedComponent
+        // protected by canActivate on parent route
       }
     ]
   },
@@ -81,6 +82,17 @@ const appRoutes: Routes = [
     data: {
       onAuthRequired: onNeedsAuthenticationGuard
     }
+  },
+  {
+    path: 'public',
+    component: PublicComponent,
+    canActivateChild: [ OktaAuthGuard ],
+    children: [
+      {
+        path: 'private',
+        component: ProtectedComponent
+      }
+    ]
   }
 ];
 
@@ -117,7 +129,8 @@ if (environment.OKTA_TESTING_DISABLEHTTPSCHECK) {
   declarations: [
     AppComponent,
     ProtectedComponent,
-    SessionTokenLoginComponent
+    SessionTokenLoginComponent,
+    PublicComponent
   ],
   providers: [{
     provide: OKTA_CONFIG,
