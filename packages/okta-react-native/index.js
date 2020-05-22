@@ -35,7 +35,8 @@ export const createConfig = async({
   endSessionRedirectUri, 
   discoveryUri,
   scopes,
-  requireHardwareBackedKeyStore
+  requireHardwareBackedKeyStore,
+  supportedBrowsers
 }) => {
 
   assertIssuer(discoveryUri);
@@ -68,7 +69,8 @@ export const createConfig = async({
     endSessionRedirectUri,
     discoveryUri,
     scopes,
-    requireHardwareBackedKeyStore
+    requireHardwareBackedKeyStore,
+    supportedBrowsers
   );
 } 
 

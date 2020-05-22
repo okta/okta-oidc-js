@@ -69,21 +69,16 @@ public class OktaSdkBridgeModule extends ReactContextBaseJavaModule implements A
                              String discoveryUri,
                              ReadableArray scopes,
                              Boolean requireHardwareBackedKeyStore,
+                             ReadableArray supportedBrowsers,
                              Promise promise
     ) {
 
         try {
-            String[] scopeArray = new String[scopes.size()];
-
-            for (int i = 0; i < scopes.size(); i++) {
-                scopeArray[i] = scopes.getString(i);
-            }
-
             this.config = new OIDCConfig.Builder()
                     .clientId(clientId)
                     .redirectUri(redirectUri)
                     .endSessionRedirectUri(endSessionRedirectUri)
-                    .scopes(scopeArray)
+                    .scopes(this.mapReadableArrayToArray(scopes))
                     .discoveryUri(discoveryUri)
                     .create();
 
@@ -92,6 +87,7 @@ public class OktaSdkBridgeModule extends ReactContextBaseJavaModule implements A
                     .withContext(reactContext)
                     .withStorage(new SharedPreferenceStorage(reactContext))
                     .setRequireHardwareBackedKeyStore(requireHardwareBackedKeyStore)
+                    .supportedBrowsers(this.mapReadableArrayToArray(supportedBrowsers))
                     .create();
 
             this.authClient = new Okta.AuthBuilder()
@@ -538,5 +534,19 @@ public class OktaSdkBridgeModule extends ReactContextBaseJavaModule implements A
         } catch (AuthorizationException e) {
             promise.reject(OktaSdkError.OKTA_OIDC_ERROR.getErrorCode(), e.getLocalizedMessage(), e);
         }
+    }
+
+    private String[] mapReadableArrayToArray(ReadableArray readableArray) {
+        if (readableArray == null) {
+            return new String[0];
+        }
+
+        int size = readableArray.size();
+        String[] array = new String[size];
+
+        for (int i = 0; i < size; i++) {
+            array[i] = readableArray.getString(i);
+        }
+        return array;
     }
 }
