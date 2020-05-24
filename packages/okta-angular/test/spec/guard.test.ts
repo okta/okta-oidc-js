@@ -125,6 +125,22 @@ describe('Angular auth guard', () => {
     });
   });
 
+  describe('canActivateChild', () => {
+    it('calls canActivate', () => {
+      const service = createService({ isAuthenticated: false });
+      const injector = TestBed.get(Injector);
+      const guard = new OktaAuthGuard(service, injector);
+      const router = TestBed.get(Router);
+      const routerState: RouterState = router.routerState;
+      const state = routerState.snapshot;
+      const route = state.root;
+
+      jest.spyOn(guard, 'canActivate').mockReturnValue(Promise.resolve(true));
+      guard.canActivateChild(route, state);
+      expect(guard.canActivate).toHaveBeenCalledWith(route, state);
+    });
+  });
+
   it('Can create the guard via angular injection', () => {
     TestBed.configureTestingModule({
       imports: [

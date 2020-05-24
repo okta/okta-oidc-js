@@ -13,6 +13,7 @@
 import { Injectable, Injector } from '@angular/core';
 import {
   CanActivate,
+  CanActivateChild,
   ActivatedRouteSnapshot,
   RouterStateSnapshot,
 } from '@angular/router';
@@ -21,7 +22,7 @@ import { OktaAuthService } from './services/okta.service';
 import { AuthRequiredFunction } from './models/okta.config';
 
 @Injectable()
-export class OktaAuthGuard implements CanActivate {
+export class OktaAuthGuard implements CanActivate, CanActivateChild {
   constructor(private oktaAuth: OktaAuthService, private injector: Injector) { }
 
   /**
@@ -54,4 +55,12 @@ export class OktaAuthGuard implements CanActivate {
 
     return false;
   }
+
+  async canActivateChild(
+    route: ActivatedRouteSnapshot,
+    state: RouterStateSnapshot
+  ) {
+    return this.canActivate(route, state);
+  }
+
 }
