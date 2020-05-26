@@ -43,11 +43,12 @@ export const createConfig = async({
   assertRedirectUri(redirectUri);
   assertRedirectUri(endSessionRedirectUri);
 
+  const userAgentTemplate = `@okta/okta-react-native/${version} $UPSTREAM_SDK react-native/${version} ${Platform.OS}/${Platform.Version}`;
   const { origin } = Url(discoveryUri);
   authClient = new OktaAuth({ 
     issuer: issuer || origin,
     userAgent: {
-      template: `@okta/okta-react-native/${version} $OKTA_AUTH_JS react-native/${version} ${Platform.OS}/${Platform.Version}`
+      template: userAgentTemplate.replace('$UPSTREAM_SDK', '$OKTA_AUTH_JS')
     } 
   });
 
@@ -68,6 +69,7 @@ export const createConfig = async({
     endSessionRedirectUri,
     discoveryUri,
     scopes,
+    userAgentTemplate,
     requireHardwareBackedKeyStore
   );
 } 
