@@ -62,7 +62,7 @@ public class HttpClientImpl implements OktaHttpClient {
     }
 
     private String getUserAgent() {
-        String sdkVersion = BuildConfig.APPLICATION_ID + "/" + BuildConfig.VERSION_NAME;
+        String sdkVersion = "okta-oidc-android/" + BuildConfig.VERSION_NAME;
         return userAgentTemplate.replace("$UPSTREAM_SDK", sdkVersion);
     }
 
