@@ -59,7 +59,8 @@ export const createConfig = async({
       redirectUri,
       endSessionRedirectUri,
       discoveryUri,
-      scopes
+      scopes,
+      userAgentTemplate
     );
   }
     

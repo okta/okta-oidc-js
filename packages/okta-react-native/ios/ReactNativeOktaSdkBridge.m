@@ -14,7 +14,17 @@
 
 @interface RCT_EXTERN_MODULE(OktaSdkBridge, RCTEventEmitter)
 
-RCT_EXTERN_METHOD(createConfig:(NSString *)clientId redirectUrl:(NSString *)redirectUrl endSessionRedirectUri:(NSString *)endSessionRedirectUri discoveryUri:(NSString *)discoveryUri scopes:(NSString *)scopes promiseResolver:(RCTPromiseResolveBlock *)promiseResolver promiseRejecter:(RCTPromiseRejectBlock *)promiseRejecter)
+RCT_EXTERN_METHOD(
+  createConfig:
+  (NSString *)clientId 
+  redirectUrl:(NSString *)redirectUrl 
+  endSessionRedirectUri:(NSString *)endSessionRedirectUri 
+  discoveryUri:(NSString *)discoveryUri 
+  scopes:(NSString *)scopes 
+  userAgentTemplate:(NSString *)userAgentTemplate 
+  promiseResolver:(RCTPromiseResolveBlock *)promiseResolver 
+  promiseRejecter:(RCTPromiseRejectBlock *)promiseRejecter
+)
 
 RCT_EXTERN_METHOD(signIn)
 
