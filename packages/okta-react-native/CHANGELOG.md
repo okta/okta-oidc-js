@@ -1,4 +1,10 @@
-#1.4.0
+# 1.4.1
+
+### Bug fix
+
+- [#790](https://github.com/okta/okta-oidc-js/pull/790) Pass consistent UA header in http request
+
+# 1.4.0
 
 ### Features
 - [#751](https://github.com/okta/okta-oidc-js/pull/751)

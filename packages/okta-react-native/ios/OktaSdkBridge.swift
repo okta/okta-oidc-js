@@ -25,9 +25,13 @@ class OktaSdkBridge: RCTEventEmitter {
                       endSessionRedirectUri: String,
                       discoveryUri: String,
                       scopes: String,
+                      userAgentTemplate: String,
                       promiseResolver: RCTPromiseResolveBlock,
                       promiseRejecter: RCTPromiseRejectBlock) -> Void {
         do {
+            let uaVersion = OktaUserAgent.userAgentVersion()
+            let userAgent = userAgentTemplate.replacingOccurrences(of: "$UPSTREAM_SDK", with: "okta-oidc-ios/\(uaVersion)")
+            OktaOidcConfig.setUserAgent(value: userAgent)
             config = try OktaOidcConfig(with: [
                 "issuer": discoveryUri,
                 "clientId": clientId,
