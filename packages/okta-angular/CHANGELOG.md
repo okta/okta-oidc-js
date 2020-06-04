@@ -4,6 +4,10 @@
 
 [#776](https://github.com/okta/okta-oidc-js/pull/776) `OktaAuthGuard` now implements `canActivateChild`
 
+### Bug Fixes
+
+[#794](https://github.com/okta/okta-oidc-js/pull/794) `OktaAuthService.getUser` Remove tokens check logic, and throw error if user claims cannot be resolved.
+
 # 2.0.0
 
 [#690](https://github.com/okta/okta-oidc-js/pull/690)
