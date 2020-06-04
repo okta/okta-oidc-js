@@ -6,7 +6,7 @@
 
 ### Bug Fixes
 
-[#794](https://github.com/okta/okta-oidc-js/pull/794) `OktaAuthService.getUser` Remove tokens check logic, and throw error if user claims cannot be resolved.
+[#794](https://github.com/okta/okta-oidc-js/pull/794) `OktaAuthService.getUser` Only use `/userinfo` endpoint to retrieve user claims.
 
 # 2.0.0
 

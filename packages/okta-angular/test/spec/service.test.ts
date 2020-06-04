@@ -336,25 +336,12 @@ describe('Angular service', () => {
 
     describe('getUser', () => {
       it('should resolve userInfo from AuthJS getUserInfo', async () => {
-        const mockToken = {
-          claims: {
-            sub: 'test-sub',
-          },
-        };
         const userInfo = {
           sub: 'test-sub',
         };
         const mockAuthJS = extendMockAuthJS({
           token: {
             getUserInfo: jest.fn().mockResolvedValueOnce(userInfo),
-          },
-          tokenManager: {
-            get: jest.fn().mockImplementation(key => {
-              if (key === 'idToken') {
-                return Promise.resolve(mockToken);
-              }
-              return Promise.resolve(null);
-            })
           }
         });
         const service = createService(undefined, mockAuthJS);
@@ -362,37 +349,10 @@ describe('Angular service', () => {
         expect(retVal).toBe(userInfo);
       });
 
-      it('should resolve claims from idToken when AuthJS getUserInfo throw error, but idToken is available', async () => {
-        const mockToken = {
-          claims: {
-            sub: 'test-sub',
-          },
-        };
+      it('should throw error when AuthJS getUserInfo cannot resolve userInfo', async () => {
         const mockAuthJS = extendMockAuthJS({
           token: {
             getUserInfo: jest.fn().mockRejectedValueOnce(new Error('mock error')),
-          },
-          tokenManager: {
-            get: jest.fn().mockImplementation(key => {
-              if (key === 'idToken') {
-                return Promise.resolve(mockToken);
-              }
-              return Promise.resolve(null);
-            })
-          }
-        });
-        const service = createService(undefined, mockAuthJS);
-        const retVal = await service.getUser();
-        expect(retVal).toBe(mockToken.claims);
-      });
-
-      it('should throw error when AuthJS getUserInfo cannot resolve userInfo and no idToken claims available', async () => {
-        const mockAuthJS = extendMockAuthJS({
-          token: {
-            getUserInfo: jest.fn().mockRejectedValueOnce(new Error('mock error')),
-          },
-          tokenManager: {
-            get: jest.fn().mockResolvedValueOnce(null)
           }
         });
         const service = createService(undefined, mockAuthJS);
