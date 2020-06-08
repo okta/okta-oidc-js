@@ -8,6 +8,7 @@ describe('<SecureRoute />', () => {
   let authService;
   let authState;
   let mockProps;
+
   beforeEach(() => {
     authState = {
       isPending: true
@@ -20,10 +21,13 @@ describe('<SecureRoute />', () => {
     };
     mockProps = { authService };
   });
+
   describe('isAuthenticated: true', () => {
+
     beforeEach(() => {
       authState.isAuthenticated = true;
     });
+
     it('will render wrapped component', () => {
       const MyComponent = function() { return <div>hello world</div>; };
       const wrapper = mount(
@@ -38,10 +42,13 @@ describe('<SecureRoute />', () => {
       expect(wrapper.find(MyComponent).html()).toBe('<div>hello world</div>');
     });
   });
+
   describe('isAuthenticated: false', () => {
+
     beforeEach(() => {
       authState.isAuthenticated = false;
     });
+
     it('will not render wrapped component', () => {
       const MyComponent = function() { return <div>hello world</div>; };
       const wrapper = mount(
@@ -55,10 +62,13 @@ describe('<SecureRoute />', () => {
       );
       expect(wrapper.find(MyComponent).length).toBe(0);
     });
+
     describe('isPending: false', () => {
+
       beforeEach(() => {
         authState.isPending = false;
       });
+
       it('calls login()', () => {
         mount(
           <MemoryRouter>
@@ -70,10 +80,13 @@ describe('<SecureRoute />', () => {
         expect(authService.login).toHaveBeenCalled();
       });
     });
+
     describe('isPending: true', () => {
+
       beforeEach(() => {
         authState.isPending = true;
       });
+
       it('does not call login()', () => {
         mount(
           <MemoryRouter>
@@ -86,6 +99,7 @@ describe('<SecureRoute />', () => {
       });
     });
   });
+  
   it('should accept a "path" prop and render a component', () => {
     const wrapper = mount(
       <MemoryRouter>
@@ -197,5 +211,37 @@ describe('<SecureRoute />', () => {
     );
     const secureRoute = wrapper.find(SecureRoute);
     expect(secureRoute.find(Route).props().sensitive).toBe(true);
+  });
+
+  it('should pass react-router props to an internal Route component', () => {
+    authState.isAuthenticated = true;
+    const MyComponent = function(props) { return <div>{ props.history ? 'has history' : 'lacks history'}</div>; };
+    const wrapper = mount(
+      <MemoryRouter>
+        <Security {...mockProps}>
+          <SecureRoute
+            path='/'
+            component={MyComponent}
+          />
+        </Security>
+      </MemoryRouter>
+    );
+    expect(wrapper.find(MyComponent).html()).toBe('<div>has history</div>');
+  });
+
+  it('should pass props using the "render" prop', () => {
+    authState.isAuthenticated = true;
+    const MyComponent = function(props) { return <div>{ props.someProp ? 'has someProp' : 'lacks someProp'}</div>; };
+    const wrapper = mount(
+      <MemoryRouter>
+        <Security {...mockProps}>
+          <SecureRoute
+            path='/'
+            render={ () => <MyComponent someProp={true}/> }
+          />
+        </Security>
+      </MemoryRouter>
+    );
+    expect(wrapper.find(MyComponent).html()).toBe('<div>has someProp</div>');
   });
 });

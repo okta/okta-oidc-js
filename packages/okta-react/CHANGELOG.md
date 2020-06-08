@@ -1,3 +1,11 @@
+# 3.0.2
+
+### Bug Fixes
+- [#802] 
+  - The minimum version of okta-auth-js is updated to 3.1.2 from 3.0.0 to help address an issue with overlapping PKCE renewal requests.
+  - `<SecureRoute>` should now pass the same react-router properties to wrapped components that `<Route>` does.
+  - Passing custom props to a component using the `render` property of `<SecureRoute>` should now work
+
 # 3.0.1
 
 ### Features
