@@ -213,7 +213,7 @@ describe('<SecureRoute />', () => {
     expect(secureRoute.find(Route).props().sensitive).toBe(true);
   });
 
-  it('should pass react-router props to an internal Route', () => {
+  it('should pass react-router props to an internal Route component', () => {
     authState.isAuthenticated = true;
     const MyComponent = function(props) { return <div>{ props.history ? 'has history' : 'lacks history'}</div>; };
     const wrapper = mount(
@@ -227,5 +227,21 @@ describe('<SecureRoute />', () => {
       </MemoryRouter>
     );
     expect(wrapper.find(MyComponent).html()).toBe('<div>has history</div>');
+  });
+
+  it('should pass props using the "render" prop', () => {
+    authState.isAuthenticated = true;
+    const MyComponent = function(props) { return <div>{ props.someProp ? 'has someProp' : 'lacks someProp'}</div>; };
+    const wrapper = mount(
+      <MemoryRouter>
+        <Security {...mockProps}>
+          <SecureRoute
+            path='/'
+            render={ () => <MyComponent someProp={true}/> }
+          />
+        </Security>
+      </MemoryRouter>
+    );
+    expect(wrapper.find(MyComponent).html()).toBe('<div>has someProp</div>');
   });
 });
