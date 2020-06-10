@@ -85,35 +85,27 @@ connectUtil.createLoginCallbackHandler = context => {
   const routes = context.options.routes;
   const customHandler = routes.loginCallback.handler;
 
-  if (!customHandler) {
-    // Passport successReturnToOrRedirect always try req.session.returnTo first if it's assigned
-    // Use successRedirect field if afterCallback url is explicitly set in config
-    const redirectOptions = { failureRedirect: routes.loginCallback.failureRedirect };
-    if (routes.loginCallback.afterCallback) {
-      redirectOptions.successRedirect = routes.loginCallback.afterCallback;
-    } else {
-      redirectOptions.successReturnToOrRedirect = '/';
-    }
+  // Passport successReturnToOrRedirect always try req.session.returnTo first if it's assigned
+  // Use successRedirect field if afterCallback url is explicitly set in config
+  const redirectOptions = { failureRedirect: routes.loginCallback.failureRedirect };
+  if (routes.loginCallback.afterCallback) {
+    redirectOptions.successRedirect = routes.loginCallback.afterCallback;
+  } else {
+    redirectOptions.successReturnToOrRedirect = '/';
+  }
 
+  if (!customHandler) {
     return passport.authenticate('oidc', redirectOptions);
   }
 
-  const customHandlerArity = customHandler.length;
   return (req, res, next) => {
-    const nextHandler = err => {
-      if (err && customHandlerArity < 4) return next(err);
-      switch(customHandlerArity) {
-        case 4:
-          customHandler(err, req, res, next);
-          break;
-        case 3:
-          customHandler(req, res, next);
-          break;
-        default:
-          throw new OIDCMiddlewareError('middlewareError', 'Your custom callback handler must request "next"');
+    customHandler(req, res, (err) => {
+      if (err) {
+        next(err);
+      } else {
+        passport.authenticate('oidc', redirectOptions)(req, res, next);
       }
-    };
-    passport.authenticate('oidc')(req, res, nextHandler);
+    });
   }
 };
 
