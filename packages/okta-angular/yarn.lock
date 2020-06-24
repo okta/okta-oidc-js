@@ -412,10 +412,10 @@
   version "0.4.1"
   resolved "https://registry.yarnpkg.com/@okta/configuration-validation/-/configuration-validation-0.4.1.tgz#6fa4520bc96c27b3d7aedcb0523de1fbceee9105"
 
-"@okta/okta-auth-js@^3.0.0":
-  version "3.0.0"
-  resolved "https://registry.yarnpkg.com/@okta/okta-auth-js/-/okta-auth-js-3.0.0.tgz#8fc9d07e3e2906f6f2506fa92a483789892110fb"
-  integrity sha512-RD9R2JdNYKeg4OD6weRk/tHURVbC88L40ve2qZdbi1UrfdLyh3wlmrz5H/9H80my1t5JACZvUIR9MWnQaEapGA==
+"@okta/okta-auth-js@^3.1.4":
+  version "3.1.4"
+  resolved "https://registry.yarnpkg.com/@okta/okta-auth-js/-/okta-auth-js-3.1.4.tgz#eefac22320b2573da07d8814bd4fffe3be29476a"
+  integrity sha512-70L3T9jIuwh62Ujx+C4tLXiLNblHI56CMx0JrKHjm0SVSa29JPOaYeLZS1+28EqmNXRQtt8mOGv/UaEtQMTgeQ==
   dependencies:
     Base64 "0.3.0"
     cross-fetch "^3.0.0"
