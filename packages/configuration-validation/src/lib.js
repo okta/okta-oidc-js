@@ -10,7 +10,7 @@
  * See the License for the specific language governing permissions and limitations under the License.
  */
 
-const merge = require('lodash/merge');
+const merge = require('lodash.merge');
 class ConfigurationValidationError extends Error {}
 
 const configUtil = module.exports;

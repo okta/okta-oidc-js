@@ -37,10 +37,12 @@
     "babel-preset-env": "^1.7.0",
     "deep-extend": "^0.6.0",
     "eslint": "^4.7.1",
-    "jest": "^23.6.0",
-    "lodash": "^4.17.15"
+    "jest": "^23.6.0"
   },
   "jest": {
     "testEnvironment": "jsdom"
+  },
+  "dependencies": {
+    "lodash.merge": "^4.6.2"
   }
 }
