@@ -1,12 +1,14 @@
+# Pending
+
+### Breaking Changes
+
+[#794](https://github.com/okta/okta-oidc-js/pull/794) `OktaAuthService.getUser` only use `/userinfo` endpoint to retrieve user claims. `OktaAuthService.getUser` should be the recommended method to acquire user information as `idToken.claims` may become stale due to data updating.
+
 # 2.1.0
 
 ### Features
 
 [#776](https://github.com/okta/okta-oidc-js/pull/776) `OktaAuthGuard` now implements `canActivateChild`
-
-### Bug Fixes
-
-[#794](https://github.com/okta/okta-oidc-js/pull/794) `OktaAuthService.getUser` Only use `/userinfo` endpoint to retrieve user claims.
 
 # 2.0.0
 
