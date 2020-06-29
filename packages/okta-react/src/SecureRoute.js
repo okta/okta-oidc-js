@@ -14,7 +14,7 @@ import React from 'react';
 import { Route, useHistory } from 'react-router-dom';
 import { useOktaAuth } from './OktaContext';
 
-const SecureRoute = ({ ...props }) => {
+const SecureRoute = (props) => {
   const { authService, authState } = useOktaAuth();
   const history = useHistory();
 
