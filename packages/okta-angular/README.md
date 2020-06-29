@@ -348,7 +348,7 @@ An observable that returns true/false when the authenticate state changes.  This
 
 #### `oktaAuth.getUser()`
 
-Returns a promise that will resolve with the result of the OpenID Connect `/userinfo` endpoint if an access token is provided, or returns the claims of the ID token if no access token is available.  The returned claims depend on the requested response type, requested scopes, and authorization server policies.  For more information see documentation for the [UserInfo endpoint][], [ID Token Claims][], and [Customizing Your Authorization Server][].
+Returns a promise that will resolve with the result of the OpenID Connect `/userinfo` endpoint. For more information see documentation for the [UserInfo endpoint][], [ID Token Claims][], and [Customizing Your Authorization Server][].
 
 #### `oktaAuth.getAccessToken() Promise<string>`
 

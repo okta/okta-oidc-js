@@ -130,16 +130,9 @@ export class OktaAuthService {
     }
 
     /**
-     * Returns user claims from the /userinfo endpoint if an
-     * accessToken is provided or parses the available idToken.
+     * Returns user claims from the /userinfo endpoint.
      */
-    async getUser(): Promise<UserClaims|undefined> {
-      const accessToken: AccessToken = await this.oktaAuth.tokenManager.get('accessToken') as AccessToken;
-      const idToken: IDToken = await this.oktaAuth.tokenManager.get('idToken') as IDToken;
-      if (!accessToken || !idToken) {
-        // Returns raw claims from idToken if there is no accessToken.
-        return idToken ? idToken.claims : undefined;
-      }
+    async getUser(): Promise<UserClaims> {
       return this.oktaAuth.token.getUserInfo();
     }
 

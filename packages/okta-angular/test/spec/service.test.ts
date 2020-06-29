@@ -335,87 +335,32 @@ describe('Angular service', () => {
     });
 
     describe('getUser', () => {
-      it('neither id nor access token = returns undefined', async () => {
-        const mockAuthJS = extendMockAuthJS({
-          tokenManager: {
-            get: jest.fn().mockImplementation(key => {
-              return Promise.resolve(null);
-            })
-          }
-        });
-        const service = createService(undefined, mockAuthJS);
-        const retVal = await service.getUser();
-        expect(retVal).toBe(undefined);
-      });
-
-
-      it('idtoken but no accessToken = idToken claims', async () => {
-        const mockToken = {
-          idToken: 'foo',
-          claims: 'baz',
-        };
-        const mockAuthJS = extendMockAuthJS({
-          tokenManager: {
-            get: jest.fn().mockImplementation(key => {
-              if (key === 'idToken') {
-                return Promise.resolve(mockToken);
-              }
-              return Promise.resolve(null);
-            })
-          }
-        });
-
-        const service = createService(undefined, mockAuthJS);
-        const retVal = await service.getUser();
-        expect(retVal).toBe(mockToken.claims);
-      });
-
-      it('accessToken but no idtoken = returns undefined', async () => {
-        const mockToken = {
-          accessToken: 'foo'
-        };
-        const mockAuthJS = extendMockAuthJS({
-          tokenManager: {
-            get: jest.fn().mockImplementation(key => {
-              if (key === 'accessToken') {
-                return Promise.resolve(mockToken);
-              }
-              return Promise.resolve(null);
-            })
-          }
-        });
-
-        const service = createService(undefined, mockAuthJS);
-        const retVal = await service.getUser();
-        expect(retVal).toBe(undefined);
-      });
-
-      it('idtoken and accessToken = calls getUserInfo and returns user object', async () => {
-        const mockToken = {
-          claims: {
-            sub: 'test-sub',
-          },
-        };
+      it('should resolve userInfo from AuthJS getUserInfo', async () => {
         const userInfo = {
           sub: 'test-sub',
         };
         const mockAuthJS = extendMockAuthJS({
           token: {
-            getUserInfo: jest.fn().mockReturnValue(Promise.resolve(userInfo)),
-          },
-          tokenManager: {
-            get: jest.fn().mockImplementation(key => {
-              if (key === 'idToken' || key === 'accessToken') {
-                return Promise.resolve(mockToken);
-              }
-              return Promise.resolve(null);
-            })
+            getUserInfo: jest.fn().mockResolvedValueOnce(userInfo),
           }
         });
-
         const service = createService(undefined, mockAuthJS);
         const retVal = await service.getUser();
         expect(retVal).toBe(userInfo);
+      });
+
+      it('should throw error when AuthJS getUserInfo cannot resolve userInfo', async () => {
+        const mockAuthJS = extendMockAuthJS({
+          token: {
+            getUserInfo: jest.fn().mockRejectedValueOnce(new Error('mock error')),
+          }
+        });
+        const service = createService(undefined, mockAuthJS);
+        try {
+          await service.getUser();
+        } catch (err) {
+          expect(err.message).toBe('mock error');
+        }
       });
     });
 
