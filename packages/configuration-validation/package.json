@@ -43,6 +43,6 @@
     "testEnvironment": "jsdom"
   },
   "dependencies": {
-    "lodash.merge": "^4.6.2"
+    "lodash": "^4.17.15"
   }
 }
