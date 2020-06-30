@@ -75,15 +75,6 @@ describe('Angular service', () => {
     it('should throw if an issuer matching -admin.okta-emea.com is provided', () => {
       expect(createInstance({ issuer: 'https://foo-admin.okta-emea.com' })).toThrow();
     });
-    it('should throw if an issuer matching more than one ".com" is provided', () => {
-      expect(createInstance({ issuer: 'https://foo.okta.com.com' })).toThrow();
-    });
-    it('should throw if an issuer matching more than one sequential "://" is provided', () => {
-      expect(createInstance({ issuer: 'https://://foo.okta.com' })).toThrow();
-    });
-    it('should throw if an issuer matching more than one "://" is provided', () => {
-      expect(createInstance({ issuer: 'https://foo.okta://.com' })).toThrow();
-    });
     it('should throw if the client_id is not provided', () => {
       expect(createInstance({ issuer: 'https://foo' })).toThrow();
     });
