@@ -25,7 +25,6 @@ const copyCredentialsMessage = 'You can copy it from the Okta Developer Console 
 const isHttps = new RegExp('^https://');
 const hasProtocol = new RegExp('://');
 const hasDomainAdmin = /-admin.(okta|oktapreview|okta-emea).com/;
-const hasDomainTypo = new RegExp('(.com.com)|(://.*){2,}');
 const endsInPath = new RegExp('/$');
 
 configUtil.buildConfigObject = (config) => {
@@ -97,11 +96,6 @@ configUtil.assertIssuer = (issuer, testing = {}) => {
   } else if (issuer.match(hasDomainAdmin)) {
     throw new ConfigurationValidationError(
       'Your Okta domain should not contain -admin. ' +
-      `Current value: ${issuer}. ${copyMessage}`
-    );
-  } else if (issuer.match(hasDomainTypo)) {
-    throw new ConfigurationValidationError(
-      'It looks like there\'s a typo in your Okta domain. ' +
       `Current value: ${issuer}. ${copyMessage}`
     );
   }
