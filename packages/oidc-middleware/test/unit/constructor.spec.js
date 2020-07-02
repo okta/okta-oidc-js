@@ -131,42 +131,6 @@ describe('new ExpressOIDC()', () => {
     expect(createInstance).toThrow(errorMsg);
   });
 
-  it('should throw if an issuer matching more than one ".com" is provided', () => {
-    function createInstance() {
-      new ExpressOIDC({
-        ...minimumConfig,
-        issuer: 'https://foo.okta.com.com'
-      });
-    }
-    const errorMsg = 'It looks like there\'s a typo in your Okta domain. ' +
-      `Current value: https://foo.okta.com.com. ${findDomainMessage}`;
-    expect(createInstance).toThrow(errorMsg);
-  });
-
-  it('should throw if an issuer matching more than one sequential "://" is provided', () => {
-    function createInstance() {
-      new ExpressOIDC({
-        ...minimumConfig,
-        issuer: 'https://://foo.okta.com'
-      });
-    }
-    const errorMsg = 'It looks like there\'s a typo in your Okta domain. ' +
-      `Current value: https://://foo.okta.com. ${findDomainMessage}`;
-    expect(createInstance).toThrow(errorMsg);
-  });
-
-  it('should throw if an issuer matching more than one "://" is provided', () => {
-    function createInstance() {
-      new ExpressOIDC({
-        ...minimumConfig,
-        issuer: 'https://foo.okta://.com'
-      });
-    }
-    const errorMsg = 'It looks like there\'s a typo in your Okta domain. ' +
-      `Current value: https://foo.okta://.com. ${findDomainMessage}`;
-    expect(createInstance).toThrow(errorMsg);
-  });
-
   it('should throw if the client_id is not provided', () => {
     function createInstance() {
       new ExpressOIDC({

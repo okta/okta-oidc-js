@@ -90,30 +90,6 @@ describe('Auth configuration', () => {
     }
     expect(createInstance).toThrow()
   })
-  it('should throw if an issuer matching more than one ".com" is provided', () => {
-    function createInstance () {
-      new Auth({
-        issuer: 'https://foo.okta.com.com'
-      })
-    }
-    expect(createInstance).toThrow()
-  })
-  it('should throw if an issuer matching more than one sequential "://" is provided', () => {
-    function createInstance () {
-      new Auth({
-        issuer: 'https://://foo.okta.com'
-      })
-    }
-    expect(createInstance).toThrow()
-  })
-  it('should throw if an issuer matching more than one "://" is provided', () => {
-    function createInstance () {
-      new Auth({
-        issuer: 'https://foo.okta://.com'
-      })
-    }
-    expect(createInstance).toThrow()
-  })
   it('should throw if the client_id is not provided', () => {
     function createInstance () {
       new Auth({

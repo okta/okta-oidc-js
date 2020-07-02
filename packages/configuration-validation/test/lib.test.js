@@ -350,24 +350,6 @@ describe('Configuration Validation', () => {
         `https://foo-admin.okta-emea.com. ${findDomainMessage}`;
       expect(() => assertIssuer('https://foo-admin.okta-emea.com')).toThrow(errorMsg);
     });
-
-    it('should throw if an issuer matching more than one ".com" is provided', () => {
-      const errorMsg = 'It looks like there\'s a typo in your Okta domain. ' +
-        `Current value: https://foo.okta.com.com. ${findDomainMessage}`;
-      expect(() => assertIssuer('https://foo.okta.com.com')).toThrow(errorMsg);
-    });
-
-    it('should throw if an issuer matching more than one sequential "://" is provided', () => {
-      const errorMsg = 'It looks like there\'s a typo in your Okta domain. ' +
-        `Current value: https://://foo.okta.com. ${findDomainMessage}`;
-      expect(() => assertIssuer('https://://foo.okta.com')).toThrow(errorMsg);
-    });
-
-    it('should throw if an issuer matching more than one "://" is provided', () => {
-      const errorMsg = 'It looks like there\'s a typo in your Okta domain. ' +
-        `Current value: https://foo.okta://.com. ${findDomainMessage}`;
-      expect(() => assertIssuer('https://foo.okta://.com')).toThrow(errorMsg);
-    });
   });
 
   describe('assertClientId', () => {
