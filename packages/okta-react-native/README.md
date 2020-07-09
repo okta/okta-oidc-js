@@ -207,7 +207,7 @@ This method will handle both `browser-sign-in` and `custom-sign-in` scenarios ba
 This async method will automatically redirect users to your Okta organziation for authentication. It will emit an event once a user successfully signs in. Make sure your event listeners are mounted and unmounted. Note: on iOS there isn't a `onCancelled` event. If the sign in process is cancelled, `onError` will be triggered.
 
 #### `browser-sign-in`
-`browser-sign-in` leverages device's native browser to automatically redirect users to your Okta organziation for authentication. By providing no argument, this method will trigger the `browser-sign-in` flow. It will emit an event once a user successfully signs in. Make sure your event listeners are mounted and unmounted. **Note**: on iOS there isn't a `onCancelled` event. If the sign in process is cancelled, `onError` will be triggered. 
+`browser-sign-in` leverages device's native browser to automatically redirect users to your Okta organziation for authentication. By providing no argument, this method will trigger the `browser-sign-in` flow. It will emit an event once a user successfully signs in. Make sure your event listeners are mounted and unmounted. **Note**: on iOS there isn't a `onCancelled` event. If the sign in process is cancelled, `onError` will be triggered.
 
 ```javascript
 signIn();
@@ -260,7 +260,7 @@ componentWillUnmount() {
 
 ### `authenticate`
 
-If you already logged in to Okta and have a valid session token, you can complete authorization by calling `authenticate` method. It will emit an event once a user successfully signs in. Make sure your event listeners are mounted and unmounted. Note: on iOS there isn't a `onCancelled` event. If the `authenticate` process is cancelled, `onError` will be triggered. 
+If you already logged in to Okta and have a valid session token, you can complete authorization by calling `authenticate` method. It will emit an event once a user successfully signs in. Make sure your event listeners are mounted and unmounted. Note: on iOS there isn't a `onCancelled` event. If the `authenticate` process is cancelled, `onError` will be triggered.
 
 ```javascript
 authenticate({sessionToken: sessionToken});
@@ -270,8 +270,20 @@ authenticate({sessionToken: sessionToken});
 
 Clear the browser session and clear the app session (stored tokens) in memory. Fires an event once a user successfully logs out. For sample usage, refer to `signIn`.
 
+**Note**: This method apply for [browser-sign-in](#browser-sign-in) scenario only. Use a combination of `revokeToken` (optional) and `clearTokens` methods to signOut when use [custom-sign-in](#custom-sign-in).
+
+#### browser-sign-in sample
+
 ```javascript
 signOut();
+```
+
+#### custom-sign-in sample
+
+```javascript
+await revokeAccessToken(); // optional
+await revokeIdToken(); // optional
+await clearTokens();
 ```
 
 ### `isAuthenticated`
