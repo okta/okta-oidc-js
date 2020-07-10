@@ -1,0 +1,18 @@
+{
+  "compilerOptions": {
+    "target": "esnext",
+    "module": "esnext",
+    "moduleResolution": "node",
+    "lib": ["es2017", "dom"],
+    "outDir": "./dist",
+    "allowJs": true,
+    "checkJs": false,
+    "strict": false,
+    "noImplicitThis": true,
+    "alwaysStrict": true,
+    "esModuleInterop": true,
+    "noEmit": false,
+    "declaration": true
+  },
+  "include": ["./src/**/*"]
+}
