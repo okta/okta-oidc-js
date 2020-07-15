@@ -120,7 +120,6 @@ class AuthService {
   }
 
   async updateAuthState() {
-    console.log('call update auth state');
     // avoid concurrent updates
     if( this._pending.authStateUpdate ) { 
       return this._pending.authStateUpdate.promise;
