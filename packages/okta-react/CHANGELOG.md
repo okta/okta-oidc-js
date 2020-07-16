@@ -2,7 +2,7 @@
 
 ### Bug Fixes
 
-- [#826](https://github.com/okta/okta-oidc-js/pull/826) Fix staled `authState` in React context by listening on `expired` event from `authJs.tokenManager`, then update the `authState` in context properly.
+- [#826](https://github.com/okta/okta-oidc-js/pull/826) Fix stale `authState` in React context by listening on `expired` event from `authJs.tokenManager`, then update the `authState` in context properly.
 
 # 3.0.2
 
