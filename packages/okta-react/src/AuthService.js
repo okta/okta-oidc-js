@@ -41,7 +41,6 @@ class AuthService {
     this._oktaAuth = new OktaAuth(authConfig);
     this._oktaAuth.userAgent = `${packageInfo.name}/${packageInfo.version} ${this._oktaAuth.userAgent}`;
     this._config = authConfig; // use normalized config
-    this._listeners = {};
     this._pending = {}; // manage overlapping async calls 
 
     this.handleAuthentication = this.handleAuthentication.bind(this);
@@ -59,9 +58,11 @@ class AuthService {
     this.emit = this.emit.bind(this);
     this.on = this.on.bind(this);
 
-    this._subscriberCount = 0;
-
     this.clearAuthState();
+
+    // Remove expired token or renew token if autoRenew is true
+    // This process will keep authState synced with states in tokenManager
+    this.on('expired', this.updateAuthState);
   }
 
   getTokenManager() {
@@ -256,17 +257,14 @@ class AuthService {
   }
 
   on( event, callback ) {
-    const subscriberId = this._subscriberCount++;
-    this._listeners[event] = this._listeners[event] || {};
-    this._listeners[event][subscriberId] = callback;
-    return () => { 
-      delete this._listeners[event][subscriberId];
-    }
+    this._oktaAuth.emitter.on(event, callback, this._oktaAuth.emitter);
+    return () => {
+      this._oktaAuth.emitter.off(event, callback);
+    };
   }
 
   emit(event, message ) { 
-    this._listeners[event] = this._listeners[event] || {};
-    Object.values(this._listeners[event]).forEach( listener => listener(message) );
+    this._oktaAuth.emitter.emit(event, message);
   }
   
 }

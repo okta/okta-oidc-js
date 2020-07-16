@@ -1,11 +1,23 @@
 import AuthService from '../../src/AuthService';
 import AuthJS from '@okta/okta-auth-js'
+import Emitter from 'tiny-emitter';
 
 const pkg = require('../../package.json');
 
 jest.mock('@okta/okta-auth-js');
 
 describe('AuthService configuration', () => {
+  let mockAuthJsInstance;
+
+  beforeEach(() => {
+    mockAuthJsInstance = {
+      userAgent: 'okta-auth-js',
+      emitter: new Emitter()
+    };
+    AuthJS.mockImplementation(() => {
+      return mockAuthJsInstance
+    });
+  })
 
   it('should throw if no issuer is provided', () => {
     function createInstance () {
@@ -164,6 +176,7 @@ describe('AuthService', () => {
     };
     mockAuthJsInstance = {
       userAgent: 'okta-auth-js',
+      emitter: new Emitter(),
       tokenManager: {
           add: jest.fn(),
           get: jest.fn().mockImplementation(tokenName => {
@@ -174,7 +187,7 @@ describe('AuthService', () => {
             } else {
               throw new Error('Unknown token name: ' + tokenName);
             }
-          }),
+          })
       },
       token: {
         getWithRedirect: jest.fn(),
@@ -506,6 +519,27 @@ describe('AuthService', () => {
 
   describe('AuthState tracking', () => { 
 
+    it('should call updateAuthState method when expired event happen', () => {
+      jest.spyOn(AuthService.prototype, 'updateAuthState');
+      const authService = new AuthService(validConfig);
+      authService.emit('expired');
+      expect(AuthService.prototype.updateAuthState).toHaveBeenCalled();
+    });
+
+    it('should trigger registered callback when "authStateChange" event triggered', () => {
+      expect.assertions(1);
+      const mockState = 'mock state';
+      const authService = new AuthService({
+        issuer: 'https://foo/oauth2/default',
+        clientId: 'foo',
+        redirectUri: 'https://foo/redirect',
+      });
+      authService.on('authStateChange', (state) => {
+        expect(state).toEqual(mockState);
+      });
+      authService.emit('authStateChange', mockState);
+    });
+
     it('has an authState of pending initially', async () => { 
       const authService = new AuthService({
         issuer: 'https://foo/oauth2/default',
@@ -519,21 +553,6 @@ describe('AuthService', () => {
         idToken: null,
         accessToken: null,
       });
-    });
-
-    it('allows subscribing to an "authStateChange" event', async () => { 
-      const authService = new AuthService({
-        issuer: 'https://foo/oauth2/default',
-        clientId: 'foo',
-        redirectUri: 'https://foo/redirect',
-      });
-      const callback = jest.fn();
-
-      expect(Object.values(authService._listeners.authStateChange).length).toBe(0);
-      authService.on('authStateChange', callback);
-      expect(Object.values(authService._listeners.authStateChange).length).toBe(1);
-      authService.emit('authStateChange');
-      expect(callback).toHaveBeenCalled();
     });
 
     it('emits an "authStateChange" event when updateAuthState() is called', async () => { 
