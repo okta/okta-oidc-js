@@ -526,7 +526,7 @@ describe('AuthService', () => {
       expect(AuthService.prototype.updateAuthState).toHaveBeenCalled();
     });
 
-    it('should trigger registred callback when "authStateChange" event triggered', () => {
+    it('should trigger registered callback when "authStateChange" event triggered', () => {
       expect.assertions(1);
       const mockState = 'mock state';
       const authService = new AuthService({
