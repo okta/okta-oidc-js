@@ -526,6 +526,20 @@ describe('AuthService', () => {
       expect(AuthService.prototype.updateAuthState).toHaveBeenCalled();
     });
 
+    it('should trigger registred callback when "authStateChange" event triggered', () => {
+      expect.assertions(1);
+      const mockState = 'mock state';
+      const authService = new AuthService({
+        issuer: 'https://foo/oauth2/default',
+        clientId: 'foo',
+        redirectUri: 'https://foo/redirect',
+      });
+      authService.on('authStateChange', (state) => {
+        expect(state).toEqual(mockState);
+      });
+      authService.emit('authStateChange', mockState);
+    });
+
     it('has an authState of pending initially', async () => { 
       const authService = new AuthService({
         issuer: 'https://foo/oauth2/default',
