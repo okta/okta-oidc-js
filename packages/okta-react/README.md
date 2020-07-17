@@ -236,9 +236,10 @@ export default withOktaAuth(class MessageList extends Component {
 
   async componentDidMount() {
     try {
+      const accessToken = await this.props.authService.getAccessToken();
       const response = await fetch('http://localhost:{serverPort}/api/messages', {
         headers: {
-          Authorization: 'Bearer ' + this.props.authState.accessToken
+          Authorization: `Bearer ${accessToken}` 
         }
       });
       const data = await response.json();
@@ -267,15 +268,16 @@ import React, { useState, useEffect } from 'react';
 import { useOktaAuth } from '@okta/okta-react';
 
 export default MessageList = () => {
-  const { authState } = useOktaAuth();
+  const { authService, authState } = useOktaAuth();
   const [messages, setMessages] = useState(null);
 
-  useEffect( () => { 
-    if(authState.isAuthenticated) { 
+  useEffect( () => {
+    if(authState.isAuthenticated) {
       try {
+        const accessToken = await authService.getAccessToken();
         const response = await fetch('http://localhost:{serverPort}/api/messages', {
           headers: {
-            Authorization: 'Bearer ' + authState.accessToken
+            Authorization: `Bearer ${accessToken}`
           }
         });
         const data = await response.json();
@@ -314,8 +316,8 @@ These options are used by `Security` to configure the [Auth service][]. The most
 - **onAuthRequired** *(optional)* - callback function. Called when authentication is required. If this is not supplied, `okta-react` redirects to Okta. This callback will receive `authService` as the first function parameter. This is triggered when:
     1. [login](#authserviceloginfromuri-additionalparams) is called
     2. A `SecureRoute` is accessed without authentication
-- **onSessionExpired** *(optional)* - callback function. Called when the Okta SSO session has expired or was ended outside of the application. This SDK adds a default handler which will call [login](#authserviceloginfromuri-additionalparams) to initiate a login flow. Passing a function here will disable the default handler.
-- **isAuthenticated** *(optional)* - callback function. By default, `authService` will consider a user authenticated if both `getIdToken()` and `getAccessToken()` return a value. Setting a `isAuthenticated` function on the config will skip the default logic and call the supplied function instead. The function should return a Promise and resolve to either true or false.  Note that this is only evaluated when the `auth` code has reason to think the authentication state has changed.  You can call the `authService.updateAuthState()` method to trigger a re-evaluation.
+- **onSessionExpired** *(optional)* - callback function. Called when the Okta SSO session has expired or was ended outside of the application. This SDK by default will reset `authState.isAuthenticte` to false, then execute the callback function. The default callback function is to call [login](#authserviceloginfromuri-additionalparams) to initiate a login flow.
+- **isAuthenticated** *(optional)* - callback function. By default, `authService` will consider a user authenticated if stay in a valid okta SSO session. Setting a `isAuthenticated` function on the config will skip the default logic and call the supplied function instead. The function should return a Promise and resolve to either true or false.  Note that this is only evaluated when the `auth` code has reason to think the authentication state has changed.  You can call the `authService.updateAuthState()` method to trigger a re-evaluation.
 - **tokenManager** *(optional)*: An object containing additional properties used to configure the internal token manager. See [AuthJS TokenManager](https://github.com/okta/okta-auth-js#the-tokenmanager) for more detailed information.
   - `autoRenew` *(optional)*:
   By default, the library will attempt to renew expired tokens. When an expired token is requested by the library, a renewal request is executed to update the token. If you wish to  to disable auto renewal of tokens, set autoRenew to false.
@@ -484,11 +486,7 @@ Components get this object as a passed prop using the [withOktaAuth](#withoktaau
 - `.isPending` 
     - true in the time after page load (first render) but before the asynchronous methods to see if the tokenManager is aware of a current authentication.  
 - `.isAuthenticated`
-    - true if the user is considered authenticated.  Normally this is true if either an idToken or an accessToken is present in the tokenManager, but this behavior can be overridden if you passed an `isAuthenticated` callback to the Security component (or to the Auth instance you passed to the Security component)
-- `.idToken`
-    - the JWT idToken for the currently authenticated user (if provided by the `scopes`)
-- `.accessToken`
-    - the JWT accessToken for the currently authenticated user (if provided by the `scopes`)
+    - true if the user is considered authenticated.  Normally this is true when stay in a valid okta SSO session, but this behavior can be overridden if you passed an `isAuthenticated` callback to the Security component (or to the Auth instance you passed to the Security component)
 - `.error` 
     - contains the error returned if an error occurs in `authService.handleAuthentication()` or `authService.updateAuthState()` (which includes any errors encountered when calling the optional `isAuthRequired()` callback provided to `<Security>`)
 
