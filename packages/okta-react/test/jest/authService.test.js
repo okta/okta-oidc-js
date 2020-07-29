@@ -215,13 +215,13 @@ describe('AuthService', () => {
   });
 
   describe('onSessionExpired', () => {
-    it('By default, sets a handler for "onSessionExpired" which calls login()', () => {
-      jest.spyOn(AuthService.prototype, 'login').mockReturnValue(undefined);
+    it('By default, sets a handler for "onSessionExpired" which calls clearAuthState()', () => {
+      jest.spyOn(AuthService.prototype, 'clearAuthState').mockReturnValue(undefined);
       const authService = new AuthService(validConfig);
       const config = authService._config;
       expect(config.onSessionExpired).toBeDefined();
       config.onSessionExpired();
-      expect(AuthService.prototype.login).toHaveBeenCalled();
+      expect(AuthService.prototype.clearAuthState).toHaveBeenCalled();
     });
 
     it('Accepts custom function "onSessionExpired" via config which disables default handler', () => {

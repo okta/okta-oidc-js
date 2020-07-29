@@ -35,7 +35,9 @@ class AuthService {
     // Automatically enter login flow if session has expired or was ended outside the application
     // The default behavior can be overriden by passing your own function via config: `config.onSessionExpired`
     if (!authConfig.onSessionExpired) {
-      authConfig.onSessionExpired = this.login.bind(this);
+      authConfig.onSessionExpired = () => {
+        this.clearAuthState();
+      };
     }
 
     this._oktaAuth = new OktaAuth(authConfig);
