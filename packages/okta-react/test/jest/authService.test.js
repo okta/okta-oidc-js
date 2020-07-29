@@ -224,15 +224,14 @@ describe('AuthService', () => {
       expect(AuthService.prototype.clearAuthState).toHaveBeenCalled();
     });
 
-    it('Accepts custom function "onSessionExpired" via config which disables default handler', () => {
-      jest.spyOn(AuthService.prototype, 'login').mockReturnValue(undefined);
+    it('Should call both clearAuthState and customized onSessionExpired callback', () => {
+      jest.spyOn(AuthService.prototype, 'clearAuthState').mockReturnValue(undefined);
       const onSessionExpired = jest.fn();
       const authService = new AuthService(extendConfig({ onSessionExpired }));
       const config = authService._config;
-      expect(config.onSessionExpired).toBe(onSessionExpired);
       config.onSessionExpired();
       expect(onSessionExpired).toHaveBeenCalled();
-      expect(AuthService.prototype.login).not.toHaveBeenCalled();
+      expect(AuthService.prototype.clearAuthState).toHaveBeenCalled();
     });
   });
 
