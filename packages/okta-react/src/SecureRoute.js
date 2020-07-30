@@ -20,8 +20,7 @@ const RequireAuth = ({ children }) => {
 
   if(!authState.isAuthenticated) { 
     if(!authState.isPending) { 
-      const fromUri = history.createHref(history.location);
-      authService.login(fromUri);
+      authService.logout();
     }
     return null;
   }

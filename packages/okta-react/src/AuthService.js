@@ -32,21 +32,6 @@ class AuthService {
     assertClientId(authConfig.clientId);
     assertRedirectUri(authConfig.redirectUri);
 
-    // Clear authState when session expired
-    // Also execute customized behaviour from `config.onSessionExpired`
-    const onSessionExpiredCallback = authConfig.onSessionExpired;
-    authConfig.onSessionExpired = () => {
-      this.clearAuthState();
-      if (onSessionExpiredCallback) {
-        onSessionExpiredCallback();
-      }
-    }
-    if (!authConfig.onSessionExpired) {
-      authConfig.onSessionExpired = () => {
-        this.clearAuthState();
-      };
-    }
-
     this._oktaAuth = new OktaAuth(authConfig);
     this._oktaAuth.userAgent = `${packageInfo.name}/${packageInfo.version} ${this._oktaAuth.userAgent}`;
     this._config = authConfig; // use normalized config
