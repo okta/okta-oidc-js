@@ -17,7 +17,7 @@ describe('<SecureRoute />', () => {
       on: jest.fn(),
       updateAuthState: jest.fn(),
       getAuthState: jest.fn().mockImplementation(() => authState),
-      login: jest.fn()
+      logout: jest.fn()
     };
     mockProps = { authService };
   });
@@ -69,7 +69,7 @@ describe('<SecureRoute />', () => {
         authState.isPending = false;
       });
 
-      it('calls login()', () => {
+      it('calls logout()', () => {
         mount(
           <MemoryRouter>
             <Security {...mockProps}>
@@ -77,7 +77,7 @@ describe('<SecureRoute />', () => {
             </Security>
           </MemoryRouter>
         );
-        expect(authService.login).toHaveBeenCalled();
+        expect(authService.logout).toHaveBeenCalled();
       });
     });
 
@@ -87,7 +87,7 @@ describe('<SecureRoute />', () => {
         authState.isPending = true;
       });
 
-      it('does not call login()', () => {
+      it('does not call logout()', () => {
         mount(
           <MemoryRouter>
             <Security {...mockProps}>
@@ -95,7 +95,7 @@ describe('<SecureRoute />', () => {
             </Security>
           </MemoryRouter>
         );
-        expect(authService.login).not.toHaveBeenCalled();
+        expect(authService.logout).not.toHaveBeenCalled();
       });
     });
   });

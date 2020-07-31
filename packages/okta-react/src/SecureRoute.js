@@ -12,11 +12,10 @@
 
 import React from 'react';
 import { useOktaAuth } from './OktaContext';
-import { useHistory, Route } from 'react-router-dom';
+import { Route } from 'react-router-dom';
 
 const RequireAuth = ({ children }) => { 
   const { authService, authState } = useOktaAuth();
-  const history = useHistory();
 
   if(!authState.isAuthenticated) { 
     if(!authState.isPending) { 

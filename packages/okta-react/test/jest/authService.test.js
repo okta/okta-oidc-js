@@ -214,27 +214,6 @@ describe('AuthService', () => {
     });
   });
 
-  describe('onSessionExpired', () => {
-    it('By default, sets a handler for "onSessionExpired" which calls clearAuthState()', () => {
-      jest.spyOn(AuthService.prototype, 'clearAuthState').mockReturnValue(undefined);
-      const authService = new AuthService(validConfig);
-      const config = authService._config;
-      expect(config.onSessionExpired).toBeDefined();
-      config.onSessionExpired();
-      expect(AuthService.prototype.clearAuthState).toHaveBeenCalled();
-    });
-
-    it('Should call both clearAuthState and customized onSessionExpired callback', () => {
-      jest.spyOn(AuthService.prototype, 'clearAuthState').mockReturnValue(undefined);
-      const onSessionExpired = jest.fn();
-      const authService = new AuthService(extendConfig({ onSessionExpired }));
-      const config = authService._config;
-      config.onSessionExpired();
-      expect(onSessionExpired).toHaveBeenCalled();
-      expect(AuthService.prototype.clearAuthState).toHaveBeenCalled();
-    });
-  });
-
   describe('logout', () => {
 
     test('defaults to passing an empty options to signOut', async () => {
