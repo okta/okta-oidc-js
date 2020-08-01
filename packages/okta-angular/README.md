@@ -108,7 +108,7 @@ For PKCE flow, this should be left undefined or set to `['code']`.
     1. [login](#oktaauthloginfromuri-additionalparams) is called
     2. A route protected by `OktaAuthGuard` is accessed without authentication
 - `onSessionExpired` *(optional)* - callback function. Called when the Okta SSO session has expired or was ended outside of the application. This SDK adds a default handler which will call [login](#oktaauthloginfromuri-additionalparams) to initiate a login flow. Passing a function here will disable the default handler.
-- `isAuthenticated` *(optional)* - callback function. By default, `OktaAuthService.isAuthenticated` will return true if both `getIdToken()` and `getAccessToken()` return a value. Setting a `isAuthenticated` function on the config will skip the default logic and call the supplied function instead. The function should return a Promise and resolve to either true or false.
+- `isAuthenticated` *(optional)* - callback function. By default, `OktaAuthService.isAuthenticated` will return true if either of `getIdToken()` or `getAccessToken()` return a value. Setting a `isAuthenticated` function on the config will skip the default logic and call the supplied function instead. The function should return a Promise and resolve to either true or false.
 - `tokenManager` *(optional)*: An object containing additional properties used to configure the internal token manager. See [AuthJS TokenManager](https://github.com/okta/okta-auth-js#the-tokenmanager) for more detailed information.
 
   - `autoRenew` *(optional)*:
