@@ -11,39 +11,22 @@
  */
 
 import React from 'react';
+import { Route, useHistory } from 'react-router-dom';
 import { useOktaAuth } from './OktaContext';
-import { useHistory, Route } from 'react-router-dom';
 
-const RequireAuth = ({ children }) => { 
+const SecureRoute = (props) => {
   const { authService, authState } = useOktaAuth();
   const history = useHistory();
 
-  if(!authState.isAuthenticated) { 
-    if(!authState.isPending) { 
+  if (!authState.isAuthenticated) {
+    if (!authState.isPending) {
       const fromUri = history.createHref(history.location);
       authService.login(fromUri);
     }
     return null;
   }
 
-  return (
-    <React.Fragment>
-      {children}
-    </React.Fragment>
-  );
-
-};
-
-const SecureRoute = ( {component, ...props} ) => { 
-
-  const PassedComponent = component || function() { return null; };
-  const WrappedComponent = (wrappedProps) => (<RequireAuth><PassedComponent {...wrappedProps}/></RequireAuth>);
-  return (
-    <Route
-      { ...props }
-      render={ (routeProps) => props.render ? props.render({...routeProps, component: WrappedComponent}) : <WrappedComponent {...routeProps}/> } 
-    />
-  );
+  return <Route {...props} />;
 };
 
 export default SecureRoute;
