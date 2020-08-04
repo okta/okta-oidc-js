@@ -10,17 +10,20 @@
  * See the License for the specific language governing permissions and limitations under the License.
  */
 
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useOktaAuth } from './OktaContext';
 import { Route } from 'react-router-dom';
 
 const RequireAuth = ({ children }) => { 
   const { authService, authState } = useOktaAuth();
 
-  if(!authState.isAuthenticated) { 
-    if(!authState.isPending) { 
-      authService.logout();
-    }
+  useEffect(() => {
+    if(!authState.isAuthenticated && !authState.isPending) { 
+      authService.login();
+    }  
+  }, [authState, authService]);
+
+  if (!authState.isAuthenticated) {
     return null;
   }
 

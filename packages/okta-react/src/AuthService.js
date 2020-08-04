@@ -190,6 +190,9 @@ class AuthService {
   }
 
   async login(fromUri, additionalParams) {
+    // Set pending state to avoid concurrent login flows
+    const authState = this.getAuthState();
+    this.emitAuthState({ ...authState, isPending: true });
     // Save the current url before redirect
     this.setFromUri(fromUri); // will save current location if fromUri is undefined
     if (this._config.onAuthRequired) {
