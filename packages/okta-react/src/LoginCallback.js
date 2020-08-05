@@ -14,17 +14,15 @@ import React, { useEffect } from 'react';
 import { useOktaAuth } from './OktaContext';
 import OktaError from './OktaError';
 
-const LoginCallback = ({ errorComponent}) => { 
+const LoginCallback = ({ errorComponent }) => { 
   const { authService, authState } = useOktaAuth();
   const authStateReady = !authState.isPending;
 
   let ErrorReporter = errorComponent || OktaError;
 
-  useEffect( () => {
-    if( authStateReady ) { // wait until initial check is done so it doesn't wipe any error
-      authService.handleAuthentication();
-    }
-  }, [authService, authStateReady]);
+  useEffect(() => {
+    authService.handleAuthentication();
+  }, [authService]);
 
   if(authStateReady && authState.error) { 
     return <ErrorReporter error={authState.error}/>;

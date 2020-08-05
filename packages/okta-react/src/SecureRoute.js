@@ -12,14 +12,17 @@
 
 import React, { useEffect } from 'react';
 import { useOktaAuth } from './OktaContext';
-import { Route } from 'react-router-dom';
+import { useHistory, Route } from 'react-router-dom';
 
 const RequireAuth = ({ children }) => { 
   const { authService, authState } = useOktaAuth();
+  const history = useHistory();
 
   useEffect(() => {
+    // Make sure login process is not triggered when the app just start
     if(!authState.isAuthenticated && !authState.isPending) { 
-      authService.login();
+      const fromUri = history.createHref(history.location);
+      authService.login(fromUri);
     }  
   }, [authState, authService]);
 

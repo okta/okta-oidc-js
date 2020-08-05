@@ -2,7 +2,7 @@
 
 ### Bug Fixes
 
-- [#848](https://github.com/okta/okta-oidc-js/pull/848) Change default `onSessionExpired` behaviour to `authService.clearAuthState`
+- [#848](https://github.com/okta/okta-oidc-js/pull/848) Removes `onSessionExpired` behavior.
 
 # 3.0.3
 

@@ -470,7 +470,7 @@ describe('AuthService', () => {
         redirectUri: 'https://foo/redirect',
       });
       const expectedVal = 'fakey';
-      jest.spyOn(authService, 'redirect').mockReturnValue(expectedVal);
+      jest.spyOn(authService, 'redirect').mockResolvedValue(expectedVal);
   
       const retVal = await authService.login('/');
       expect(retVal).toBe(expectedVal);
@@ -479,7 +479,7 @@ describe('AuthService', () => {
   
     it('will call a custom method "onAuthRequired" instead of redirect()', async () => {
       const expectedVal = 'fakey';
-      const onAuthRequired = jest.fn().mockReturnValue(expectedVal);
+      const onAuthRequired = jest.fn().mockResolvedValue(expectedVal);
       const authService = new AuthService({
         issuer: 'https://foo/oauth2/default',
         clientId: 'foo',
@@ -492,6 +492,19 @@ describe('AuthService', () => {
       expect(retVal).toBe(expectedVal);
       expect(onAuthRequired).toHaveBeenCalledWith(authService);
       expect(authService.redirect).not.toHaveBeenCalled();
+    });
+
+    it('should not trigger second call if login is in progress', async () => {
+      expect.assertions(1);
+      const authService = new AuthService({
+        issuer: 'https://foo/oauth2/default',
+        clientId: 'foo',
+        redirectUri: 'https://foo/redirect',
+      });
+      authService.redirect = jest.fn();
+      Promise.all([authService.login('/'), authService.login('/')]).then(() => {
+        expect(authService.redirect).toHaveBeenCalledTimes(1);
+      });
     });
   });
 
