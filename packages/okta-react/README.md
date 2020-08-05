@@ -314,8 +314,25 @@ These options are used by `Security` to configure the [Auth service][]. The most
 - **onAuthRequired** *(optional)* - callback function. Called when authentication is required. If this is not supplied, `okta-react` redirects to Okta. This callback will receive `authService` as the first function parameter. This is triggered when:
     1. [login](#authserviceloginfromuri-additionalparams) is called
     2. A `SecureRoute` is accessed without authentication
-- **onSessionExpired** *(optional)* - callback function. Called when the Okta SSO session has expired or was ended outside of the application. This SDK adds a default handler which will call [login](#authserviceloginfromuri-additionalparams) to initiate a login flow. Passing a function here will disable the default handler.
-- **isAuthenticated** *(optional)* - callback function. By default, `authService` will consider a user authenticated if both `getIdToken()` and `getAccessToken()` return a value. Setting a `isAuthenticated` function on the config will skip the default logic and call the supplied function instead. The function should return a Promise and resolve to either true or false.  Note that this is only evaluated when the `auth` code has reason to think the authentication state has changed.  You can call the `authService.updateAuthState()` method to trigger a re-evaluation.
+  > :warning: DO NOT trigger `authService.login()` in this callback. This callback is used inside the `login` method, call it again will trigger the protection logic to end the function.
+- **onSessionExpired (deprecated)** *(optional)* - callback function. Called when the Okta SSO session has expired or was ended outside of the application. This SDK provides an empty function as the default behaviour. Passing a function here will disable the default handler.
+  > :warning: DO NOT trigger token renew process, like `tokenManager.get()` or `tokenManager.renew()`, in this callback as it may end up with infinite loop.
+- **isAuthenticated** *(optional)* - callback function. By default, `authService` will consider a user authenticated if either `getIdToken()` or `getAccessToken()` return a value. Setting a `isAuthenticated` function on the config will skip the default logic and call the supplied function instead. The function should return a Promise and resolve to either true or false. This callback is only evaluated when the `auth` code has reason to think the authentication state has changed, by default it's been triggered when token state changes. You can call the `authService.updateAuthState()` method to trigger a re-evaluation.
+
+  **NOTE** The default behavior of this callback will be changed to resolve to true only when both `getIdToken()` and `getAccessToken()` return a value in the next major release. Currently, you can achieve the coming default behavior by
+  
+  ```jsx
+  const authService = new AuthService({
+    // ...other configs
+    isAuthenticated: async () => {
+      const idToken = await authService.getTokenManager().get('idToken');
+      const accessToken = await authService.getTokenManager().get('accessToken');
+      return !!(idToken && accessToken);
+    }
+  });
+  <Security authService={authService} />
+  ```
+
 - **tokenManager** *(optional)*: An object containing additional properties used to configure the internal token manager. See [AuthJS TokenManager](https://github.com/okta/okta-auth-js#the-tokenmanager) for more detailed information.
   - `autoRenew` *(optional)*:
   By default, the library will attempt to renew expired tokens. When an expired token is requested by the library, a renewal request is executed to update the token. If you wish to  to disable auto renewal of tokens, set autoRenew to false.

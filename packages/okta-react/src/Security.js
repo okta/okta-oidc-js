@@ -29,7 +29,10 @@ const Security = (props) => {
       setAuthState(authService.getAuthState());
     });
 
-    authService.updateAuthState(); // Trigger an initial change event to make sure authState is latest
+    if (!authService._oktaAuth.token.isLoginRedirect()) {
+      // Trigger an initial change event to make sure authState is latest when not in loginRedirect state
+      authService.updateAuthState(); 
+    }
     return unsub;
   }, [authService]);
 

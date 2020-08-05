@@ -32,12 +32,6 @@ class AuthService {
     assertClientId(authConfig.clientId);
     assertRedirectUri(authConfig.redirectUri);
 
-    // Automatically enter login flow if session has expired or was ended outside the application
-    // The default behavior can be overriden by passing your own function via config: `config.onSessionExpired`
-    if (!authConfig.onSessionExpired) {
-      authConfig.onSessionExpired = this.login.bind(this);
-    }
-
     this._oktaAuth = new OktaAuth(authConfig);
     this._oktaAuth.userAgent = `${packageInfo.name}/${packageInfo.version} ${this._oktaAuth.userAgent}`;
     this._config = authConfig; // use normalized config
@@ -196,12 +190,24 @@ class AuthService {
   }
 
   async login(fromUri, additionalParams) {
+    if(this._pending.handleLogin) { 
+      // Don't trigger second round
+      return;
+    }
+
+    this._pending.handleLogin = true;
+    // Update UI pending state
+    this.emitAuthState({ ...this.getAuthState(), isPending: true });
     // Save the current url before redirect
     this.setFromUri(fromUri); // will save current location if fromUri is undefined
-    if (this._config.onAuthRequired) {
-      return this._config.onAuthRequired(this);
+    try {
+      if (this._config.onAuthRequired) {
+        return await this._config.onAuthRequired(this);
+      }
+      return await this.redirect(additionalParams);
+    } finally {
+      this._pending.handleLogin = null;
     }
-    return this.redirect(additionalParams);
   }
 
   _convertLogoutPathToOptions(redirectUri) { 

@@ -10,7 +10,7 @@
  * See the License for the specific language governing permissions and limitations under the License.
  */
 
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useOktaAuth } from './OktaContext';
 import { useHistory, Route } from 'react-router-dom';
 
@@ -18,11 +18,15 @@ const RequireAuth = ({ children }) => {
   const { authService, authState } = useOktaAuth();
   const history = useHistory();
 
-  if(!authState.isAuthenticated) { 
-    if(!authState.isPending) { 
+  useEffect(() => {
+    // Make sure login process is not triggered when the app just start
+    if(!authState.isAuthenticated && !authState.isPending) { 
       const fromUri = history.createHref(history.location);
       authService.login(fromUri);
-    }
+    }  
+  }, [authState, authService]);
+
+  if (!authState.isAuthenticated) {
     return null;
   }
 

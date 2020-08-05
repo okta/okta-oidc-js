@@ -15,7 +15,12 @@ describe('<LoginCallback />', () => {
       on: jest.fn(),
       updateAuthState: jest.fn(),
       getAuthState: jest.fn().mockImplementation(() => authState),
-      handleAuthentication: jest.fn()
+      handleAuthentication: jest.fn(),
+      _oktaAuth: {
+        token: {
+          isLoginRedirect: jest.fn().mockImplementation(() => false)
+        }
+      }
     };
     mockProps = { authService };
   });
@@ -40,15 +45,6 @@ describe('<LoginCallback />', () => {
       </Security>
     );
     expect(authService.handleAuthentication).toHaveBeenCalledTimes(1);
-  });
-
-  it('does not call handleAuthentication when authState.isPending', () => {
-    mount(
-      <Security {...mockProps}>
-        <LoginCallback />
-      </Security>
-    );
-    expect(authService.handleAuthentication).toHaveBeenCalledTimes(0);
   });
 
   describe('shows errors', () => {
