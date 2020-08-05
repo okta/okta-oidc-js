@@ -506,6 +506,22 @@ describe('AuthService', () => {
         expect(authService.redirect).toHaveBeenCalledTimes(1);
       });
     });
+
+    it('should throw when error happens', async () => {
+      expect.assertions(1);
+      const authService = new AuthService({
+        issuer: 'https://foo/oauth2/default',
+        clientId: 'foo',
+        redirectUri: 'https://foo/redirect',
+      });
+      const mockErrorMessage = 'mock error';
+      authService.redirect = jest.fn().mockRejectedValue(new Error(mockErrorMessage));
+      try {
+        await authService.login('/')
+      } catch (e) {
+        expect(e.message).toEqual(mockErrorMessage);
+      }
+    });
   });
 
   describe('AuthState tracking', () => { 
