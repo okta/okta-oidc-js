@@ -121,8 +121,8 @@ If a user does not have a valid session, they will be redirected to the Okta Log
 
 In the relevant location in your application, you will want to provide `Login` and `Logout` buttons for the user. You can show/hide the correct button by using the `$auth.isAuthenticated()` method. For example:
 
-```typescript
-// src/App.vue
+```html
+<!-- src/App.vue -->
 
 <template>
   <div id="app">
@@ -168,10 +168,10 @@ export default {
 
 When your users are authenticated, your Vue application has an access token that was issued by your Okta Authorization server. You can use this token to authenticate requests for resources on your server or API. As a hypothetical example, let's say you have an API that provides messages for a user. You could create a `MessageList` component that gets the access token and uses it to make an authenticated request to your server.
 
-Here is what the Vue component could look like for this hypothentical example using [axios](https://github.com/axios/axios):
+Here is what the Vue component could look like for this hypothetical example using [axios](https://github.com/axios/axios):
 
-```typescript
-// src/components/MessageList.vue
+```html
+<!-- src/components/MessageList.vue -->
 
 <template>
   <ul v-if="posts && posts.length">
