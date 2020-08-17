@@ -1,22 +1,22 @@
 import AuthService from '../../src/AuthService';
-import AuthJS from '@okta/okta-auth-js'
+import { OktaAuth } from '@okta/okta-auth-js'
 import Emitter from 'tiny-emitter';
 
 const pkg = require('../../package.json');
-
-jest.mock('@okta/okta-auth-js');
+let mockAuthJsInstance;
+jest.mock('@okta/okta-auth-js', () => {
+  // Works and lets you check for constructor calls:
+  return {
+    OktaAuth: jest.fn().mockImplementation(() => mockAuthJsInstance),
+  };
+});
 
 describe('AuthService configuration', () => {
-  let mockAuthJsInstance;
-
   beforeEach(() => {
     mockAuthJsInstance = {
       userAgent: 'okta-auth-js',
       emitter: new Emitter()
     };
-    AuthJS.mockImplementation(() => {
-      return mockAuthJsInstance
-    });
   })
 
   it('should throw if no issuer is provided', () => {
@@ -123,7 +123,7 @@ describe('AuthService configuration', () => {
   });
 
   it('accepts the `pkce` option', () => {
-    jest.spyOn(AuthJS.prototype, 'constructor');
+    jest.spyOn(OktaAuth.prototype, 'constructor');
     const options = {
       clientId: 'foo',
       issuer: 'https://foo/oauth2/default',
@@ -133,11 +133,11 @@ describe('AuthService configuration', () => {
     }
 
     new AuthService(options);
-    expect(AuthJS.prototype.constructor).toHaveBeenCalledWith(options);
+    expect(OktaAuth.prototype.constructor).toHaveBeenCalledWith(options);
   });
 
   it('Passes tokenManager config to AuthJS', () => {
-    jest.spyOn(AuthJS.prototype, 'constructor');
+    jest.spyOn(OktaAuth.prototype, 'constructor');
     const options = {
       clientId: 'foo',
       issuer: 'https://foo/oauth2/default',
@@ -151,13 +151,12 @@ describe('AuthService configuration', () => {
     }
 
     new AuthService(options);
-    expect(AuthJS.prototype.constructor).toHaveBeenCalledWith(options);
+    expect(OktaAuth.prototype.constructor).toHaveBeenCalledWith(options);
   });
 
 });
 
 describe('AuthService', () => {
-  let mockAuthJsInstance;
   let validConfig;
   let accessTokenParsed;
   let idTokenParsed;
@@ -195,9 +194,6 @@ describe('AuthService', () => {
       },
       signOut: jest.fn().mockReturnValue(Promise.resolve())
     };
-    AuthJS.mockImplementation(() => {
-      return mockAuthJsInstance
-    });
     jest.spyOn(window.location, 'assign').mockImplementation(() => {});
   });
 

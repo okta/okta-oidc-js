@@ -11,7 +11,7 @@
  */
 
 import React, { Component } from 'react';
-import OktaAuth from '@okta/okta-auth-js';
+import { OktaAuth } from '@okta/okta-auth-js';
 import { withOktaAuth } from '@okta/okta-react';
 
 export default withOktaAuth(class SessionTokenLogin extends Component {

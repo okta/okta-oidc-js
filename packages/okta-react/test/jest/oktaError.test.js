@@ -1,9 +1,7 @@
 import React from 'react';
 import { mount } from 'enzyme';
 import OktaError from '../../src/OktaError';
-import AuthSdkError from '@okta/okta-auth-js/lib/errors/AuthSdkError';
-import AuthApiError from '@okta/okta-auth-js/lib/errors/AuthApiError';
-import OAuthError from '@okta/okta-auth-js/lib/errors/OAuthError';
+import { AuthSdkError, AuthApiError, OAuthError } from '@okta/okta-auth-js';
 
 describe('<OktaError />', () => {
     it('renders a generic error', () => {

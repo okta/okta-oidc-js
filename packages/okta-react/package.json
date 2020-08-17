@@ -34,7 +34,7 @@
   "homepage": "https://github.com/okta/okta-oidc-js#readme",
   "dependencies": {
     "@okta/configuration-validation": "^0.4.1",
-    "@okta/okta-auth-js": "^3.2.2",
+    "@okta/okta-auth-js": "^4.0.0",
     "babel-runtime": "^6.26.0",
     "prop-types": "^15.5.10"
   },
@@ -76,6 +76,9 @@
     "webdriver-manager": "^12.1.4"
   },
   "jest": {
+    "moduleNameMapper": {
+      "^@okta/okta-auth-js$": "<rootDir>/node_modules/@okta/okta-auth-js/dist/okta-auth-js.umd.js"
+    },
     "restoreMocks": true,
     "roots": [
       "./test/jest"

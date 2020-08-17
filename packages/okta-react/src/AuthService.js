@@ -15,7 +15,7 @@ import {
   assertRedirectUri,
   buildConfigObject
 } from '@okta/configuration-validation';
-import OktaAuth from '@okta/okta-auth-js';
+import { OktaAuth } from '@okta/okta-auth-js';
 
 import packageInfo from './packageInfo';
 
