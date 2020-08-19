@@ -11,7 +11,6 @@ Note: If you have a question, please post it on the Okta Developer Forum (https:
 - [ ] oidc-middleware
 - [ ] okta-react
 - [ ] okta-react-native
-- [ ] okta-vue
 
 ## I'm submitting a:
 

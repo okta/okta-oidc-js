@@ -36,7 +36,6 @@ PACKAGES=(
   "./packages/okta-angular/dist"
   "./packages/okta-react"
   "./packages/okta-react-native"
-  "./packages/okta-vue"
 )
 
 for PACKAGE in "${PACKAGES[@]}"
