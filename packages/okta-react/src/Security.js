@@ -11,33 +11,39 @@
  */
 
 import React, { useState, useEffect, useMemo } from 'react';
-import AuthService from './AuthService';
+import {
+  buildConfigObject
+} from '@okta/configuration-validation';
+import { OktaAuth, DEFAULT_AUTH_STATE, EVENT_AUTH_STATE_CHANGE } from '@okta/okta-auth-js';
 import OktaContext from './OktaContext';
 
 const Security = (props) => { 
 
   const initialAuthService = useMemo( () => { 
     // don't keep spawning new service instances if this component rerenders
-    return props.authService || new AuthService(props);
+    // normalize authJS config. In this SDK, we allow underscore on certain properties, but AuthJS consistently uses camel case.
+    const authConfig = buildConfigObject(props);
+    return props.authService || new OktaAuth(authConfig);
   }, [ props ]);
 
   const [authService] = useState( initialAuthService );
-  const [authState, setAuthState] = useState(authService.getAuthState());
+  const [authState, setAuthState] = useState({ ...DEFAULT_AUTH_STATE });
   
-  useEffect( () => { 
-    const unsub = authService.on('authStateChange', () => {
-      setAuthState(authService.getAuthState());
+  useEffect(() => {
+    authService.emitter.on(EVENT_AUTH_STATE_CHANGE, (authState) => {
+      setAuthState(authState);
     });
 
-    if (!authService._oktaAuth.token.isLoginRedirect()) {
+    if (!authService.token.isLoginRedirect()) {
       // Trigger an initial change event to make sure authState is latest when not in loginRedirect state
-      authService.updateAuthState(); 
+      authService.initialAuthState();
     }
-    return unsub;
+
+    return () => authService.emitter.off(EVENT_AUTH_STATE_CHANGE);
   }, [authService]);
 
   return (
-    <OktaContext.Provider value={ { authService, authState } }>
+    <OktaContext.Provider value={{ authService, authState }}>
       {props.children}
     </OktaContext.Provider>
   );

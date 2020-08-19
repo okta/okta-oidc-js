@@ -11,18 +11,30 @@
  */
 
 import React, { useEffect } from 'react';
+import { useHistory } from 'react-router-dom';
 import { useOktaAuth } from './OktaContext';
 import OktaError from './OktaError';
 
 const LoginCallback = ({ errorComponent }) => { 
+  const history = useHistory();
   const { authService, authState } = useOktaAuth();
   const authStateReady = !authState.isPending;
 
   let ErrorReporter = errorComponent || OktaError;
 
   useEffect(() => {
-    authService.handleAuthentication();
+    const handleAuthentication = async () => {
+      await authService.handleAuthentication();
+    }
+    handleAuthentication();
   }, [authService]);
+
+  useEffect(() => {
+    if (authState.isAuthenticated) {
+      const fromUri = authService.getFromUri(true /* relative */);
+      history.replace(fromUri);
+    }
+  }, [authState.isAuthenticated, authService]);
 
   if(authStateReady && authState.error) { 
     return <ErrorReporter error={authState.error}/>;
