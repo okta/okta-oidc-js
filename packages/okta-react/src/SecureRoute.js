@@ -45,6 +45,7 @@ const SecureRoute = ( {component, render, children, ...props} ) => {
 
   if( component || !render ) { // React-router has component take precedence over render
     const PassedComponent = component || function() { return <React.Fragment>{children}</React.Fragment>; };
+    // eslint-disable-next-line react/display-name
     authRender = wrappedProps => <PassedComponent { ...wrappedProps} />;
   }
 
