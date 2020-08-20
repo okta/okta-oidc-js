@@ -36,6 +36,8 @@ export class OktaAuthService {
     private observers: Observer<boolean>[];
     $authenticationState: Observable<boolean>;
 
+    private defaultHref: string = (document.getElementsByTagName('base')[0] || {}).href || window.location.origin;
+
     constructor(@Inject(OKTA_CONFIG) config: OktaConfig, private injector: Injector) {
       this.observers = [];
 
@@ -51,10 +53,10 @@ export class OktaAuthService {
         this.config.onSessionExpired = this.login.bind(this);
       }
 
+
       /**
        * Scrub scopes to ensure 'openid' is included
        */
-
       this.scrubScopes(this.config.scopes);
 
       // Assert Configuration
@@ -171,8 +173,9 @@ export class OktaAuthService {
       fromUri = fromUri || window.location.href;
       // If a relative path was passed, convert to absolute URI
       if (fromUri.charAt(0) === '/') {
-        fromUri = window.location.origin + fromUri;
+        fromUri = this.cleanUrl(this.defaultHref + fromUri);
       }
+
       sessionStorage.setItem('referrerPath', fromUri);
     }
 
@@ -180,8 +183,9 @@ export class OktaAuthService {
      * Returns the referrer path from localStorage or app root.
      */
     getFromUri(): string {
-      const fromUri = sessionStorage.getItem('referrerPath') || window.location.origin;
+      const fromUri = sessionStorage.getItem('referrerPath') || this.cleanUrl(this.defaultHref);
       sessionStorage.removeItem('referrerPath');
+
       return fromUri;
     }
 
@@ -214,7 +218,7 @@ export class OktaAuthService {
         redirectUri = options;
         // If a relative path was passed, convert to absolute URI
         if (redirectUri.charAt(0) === '/') {
-          redirectUri = window.location.origin + redirectUri;
+          redirectUri = this.cleanUrl(this.defaultHref + redirectUri);
         }
         options = {
           postLogoutRedirectUri: redirectUri
@@ -233,5 +237,9 @@ export class OktaAuthService {
         return;
       }
       scopes.unshift('openid');
+    }
+
+    cleanUrl(url: string): string {
+      return url.replace(/([^:]\/)\/+/g, '$1');
     }
 }
