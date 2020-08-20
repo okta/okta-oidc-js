@@ -33,7 +33,7 @@ describe('<SecureRoute />', () => {
       authState.isAuthenticated = true;
     });
 
-    it('will render wrapped component', () => {
+    it('will render wrapped component using "component"', () => {
       const MyComponent = function() { return <div>hello world</div>; };
       const wrapper = mount(
         <MemoryRouter>
@@ -41,6 +41,34 @@ describe('<SecureRoute />', () => {
             <SecureRoute
               component={MyComponent}
             />
+          </Security>
+        </MemoryRouter>
+      );
+      expect(wrapper.find(MyComponent).html()).toBe('<div>hello world</div>');
+    });
+
+    it('will render wrapped component using "render"', () => {
+      const MyComponent = function() { return <div>hello world</div>; };
+      const wrapper = mount(
+        <MemoryRouter>
+          <Security {...mockProps}>
+            <SecureRoute
+              render={ () => <MyComponent/> }
+            />
+          </Security>
+        </MemoryRouter>
+      );
+      expect(wrapper.find(MyComponent).html()).toBe('<div>hello world</div>');
+    });
+
+    it('will render wrapped component as a child', () => {
+      const MyComponent = function() { return <div>hello world</div>; };
+      const wrapper = mount(
+        <MemoryRouter>
+          <Security {...mockProps}>
+            <SecureRoute>
+              <MyComponent/>
+            </SecureRoute>
           </Security>
         </MemoryRouter>
       );
@@ -54,7 +82,7 @@ describe('<SecureRoute />', () => {
       authState.isAuthenticated = false;
     });
 
-    it('will not render wrapped component', () => {
+    it('will not render wrapped component using "component"', () => {
       const MyComponent = function() { return <div>hello world</div>; };
       const wrapper = mount(
         <MemoryRouter>
@@ -62,6 +90,34 @@ describe('<SecureRoute />', () => {
             <SecureRoute
               component={MyComponent}
             />
+          </Security>
+        </MemoryRouter>
+      );
+      expect(wrapper.find(MyComponent).length).toBe(0);
+    });
+
+    it('will not render wrapped component using "render"', () => {
+      const MyComponent = function() { return <div>hello world</div>; };
+      const wrapper = mount(
+        <MemoryRouter>
+          <Security {...mockProps}>
+            <SecureRoute
+              render={ () => <MyComponent/> }
+            />
+          </Security>
+        </MemoryRouter>
+      );
+      expect(wrapper.find(MyComponent).length).toBe(0);
+    });
+
+   it('will not render wrapped component with children', () => {
+      const MyComponent = function() { return <div>hello world</div>; };
+      const wrapper = mount(
+        <MemoryRouter>
+          <Security {...mockProps}>
+            <SecureRoute>
+              <MyComponent/>
+            </SecureRoute>
           </Security>
         </MemoryRouter>
       );
@@ -218,7 +274,7 @@ describe('<SecureRoute />', () => {
     expect(secureRoute.find(Route).props().sensitive).toBe(true);
   });
 
-  it('should pass react-router props to an internal Route component', () => {
+  it('should pass react-router props to an component', () => {
     authState.isAuthenticated = true;
     const MyComponent = function(props) { return <div>{ props.history ? 'has history' : 'lacks history'}</div>; };
     const wrapper = mount(
@@ -227,6 +283,22 @@ describe('<SecureRoute />', () => {
           <SecureRoute
             path='/'
             component={MyComponent}
+          />
+        </Security>
+      </MemoryRouter>
+    );
+    expect(wrapper.find(MyComponent).html()).toBe('<div>has history</div>');
+  });
+
+  it('should pass react-router props to a render call', () => {
+    authState.isAuthenticated = true;
+    const MyComponent = function(props) { return <div>{ props.history ? 'has history' : 'lacks history'}</div>; };
+    const wrapper = mount(
+      <MemoryRouter>
+        <Security {...mockProps}>
+          <SecureRoute
+            path='/'
+            render = {props => <MyComponent {...props} />}
           />
         </Security>
       </MemoryRouter>

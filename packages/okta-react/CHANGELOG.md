@@ -1,3 +1,9 @@
+# PENDING
+
+### Bug Fixes
+
+- Adjusts `<SecureRoute>` so that it enforces authenticationRequirement for components passed via "render" or "children" in addition to "component"
+
 # 3.0.4
 
 ### Bug Fixes

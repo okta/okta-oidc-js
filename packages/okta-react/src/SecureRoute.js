@@ -14,17 +14,17 @@ import React, { useEffect } from 'react';
 import { useOktaAuth } from './OktaContext';
 import { useHistory, Route } from 'react-router-dom';
 
-const RequireAuth = ({ children }) => { 
+const RequireAuth = ({ render, routeProps }) => { 
   const { authService, authState } = useOktaAuth();
   const history = useHistory();
 
   useEffect(() => {
-    // Make sure login process is not triggered when the app just start
+    // Start login if and only if app has decided it is not logged inn
     if(!authState.isAuthenticated && !authState.isPending) { 
       const fromUri = history.createHref(history.location);
       authService.login(fromUri);
     }  
-  }, [authState, authService]);
+  }, [authState, authService, history]);
 
   if (!authState.isAuthenticated) {
     return null;
@@ -32,20 +32,26 @@ const RequireAuth = ({ children }) => {
 
   return (
     <React.Fragment>
-      {children}
+      { render(routeProps) }
     </React.Fragment>
   );
-
 };
 
-const SecureRoute = ( {component, ...props} ) => { 
+const SecureRoute = ( {component, render, children, ...props} ) => { 
+  // react-router Route uses exactly one of: render, component, children
+  // We wrap whichever they use to require authentication and use the render method on Route
 
-  const PassedComponent = component || function() { return null; };
-  const WrappedComponent = (wrappedProps) => (<RequireAuth><PassedComponent {...wrappedProps}/></RequireAuth>);
+  let authRender = render;
+
+  if( component || !render ) { // React-router has component take precedence over render
+    const PassedComponent = component || function() { return <React.Fragment>{children}</React.Fragment>; };
+    authRender = wrappedProps => <PassedComponent { ...wrappedProps} />;
+  }
+
   return (
     <Route
       { ...props }
-      render={ (routeProps) => props.render ? props.render({...routeProps, component: WrappedComponent}) : <WrappedComponent {...routeProps}/> } 
+      render={ routeProps => <RequireAuth render={authRender} routeProps={routeProps}/> }
     />
   );
 };
