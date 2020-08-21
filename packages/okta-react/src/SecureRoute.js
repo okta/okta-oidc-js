@@ -12,47 +12,25 @@
 
 import React, { useEffect } from 'react';
 import { useOktaAuth } from './OktaContext';
-import { useHistory, Route } from 'react-router-dom';
+import { Route } from 'react-router-dom';
 
-const RequireAuth = ({ render, routeProps }) => { 
+const SecureRoute = ( props ) => { 
   const { authService, authState } = useOktaAuth();
-  const history = useHistory();
 
   useEffect(() => {
     // Start login if and only if app has decided it is not logged inn
     if(!authState.isAuthenticated && !authState.isPending) { 
-      const fromUri = history.createHref(history.location);
-      authService.login(fromUri);
+      authService.login();
     }  
-  }, [authState, authService, history]);
+  }, [authState.isPending, authState.isAuthenticated, authService]);
 
   if (!authState.isAuthenticated) {
     return null;
   }
 
   return (
-    <React.Fragment>
-      { render(routeProps) }
-    </React.Fragment>
-  );
-};
-
-const SecureRoute = ( {component, render, children, ...props} ) => { 
-  // react-router Route uses exactly one of: render, component, children
-  // We wrap whichever they use to require authentication and use the render method on Route
-
-  let authRender = render;
-
-  if( component || !render ) { // React-router has component take precedence over render
-    const PassedComponent = component || function() { return <React.Fragment>{children}</React.Fragment>; };
-    // eslint-disable-next-line react/display-name
-    authRender = wrappedProps => <PassedComponent { ...wrappedProps} />;
-  }
-
-  return (
     <Route
       { ...props }
-      render={ routeProps => <RequireAuth render={authRender} routeProps={routeProps}/> }
     />
   );
 };
