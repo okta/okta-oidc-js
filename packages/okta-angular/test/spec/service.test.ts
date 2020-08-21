@@ -108,7 +108,6 @@ describe('Angular service', () => {
       Object {
         "clientId": "foo",
         "issuer": "https://foo",
-        "onSessionExpired": [Function],
         "redirectUri": "https://foo",
         "scopes": Array [
           "openid",
@@ -158,7 +157,6 @@ describe('Angular service', () => {
       Object {
         "clientId": "foo",
         "issuer": "https://foo",
-        "onSessionExpired": [Function],
         "redirectUri": "https://foo",
         "scopes": Array [
           "openid",
@@ -197,13 +195,11 @@ describe('Angular service', () => {
     });
 
     describe('onSessionExpired', () => {
-      it('By default, sets a handler for "onSessionExpired" which calls login()', () => {
+      it('By default, "onSessionExpired" is undefined', () => {
         jest.spyOn(OktaAuthService.prototype, 'login').mockReturnValue(undefined);
         const service = createService();
         const config = service.getOktaConfig();
-        expect(config.onSessionExpired).toBeDefined();
-        config.onSessionExpired();
-        expect(OktaAuthService.prototype.login).toHaveBeenCalled();
+        expect(config.onSessionExpired).toBeUndefined();
       });
 
       it('Accepts custom function "onSessionExpired" via config which disables default handler', () => {
@@ -228,7 +224,7 @@ describe('Angular service', () => {
         const service = createService({ isAuthenticated });
         const ret = await service.isAuthenticated();
         expect(ret).toBe('foo');
-        expect(isAuthenticated).toHaveBeenCalled();
+        expect(isAuthenticated).toHaveBeenCalledWith(service);
         expect(OktaAuthService.prototype.getAccessToken).not.toHaveBeenCalled();
         expect(OktaAuthService.prototype.getIdToken).not.toHaveBeenCalled();
       });
@@ -362,7 +358,6 @@ describe('Angular service', () => {
           Object {
             "clientId": "foo",
             "issuer": "https://foo",
-            "onSessionExpired": [Function],
             "redirectUri": "https://foo",
             "scopes": Array [
               "openid",

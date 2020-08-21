@@ -45,12 +45,6 @@ export class OktaAuthService {
       this.config = Object.assign({}, config);
       this.config.scopes = this.config.scopes || ['openid', 'email'];
 
-      // Automatically enter login flow if session has expired or was ended outside the application
-      // The default behavior can be overriden by setting your own `onSessionExpired` function on the OktaConfig
-      if (!this.config.onSessionExpired) {
-        this.config.onSessionExpired = this.login.bind(this);
-      }
-
       /**
        * Scrub scopes to ensure 'openid' is included
        */
@@ -87,7 +81,7 @@ export class OktaAuthService {
     async isAuthenticated(): Promise<boolean> {
       // Support a user-provided method to check authentication
       if (this.config.isAuthenticated) {
-        return (this.config.isAuthenticated)();
+        return (this.config.isAuthenticated)(this);
       }
 
       const accessToken = await this.getAccessToken();
