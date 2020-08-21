@@ -1,4 +1,4 @@
-# PENDING
+# 3.0.5
 
 ### Bug Fixes
 
