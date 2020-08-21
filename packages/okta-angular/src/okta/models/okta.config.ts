@@ -14,7 +14,7 @@ import { InjectionToken, Injector } from '@angular/core';
 import { OktaAuthService } from '../services/okta.service';
 
 export type AuthRequiredFunction = (oktaAuth: OktaAuthService, injector: Injector) => void;
-export type IsAuthenticatedFunction = () => Promise<boolean>;
+export type IsAuthenticatedFunction = (oktaAuth: OktaAuthService) => Promise<boolean>;
 export type OnSessionExpiredFunction = () => void;
 
 export interface TestingObject {
