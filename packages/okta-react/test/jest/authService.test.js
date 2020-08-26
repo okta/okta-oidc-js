@@ -214,28 +214,6 @@ describe('AuthService', () => {
     });
   });
 
-  describe('onSessionExpired', () => {
-    it('By default, sets a handler for "onSessionExpired" which calls login()', () => {
-      jest.spyOn(AuthService.prototype, 'login').mockReturnValue(undefined);
-      const authService = new AuthService(validConfig);
-      const config = authService._config;
-      expect(config.onSessionExpired).toBeDefined();
-      config.onSessionExpired();
-      expect(AuthService.prototype.login).toHaveBeenCalled();
-    });
-
-    it('Accepts custom function "onSessionExpired" via config which disables default handler', () => {
-      jest.spyOn(AuthService.prototype, 'login').mockReturnValue(undefined);
-      const onSessionExpired = jest.fn();
-      const authService = new AuthService(extendConfig({ onSessionExpired }));
-      const config = authService._config;
-      expect(config.onSessionExpired).toBe(onSessionExpired);
-      config.onSessionExpired();
-      expect(onSessionExpired).toHaveBeenCalled();
-      expect(AuthService.prototype.login).not.toHaveBeenCalled();
-    });
-  });
-
   describe('logout', () => {
 
     test('defaults to passing an empty options to signOut', async () => {
@@ -492,7 +470,7 @@ describe('AuthService', () => {
         redirectUri: 'https://foo/redirect',
       });
       const expectedVal = 'fakey';
-      jest.spyOn(authService, 'redirect').mockReturnValue(expectedVal);
+      jest.spyOn(authService, 'redirect').mockResolvedValue(expectedVal);
   
       const retVal = await authService.login('/');
       expect(retVal).toBe(expectedVal);
@@ -501,7 +479,7 @@ describe('AuthService', () => {
   
     it('will call a custom method "onAuthRequired" instead of redirect()', async () => {
       const expectedVal = 'fakey';
-      const onAuthRequired = jest.fn().mockReturnValue(expectedVal);
+      const onAuthRequired = jest.fn().mockResolvedValue(expectedVal);
       const authService = new AuthService({
         issuer: 'https://foo/oauth2/default',
         clientId: 'foo',
@@ -514,6 +492,35 @@ describe('AuthService', () => {
       expect(retVal).toBe(expectedVal);
       expect(onAuthRequired).toHaveBeenCalledWith(authService);
       expect(authService.redirect).not.toHaveBeenCalled();
+    });
+
+    it('should not trigger second call if login is in progress', async () => {
+      expect.assertions(1);
+      const authService = new AuthService({
+        issuer: 'https://foo/oauth2/default',
+        clientId: 'foo',
+        redirectUri: 'https://foo/redirect',
+      });
+      authService.redirect = jest.fn();
+      Promise.all([authService.login('/'), authService.login('/')]).then(() => {
+        expect(authService.redirect).toHaveBeenCalledTimes(1);
+      });
+    });
+
+    it('should throw when error happens', async () => {
+      expect.assertions(1);
+      const authService = new AuthService({
+        issuer: 'https://foo/oauth2/default',
+        clientId: 'foo',
+        redirectUri: 'https://foo/redirect',
+      });
+      const mockErrorMessage = 'mock error';
+      authService.redirect = jest.fn().mockRejectedValue(new Error(mockErrorMessage));
+      try {
+        await authService.login('/')
+      } catch (e) {
+        expect(e.message).toEqual(mockErrorMessage);
+      }
     });
   });
 

@@ -17,7 +17,12 @@ describe('<SecureRoute />', () => {
       on: jest.fn(),
       updateAuthState: jest.fn(),
       getAuthState: jest.fn().mockImplementation(() => authState),
-      login: jest.fn()
+      login: jest.fn(),
+      _oktaAuth: {
+        token: {
+          isLoginRedirect: jest.fn().mockImplementation(() => false)
+        }
+      }
     };
     mockProps = { authService };
   });

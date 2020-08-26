@@ -20,7 +20,12 @@ describe('<Security />', () => {
     authService = {
       on: jest.fn(),
       updateAuthState: jest.fn(),
-      getAuthState: jest.fn().mockImplementation(() => initialAuthState)
+      getAuthState: jest.fn().mockImplementation(() => initialAuthState),
+      _oktaAuth: {
+        token: {
+          isLoginRedirect: jest.fn().mockImplementation(() => false)
+        }
+      }
     };
   });
 
@@ -84,6 +89,19 @@ describe('<Security />', () => {
     expect(authService.on).toHaveBeenCalledTimes(1);
     expect(authService.updateAuthState).toHaveBeenCalledTimes(1);
     expect(MyComponent).toHaveBeenCalledTimes(2);
+  });
+
+  it('should not call updateAuthState when in login redirect state', () => {
+    authService._oktaAuth.token.isLoginRedirect = jest.fn().mockImplementation(() => true);
+    const mockProps = {
+      authService
+    };
+    mount(
+      <MemoryRouter>
+        <Security {...mockProps} />
+      </MemoryRouter>
+    );
+    expect(authService.updateAuthState).not.toHaveBeenCalled();
   });
 
   it('subscribes to "authStateChange" and updates the context', () => {

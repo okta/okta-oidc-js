@@ -5,6 +5,8 @@
 
 This library verifies Okta access tokens (issued by [Okta Custom Authorization servers](https://developer.okta.com/docs/concepts/auth-servers/) by fetching the public keys from the JWKS endpoint of the authorization server. If the access token is valid it will be converted to a JSON object and returned to your code. 
 
+This library does not yet verify id tokens.  You can learn about [access tokens](https://developer.okta.com/docs/reference/api/oidc/#access-token) and [id tokens](https://developer.okta.com/docs/reference/api/oidc/#id-token) in our [OIDC and OAuth 2.0 API Referece](https://developer.okta.com/docs/reference/api/oidc/).
+
 > Okta Custom Authorization Servers require the API Access Management license.  If you are using Okta Org Authorization Servers (which don’t require API Access Management) you can manually validate against the /introspect endpoint ( https://developer.okta.com/docs/reference/api/oidc/#introspect ). 
 
 For any access token to be valid, the following are asserted:
