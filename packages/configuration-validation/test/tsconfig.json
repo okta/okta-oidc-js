@@ -1,0 +1,10 @@
+{
+  "compilerOptions": {
+    "noEmit": true,
+    "baseUrl": "./",
+    "paths": {
+      "@okta/configuration-validation": ["../"]
+    }
+  },
+  "include": ["./**/*"]
+}
