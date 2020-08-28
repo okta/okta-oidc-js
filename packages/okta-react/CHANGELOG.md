@@ -1,3 +1,11 @@
+# 3.0.5
+
+### Bug Fixes
+
+- [#872](https://github.com/okta/okta-oidc-js/pull/872) Adjusts `<SecureRoute>` so that it enforces authentication requirement for components passed via "render" or "children" in addition to "component"
+  - NOTE: `<SecureRoute>`, like react-router `<Route>`, only wants ONE of the three ways of passing wrapped components per route
+  - This should also address cases where components loaded through SecureRoute were being unnecessarily unmounted/remounted
+
 # 3.0.4
 
 ### Bug Fixes

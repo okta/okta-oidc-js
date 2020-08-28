@@ -1,8 +1,16 @@
 # Pending
 
-### Breaking Changes
+### 2.2.0
+
+### Features
 
 [#794](https://github.com/okta/okta-oidc-js/pull/794) `OktaAuthService.getUser` only uses `/userinfo` endpoint to retrieve user claims. `OktaAuthService.getUser` should be the recommended method to acquire user information as `idToken.claims` may become stale due to data updating.
+
+[#867](https://github.com/okta/okta-oidc-js/pull/867) The current instance of the `OktaAuthService` is passed to `isAuthenticated` callback function.
+
+### Bug Fixes
+
+[#867](https://github.com/okta/okta-oidc-js/pull/867) Default `onSessionExpired` behavior is removed, as it was causing concurrency issues.
 
 # 2.1.0
 
@@ -11,6 +19,8 @@
 [#776](https://github.com/okta/okta-oidc-js/pull/776) `OktaAuthGuard` now implements `canActivateChild`
 
 # 2.0.0
+
+### Breaking Changes
 
 [#690](https://github.com/okta/okta-oidc-js/pull/690)
 

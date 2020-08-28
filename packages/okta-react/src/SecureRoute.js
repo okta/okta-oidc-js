@@ -12,40 +12,25 @@
 
 import React, { useEffect } from 'react';
 import { useOktaAuth } from './OktaContext';
-import { useHistory, Route } from 'react-router-dom';
+import { Route } from 'react-router-dom';
 
-const RequireAuth = ({ children }) => { 
+const SecureRoute = ( props ) => { 
   const { authService, authState } = useOktaAuth();
-  const history = useHistory();
 
   useEffect(() => {
-    // Make sure login process is not triggered when the app just start
+    // Start login if and only if app has decided it is not logged inn
     if(!authState.isAuthenticated && !authState.isPending) { 
-      const fromUri = history.createHref(history.location);
-      authService.login(fromUri);
+      authService.login();
     }  
-  }, [authState, authService]);
+  }, [authState.isPending, authState.isAuthenticated, authService]);
 
   if (!authState.isAuthenticated) {
     return null;
   }
 
   return (
-    <React.Fragment>
-      {children}
-    </React.Fragment>
-  );
-
-};
-
-const SecureRoute = ( {component, ...props} ) => { 
-
-  const PassedComponent = component || function() { return null; };
-  const WrappedComponent = (wrappedProps) => (<RequireAuth><PassedComponent {...wrappedProps}/></RequireAuth>);
-  return (
     <Route
       { ...props }
-      render={ (routeProps) => props.render ? props.render({...routeProps, component: WrappedComponent}) : <WrappedComponent {...routeProps}/> } 
     />
   );
 };

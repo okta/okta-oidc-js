@@ -466,6 +466,11 @@ class App extends Component {
   
 `SecureRoute` integrates with `react-router`.  Other routers will need their own methods to ensure authentication using the hooks/HOC props provided by this SDK.
 
+As with `Route` from `react-router-dom`, `<SecureRoute>` can take one of:
+- a `component` prop that is passed a component
+- a `render` prop that is passed a function that returns a component.  This function will be passed any additional props that react-router injects (such as `history` or `match`)
+- children components
+
 ### `LoginCallback`
 
 `LoginCallback` handles the callback after the redirect to and back from the Okta-hosted login page. By default, it parses the tokens from the uri, stores them, then redirects to `/`. If a `SecureRoute` caused the redirect, then the callback redirects to the secured route. For more advanced cases, this component can be copied to your own source tree and modified as needed.

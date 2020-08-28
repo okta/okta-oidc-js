@@ -75,7 +75,7 @@ import {
 const oktaConfig = {
   issuer: 'https://{yourOktaDomain}.com/oauth2/default',
   clientId: '{clientId}',
-  redirectUri: 'http://localhost:{port}/implicit/callback',
+  redirectUri: window.location.origin + '/implicit/callback',
   pkce: true
 }
 
@@ -107,8 +107,40 @@ For PKCE flow, this should be left undefined or set to `['code']`.
 - `onAuthRequired` *(optional)*: - callback function. Called when authentication is required. If not supplied, `okta-angular` will redirect directly to Okta for authentication. This is triggered when:
     1. [login](#oktaauthloginfromuri-additionalparams) is called
     2. A route protected by `OktaAuthGuard` is accessed without authentication
-- `onSessionExpired` *(optional)* - callback function. Called when the Okta SSO session has expired or was ended outside of the application. This SDK adds a default handler which will call [login](#oktaauthloginfromuri-additionalparams) to initiate a login flow. Passing a function here will disable the default handler.
-- `isAuthenticated` *(optional)* - callback function. By default, `OktaAuthService.isAuthenticated` will return true if both `getIdToken()` and `getAccessToken()` return a value. Setting a `isAuthenticated` function on the config will skip the default logic and call the supplied function instead. The function should return a Promise and resolve to either true or false.
+- `onSessionExpired` **deprecated** *(optional)* - callback function. Called on token renew failure.
+:warning: This option will be removed in an upcoming version. When a [token renew](#tokenrenewtokentorenew) fails, an "error" event will be fired from the [TokenManager](#tokenmanageronevent-callback-context) and the token will be [removed from storage](#tokenmanagergetkey). Presense of a token in storage can be used to determine if a login flow is needed in the `isAuthenticated` method. Take care when beginning a new login flow that there is not another login flow already in progress. Be careful not to initiate the token renew process in this callback, explicitly with `tokenManager.renew()` or implicitly with `tokenManager.get()`, as your app may end up in an infinite loop.
+- `isAuthenticated` *(optional)* - callback function. By default, `OktaAuthService.isAuthenticated` will return true if **either** `getIdToken()` **or** `getAccessToken()` return a value. Setting a `isAuthenticated` function on the config will skip the default logic and call the supplied function instead. The function should return a Promise and resolve to either true or false.
+  **NOTE** The default behavior of this callback will be changed in the next major release to resolve to true when **both** `getIdToken()` **and** `getAccessToken()` return a value. Currently, you can achieve this behavior as shown:
+  
+  ```typescript
+  // myApp.module.ts
+
+  import {
+    OKTA_CONFIG,
+    OktaAuthModule
+  } from '@okta/okta-angular';
+
+  const oktaConfig = {
+    // other config ...
+    isAuthenticated: async function(authService: OktaAuthService) {
+      const accessToken = await authService.getAccessToken();
+      const idToken = await authService.getIdToken();
+      return !!(accessToken && idToken);
+    }
+  }
+
+  @NgModule({
+    imports: [
+      ...
+      OktaAuthModule
+    ],
+    providers: [
+      { provide: OKTA_CONFIG, useValue: oktaConfig }
+    ],
+  })
+  export class MyAppModule { }
+  ```
+
 - `tokenManager` *(optional)*: An object containing additional properties used to configure the internal token manager. See [AuthJS TokenManager](https://github.com/okta/okta-auth-js#the-tokenmanager) for more detailed information.
 
   - `autoRenew` *(optional)*:
