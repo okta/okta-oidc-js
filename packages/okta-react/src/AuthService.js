@@ -252,13 +252,13 @@ class AuthService {
     if (fromUri.charAt(0) === '/') {
       fromUri = window.location.origin + fromUri;
     }
-    localStorage.setItem( 'secureRouterReferrerPath', fromUri );
+    sessionStorage.setItem( 'secureRouterReferrerPath', fromUri );
   }
 
   getFromUri() {
     const referrerKey = 'secureRouterReferrerPath';
-    const location = localStorage.getItem(referrerKey) || window.location.origin;
-    localStorage.removeItem(referrerKey);
+    const location = sessionStorage.getItem(referrerKey) || window.location.origin;
+    sessionStorage.removeItem(referrerKey);
     return location;
   }
 

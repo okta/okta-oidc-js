@@ -430,35 +430,35 @@ describe('AuthService', () => {
   });
 
   describe('setFromUri', () => {
-    it('Saves the fromUri in localStorage', () => {
-      localStorage.setItem('secureRouterReferrerPath', '');
-      expect(localStorage.getItem('secureRouterReferrerPath')).toBe('');
+    it('Saves the fromUri in sessionStorage', () => {
+      sessionStorage.setItem('secureRouterReferrerPath', '');
+      expect(sessionStorage.getItem('secureRouterReferrerPath')).toBe('');
       const fromUri = 'http://localhost/foo/random';
       const authService = new AuthService(validConfig);
       authService.setFromUri(fromUri);
-      const val = localStorage.getItem('secureRouterReferrerPath');
+      const val = sessionStorage.getItem('secureRouterReferrerPath');
       expect(val).toBe(fromUri);
     });
 
     it('Saves the window.location.href by default', () => {
-      localStorage.setItem('secureRouterReferrerPath', '');
-      expect(localStorage.getItem('secureRouterReferrerPath')).toBe('');
+      sessionStorage.setItem('secureRouterReferrerPath', '');
+      expect(sessionStorage.getItem('secureRouterReferrerPath')).toBe('');
       const authService = new AuthService(validConfig);
       authService.setFromUri();
-      const val = localStorage.getItem('secureRouterReferrerPath');
+      const val = sessionStorage.getItem('secureRouterReferrerPath');
       expect(val).toBe(window.location.href);
     });
 
   });
 
   describe('getFromUri', () => {
-    test('clears referrer from localStorage', () => {
+    test('clears referrer from sessionStorage', () => {
       const TEST_VALUE = 'foo-bar';
-      localStorage.setItem('secureRouterReferrerPath', TEST_VALUE );
+      sessionStorage.setItem('secureRouterReferrerPath', TEST_VALUE );
       const authService = new AuthService(validConfig);
       const res = authService.getFromUri();
       expect(res).toBe(TEST_VALUE);
-      expect(localStorage.getItem('referrerPath')).not.toBeTruthy();
+      expect(sessionStorage.getItem('referrerPath')).not.toBeTruthy();
     });
   });
 
