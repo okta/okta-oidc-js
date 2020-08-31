@@ -85,7 +85,7 @@ app.get('/', (req, res) => {
       <form method="POST" action="/logout">
         <button type="submit">Logout</button>
       </form>
-    ');
+    `);
   } else {
     res.send('Please <a href="/login">login</a>');
   }
