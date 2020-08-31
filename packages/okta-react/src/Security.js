@@ -11,33 +11,42 @@
  */
 
 import React, { useState, useEffect, useMemo } from 'react';
-import AuthService from './AuthService';
+import {
+  buildConfigObject
+} from '@okta/configuration-validation';
+import { OktaAuth } from '@okta/okta-auth-js';
 import OktaContext from './OktaContext';
+import packageInfo from './packageInfo';
 
 const Security = (props) => { 
 
-  const initialAuthService = useMemo( () => { 
+  const initialOktaAuth = useMemo( () => { 
     // don't keep spawning new service instances if this component rerenders
-    return props.authService || new AuthService(props);
+    // normalize authJS config. In this SDK, we allow underscore on certain properties, but AuthJS consistently uses camel case.
+    const authConfig = buildConfigObject(props);
+    const oktaAuth = props.authService || new OktaAuth(authConfig);
+    oktaAuth.userAgent = `${packageInfo.name}/${packageInfo.version} ${oktaAuth.userAgent}`;
+    return oktaAuth;
   }, [ props ]);
 
-  const [authService] = useState( initialAuthService );
-  const [authState, setAuthState] = useState(authService.getAuthState());
+  const [oktaAuth] = useState( initialOktaAuth );
+  const [authState, setAuthState] = useState(oktaAuth.authStateManager.getAuthState());
   
-  useEffect( () => { 
-    const unsub = authService.on('authStateChange', () => {
-      setAuthState(authService.getAuthState());
+  useEffect(() => {
+    oktaAuth.authStateManager.onAuthStateChange((authState) => {
+      setAuthState(authState);
     });
 
-    if (!authService._oktaAuth.token.isLoginRedirect()) {
+    if (!oktaAuth.token.isLoginRedirect()) {
       // Trigger an initial change event to make sure authState is latest when not in loginRedirect state
-      authService.updateAuthState(); 
+      oktaAuth.authStateManager.initialAuthState();
     }
-    return unsub;
-  }, [authService]);
+
+    return () => oktaAuth.authStateManager.offAuthStateChange();
+  }, [oktaAuth]);
 
   return (
-    <OktaContext.Provider value={ { authService, authState } }>
+    <OktaContext.Provider value={{ oktaAuth, authService: oktaAuth.authService, authState }}>
       {props.children}
     </OktaContext.Provider>
   );
