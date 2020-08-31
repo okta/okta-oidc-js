@@ -1,3 +1,9 @@
+# 3.0.6
+
+### Bug Fixes
+
+- [#884](https://github.com/okta/okta-oidc-js/pull/884) Stores `secureReferrerPath` in sessionStorage to avoid race condition for multiple tabs
+
 # 3.0.5
 
 ### Bug Fixes
