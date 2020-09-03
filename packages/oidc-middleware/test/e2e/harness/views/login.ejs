@@ -13,8 +13,18 @@
     <div id="banner"><center>Custom Login Page</center></div>
     <div id="app-container"></div>
     <script type="text/javascript">
+      console.log('<%= baseUrl %>');
       const signIn = new OktaSignIn({
-        baseUrl: '<%= baseUrl %>'  // e.g. https://dev-1234.oktapreview.com
+        baseUrl: '<%= baseUrl %>',  // e.g. https://dev-1234.oktapreview.com
+        language: '<%= language %>',
+        i18n: {
+          en: {
+            'primaryauth.title': 'Sign in to Acme',
+          },
+          fr: {
+            'primaryauth.title': 'Connectez-vous à Acme',
+          }
+        }
       });
 
       signIn.renderEl({ el: '#app-container' }, (res) => {
