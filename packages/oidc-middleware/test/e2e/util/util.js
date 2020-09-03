@@ -36,10 +36,13 @@ util.createDemoServerWithCustomLoginPage = (options) => {
       login: {
         viewHandler: (req, res/*, next */) => {
           const baseUrl = url.parse(baseConfig.issuer).protocol + '//' + url.parse(baseConfig.issuer).host;
+
           res.render('login', {
             csrfToken: req.csrfToken(),
             baseUrl: baseUrl,
-            cdnUrl: baseConfig.cdnUrl
+            cdnUrl: baseConfig.cdnUrl,
+            language: baseConfig.options.language,
+            i18n: baseConfig.options.i18n
           });
         }
       }

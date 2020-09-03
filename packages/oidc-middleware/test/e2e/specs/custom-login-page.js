@@ -20,8 +20,9 @@ browser.waitForAngularEnabled(false);
 describe('Custom login page', () => {
   let server;
   beforeEach(async () => {
-    let cdnUrl='https://ok1static.oktacdn.com/assets/js/sdk/okta-signin-widget/3.0.0';
-
+    let cdnUrl = 'https://global.oktacdn.com/okta-signin-widget/4.4.1';
+    let options = {};
+    // This is used as PDV for widget after artifact promotion to CDN
     if(process.env.NPM_TARBALL_URL) {
       // Extract the version of sign-in widget from the NPM_TARBALL_URL variable
       // The variable is of the format https:<artifactory_url>/@okta/okta-signin-widget-3.0.6.tgz
@@ -29,6 +30,13 @@ describe('Custom login page', () => {
       const i = url.lastIndexOf('-');
       const version = url.substring(i + 1, url.length - 4);
       cdnUrl=`https://global.oktacdn.com/okta-signin-widget/${version}`;
+      // We also test i18n assets on CDN
+      options.language = 'fr';
+      options.i18n = {
+        fr: {
+          'primaryauth.title': 'Connectez-vous à Acme',
+        }
+      }
     }
     console.log(`Using CDN url - ${cdnUrl}`);
 
@@ -40,7 +48,8 @@ describe('Custom login page', () => {
       testing: {
         disableHttpsCheck: constants.OKTA_TESTING_DISABLEHTTPSCHECK
       },
-      cdnUrl: cdnUrl
+      cdnUrl: cdnUrl,
+      options: options
     }
 
     server = util.createDemoServerWithCustomLoginPage(serverOptions);
@@ -56,6 +65,13 @@ describe('Custom login page', () => {
     // eslint-disable-next-line protractor/no-browser-sleep
     await browser.sleep(3000);
     await signInPage.waitUntilVisible();
+
+    // If we're testing widget i18n options (widget PDV)
+    if(process.env.NPM_TARBALL_URL) {
+      expect(signInPage.pageTitle.getText()).toBe('Connectez-vous à Acme');
+      expect(signInPage.usernameLabel.getText()).toBe('Nom d\'utilisateur ');
+      expect(signInPage.passwordLabel.getText()).toBe('Mot de passe ');
+    }
 
     await signInPage.signIn({
       username: constants.USERNAME,
