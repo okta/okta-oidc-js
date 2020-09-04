@@ -18,6 +18,9 @@ module.exports = class OktaSignInPage {
     this.password = $('[name=password]');
     this.submit = $('#okta-signin-submit');
     this.banner = $('#banner');
+    this.pageTitle = $('[data-se=o-form-head]');
+    this.usernameLabel = $('[data-se=o-form-label] [for=okta-signin-username]');
+    this.passwordLabel = $('[data-se=o-form-label] [for=okta-signin-password]');
   }
 
   async load() {
