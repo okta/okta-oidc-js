@@ -12,7 +12,28 @@
 
 const constants = require('../util/constants');
 const util = require('../util/util');
-const cdnUrl = 'https://global.oktacdn.com/okta-signin-widget/4.4.1';
+let widgetVersion = '4.4.1';
+const options = {};
+
+// This is used as PDV for widget after artifact promotion to CDN
+if(process.env.NPM_TARBALL_URL) {
+  // Extract the version of sign-in widget from the NPM_TARBALL_URL variable
+  // The variable is of the format https:<artifactory_url>/@okta/okta-signin-widget-3.0.6.tgz
+  const url = process.env.NPM_TARBALL_URL;
+  const i = url.lastIndexOf('-');
+  widgetVersion = url.substring(i + 1, url.length - 4);
+
+  // We also test i18n assets on CDN
+  options.language = 'fr';
+  options.i18n = {
+    fr: {
+      'primaryauth.title': 'Connectez-vous à Acme',
+    }
+  }
+}
+
+const cdnUrl = `https://global.oktacdn.com/okta-signin-widget/${widgetVersion}`;
+console.log(`Using CDN url - ${cdnUrl}`);
 
 const serverOptions = {
   issuer: constants.ISSUER,
@@ -22,7 +43,8 @@ const serverOptions = {
   testing: {
     disableHttpsCheck: constants.OKTA_TESTING_DISABLEHTTPSCHECK
   },
-  cdnUrl: cdnUrl
+  cdnUrl: cdnUrl,
+  options: options
 }
 
 console.log('serverOptions', serverOptions);
