@@ -12,17 +12,22 @@
 
 import React, { useEffect } from 'react';
 import { useOktaAuth } from './OktaContext';
-import { Route } from 'react-router-dom';
+import { Route, useRouteMatch } from 'react-router-dom';
 
 const SecureRoute = ( props ) => { 
   const { authService, authState } = useOktaAuth();
+  const match = useRouteMatch(props);
 
   useEffect(() => {
+    // Only process logic if the route matches
+    if (!match) {
+      return;
+    }
     // Start login if and only if app has decided it is not logged inn
     if(!authState.isAuthenticated && !authState.isPending) { 
       authService.login();
     }  
-  }, [authState.isPending, authState.isAuthenticated, authService]);
+  }, [authState.isPending, authState.isAuthenticated, authService, match]);
 
   if (!authState.isAuthenticated) {
     return null;

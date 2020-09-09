@@ -132,15 +132,26 @@ describe('<SecureRoute />', () => {
         authState.isPending = false;
       });
 
-      it('calls login()', () => {
+      it('calls login() if route matches', () => {
         mount(
           <MemoryRouter>
             <Security {...mockProps}>
-              <SecureRoute />
+              <SecureRoute path="/" />
             </Security>
           </MemoryRouter>
         );
         expect(authService.login).toHaveBeenCalled();
+      });
+
+      it('does not call login() if route does not match', () => {
+        mount(
+          <MemoryRouter>
+            <Security {...mockProps}>
+              <SecureRoute path="/other" />
+            </Security>
+          </MemoryRouter>
+        );
+        expect(authService.login).not.toHaveBeenCalled();
       });
     });
 
