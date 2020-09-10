@@ -47,12 +47,6 @@ export default {
         }),
         commonjs({
             namedExports: {
-                '@okta/configuration-validation': [
-                    'assertIssuer',
-                    'assertClientId',
-                    'assertRedirectUri',
-                    'buildConfigObject'
-                ]
             }
         }),
         sourcemaps()

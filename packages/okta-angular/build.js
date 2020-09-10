@@ -28,7 +28,7 @@ shell.mkdir(`-p`, `./${OUT_DIR}`);
 // https://github.com/palantir/tslint/blob/master/src/configs/recommended.ts
 // https://github.com/mgechev/codelyzer
 shell.echo(`Start TSLint`);
-shell.exec(`tslint -p tsconfig.json -t stylish src/**/*.ts`);
+shell.exec(`yarn lint`);
 shell.echo(chalk.green(`TSLint completed`));
 
 shell.cp(`-Rf`, [`src`, `*.ts`, `*.json`], `${OUT_DIR}`);

@@ -15,7 +15,7 @@ import { OktaAuthService } from '@okta/okta-angular';
 
 import { environment } from './../environments/environment';
 
-import OktaAuth from '@okta/okta-auth-js';
+import { OktaAuth } from '@okta/okta-auth-js';
 
 @Component({
   selector: 'app-session-login',
