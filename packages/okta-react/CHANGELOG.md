@@ -1,3 +1,9 @@
+# 3.0.7
+
+### Bug Fixes
+
+- [#903](https://github.com/okta/okta-oidc-js/pull/903) fixes SecureRoute to not require authentication unless the route matches
+
 # 3.0.6
 
 ### Bug Fixes
