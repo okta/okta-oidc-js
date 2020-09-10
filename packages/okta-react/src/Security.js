@@ -33,20 +33,20 @@ const Security = (props) => {
   const [authState, setAuthState] = useState(oktaAuth.authStateManager.getAuthState());
   
   useEffect(() => {
-    oktaAuth.authStateManager.onAuthStateChange((authState) => {
+    oktaAuth.authStateManager.subscribe((authState) => {
       setAuthState(authState);
     });
 
     if (!oktaAuth.token.isLoginRedirect()) {
       // Trigger an initial change event to make sure authState is latest when not in loginRedirect state
-      oktaAuth.authStateManager.initialAuthState();
+      oktaAuth.authStateManager.updateAuthState();
     }
 
-    return () => oktaAuth.authStateManager.offAuthStateChange();
+    return () => oktaAuth.authStateManager.unsubscribe();
   }, [oktaAuth]);
 
   return (
-    <OktaContext.Provider value={{ oktaAuth, authService: oktaAuth.authService, authState }}>
+    <OktaContext.Provider value={{ authService: oktaAuth, authState }}>
       {props.children}
     </OktaContext.Provider>
   );
