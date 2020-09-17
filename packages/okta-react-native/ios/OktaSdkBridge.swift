@@ -476,6 +476,10 @@ class OktaSdkBridge: RCTEventEmitter {
     static func requiresMainQueueSetup() -> Bool {
         return true;
     }
+
+    override var methodQueue: DispatchQueue! {
+        DispatchQueue.main
+    }
     
     override func supportedEvents() -> [String]! {
         return [
