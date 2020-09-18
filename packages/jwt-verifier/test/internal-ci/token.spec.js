@@ -11,6 +11,9 @@
  */
 const constants = require('../constants')
 
+// These tests involve LIVE network requests and run in a resource-constrained CI environment
+const LONG_TIMEOUT = 15000;
+
 const OktaJwtVerifier = require('../../lib');
 const getAccessToken = require('../util').getAccessToken;
 
@@ -46,5 +49,5 @@ describe('Access token test with api call', () => {
     .then(jwt => {
       expect(jwt.claims.iss).toBe(ISSUER);
     });
-  });
+  }, LONG_TIMEOUT);
 });
