@@ -22,7 +22,7 @@ const RequireAuth = ({ children }) => {
     // Make sure login process is not triggered when the app just start
     if(!authState.isAuthenticated && !authState.isPending) { 
       const fromUri = history.createHref(history.location);
-      authService.signIn({ fromUri });
+      authService.signInWithRedirect({ fromUri });
     }  
   }, [authState, authService]);
 

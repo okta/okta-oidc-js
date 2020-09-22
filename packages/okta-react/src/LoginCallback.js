@@ -24,18 +24,12 @@ const LoginCallback = ({ errorComponent }) => {
 
   useEffect(() => {
     const handleAuthentication = async () => {
-      await authService.handleAuthentication();
+      const fromUri = await authService.handleAuthentication();
+      history.replace(fromUri);
     }
     handleAuthentication();
   }, [authService]);
-
-  useEffect(() => {
-    if (authState.isAuthenticated) {
-      const fromUri = authService.getFromUri(true /* relative */);
-      history.replace(fromUri);
-    }
-  }, [authState.isAuthenticated, authService]);
-
+  
   if(authStateReady && authState.error) { 
     return <ErrorReporter error={authState.error}/>;
   }
