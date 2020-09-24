@@ -174,8 +174,8 @@ describe('Angular + Okta App', () => {
 
       sessionTokenSignInPage.waitUntilVisible();
       sessionTokenSignInPage.signIn({
-        username: process.env.USERNAME,
-        password: process.env.PASSWORD
+        username: environment.USERNAME,
+        password: environment.PASSWORD
       });
 
       page.waitUntilLoggedIn();
