@@ -1,8 +1,5 @@
-jest.mock('@okta/okta-auth-js');
-
 import { TestBed } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
-import OktaAuth from '@okta/okta-auth-js';
 
 import {
   OktaAuthModule,
@@ -21,10 +18,6 @@ const VALID_CONFIG = {
 
 function createService(options: any) {
   options = options || {};
-
-  const oktaAuth = options.oktaAuth || {};
-  oktaAuth.tokenManager = oktaAuth.tokenManager || { on: jest.fn() };
-  OktaAuth.mockImplementation(() => oktaAuth);
 
   TestBed.configureTestingModule({
     imports: [
@@ -49,9 +42,6 @@ function createService(options: any) {
 
 describe('Angular auth guard', () => {
 
-  beforeEach(() => {
-    OktaAuth.mockClear();
-  });
   afterEach(() => {
     jest.restoreAllMocks();
   });
@@ -122,6 +112,22 @@ describe('Angular auth guard', () => {
         const res = await guard.canActivate(route, state);
         expect(fn).toHaveBeenCalledWith(service, injector);
       });
+    });
+  });
+
+  describe('canActivateChild', () => {
+    it('calls canActivate', () => {
+      const service = createService({ isAuthenticated: false });
+      const injector = TestBed.get(Injector);
+      const guard = new OktaAuthGuard(service, injector);
+      const router = TestBed.get(Router);
+      const routerState: RouterState = router.routerState;
+      const state = routerState.snapshot;
+      const route = state.root;
+
+      jest.spyOn(guard, 'canActivate').mockReturnValue(Promise.resolve(true));
+      guard.canActivateChild(route, state);
+      expect(guard.canActivate).toHaveBeenCalledWith(route, state);
     });
   });
 

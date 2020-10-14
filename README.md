@@ -48,7 +48,6 @@ packages/
   okta-angular
   okta-react
   okta-react-native
-  okta-vue
 ```
 
 ### Versioning
@@ -65,7 +64,7 @@ We've configured Lerna with [independent mode](https://github.com/lerna/lerna/#i
 | [**oidc-middleware**](/packages/oidc-middleware)                   | [![npm version](https://img.shields.io/npm/v/@okta/oidc-middleware.svg?style=flat-square)](https://www.npmjs.com/package/@okta/oidc-middleware)                   | Middleware to easily add OpenID Connect to the Node.js framework of your choice               |
 | [**okta-react**](/packages/okta-react)                             | [![npm version](https://img.shields.io/npm/v/@okta/okta-react.svg?style=flat-square)](https://www.npmjs.com/package/@okta/okta-react)                             | React support for Okta                                                                        |
 | [**okta-react-native**](/packages/okta-react-native)               | [![npm version](https://img.shields.io/npm/v/@okta/okta-react-native.svg?style=flat-square)](https://www.npmjs.com/package/@okta/okta-react-native)               | React Native support for Okta                                                                 |
-| [**okta-vue**](/packages/okta-vue)                                 | [![npm version](https://img.shields.io/npm/v/@okta/okta-vue.svg?style=flat-square)](https://www.npmjs.com/package/@okta/okta-vue)                                 | Vue.js support for Okta                                                                       |
+| [**okta-vue**](https://github.com/okta/okta-vue)                                 | [![npm version](https://img.shields.io/npm/v/@okta/okta-vue.svg?style=flat-square)](https://www.npmjs.com/package/@okta/okta-vue)                                 | Vue.js support for Okta. This SDK is located in its [own repository](https://github.com/okta/okta-vue)                                                                     |
 
 ## Configuration Reference
 

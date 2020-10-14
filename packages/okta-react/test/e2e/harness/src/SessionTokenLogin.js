@@ -29,9 +29,8 @@ export default withOktaAuth(class SessionTokenLogin extends Component {
   }
 
   componentWillMount() {
-    const origin = new URL(this.props.authService._config.issuer).origin;
     this.oktaAuth = new OktaAuth({
-      url: origin
+      issuer: this.props.authService._config.issuer
     });
   }
 

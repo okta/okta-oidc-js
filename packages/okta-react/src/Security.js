@@ -10,28 +10,35 @@
  * See the License for the specific language governing permissions and limitations under the License.
  */
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import AuthService from './AuthService';
 import OktaContext from './OktaContext';
 
 const Security = (props) => { 
 
-  const [authService] = useState( props.authService || new AuthService(props) );
-  const [authState, setAuthState] = useState(authService.getAuthState());
+  const initialAuthService = useMemo( () => { 
+    // don't keep spawning new service instances if this component rerenders
+    return props.authService || new AuthService(props);
+  }, [ props ]);
 
+  const [authService] = useState( initialAuthService );
+  const [authState, setAuthState] = useState(authService.getAuthState());
+  
   useEffect( () => { 
     const unsub = authService.on('authStateChange', () => {
       setAuthState(authService.getAuthState());
     });
-    authService.updateAuthState(); // Trigger an initial change event to make sure authState is latest
+
+    if (!authService._oktaAuth.token.isLoginRedirect()) {
+      // Trigger an initial change event to make sure authState is latest when not in loginRedirect state
+      authService.updateAuthState(); 
+    }
     return unsub;
   }, [authService]);
 
   return (
     <OktaContext.Provider value={ { authService, authState } }>
-      <div className={props.className}>
-        {props.children}
-      </div>
+      {props.children}
     </OktaContext.Provider>
   );
 };

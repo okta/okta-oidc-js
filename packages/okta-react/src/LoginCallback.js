@@ -12,16 +12,20 @@
 
 import React, { useEffect } from 'react';
 import { useOktaAuth } from './OktaContext';
+import OktaError from './OktaError';
 
-const LoginCallback = () => { 
+const LoginCallback = ({ errorComponent }) => { 
   const { authService, authState } = useOktaAuth();
+  const authStateReady = !authState.isPending;
 
-  useEffect( () => {
+  let ErrorReporter = errorComponent || OktaError;
+
+  useEffect(() => {
     authService.handleAuthentication();
   }, [authService]);
 
-  if(authState.error) { 
-    return <p>{authState.error.toString()}</p>;
+  if(authStateReady && authState.error) { 
+    return <ErrorReporter error={authState.error}/>;
   }
 
   return null;

@@ -13,6 +13,7 @@
 const JUnitXmlReporter = require('jasmine-reporters').JUnitXmlReporter;
 const SpecReporter = require('jasmine-spec-reporter').SpecReporter;
 const { ProtractorBrowserLogReporter } = require('jasmine-protractor-browser-log-reporter');
+const PORT = process.env.PORT || 8080;
 
 exports.config = {
   framework: 'jasmine2',
@@ -35,7 +36,7 @@ exports.config = {
   },
   directConnect: true,
   specs: ['specs/*.js'],
-  baseUrl: 'http://localhost:8080/',
+  baseUrl: `http://localhost:${PORT}/`,
   loggingPrefs: {
     'browser': 'ALL' // for reporter
   },

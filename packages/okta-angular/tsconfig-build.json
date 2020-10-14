@@ -21,11 +21,11 @@
             "es2015",
             "dom"
         ],
-        "skipLibCheck": true,
         "typeRoots": [
             "node_modules/@types/",
             "src/@types/"
         ],
+        "esModuleInterop": false,
         "experimentalDecorators": true,
         "emitDecoratorMetadata": true,
         "sourceMap": true,

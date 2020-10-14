@@ -16,9 +16,10 @@ import { OktaAuthService } from '@okta/okta-angular';
 @Component({
   selector: 'app-secure',
   template: `
-  {{ message }}
+  <div>
+  {{ message }}<br/>
   <pre id="userinfo-container">{{ user }}</pre>
-  `
+  </div>`
 })
 export class ProtectedComponent implements OnInit {
   message;

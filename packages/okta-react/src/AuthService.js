@@ -32,16 +32,9 @@ class AuthService {
     assertClientId(authConfig.clientId);
     assertRedirectUri(authConfig.redirectUri);
 
-    // Automatically enter login flow if session has expired or was ended outside the application
-    // The default behavior can be overriden by passing your own function via config: `config.onSessionExpired`
-    if (!authConfig.onSessionExpired) {
-      authConfig.onSessionExpired = this.login.bind(this);
-    }
-
     this._oktaAuth = new OktaAuth(authConfig);
     this._oktaAuth.userAgent = `${packageInfo.name}/${packageInfo.version} ${this._oktaAuth.userAgent}`;
     this._config = authConfig; // use normalized config
-    this._listeners = {};
     this._pending = {}; // manage overlapping async calls 
 
     this.handleAuthentication = this.handleAuthentication.bind(this);
@@ -54,13 +47,16 @@ class AuthService {
     this.getAccessToken = this.getAccessToken.bind(this);
     this.login = this.login.bind(this);
     this.logout = this.logout.bind(this);
+    this._convertLogoutPathToOptions = this._convertLogoutPathToOptions.bind(this);
     this.redirect = this.redirect.bind(this);
     this.emit = this.emit.bind(this);
     this.on = this.on.bind(this);
 
-    this._subscriberCount = 0;
-
     this.clearAuthState();
+
+    // Remove expired token or renew token if autoRenew is true
+    // This process will keep authState synced with states in tokenManager
+    this.on('expired', this.updateAuthState);
   }
 
   getTokenManager() {
@@ -74,16 +70,15 @@ class AuthService {
     }
     try { 
       this._pending.handleAuthentication = true;
-      let tokens = await this._oktaAuth.token.parseFromUrl();
-      tokens = Array.isArray(tokens) ? tokens : [tokens];    
+      const {tokens} = await this._oktaAuth.token.parseFromUrl();
 
-      for (let token of tokens) {
-        if (token.idToken) {
-          this._oktaAuth.tokenManager.add('idToken', token);
-        } else if (token.accessToken) {
-          this._oktaAuth.tokenManager.add('accessToken', token);
-        }
+      if (tokens.idToken) {
+        this._oktaAuth.tokenManager.add('idToken', tokens.idToken);
       }
+      if (tokens.accessToken) {
+        this._oktaAuth.tokenManager.add('accessToken', tokens.accessToken);
+      }
+
       await this.updateAuthState();
       const authState = this.getAuthState();
       if(authState.isAuthenticated) { 
@@ -127,7 +122,7 @@ class AuthService {
     // create a promise to return in case of multiple parallel requests
     this._pending.authStateUpdate = {};
     this._pending.authStateUpdate.promise  = new Promise( (resolve) => {
-      // Promise can only resolve any error is in the resolve value
+      // Promise can only resolve, any error is in the resolve value
       // and uncaught exceptions make Front SDKs angry
       this._pending.authStateUpdate.resolve = resolve;
     });
@@ -140,7 +135,6 @@ class AuthService {
 
       // Use external check, or default to isAuthenticated if either the access or id token exist
       const isAuthenticated = this._config.isAuthenticated ? await this._config.isAuthenticated() : !! ( accessToken || idToken );
-
 
       this._pending.authStateUpdate = null;
       this.emitAuthState({ 
@@ -164,15 +158,11 @@ class AuthService {
   async getUser() {
     const accessToken = await this._oktaAuth.tokenManager.get('accessToken');
     const idToken = await this._oktaAuth.tokenManager.get('idToken');
-    if (accessToken && idToken) {
-      const userinfo = await this._oktaAuth.token.getUserInfo(accessToken);
-      if (userinfo.sub === idToken.claims.sub) {
-        // Only return the userinfo response if subjects match to
-        // mitigate token substitution attacks
-        return userinfo;
-      }
+    if (!accessToken || !idToken) { 
+      return idToken ? idToken.claims : undefined;
     }
-    return idToken ? idToken.claims : undefined;
+
+    return this._oktaAuth.token.getUserInfo();
   }
 
   async getIdToken() {
@@ -200,36 +190,43 @@ class AuthService {
   }
 
   async login(fromUri, additionalParams) {
+    if(this._pending.handleLogin) { 
+      // Don't trigger second round
+      return;
+    }
+
+    this._pending.handleLogin = true;
+    // Update UI pending state
+    this.emitAuthState({ ...this.getAuthState(), isPending: true });
     // Save the current url before redirect
     this.setFromUri(fromUri); // will save current location if fromUri is undefined
-    if (this._config.onAuthRequired) {
-      return this._config.onAuthRequired(this);
+    try {
+      if (this._config.onAuthRequired) {
+        return await this._config.onAuthRequired(this);
+      }
+      return await this.redirect(additionalParams);
+    } finally {
+      this._pending.handleLogin = null;
     }
-    return this.redirect(additionalParams);
   }
 
-  async logout(options) {
-    let path = null;
-    options = options || {};
-    if (typeof options === 'string') {
-      path = options;
-      options = {};
+  _convertLogoutPathToOptions(redirectUri) { 
+    if (typeof redirectUri !== 'string') {
+      return redirectUri;
     }
+    // If a relative path was passed, convert to absolute URI
+    if (redirectUri.charAt(0) === '/') {
+      redirectUri = window.location.origin + redirectUri;
+    }
+    return {
+      postLogoutRedirectUri: redirectUri,
+    };
+  }
 
-    return this._oktaAuth.signOut(options)
-      .then(() => {
-        if (!options.postLogoutRedirectUri && !this._config.postLogoutRedirectUri) {
-          let redirectUri = path || '/';
-          // If a relative path was passed, convert to absolute URI
-          if (redirectUri.charAt(0) === '/') {
-            redirectUri = window.location.origin + redirectUri;
-          }
-          window.location.assign(redirectUri);
-        }
-      })
-      .finally( () => {
-        this.clearAuthState();
-      });
+  async logout(options={}) {
+    options = this._convertLogoutPathToOptions(options);
+    await this._oktaAuth.signOut(options);
+    this.clearAuthState();
   }
 
   async redirect(additionalParams = {}) {
@@ -255,28 +252,25 @@ class AuthService {
     if (fromUri.charAt(0) === '/') {
       fromUri = window.location.origin + fromUri;
     }
-    localStorage.setItem( 'secureRouterReferrerPath', fromUri );
+    sessionStorage.setItem( 'secureRouterReferrerPath', fromUri );
   }
 
   getFromUri() {
     const referrerKey = 'secureRouterReferrerPath';
-    const location = localStorage.getItem(referrerKey) || window.location.origin;
-    localStorage.removeItem(referrerKey);
+    const location = sessionStorage.getItem(referrerKey) || window.location.origin;
+    sessionStorage.removeItem(referrerKey);
     return location;
   }
 
   on( event, callback ) {
-    const subscriberId = this._subscriberCount++;
-    this._listeners[event] = this._listeners[event] || {};
-    this._listeners[event][subscriberId] = callback;
-    return () => { 
-      delete this._listeners[event][subscriberId];
-    }
+    this._oktaAuth.emitter.on(event, callback, this._oktaAuth.emitter);
+    return () => {
+      this._oktaAuth.emitter.off(event, callback);
+    };
   }
 
   emit(event, message ) { 
-    this._listeners[event] = this._listeners[event] || {};
-    Object.values(this._listeners[event]).forEach( listener => listener(message) );
+    this._oktaAuth.emitter.emit(event, message);
   }
   
 }

@@ -1,3 +1,17 @@
+# 1.4.1
+
+### Bug fix
+
+- [#790](https://github.com/okta/okta-oidc-js/pull/790) Pass consistent UA header in http request
+
+# 1.4.0
+
+### Features
+- [#751](https://github.com/okta/okta-oidc-js/pull/751)
+  - Support primary authentication flow
+  - Add `getAuthClient` method to expose `@okta/okta-auth-js` client instance
+  - Add `Promise` support for `authenticate` method
+
 # 1.3.0
 
 ### Features

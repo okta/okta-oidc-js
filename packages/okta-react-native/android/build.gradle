@@ -69,7 +69,7 @@ repositories {
 
 dependencies {
     implementation 'com.facebook.react:react-native:+'
-    implementation 'com.okta.android:oidc-androidx:1.0.8'
+    implementation 'com.okta.android:oidc-androidx:1.0.13'
 }
 
 def configureReactNativePom(def pom) {

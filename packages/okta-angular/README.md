@@ -27,13 +27,15 @@ All of these features are supported by this SDK. Additionally, using this SDK, y
 
 > This SDK does not provide any UI components.
 
+> This SDK does not currently support Server Side Rendering (SSR)
+
 This library currently supports:
 
 - [OAuth 2.0 Implicit Flow](https://tools.ietf.org/html/rfc6749#section-1.3.2)
-- [OAuth 2.0 Authorization Code Flow](https://tools.ietf.org/html/rfc6749#section-1.3.1)
-- [Proof Key for Code Exchange (PKCE)](https://tools.ietf.org/html/rfc7636)
+- [OAuth 2.0 Authorization Code Flow](https://tools.ietf.org/html/rfc6749#section-1.3.1) with [Proof Key for Code Exchange (PKCE)](https://tools.ietf.org/html/rfc7636)
 
 > This library has been tested for compatibility with the following Angular versions: 4, 5, 6, 7, 8, 9
+> :warning: Angular versions older than 7 may not be fully compatible with all dependencies of this library, due to an older Typescript version. You may be able to workaround this issue by setting `skipLibChecks: true` in your `tsconfig.json` file.
 
 ## Getting Started
 
@@ -74,7 +76,7 @@ import {
 const oktaConfig = {
   issuer: 'https://{yourOktaDomain}.com/oauth2/default',
   clientId: '{clientId}',
-  redirectUri: 'http://localhost:{port}/implicit/callback',
+  redirectUri: window.location.origin + '/implicit/callback',
   pkce: true
 }
 
@@ -102,12 +104,44 @@ An Angular InjectionToken used to configure the OktaAuthService. This value must
 - `scopes` *(optional)*: Reserved for custom claims to be returned in the tokens. Defaults to `['openid']`, which will only return the `sub` claim. To obtain more information about the user, use `openid profile`. For a list of scopes and claims, please see [Scope-dependent claims](https://developer.okta.com/standards/OIDC/index.html#scope-dependent-claims-not-always-returned) for more information.
 - `responseType` *(optional)*: Desired token grant types. Default: `['id_token', 'token']`.
 For PKCE flow, this should be left undefined or set to `['code']`.
-- `pkce` *(optional)*: If `true`, PKCE flow will be used
+- **pkce** *(optional)* - If `true`, Authorization Code w/PKCE Flow will be used.  See the [@okta/okta-auth-js README regarding PKCE OAuth2 Flow](https://github.com/okta/okta-auth-js#pkce-oauth-20-flow) for requirements, including any required polyfills.  If you are using the Implicit Flow, you should set `pkce: false`. Default: `true`.
 - `onAuthRequired` *(optional)*: - callback function. Called when authentication is required. If not supplied, `okta-angular` will redirect directly to Okta for authentication. This is triggered when:
     1. [login](#oktaauthloginfromuri-additionalparams) is called
     2. A route protected by `OktaAuthGuard` is accessed without authentication
-- `onSessionExpired` *(optional)* - callback function. Called when the Okta SSO session has expired or was ended outside of the application. This SDK adds a default handler which will call [login](#oktaauthloginfromuri-additionalparams) to initiate a login flow. Passing a function here will disable the default handler.
-- `isAuthenticated` *(optional)* - callback function. By default, `OktaAuthService.isAuthenticated` will return true if both `getIdToken()` and `getAccessToken()` return a value. Setting a `isAuthenticated` function on the config will skip the default logic and call the supplied function instead. The function should return a Promise and resolve to either true or false.
+- `onSessionExpired` **deprecated** *(optional)* - callback function. Called on token renew failure.
+:warning: This option will be removed in an upcoming version. When a [token renew](#tokenrenewtokentorenew) fails, an "error" event will be fired from the [TokenManager](#tokenmanageronevent-callback-context) and the token will be [removed from storage](#tokenmanagergetkey). Presense of a token in storage can be used to determine if a login flow is needed in the `isAuthenticated` method. Take care when beginning a new login flow that there is not another login flow already in progress. Be careful not to initiate the token renew process in this callback, explicitly with `tokenManager.renew()` or implicitly with `tokenManager.get()`, as your app may end up in an infinite loop.
+- `isAuthenticated` *(optional)* - callback function. By default, `OktaAuthService.isAuthenticated` will return true if **either** `getIdToken()` **or** `getAccessToken()` return a value. Setting a `isAuthenticated` function on the config will skip the default logic and call the supplied function instead. The function should return a Promise and resolve to either true or false.
+  **NOTE** The default behavior of this callback will be changed in the next major release to resolve to true when **both** `getIdToken()` **and** `getAccessToken()` return a value. Currently, you can achieve this behavior as shown:
+  
+  ```typescript
+  // myApp.module.ts
+
+  import {
+    OKTA_CONFIG,
+    OktaAuthModule
+  } from '@okta/okta-angular';
+
+  const oktaConfig = {
+    // other config ...
+    isAuthenticated: async function(authService: OktaAuthService) {
+      const accessToken = await authService.getAccessToken();
+      const idToken = await authService.getIdToken();
+      return !!(accessToken && idToken);
+    }
+  }
+
+  @NgModule({
+    imports: [
+      ...
+      OktaAuthModule
+    ],
+    providers: [
+      { provide: OKTA_CONFIG, useValue: oktaConfig }
+    ],
+  })
+  export class MyAppModule { }
+  ```
+
 - `tokenManager` *(optional)*: An object containing additional properties used to configure the internal token manager. See [AuthJS TokenManager](https://github.com/okta/okta-auth-js#the-tokenmanager) for more detailed information.
 
   - `autoRenew` *(optional)*:
@@ -127,7 +161,7 @@ For PKCE flow, this should be left undefined or set to `['code']`.
 
 The top-level Angular module which provides these components and services:
 
-- [`OktaAuthGuard`](#oktaauthguard) - A navigation guard using [CanActivate](https://angular.io/api/router/CanActivate) to grant access to a page only after successful authentication.
+- [`OktaAuthGuard`](#oktaauthguard) - A navigation guard implementing [CanActivate](https://angular.io/api/router/CanActivate) and [CanActivateChild](https://angular.io/api/router/CanActivateChild) to grant access to a page (and/or its children) only after successful authentication.
 - [`OktaCallbackComponent`](#oktacallbackcomponent) - Handles the implicit flow callback by parsing tokens from the URL and storing them automatically.
 - [`OktaLoginRedirectComponent`](#oktaloginredirectcomponent) - Redirects users to the Okta Hosted Login Page for authentication.
 - [`OktaAuthService`](#oktaauthservice) - Highest-level service containing the `okta-angular` public methods.
@@ -148,7 +182,35 @@ const appRoutes: Routes = [
   {
     path: 'protected',
     component: MyProtectedComponent,
-    canActivate: [ OktaAuthGuard ]
+    canActivate: [ OktaAuthGuard ],
+    children: [{
+      // children of a protected route are also protected
+      path: 'also-protected'
+    }]
+  },
+  ...
+]
+```
+
+You can use `canActivateChild` to protect children of an unprotected route:
+
+```typescript
+// myApp.module.ts
+
+import {
+  OktaAuthGuard,
+  ...
+} from '@okta/okta-angular';
+
+const appRoutes: Routes = [
+  {
+    path: 'public',
+    component: MyPublicComponent,
+    canActivateChild: [ OktaAuthGuard ],
+    children: [{
+      path: 'protected',
+      component: MyProtectedComponent
+    }]
   },
   ...
 ]
@@ -253,7 +315,9 @@ const oktaConfig = {
 
 ### `OktaAuthService`
 
-In your components, your can take advantage of all of `okta-angular`'s features by importing the `OktaAuthService`. The example below shows connecting two buttons to handle **login** and **logout**:
+In your components, your can take advantage of all of `okta-angular`'s features by importing the `OktaAuthService`. The `OktaAuthService` inherits from the `OktaAuth` service exported by [@okta/okta-auth-js](https://github.com/okta/okta-auth-js) making the full [configuration](https://github.com/okta/okta-auth-js#configuration-reference) and [api](https://github.com/okta/okta-auth-js#api-reference) available on `OktaAuthService`.
+
+The example below shows connecting two buttons to handle **login** and **logout**:
 
 ```typescript
 // sample.component.ts
@@ -319,7 +383,7 @@ An observable that returns true/false when the authenticate state changes.  This
 
 #### `oktaAuth.getUser()`
 
-Returns a promise that will resolve with the result of the OpenID Connect `/userinfo` endpoint if an access token is provided, or returns the claims of the ID token if no access token is available.  The returned claims depend on the requested response type, requested scopes, and authorization server policies.  For more information see documentation for the [UserInfo endpoint][], [ID Token Claims][], and [Customizing Your Authorization Server][].
+Returns a promise that will resolve with the result of the OpenID Connect `/userinfo` endpoint. For more information see documentation for the [UserInfo endpoint][], [ID Token Claims][], and [Customizing Your Authorization Server][].
 
 #### `oktaAuth.getAccessToken() Promise<string>`
 

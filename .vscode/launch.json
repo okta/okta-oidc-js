@@ -72,30 +72,7 @@
         "webpack:///*": "/*",
       },
       "disableOptimisticBPs": true
-    }, 
-    {
-      "type": "node",
-      "request": "launch",
-      "protocol": "auto",
-      "name": "okta-vue Jest",
-      "cwd": "${workspaceFolder}/packages/okta-vue",
-      "args": [
-        "node_modules/.bin/jest",
-        "--runInBand",
-        "--no-cache",
-        "${workspaceFolder}/${relativeFile}"
-      ],
-      "sourceMaps": true,
-      "console": "integratedTerminal",
-      "internalConsoleOptions": "neverOpen",
-      "env": {
-
-      },
-      "sourceMapPathOverrides": {
-        "webpack:///*": "/*",
-      },
-      "disableOptimisticBPs": true
-    }, 
+    },
     {
       "type": "node",
       "request": "launch",

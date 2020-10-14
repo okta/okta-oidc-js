@@ -86,10 +86,16 @@ connectUtil.createLoginCallbackHandler = context => {
   const customHandler = routes.loginCallback.handler;
 
   if (!customHandler) {
-    return passport.authenticate('oidc', {
-      successReturnToOrRedirect: routes.loginCallback.afterCallback,
-      failureRedirect: routes.loginCallback.failureRedirect
-    });
+    // Passport successReturnToOrRedirect always try req.session.returnTo first if it's assigned
+    // Use successRedirect field if afterCallback url is explicitly set in config
+    const redirectOptions = { failureRedirect: routes.loginCallback.failureRedirect };
+    if (routes.loginCallback.afterCallback) {
+      redirectOptions.successRedirect = routes.loginCallback.afterCallback;
+    } else {
+      redirectOptions.successReturnToOrRedirect = '/';
+    }
+
+    return passport.authenticate('oidc', redirectOptions);
   }
 
   const customHandlerArity = customHandler.length;

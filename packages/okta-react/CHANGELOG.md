@@ -1,3 +1,67 @@
+# 3.0.7
+
+### Bug Fixes
+
+- [#903](https://github.com/okta/okta-oidc-js/pull/903) fixes SecureRoute to not require authentication unless the route matches
+
+# 3.0.6
+
+### Bug Fixes
+
+- [#884](https://github.com/okta/okta-oidc-js/pull/884) Stores `secureReferrerPath` in sessionStorage to avoid race condition for multiple tabs
+
+# 3.0.5
+
+### Bug Fixes
+
+- [#872](https://github.com/okta/okta-oidc-js/pull/872) Adjusts `<SecureRoute>` so that it enforces authentication requirement for components passed via "render" or "children" in addition to "component"
+  - NOTE: `<SecureRoute>`, like react-router `<Route>`, only wants ONE of the three ways of passing wrapped components per route
+  - This should also address cases where components loaded through SecureRoute were being unnecessarily unmounted/remounted
+
+# 3.0.4
+
+### Bug Fixes
+
+- [#848](https://github.com/okta/okta-oidc-js/pull/848) Removes `onSessionExpired` behavior.
+
+# 3.0.3
+
+### Bug Fixes
+
+- [#826](https://github.com/okta/okta-oidc-js/pull/826) Fix stale `authState` in React context by listening on `expired` event from `authJs.tokenManager`, then update the `authState` in context properly.
+
+# 3.0.2
+
+### Bug Fixes
+- [#802] 
+  - The minimum version of okta-auth-js is updated to 3.1.2 from 3.0.0 to help address an issue with overlapping PKCE renewal requests.
+  - `<SecureRoute>` should now pass the same react-router properties to wrapped components that `<Route>` does.
+  - Passing custom props to a component using the `render` property of `<SecureRoute>` should now work
+
+# 3.0.1
+
+### Features
+
+- [#738] `<LoginCallback/>` now accepts an optional `errorComponent` prop that accepts a component that can be passed an `error` object.
+  - By default `<LoginCallback/>` will render with the `<OktaError/>` component
+
+### Bug Fixes
+
+- `<LoginCallback>` now triggers only after `authState.isPending` is false, removing the problem of as error message from parsing the tokens from the url being cleared by the pending `authState` determination. See [#719](https://github.com/okta/okta-oidc-js/issues/719)
+- [#738] `<Security>` now memoizes if it creates an instance of `AuthService` so as to not create new instances on re-renders
+
+# 3.0.0
+
+### Breaking Changes
+- Uses/requires @okta/okta-auth-js 3.x
+  - Notably, this means `pkce` now defaults to `true` 
+    - See the [@okta/okta-auth-js README regarding PKCE OAuth2 Flow](https://github.com/okta/okta-auth-js#pkce-oauth-20-flow) for requirements
+    - The settings for the Application on your Okta Admin Dashboard must include allowing PKCE
+    - If you are using the (previous default) Implicit Flow, you should set `pkce: false`
+- `<Security>` no longer creates a `<div>` wrapper around its children
+  - The `className` property of `<Security>` is no longer used
+  - Existing applications that rely on this `<div>` can add it themselves as a parent or direct child of `<Security>`
+
 # 2.0.1
 
 ### Bug Fixes
