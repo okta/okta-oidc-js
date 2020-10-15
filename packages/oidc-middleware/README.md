@@ -400,7 +400,9 @@ oidc.on('error', err => console.log('could not start', err));
 
 #### Using Proxy Servers
 
-The underlying [openid-client][] library can be configured to use the [request][] library.  Do this by adding these lines to your app, before you call `new ExpressOIDC()`:
+> warning: Due to the deprecation of the `request` library and the drop of support from `openid-client` library. The `using proxy servers` feature is currently broken.
+
+The underlying [openid-client][https://github.com/panva/node-openid-client] library can be configured to use the [request][https://github.com/request/request] library.  Do this by adding these lines to your app, before you call `new ExpressOIDC()`:
 
 ```javascript
 const Issuer = require('openid-client').Issuer;
