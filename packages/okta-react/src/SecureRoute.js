@@ -10,38 +10,32 @@
  * See the License for the specific language governing permissions and limitations under the License.
  */
 
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useOktaAuth } from './OktaContext';
-import { useHistory, Route } from 'react-router-dom';
+import { Route, useRouteMatch } from 'react-router-dom';
 
-const RequireAuth = ({ children }) => { 
+const SecureRoute = ( props ) => { 
   const { authService, authState } = useOktaAuth();
-  const history = useHistory();
+  const match = useRouteMatch(props);
 
-  if(!authState.isAuthenticated) { 
-    if(!authState.isPending) { 
-      const fromUri = history.createHref(history.location);
-      authService.login(fromUri);
+  useEffect(() => {
+    // Only process logic if the route matches
+    if (!match) {
+      return;
     }
+    // Start login if and only if app has decided it is not logged inn
+    if(!authState.isAuthenticated && !authState.isPending) { 
+      authService.login();
+    }  
+  }, [authState.isPending, authState.isAuthenticated, authService, match]);
+
+  if (!authState.isAuthenticated) {
     return null;
   }
 
   return (
-    <React.Fragment>
-      {children}
-    </React.Fragment>
-  );
-
-};
-
-const SecureRoute = ( {component, ...props} ) => { 
-
-  const PassedComponent = component || function() { return null; };
-  const WrappedComponent = () => (<RequireAuth><PassedComponent/></RequireAuth>);
-  return (
     <Route
       { ...props }
-      render={ () => props.render ? props.render({...props, component: WrappedComponent}) : <WrappedComponent /> } 
     />
   );
 };

@@ -1,10 +1,10 @@
 {
   "name": "@okta/okta-react",
-  "version": "3.0.1",
+  "version": "3.0.7",
   "description": "React support for Okta",
   "main": "./dist/index.js",
   "scripts": {
-    "build": "rimraf dist/ && yarn build:package-info && babel src -d dist",
+    "build": "rimraf dist/ && yarn build:package-info && babel src -d dist -s",
     "build:package-info": "node ../../util/write-package-info.js . src/packageInfo.js",
     "lint": "eslint src",
     "lint:watch": "esw -w lib/**",
@@ -12,7 +12,8 @@
     "start": "yarn --cwd test/e2e/harness start",
     "test": "yarn lint && yarn test:unit && yarn test:e2e",
     "test:e2e": "yarn --cwd test/e2e/harness test",
-    "test:unit": "jest"
+    "test:unit": "jest",
+    "dev": "babel src -wd dist -s"
   },
   "repository": {
     "type": "git",
@@ -33,7 +34,7 @@
   "homepage": "https://github.com/okta/okta-oidc-js#readme",
   "dependencies": {
     "@okta/configuration-validation": "^0.4.1",
-    "@okta/okta-auth-js": "^3.0.0",
+    "@okta/okta-auth-js": "^3.2.3",
     "babel-runtime": "^6.26.0",
     "prop-types": "^15.5.10"
   },
@@ -68,6 +69,7 @@
     "react-router-dom": "^5.1.0",
     "rimraf": "^2.6.2",
     "styled-components": "^2.1.2",
+    "tiny-emitter": "^2.1.0",
     "webdriver-manager": "^12.1.4"
   },
   "resolutions": {

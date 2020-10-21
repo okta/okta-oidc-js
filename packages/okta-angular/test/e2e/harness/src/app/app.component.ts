@@ -23,7 +23,8 @@ import { OktaAuthService } from '@okta/okta-angular';
   <button id="protected-button" routerLink="/protected" [queryParams]="{ fooParams: 'foo' }"> Protected </button>
   <button id="protected-login-button" routerLink="/protected-with-data"
     [queryParams]="{ fooParams: 'foo' }"> Protected Page w/ custom config </button>
-
+  <button id="public-button" routerLink="/public"> Parent Route (public) </button>
+  <button id="private-button" routerLink="/public/private"> Child Route (private) </button>
   <router-outlet></router-outlet>
   `,
 })

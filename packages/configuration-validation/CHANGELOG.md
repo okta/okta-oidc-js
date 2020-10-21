@@ -1,3 +1,9 @@
+# 0.4.3
+
+### Bug Fixes
+
+- [#818](https://github.com/okta/okta-oidc-js/pull/818) Remove bad regex for domain typo checking
+
 # 0.4.2
 
 ### Bug Fixes

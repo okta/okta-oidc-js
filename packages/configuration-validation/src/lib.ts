@@ -10,10 +10,33 @@
  * See the License for the specific language governing permissions and limitations under the License.
  */
 
-const merge = require('lodash/merge');
-class ConfigurationValidationError extends Error {}
+import { OktaAuthOptions as BaseOptions } from '@okta/okta-auth-js';
 
-const configUtil = module.exports;
+export interface TestingOptions {
+  disableHttpsCheck?: boolean;
+}
+
+// Extend options. Many of these are legacy options and subject to deprecation.
+export interface OktaAuthOptions extends BaseOptions {
+  // legacy: snake case
+  client_id?: string;
+  redirect_uri?: string;
+  response_type?: string;
+
+  // legacy: scopes as a space-separated string
+  scope?: string | string[];
+
+   // hoisted: from tokenManager
+  autoRenew?: boolean;
+  auto_renew?: boolean;
+  storage?: string;
+
+  // used only by this library
+  testing?: TestingOptions;
+}
+ 
+import { merge } from 'lodash';
+class ConfigurationValidationError extends Error {}
 
 const findDomainURL = 'https://bit.ly/finding-okta-domain';
 const findAppCredentialsURL = 'https://bit.ly/finding-okta-app-credentials';
@@ -25,10 +48,9 @@ const copyCredentialsMessage = 'You can copy it from the Okta Developer Console 
 const isHttps = new RegExp('^https://');
 const hasProtocol = new RegExp('://');
 const hasDomainAdmin = /-admin.(okta|oktapreview|okta-emea).com/;
-const hasDomainTypo = new RegExp('(.com.com)|(://.*){2,}');
 const endsInPath = new RegExp('/$');
 
-configUtil.buildConfigObject = (config) => {
+export const buildConfigObject = (config?: OktaAuthOptions): OktaAuthOptions => {
   // See all supported options: https://github.com/okta/okta-auth-js#configuration-reference
   // Support for parameters with an underscore will be deprecated in a future release
   // camelCase was added 2/11/2019: https://github.com/okta/okta-oidc-js/commit/9b04ada6a01c9d9aca391abf0de3e5ecc9811e64
@@ -74,7 +96,7 @@ configUtil.buildConfigObject = (config) => {
   return normalizedConfig;
 }
 
-configUtil.assertIssuer = (issuer, testing = {}) => {
+export const assertIssuer = (issuer?: string, testing: TestingOptions = {}): void => {
   const copyMessage = 'You can copy your domain from the Okta Developer ' +
     'Console. Follow these instructions to find it: ' + findDomainURL;
 
@@ -99,15 +121,10 @@ configUtil.assertIssuer = (issuer, testing = {}) => {
       'Your Okta domain should not contain -admin. ' +
       `Current value: ${issuer}. ${copyMessage}`
     );
-  } else if (issuer.match(hasDomainTypo)) {
-    throw new ConfigurationValidationError(
-      'It looks like there\'s a typo in your Okta domain. ' +
-      `Current value: ${issuer}. ${copyMessage}`
-    );
   }
 };
 
-configUtil.assertClientId = (clientId) => {
+export const assertClientId = (clientId?: string): void => {
   if (!clientId) {
     throw new ConfigurationValidationError('Your client ID is missing. ' + copyCredentialsMessage);
   } else if (clientId.match(/{clientId}/)) {
@@ -115,7 +132,7 @@ configUtil.assertClientId = (clientId) => {
   }
 };
 
-configUtil.assertClientSecret = (clientSecret) => {
+export const assertClientSecret = (clientSecret?: string): void => {
   if (!clientSecret) {
     throw new ConfigurationValidationError('Your client secret is missing. ' + copyCredentialsMessage);
   } else if (clientSecret.match(/{clientSecret}/)) {
@@ -123,7 +140,7 @@ configUtil.assertClientSecret = (clientSecret) => {
   }
 };
 
-configUtil.assertRedirectUri = (redirectUri) => {
+export const assertRedirectUri = (redirectUri?: string): void => {
   if (!redirectUri) {
     throw new ConfigurationValidationError('Your redirect URI is missing.');
   } else if (redirectUri.match(/{redirectUri}/)) {
@@ -131,7 +148,7 @@ configUtil.assertRedirectUri = (redirectUri) => {
   }
 };
 
-configUtil.assertAppBaseUrl = (appBaseUrl) => { 
+export const assertAppBaseUrl = (appBaseUrl?: string): void => { 
   if (!appBaseUrl) { 
     throw new ConfigurationValidationError('Your appBaseUrl is missing.');
   } else if (appBaseUrl.match(/{appBaseUrl}/)) {

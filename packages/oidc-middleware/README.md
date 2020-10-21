@@ -85,7 +85,7 @@ app.get('/', (req, res) => {
       <form method="POST" action="/logout">
         <button type="submit">Logout</button>
       </form>
-    ');
+    `);
   } else {
     res.send('Please <a href="/login">login</a>');
   }
@@ -106,21 +106,35 @@ oidc.on('error', err => {
 
 ## API reference
 
-* [ExpressOIDC API](#expressoidc-api)
-  * [new ExpressOIDC(config)](#new-expressoidcconfig)
-  * [oidc.router](#oidcrouter)
-  * [oidc.on('ready', callback)](#oidconready-callback)
-  * [oidc.on('error', callback)](#oidconerror-callback)
-  * [oidc.ensureAuthenticated({ redirectTo?: '/uri' })](#oidcensureauthenticated-redirectto-uri-)
-  * [oidc.forceLogoutAndRevoke()](#oidcforcelogoutandrevoke)
-  * [req.isAuthenticated()](#reqisauthenticated)
-  * [req.logout()](#reqlogout)
-  * [req.userContext](#requsercontext)
-* [Customization](#customization)
-  * [Customizing Routes](#customizing-routes)
-  * [Using a Custom Login Page](#using-a-custom-login-page)
-  * [Extending the User](#extending-the-user)
-  * [Using Proxy Servers](#using-proxy-servers)
+- [Okta NodeJS OIDC Middleware](#okta-nodejs-oidc-middleware)
+  - [Release status](#release-status)
+  - [Need help?](#need-help)
+  - [Getting started](#getting-started)
+  - [Usage guide](#usage-guide)
+  - [API reference](#api-reference)
+    - [ExpressOIDC API](#expressoidc-api)
+      - [new ExpressOIDC(config)](#new-expressoidcconfig)
+      - [oidc.router](#oidcrouter)
+      - [oidc.on('ready', callback)](#oidconready-callback)
+      - [oidc.on('error', callback)](#oidconerror-callback)
+      - [oidc.ensureAuthenticated({ redirectTo?: '/uri' })](#oidcensureauthenticated-redirectto-uri-)
+      - [oidc.forceLogoutAndRevoke()](#oidcforcelogoutandrevoke)
+      - [req.isAuthenticated()](#reqisauthenticated)
+      - [req.logout()](#reqlogout)
+      - [req.userContext](#requsercontext)
+    - [Customization](#customization)
+      - [Customizing Routes](#customizing-routes)
+      - [Using a Custom Login Page](#using-a-custom-login-page)
+      - [Extending the User](#extending-the-user)
+      - [Using Proxy Servers](#using-proxy-servers)
+    - [Upgrading](#upgrading)
+      - [from 1.x to 2.x](#from-1x-to-2x)
+      - [from 2.x to 3.x](#from-2x-to-3x)
+        - [Straightforward Okta logout for your app](#straightforward-okta-logout-for-your-app)
+        - [Local logout](#local-logout)
+      - [Okta with additional apps](#okta-with-additional-apps)
+  - [Contributing](#contributing)
+    - [Installing dependencies for contributions](#installing-dependencies-for-contributions)
 
 ### ExpressOIDC API
 
@@ -145,7 +159,7 @@ Required config:
 * **issuer** - The OIDC provider (e.g. `https://{yourOktaDomain}/oauth2/default`)
 * **client_id** - An id provided when you create an OIDC app in your Okta Org
 * **client_secret** - A secret provided when you create an OIDC app in your Okta Org
-* **appBaseUrl** - The base scheme, host, and port (if not 80/443) of your app, not including any path (e.g. http://localhost:8080, not http://localhost:8080/ )  
+* **appBaseUrl** - The base scheme, host, and port (if not 80/443) of your app, not including any path (e.g. http://localhost:8080, not http://localhost:8080/ )
 
 Optional config:
 
@@ -199,7 +213,7 @@ This is triggered if an error occurs
 
 ```javascript
 oidc.on('error', err => {
-  // An error occurred 
+  // An error occurred
 });
 ```
 
@@ -298,7 +312,7 @@ const oidc = new ExpressOIDC({
         // Perform custom logic before final redirect, then call next()
       },
       // handled by your application
-      afterCallback '/home'
+      afterCallback: '/home'
     },
     logout: {
       // handled by this module
@@ -386,7 +400,9 @@ oidc.on('error', err => console.log('could not start', err));
 
 #### Using Proxy Servers
 
-The underlying [openid-client][] library can be configured to use the [request][] library.  Do this by adding these lines to your app, before you call `new ExpressOIDC()`:
+> warning: Due to the deprecation of the `request` library and the drop of support from `openid-client` library. The `using proxy servers` feature is currently broken.
+
+The underlying [openid-client][https://github.com/panva/node-openid-client] library can be configured to use the [request][https://github.com/request/request] library.  Do this by adding these lines to your app, before you call `new ExpressOIDC()`:
 
 ```javascript
 const Issuer = require('openid-client').Issuer;
@@ -404,7 +420,7 @@ Once you have done that you can read the documentation on the [request][] librar
 [openid-client]: https://github.com/panva/node-openid-client
 [request]: https://github.com/request/request
 
-### Upgrading 
+### Upgrading
 
 #### from 1.x to 2.x
 
@@ -419,7 +435,7 @@ Remove the `redirect_uri` property in your config.
 
 Any customization previously done to `routes.callback` should now be done to `routes.loginCallback` as the name of that property object has changed.
 
-Any value previously set for `routes.callback.defaultRedirect` should now be done to `routes.loginCallback.afterCallback`.  
+Any value previously set for `routes.callback.defaultRedirect` should now be done to `routes.loginCallback.afterCallback`.
 
 #### from 2.x to 3.x
 

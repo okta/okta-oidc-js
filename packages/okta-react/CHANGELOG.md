@@ -1,3 +1,43 @@
+# 3.0.7
+
+### Bug Fixes
+
+- [#903](https://github.com/okta/okta-oidc-js/pull/903) fixes SecureRoute to not require authentication unless the route matches
+
+# 3.0.6
+
+### Bug Fixes
+
+- [#884](https://github.com/okta/okta-oidc-js/pull/884) Stores `secureReferrerPath` in sessionStorage to avoid race condition for multiple tabs
+
+# 3.0.5
+
+### Bug Fixes
+
+- [#872](https://github.com/okta/okta-oidc-js/pull/872) Adjusts `<SecureRoute>` so that it enforces authentication requirement for components passed via "render" or "children" in addition to "component"
+  - NOTE: `<SecureRoute>`, like react-router `<Route>`, only wants ONE of the three ways of passing wrapped components per route
+  - This should also address cases where components loaded through SecureRoute were being unnecessarily unmounted/remounted
+
+# 3.0.4
+
+### Bug Fixes
+
+- [#848](https://github.com/okta/okta-oidc-js/pull/848) Removes `onSessionExpired` behavior.
+
+# 3.0.3
+
+### Bug Fixes
+
+- [#826](https://github.com/okta/okta-oidc-js/pull/826) Fix stale `authState` in React context by listening on `expired` event from `authJs.tokenManager`, then update the `authState` in context properly.
+
+# 3.0.2
+
+### Bug Fixes
+- [#802] 
+  - The minimum version of okta-auth-js is updated to 3.1.2 from 3.0.0 to help address an issue with overlapping PKCE renewal requests.
+  - `<SecureRoute>` should now pass the same react-router properties to wrapped components that `<Route>` does.
+  - Passing custom props to a component using the `render` property of `<SecureRoute>` should now work
+
 # 3.0.1
 
 ### Features

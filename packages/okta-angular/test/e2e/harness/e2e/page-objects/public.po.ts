@@ -10,6 +10,19 @@
  * See the License for the specific language governing permissions and limitations under the License.
  */
 
-const Config = require('../../../../../.oidc.config.js');
+import { element, by } from 'protractor';
+import { AppPage } from './app.po';
 
-module.exports = Config({ port: process.env.PORT || 8080 }).webConstants;
+export class PublicPage extends AppPage {
+  constructor() {
+    super('/public');
+  }
+
+  getPublicArea() {
+    return element(by.tagName('app-public'));
+  }
+
+  getPrivateArea() {
+    return element(by.tagName('app-secure'));
+  }
+}

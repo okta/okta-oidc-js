@@ -1,11 +1,23 @@
 import AuthService from '../../src/AuthService';
 import AuthJS from '@okta/okta-auth-js'
+import Emitter from 'tiny-emitter';
 
 const pkg = require('../../package.json');
 
 jest.mock('@okta/okta-auth-js');
 
 describe('AuthService configuration', () => {
+  let mockAuthJsInstance;
+
+  beforeEach(() => {
+    mockAuthJsInstance = {
+      userAgent: 'okta-auth-js',
+      emitter: new Emitter()
+    };
+    AuthJS.mockImplementation(() => {
+      return mockAuthJsInstance
+    });
+  })
 
   it('should throw if no issuer is provided', () => {
     function createInstance () {
@@ -54,33 +66,6 @@ describe('AuthService configuration', () => {
     function createInstance () {
       return new AuthService({
         issuer: 'https://foo-admin.okta-emea.com'
-      });
-    }
-    expect(createInstance).toThrow()
-  });
-
-  it('should throw if an issuer matching more than one ".com" is provided', () => {
-    function createInstance () {
-      return new AuthService({
-        issuer: 'https://foo.okta.com.com'
-      });
-    }
-    expect(createInstance).toThrow()
-  });
-
-  it('should throw if an issuer matching more than one sequential "://" is provided', () => {
-    function createInstance () {
-      return new AuthService({
-        issuer: 'https://://foo.okta.com'
-      });
-    }
-    expect(createInstance).toThrow()
-  });
-
-  it('should throw if an issuer matching more than one "://" is provided', () => {
-    function createInstance () {
-      return new AuthService({
-        issuer: 'https://foo.okta://.com'
       });
     }
     expect(createInstance).toThrow()
@@ -191,6 +176,7 @@ describe('AuthService', () => {
     };
     mockAuthJsInstance = {
       userAgent: 'okta-auth-js',
+      emitter: new Emitter(),
       tokenManager: {
           add: jest.fn(),
           get: jest.fn().mockImplementation(tokenName => {
@@ -201,7 +187,7 @@ describe('AuthService', () => {
             } else {
               throw new Error('Unknown token name: ' + tokenName);
             }
-          }),
+          })
       },
       token: {
         getWithRedirect: jest.fn(),
@@ -225,28 +211,6 @@ describe('AuthService', () => {
       const tokenManager = authService.getTokenManager();
       expect(tokenManager).toBeTruthy();
       expect(tokenManager).toBe(authService._oktaAuth.tokenManager);
-    });
-  });
-
-  describe('onSessionExpired', () => {
-    it('By default, sets a handler for "onSessionExpired" which calls login()', () => {
-      jest.spyOn(AuthService.prototype, 'login').mockReturnValue(undefined);
-      const authService = new AuthService(validConfig);
-      const config = authService._config;
-      expect(config.onSessionExpired).toBeDefined();
-      config.onSessionExpired();
-      expect(AuthService.prototype.login).toHaveBeenCalled();
-    });
-
-    it('Accepts custom function "onSessionExpired" via config which disables default handler', () => {
-      jest.spyOn(AuthService.prototype, 'login').mockReturnValue(undefined);
-      const onSessionExpired = jest.fn();
-      const authService = new AuthService(extendConfig({ onSessionExpired }));
-      const config = authService._config;
-      expect(config.onSessionExpired).toBe(onSessionExpired);
-      config.onSessionExpired();
-      expect(onSessionExpired).toHaveBeenCalled();
-      expect(AuthService.prototype.login).not.toHaveBeenCalled();
     });
   });
 
@@ -466,35 +430,35 @@ describe('AuthService', () => {
   });
 
   describe('setFromUri', () => {
-    it('Saves the fromUri in localStorage', () => {
-      localStorage.setItem('secureRouterReferrerPath', '');
-      expect(localStorage.getItem('secureRouterReferrerPath')).toBe('');
+    it('Saves the fromUri in sessionStorage', () => {
+      sessionStorage.setItem('secureRouterReferrerPath', '');
+      expect(sessionStorage.getItem('secureRouterReferrerPath')).toBe('');
       const fromUri = 'http://localhost/foo/random';
       const authService = new AuthService(validConfig);
       authService.setFromUri(fromUri);
-      const val = localStorage.getItem('secureRouterReferrerPath');
+      const val = sessionStorage.getItem('secureRouterReferrerPath');
       expect(val).toBe(fromUri);
     });
 
     it('Saves the window.location.href by default', () => {
-      localStorage.setItem('secureRouterReferrerPath', '');
-      expect(localStorage.getItem('secureRouterReferrerPath')).toBe('');
+      sessionStorage.setItem('secureRouterReferrerPath', '');
+      expect(sessionStorage.getItem('secureRouterReferrerPath')).toBe('');
       const authService = new AuthService(validConfig);
       authService.setFromUri();
-      const val = localStorage.getItem('secureRouterReferrerPath');
+      const val = sessionStorage.getItem('secureRouterReferrerPath');
       expect(val).toBe(window.location.href);
     });
 
   });
 
   describe('getFromUri', () => {
-    test('clears referrer from localStorage', () => {
+    test('clears referrer from sessionStorage', () => {
       const TEST_VALUE = 'foo-bar';
-      localStorage.setItem('secureRouterReferrerPath', TEST_VALUE );
+      sessionStorage.setItem('secureRouterReferrerPath', TEST_VALUE );
       const authService = new AuthService(validConfig);
       const res = authService.getFromUri();
       expect(res).toBe(TEST_VALUE);
-      expect(localStorage.getItem('referrerPath')).not.toBeTruthy();
+      expect(sessionStorage.getItem('referrerPath')).not.toBeTruthy();
     });
   });
 
@@ -506,7 +470,7 @@ describe('AuthService', () => {
         redirectUri: 'https://foo/redirect',
       });
       const expectedVal = 'fakey';
-      jest.spyOn(authService, 'redirect').mockReturnValue(expectedVal);
+      jest.spyOn(authService, 'redirect').mockResolvedValue(expectedVal);
   
       const retVal = await authService.login('/');
       expect(retVal).toBe(expectedVal);
@@ -515,7 +479,7 @@ describe('AuthService', () => {
   
     it('will call a custom method "onAuthRequired" instead of redirect()', async () => {
       const expectedVal = 'fakey';
-      const onAuthRequired = jest.fn().mockReturnValue(expectedVal);
+      const onAuthRequired = jest.fn().mockResolvedValue(expectedVal);
       const authService = new AuthService({
         issuer: 'https://foo/oauth2/default',
         clientId: 'foo',
@@ -529,9 +493,59 @@ describe('AuthService', () => {
       expect(onAuthRequired).toHaveBeenCalledWith(authService);
       expect(authService.redirect).not.toHaveBeenCalled();
     });
+
+    it('should not trigger second call if login is in progress', async () => {
+      expect.assertions(1);
+      const authService = new AuthService({
+        issuer: 'https://foo/oauth2/default',
+        clientId: 'foo',
+        redirectUri: 'https://foo/redirect',
+      });
+      authService.redirect = jest.fn();
+      Promise.all([authService.login('/'), authService.login('/')]).then(() => {
+        expect(authService.redirect).toHaveBeenCalledTimes(1);
+      });
+    });
+
+    it('should throw when error happens', async () => {
+      expect.assertions(1);
+      const authService = new AuthService({
+        issuer: 'https://foo/oauth2/default',
+        clientId: 'foo',
+        redirectUri: 'https://foo/redirect',
+      });
+      const mockErrorMessage = 'mock error';
+      authService.redirect = jest.fn().mockRejectedValue(new Error(mockErrorMessage));
+      try {
+        await authService.login('/')
+      } catch (e) {
+        expect(e.message).toEqual(mockErrorMessage);
+      }
+    });
   });
 
   describe('AuthState tracking', () => { 
+
+    it('should call updateAuthState method when expired event happen', () => {
+      jest.spyOn(AuthService.prototype, 'updateAuthState');
+      const authService = new AuthService(validConfig);
+      authService.emit('expired');
+      expect(AuthService.prototype.updateAuthState).toHaveBeenCalled();
+    });
+
+    it('should trigger registered callback when "authStateChange" event triggered', () => {
+      expect.assertions(1);
+      const mockState = 'mock state';
+      const authService = new AuthService({
+        issuer: 'https://foo/oauth2/default',
+        clientId: 'foo',
+        redirectUri: 'https://foo/redirect',
+      });
+      authService.on('authStateChange', (state) => {
+        expect(state).toEqual(mockState);
+      });
+      authService.emit('authStateChange', mockState);
+    });
 
     it('has an authState of pending initially', async () => { 
       const authService = new AuthService({
@@ -546,21 +560,6 @@ describe('AuthService', () => {
         idToken: null,
         accessToken: null,
       });
-    });
-
-    it('allows subscribing to an "authStateChange" event', async () => { 
-      const authService = new AuthService({
-        issuer: 'https://foo/oauth2/default',
-        clientId: 'foo',
-        redirectUri: 'https://foo/redirect',
-      });
-      const callback = jest.fn();
-
-      expect(Object.values(authService._listeners.authStateChange).length).toBe(0);
-      authService.on('authStateChange', callback);
-      expect(Object.values(authService._listeners.authStateChange).length).toBe(1);
-      authService.emit('authStateChange');
-      expect(callback).toHaveBeenCalled();
     });
 
     it('emits an "authStateChange" event when updateAuthState() is called', async () => { 

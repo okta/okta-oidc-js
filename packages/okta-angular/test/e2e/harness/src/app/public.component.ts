@@ -10,6 +10,23 @@
  * See the License for the specific language governing permissions and limitations under the License.
  */
 
-const Config = require('../../../../../.oidc.config.js');
+import { Component, OnInit } from '@angular/core';
+import { OktaAuthService } from '@okta/okta-angular';
 
-module.exports = Config({ port: process.env.PORT || 8080 }).webConstants;
+@Component({
+  selector: 'app-public',
+  template: `
+  <div id="public-message">
+  {{ message }}
+  </div>
+  <router-outlet></router-outlet>
+  `
+})
+export class PublicComponent {
+  message;
+
+  constructor(public oktaAuth: OktaAuthService) {
+    this.message = 'Public!';
+  }
+
+}

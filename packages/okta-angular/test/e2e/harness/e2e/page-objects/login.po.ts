@@ -10,27 +10,11 @@
  * See the License for the specific language governing permissions and limitations under the License.
  */
 
-import { browser, element, by, ExpectedConditions } from 'protractor';
+import { browser, ExpectedConditions } from 'protractor';
+import { AppPage } from './app.po';
 
-export class LoginPage {
-  navigateTo() {
-    return browser.get('/login');
-  }
-
-  waitUntilVisible() {
-    browser.wait(ExpectedConditions.presenceOf(this.getLogoutButton()), 5000);
-  }
-
-  waitForElement(id: string) {
-    const el = element(by.id(id));
-    browser.wait(ExpectedConditions.presenceOf(el), 5000);
-  }
-
-  getLoginButton() {
-    return element(by.id('login-button'));
-  }
-
-  getLogoutButton() {
-    return element(by.id('logout-button'));
+export class LoginPage extends AppPage {
+  constructor() {
+    super('/login');
   }
 }

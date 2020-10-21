@@ -10,34 +10,12 @@
  * See the License for the specific language governing permissions and limitations under the License.
  */
 
-import { browser, element, by, ExpectedConditions } from 'protractor';
+import { element, by } from 'protractor';
+import { AppPage } from './app.po';
 
-export class ProtectedPage {
-
-  navigateTo(query: string = '') {
-    return browser.get('/protected' + query);
-  }
-
-  waitUntilVisible(query: string = '') {
-    browser.wait(ExpectedConditions.urlContains('/protected' + query), 20000);
-  }
-
-  waitUntilTextVisible(id: string, text: string) {
-    const el = element(by.id(id));
-    browser.wait(ExpectedConditions.textToBePresentInElement(el, text), 5000);
-  }
-
-  waitForElement(id: string) {
-    const el = element(by.id(id));
-    browser.wait(ExpectedConditions.presenceOf(el), 5000);
-  }
-
-  getLogoutButton() {
-    return element(by.id('logout-button'));
-  }
-
-  getLoginButton() {
-    return element(by.id('login-button'));
+export class ProtectedPage extends AppPage {
+  constructor() {
+    super('/protected');
   }
 
   getUserInfo() {

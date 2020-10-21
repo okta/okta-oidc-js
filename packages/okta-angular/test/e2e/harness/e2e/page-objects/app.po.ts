@@ -13,11 +13,18 @@
 import { browser, by, element, ExpectedConditions } from 'protractor';
 
 export class AppPage {
-  navigateTo(query: string = '') {
-    return browser.get('/' + query);
+  public path;
+
+  constructor(path: string = '/') {
+    this.path = path;
   }
 
-  waitUntilVisible() {
+  navigateTo(query: string = '') {
+    return browser.get(this.path + query);
+  }
+
+  waitUntilVisible(query: string = '') {
+    browser.wait(ExpectedConditions.urlContains(this.path + query), 20000);
     const loginExists = ExpectedConditions.presenceOf(this.getLoginButton());
     const logoutExists = ExpectedConditions.presenceOf(this.getLogoutButton());
     browser.wait(ExpectedConditions.or(loginExists, logoutExists), 5000);
@@ -29,6 +36,11 @@ export class AppPage {
 
   waitUntilLoggedIn() {
     browser.wait(ExpectedConditions.presenceOf(this.getLogoutButton()), 20000);
+  }
+
+  waitUntilTextVisible(id: string, text: string) {
+    const el = element(by.id(id));
+    browser.wait(ExpectedConditions.textToBePresentInElement(el, text), 5000);
   }
 
   waitForElement(id: string) {

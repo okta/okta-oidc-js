@@ -14,7 +14,6 @@ export { OktaAuthModule }  from './okta/okta.module';
 export { OktaAuthGuard }   from './okta/okta.guard';
 export { OktaAuthService } from './okta/services/okta.service';
 export { OktaConfig, OKTA_CONFIG }     from './okta/models/okta.config';
-export { UserClaims }     from './okta/models/user-claims';
 
 // Okta View Components
 export { OktaCallbackComponent } from './okta/components/callback.component';

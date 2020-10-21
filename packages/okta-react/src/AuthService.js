@@ -32,16 +32,9 @@ class AuthService {
     assertClientId(authConfig.clientId);
     assertRedirectUri(authConfig.redirectUri);
 
-    // Automatically enter login flow if session has expired or was ended outside the application
-    // The default behavior can be overriden by passing your own function via config: `config.onSessionExpired`
-    if (!authConfig.onSessionExpired) {
-      authConfig.onSessionExpired = this.login.bind(this);
-    }
-
     this._oktaAuth = new OktaAuth(authConfig);
     this._oktaAuth.userAgent = `${packageInfo.name}/${packageInfo.version} ${this._oktaAuth.userAgent}`;
     this._config = authConfig; // use normalized config
-    this._listeners = {};
     this._pending = {}; // manage overlapping async calls 
 
     this.handleAuthentication = this.handleAuthentication.bind(this);
@@ -59,9 +52,11 @@ class AuthService {
     this.emit = this.emit.bind(this);
     this.on = this.on.bind(this);
 
-    this._subscriberCount = 0;
-
     this.clearAuthState();
+
+    // Remove expired token or renew token if autoRenew is true
+    // This process will keep authState synced with states in tokenManager
+    this.on('expired', this.updateAuthState);
   }
 
   getTokenManager() {
@@ -195,12 +190,24 @@ class AuthService {
   }
 
   async login(fromUri, additionalParams) {
+    if(this._pending.handleLogin) { 
+      // Don't trigger second round
+      return;
+    }
+
+    this._pending.handleLogin = true;
+    // Update UI pending state
+    this.emitAuthState({ ...this.getAuthState(), isPending: true });
     // Save the current url before redirect
     this.setFromUri(fromUri); // will save current location if fromUri is undefined
-    if (this._config.onAuthRequired) {
-      return this._config.onAuthRequired(this);
+    try {
+      if (this._config.onAuthRequired) {
+        return await this._config.onAuthRequired(this);
+      }
+      return await this.redirect(additionalParams);
+    } finally {
+      this._pending.handleLogin = null;
     }
-    return this.redirect(additionalParams);
   }
 
   _convertLogoutPathToOptions(redirectUri) { 
@@ -245,28 +252,25 @@ class AuthService {
     if (fromUri.charAt(0) === '/') {
       fromUri = window.location.origin + fromUri;
     }
-    localStorage.setItem( 'secureRouterReferrerPath', fromUri );
+    sessionStorage.setItem( 'secureRouterReferrerPath', fromUri );
   }
 
   getFromUri() {
     const referrerKey = 'secureRouterReferrerPath';
-    const location = localStorage.getItem(referrerKey) || window.location.origin;
-    localStorage.removeItem(referrerKey);
+    const location = sessionStorage.getItem(referrerKey) || window.location.origin;
+    sessionStorage.removeItem(referrerKey);
     return location;
   }
 
   on( event, callback ) {
-    const subscriberId = this._subscriberCount++;
-    this._listeners[event] = this._listeners[event] || {};
-    this._listeners[event][subscriberId] = callback;
-    return () => { 
-      delete this._listeners[event][subscriberId];
-    }
+    this._oktaAuth.emitter.on(event, callback, this._oktaAuth.emitter);
+    return () => {
+      this._oktaAuth.emitter.off(event, callback);
+    };
   }
 
   emit(event, message ) { 
-    this._listeners[event] = this._listeners[event] || {};
-    Object.values(this._listeners[event]).forEach( listener => listener(message) );
+    this._oktaAuth.emitter.emit(event, message);
   }
   
 }

@@ -67,33 +67,6 @@ describe('jwt-verifier configuration validation', () => {
     expect(createInstance).toThrow();
   });
 
-  it('should throw if an issuer matching more than one ".com" is provided', () => {
-    function createInstance() {
-      new OktaJwtVerifier({
-        issuer: 'https://foo.okta.com.com'
-      });
-    }
-    expect(createInstance).toThrow();
-  });
-
-  it('should throw if an issuer matching more than one sequential "://" is provided', () => {
-    function createInstance() {
-      new OktaJwtVerifier({
-        issuer: 'https://://foo.okta.com'
-      });
-    }
-    expect(createInstance).toThrow();
-  });
-
-  it('should throw if an issuer matching more than one "://" is provided', () => {
-    function createInstance() {
-      new OktaJwtVerifier({
-        issuer: 'https://foo.okta://.com'
-      });
-    }
-    expect(createInstance).toThrow();
-  });
-
   it('should throw if clientId matching {clientId} is provided', () => {
     function createInstance() {
       new OktaJwtVerifier({

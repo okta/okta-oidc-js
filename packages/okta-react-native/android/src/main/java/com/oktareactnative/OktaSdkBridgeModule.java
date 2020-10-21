@@ -68,6 +68,7 @@ public class OktaSdkBridgeModule extends ReactContextBaseJavaModule implements A
                              String endSessionRedirectUri,
                              String discoveryUri,
                              ReadableArray scopes,
+                             String userAgentTemplate,
                              Boolean requireHardwareBackedKeyStore,
                              Promise promise
     ) {
@@ -91,6 +92,7 @@ public class OktaSdkBridgeModule extends ReactContextBaseJavaModule implements A
                     .withConfig(config)
                     .withContext(reactContext)
                     .withStorage(new SharedPreferenceStorage(reactContext))
+                    .withOktaHttpClient(new HttpClientImpl(userAgentTemplate))
                     .setRequireHardwareBackedKeyStore(requireHardwareBackedKeyStore)
                     .create();
 
@@ -98,6 +100,7 @@ public class OktaSdkBridgeModule extends ReactContextBaseJavaModule implements A
                     .withConfig(config)
                     .withContext(reactContext)
                     .withStorage(new SharedPreferenceStorage(reactContext))
+                    .withOktaHttpClient(new HttpClientImpl(userAgentTemplate))
                     .setRequireHardwareBackedKeyStore(requireHardwareBackedKeyStore)
                     .create();
 

@@ -40,7 +40,7 @@ describe('OktaLoginRedirectComponent', () => {
   }));
 
   it('should call loginRedirect', async(() => {
-    jest.spyOn(service, 'loginRedirect').mockReturnValue(undefined);
+    jest.spyOn(service, 'loginRedirect').mockReturnValue(Promise.resolve());
     fixture.detectChanges();
     expect(service.loginRedirect).toHaveBeenCalled();
   }));

@@ -31,6 +31,7 @@ const {
 } = jest.requireActual('./');
 
 import { Platform } from 'react-native';
+import { version } from './package.json';
 
 jest.mock('react-native', () => {
   return ({
@@ -82,6 +83,7 @@ describe('OktaReactNative', () => {
     
     it('passes in correct parameters on ios device', () => {
       Platform.OS = 'ios';
+      Platform.Version = '1.0.0';
       const processedScope = config.scopes.join(' ');
       createConfig(config);
       expect(mockCreateConfig).toHaveBeenCalledWith(
@@ -90,11 +92,13 @@ describe('OktaReactNative', () => {
         config.endSessionRedirectUri,
         config.discoveryUri,
         processedScope,
+        `@okta/okta-react-native/${version} $UPSTREAM_SDK react-native/${version} ios/1.0.0`,
       );
     });
 
     it('passes in correct parameters on android device', () => {
       Platform.OS = 'android';
+      Platform.Version = '1.0.0';
       createConfig(config);
       expect(mockCreateConfig).toHaveBeenCalledWith(
         config.clientId,
@@ -102,6 +106,7 @@ describe('OktaReactNative', () => {
         config.endSessionRedirectUri,
         config.discoveryUri,
         config.scopes,
+        `@okta/okta-react-native/${version} $UPSTREAM_SDK react-native/${version} android/1.0.0`,
         config.requireHardwareBackedKeyStore,
       );
     });
