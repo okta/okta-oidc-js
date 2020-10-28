@@ -155,7 +155,7 @@ This library depends on the native [Okta OIDC Android](https://github.com/okta/o
     }
     ```
     
-2. Make sure your `minSdkVersion` is `19` in `android/build.gradle`.
+2. Make sure your `minSdkVersion` is `21` in `android/build.gradle`.
 
 #### Add redirect scheme
 

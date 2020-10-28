@@ -19,7 +19,7 @@ buildscript {
     dependencies {
         // Matches recent template from React Native (0.59)
         // https://github.com/facebook/react-native/blob/0.59-stable/template/android/build.gradle#L16
-        classpath 'com.android.tools.build:gradle:3.4.1'
+        classpath 'com.android.tools.build:gradle:4.1.0'
     }
 }
 
@@ -32,10 +32,10 @@ def safeExtGet(prop, fallback) {
 
 // Matches values in recent template from React Native (0.59)
 // https://github.com/facebook/react-native/blob/0.59-stable/template/android/build.gradle#L5-L9
-def DEFAULT_COMPILE_SDK_VERSION = 28
-def DEFAULT_BUILD_TOOLS_VERSION = "28.0.3"
-def DEFAULT_MIN_SDK_VERSION = 19
-def DEFAULT_TARGET_SDK_VERSION = 28
+def DEFAULT_COMPILE_SDK_VERSION = 29
+def DEFAULT_BUILD_TOOLS_VERSION = "29.0.3"
+def DEFAULT_MIN_SDK_VERSION = 21
+def DEFAULT_TARGET_SDK_VERSION = 29
 
 android {
   compileSdkVersion safeExtGet('compileSdkVersion', DEFAULT_COMPILE_SDK_VERSION)
@@ -69,7 +69,7 @@ repositories {
 
 dependencies {
     implementation 'com.facebook.react:react-native:+'
-    implementation 'com.okta.android:oidc-androidx:1.0.13'
+    implementation 'com.okta.android:oidc-androidx:1.0.16'
 }
 
 def configureReactNativePom(def pom) {
