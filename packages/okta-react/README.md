@@ -343,6 +343,7 @@ These options are used by `Security` to configure the [Auth service][]. The most
     - [`localStorage`](https://developer.mozilla.org/en-US/docs/Web/API/Window/localStorage)
     - [`sessionStorage`](https://developer.mozilla.org/en-US/docs/Web/API/Window/sessionStorage)
     - [`cookie`](https://developer.mozilla.org/en-US/docs/Web/API/Document/cookie)
+    - [`custom`](https://github.com/okta/okta-auth-js#storage)
 
 #### Example
 ```jsx
