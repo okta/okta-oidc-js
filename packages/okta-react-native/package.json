@@ -34,7 +34,6 @@
   "license": "Apache-2.0",
   "readmeFilename": "README.md",
   "peerDependencies": {
-    "events": "^3.1.0",
     "react": "^16.5.0",
     "react-native": "^0.60.0"
   },
