@@ -1,12 +1,19 @@
 #!/bin/bash -xe
 
-for package in `ls $PWD/packages`;
+PACKAGES=(
+  "./packages/configuration-validation"
+  "./packages/jwt-verifier"
+  "./packages/oidc-middleware"
+  "./packages/okta-angular"
+)
+
+for PACKAGE in "${PACKAGES[@]}"
 do
-    cd $PWD/packages/$package
+    pushd $PACKAGE
     yarn test
     if [ $? -ne 0 ]; then
-        echo "------- [ERROR] Test failures in $package -------"
+        echo "------- [ERROR] Test failures in $PACKAGE -------"
         exit 1
     fi
-    cd ../..
+    popd
 done

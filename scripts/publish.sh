@@ -32,8 +32,6 @@ PACKAGES=(
   "./packages/jwt-verifier"
   "./packages/oidc-middleware"
   "./packages/okta-angular/dist"
-  "./packages/okta-react"
-  "./packages/okta-react-native"
 )
 
 # Override default registry
