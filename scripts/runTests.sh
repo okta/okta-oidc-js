@@ -4,8 +4,6 @@ PACKAGES=(
   "./packages/configuration-validation"
   "./packages/jwt-verifier"
   "./packages/oidc-middleware"
-  "./packages/okta-react"
-  "./packages/okta-react-native"
 )
 
 for PACKAGE in "${PACKAGES[@]}"

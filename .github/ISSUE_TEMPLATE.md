@@ -8,8 +8,6 @@ Note: If you have a question, please post it on the Okta Developer Forum (https:
 
 - [ ] jwt-verifier
 - [ ] oidc-middleware
-- [ ] okta-react
-- [ ] okta-react-native
 
 ## I'm submitting a:
 
