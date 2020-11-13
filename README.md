@@ -46,8 +46,6 @@ packages/
   jwt-verifier
   oidc-middleware
   okta-angular
-  okta-react
-  okta-react-native
 ```
 
 ### Versioning
@@ -62,8 +60,8 @@ We've configured Lerna with [independent mode](https://github.com/lerna/lerna/#i
 | [**jwt-verifier**](/packages/jwt-verifier)                         | [![npm version](https://img.shields.io/npm/v/@okta/jwt-verifier.svg?style=flat-square)](https://www.npmjs.com/package/@okta/jwt-verifier)                         | Easily verify JWTs from Okta                                                                  |
 | [**okta-angular**](/packages/okta-angular)                         | [![npm version](https://img.shields.io/npm/v/@okta/okta-angular.svg?style=flat-square)](https://www.npmjs.com/package/@okta/okta-angular)                         | Angular support for Okta                                                                      |
 | [**oidc-middleware**](/packages/oidc-middleware)                   | [![npm version](https://img.shields.io/npm/v/@okta/oidc-middleware.svg?style=flat-square)](https://www.npmjs.com/package/@okta/oidc-middleware)                   | Middleware to easily add OpenID Connect to the Node.js framework of your choice               |
-| [**okta-react**](/packages/okta-react)                             | [![npm version](https://img.shields.io/npm/v/@okta/okta-react.svg?style=flat-square)](https://www.npmjs.com/package/@okta/okta-react)                             | React support for Okta                                                                        |
-| [**okta-react-native**](/packages/okta-react-native)               | [![npm version](https://img.shields.io/npm/v/@okta/okta-react-native.svg?style=flat-square)](https://www.npmjs.com/package/@okta/okta-react-native)               | React Native support for Okta                                                                 |
+| [**okta-react**](/https://github.com/okta/okta-react)                             | [![npm version](https://img.shields.io/npm/v/@okta/okta-react.svg?style=flat-square)](https://www.npmjs.com/package/@okta/okta-react)                             | React support for Okta. This SDK is located in its [own repository](https://github.com/okta/okta-react)                                                                        |
+| [**okta-react-native**](https://github.com/okta/okta-react-native)               | [![npm version](https://img.shields.io/npm/v/@okta/okta-react-native.svg?style=flat-square)](https://www.npmjs.com/package/@okta/okta-react-native)               | React Native support for Okta. This SDK is located in its [own repository](https://github.com/okta/okta-react-native)                                                                 |
 | [**okta-vue**](https://github.com/okta/okta-vue)                                 | [![npm version](https://img.shields.io/npm/v/@okta/okta-vue.svg?style=flat-square)](https://www.npmjs.com/package/@okta/okta-vue)                                 | Vue.js support for Okta. This SDK is located in its [own repository](https://github.com/okta/okta-vue)                                                                     |
 
 ## Configuration Reference
