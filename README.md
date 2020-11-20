@@ -45,7 +45,6 @@ packages/
   configuration-validation
   jwt-verifier
   oidc-middleware
-  okta-angular
 ```
 
 ### Versioning
@@ -58,7 +57,7 @@ We've configured Lerna with [independent mode](https://github.com/lerna/lerna/#i
 |--------------------------------------------------------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------|-----------------------------------------------------------------------------------------------|
 | [**configuration-validation**](/packages/configuration-validation) | [![npm version](https://img.shields.io/npm/v/@okta/configuration-validation.svg?style=flat-square)](https://www.npmjs.com/package/@okta/configuration-validation) | Standard pattern for validating configuration passed into Okta JavaScript libraries and SDKs. |
 | [**jwt-verifier**](/packages/jwt-verifier)                         | [![npm version](https://img.shields.io/npm/v/@okta/jwt-verifier.svg?style=flat-square)](https://www.npmjs.com/package/@okta/jwt-verifier)                         | Easily verify JWTs from Okta                                                                  |
-| [**okta-angular**](/packages/okta-angular)                         | [![npm version](https://img.shields.io/npm/v/@okta/okta-angular.svg?style=flat-square)](https://www.npmjs.com/package/@okta/okta-angular)                         | Angular support for Okta                                                                      |
+| [**okta-angular**](https://github.com/okta/okta-angular)                         | [![npm version](https://img.shields.io/npm/v/@okta/okta-angular.svg?style=flat-square)](https://www.npmjs.com/package/@okta/okta-angular)                         | Angular support for Okta. This SDK is located in its [own repository](https://github.com/okta/okta-angular)                                                                      |
 | [**oidc-middleware**](/packages/oidc-middleware)                   | [![npm version](https://img.shields.io/npm/v/@okta/oidc-middleware.svg?style=flat-square)](https://www.npmjs.com/package/@okta/oidc-middleware)                   | Middleware to easily add OpenID Connect to the Node.js framework of your choice               |
 | [**okta-react**](/https://github.com/okta/okta-react)                             | [![npm version](https://img.shields.io/npm/v/@okta/okta-react.svg?style=flat-square)](https://www.npmjs.com/package/@okta/okta-react)                             | React support for Okta. This SDK is located in its [own repository](https://github.com/okta/okta-react)                                                                        |
 | [**okta-react-native**](https://github.com/okta/okta-react-native)               | [![npm version](https://img.shields.io/npm/v/@okta/okta-react-native.svg?style=flat-square)](https://www.npmjs.com/package/@okta/okta-react-native)               | React Native support for Okta. This SDK is located in its [own repository](https://github.com/okta/okta-react-native)                                                                 |

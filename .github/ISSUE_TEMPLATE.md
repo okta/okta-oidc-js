@@ -7,7 +7,6 @@ Note: If you have a question, please post it on the Okta Developer Forum (https:
 ## I'm submitting this issue for the package(s):
 
 - [ ] jwt-verifier
-- [ ] okta-angular
 - [ ] oidc-middleware
 
 ## I'm submitting a:

@@ -4,7 +4,6 @@ PACKAGES=(
   "./packages/configuration-validation"
   "./packages/jwt-verifier"
   "./packages/oidc-middleware"
-  "./packages/okta-angular"
 )
 
 for PACKAGE in "${PACKAGES[@]}"

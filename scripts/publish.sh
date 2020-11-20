@@ -31,7 +31,6 @@ PACKAGES=(
   "./packages/configuration-validation"
   "./packages/jwt-verifier"
   "./packages/oidc-middleware"
-  "./packages/okta-angular/dist"
 )
 
 # Override default registry

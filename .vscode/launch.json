@@ -31,29 +31,6 @@
       "type": "node",
       "request": "launch",
       "protocol": "auto",
-      "name": "okta-angular Jest",
-      "cwd": "${workspaceFolder}/packages/okta-angular",
-      "args": [
-        "node_modules/.bin/jest",
-        "--runInBand",
-        "--no-cache",
-        "${workspaceFolder}/${relativeFile}"
-      ],
-      "sourceMaps": true,
-      "console": "integratedTerminal",
-      "internalConsoleOptions": "neverOpen",
-      "env": {
-
-      },
-      "sourceMapPathOverrides": {
-        "webpack:///*": "/*",
-      },
-      "disableOptimisticBPs": true
-    },
-    {
-      "type": "node",
-      "request": "launch",
-      "protocol": "auto",
       "name": "jwt-verifier Jest",
       "cwd": "${workspaceFolder}/packages/jwt-verifier",
       "args": [
