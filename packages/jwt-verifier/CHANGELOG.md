@@ -1,3 +1,7 @@
+# 1.0.1
+
+- [#935](https://github.com/okta/okta-oidc-js/pull/935) Updates jwks-rsa version for security fixes
+
 # 1.0.0
 ### Features
 - [`9d76c9f`](https://github.com/okta/okta-oidc-js/commit/9d76c9f952506d3a51bb912a87a8da592dd7201d) - Adds verifications to verifyAccessToken() [#481](https://github.com/okta/okta-oidc-js/pull/481)
