@@ -14,7 +14,6 @@ function createMockOpenIdClient(config={}) {
     ...defaultConfig,
     ...config
   });
-  console.log(issuer)
   const client = new issuer.Client({
     client_id: 'foo',
     client_secret: 'foo',
