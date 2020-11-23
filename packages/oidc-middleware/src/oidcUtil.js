@@ -102,7 +102,7 @@ oidcUtil.bootstrapPassportStrategy = context => {
       });
     }
 
-    return done(null);
+    return args[args.length-1](null);
   });
 
   // bypass passport's serializers
