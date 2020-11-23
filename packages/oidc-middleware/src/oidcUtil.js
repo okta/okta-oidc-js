@@ -91,17 +91,24 @@ oidcUtil.bootstrapPassportStrategy = context => {
     let userinfo;
 
     if (typeof(callbackArg2) !== 'undefined') {
-      done = callbackArg2
-      userinfo = callbackArg1
-      return done(null, {
-        userinfo,
-        tokens: tokenSet
-      })
+      done = callbackArg2;
+      userinfo = callbackArg1;
+      
     } else {
-      done = callbackArg1
-      return done(null, {
-        tokens: tokenSet
-      })
+      done = callbackArg1;
+    }
+
+    if(tokenSet) {
+      return userinfo ?
+        done(null, {
+          userinfo,
+          tokens: tokenSet,
+        }) :
+        done(null, {
+          tokens: tokenSet
+        })
+    } else {
+      return done(null);
     }
   });
 
