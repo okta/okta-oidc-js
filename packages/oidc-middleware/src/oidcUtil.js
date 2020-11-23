@@ -86,23 +86,23 @@ oidcUtil.bootstrapPassportStrategy = context => {
     },
     sessionKey: context.options.sessionKey,
     client: context.client
-  }, (...args) => {
-    // Skip returning userinfo if none
-    if (args.length === 2) {
-      return args[1](null, {
-        tokens: args[0]
-      });
-    }
+  }, (tokenSet, callbackArg1, callbackArg2) => {
+    let done;
+    let userinfo;
 
-    // Userinfo if in the response
-    if (args.length === 3) {
-      return args[2](null, {
-        userinfo: args[1],
-        tokens: args[0]
-      });
+    if (typeof(callbackArg2) !== 'undefined') {
+      done = callbackArg2
+      userinfo = callbackArg1
+      return done(null, {
+        userinfo,
+        tokens: tokenSet
+      })
+    } else {
+      done = callbackArg1
+      return done(null, {
+        tokens: tokenSet
+      })
     }
-
-    return args[args.length-1](null);
   });
 
   // bypass passport's serializers
