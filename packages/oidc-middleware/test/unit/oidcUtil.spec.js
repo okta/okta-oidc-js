@@ -9,7 +9,7 @@ function createMockOpenIdClient(config={}) {
     issuer: 'https://foo',
     token_endpoint: 'https://foo/token',
     userinfo_endpoint: 'https://foo/userinfo'
-  }
+  };
   const issuer = new Issuer({
     ...defaultConfig,
     ...config
@@ -21,7 +21,7 @@ function createMockOpenIdClient(config={}) {
 
   client.callback = jest.fn(() => ({
     access_token: 'token_value'
-  }))
+  }));
 
   client.userinfo = jest.fn(() => ({
     cid: '123'
@@ -32,13 +32,13 @@ function createMockOpenIdClient(config={}) {
 
 function createMockRedirectRequest() {
   const request = jest.mock();
-  request.method = 'GET'
-  request.url = 'http://foo/authorization-code/callback?code=foo'
+  request.method = 'GET';
+  request.url = 'http://foo/authorization-code/callback?code=foo';
   request.session = {
     'oidc:foo': {
       response_type: 'code',
     },
-  }
+  };
   return request;
 }
 
@@ -58,18 +58,18 @@ describe('oidcUtil', function () {
         client: createMockOpenIdClient({
           userinfo_endpoint: undefined
         })
-      }
+      };
       oidcUtil.bootstrapPassportStrategy(context);
       const passportStrategy = passportStrategySetter.mock.calls[0][1];
 
       passportStrategy.success = function (response) {
         expect(response.userinfo).toBe(undefined);
-        expect(response.tokens).toEqual({access_token: 'token_value'})
+        expect(response.tokens).toEqual({access_token: 'token_value'});
         next();
       }
       passportStrategy.error = function(error) {
         expect(error).toEqual(undefined);
-      }
+      };
       passportStrategy.authenticate(createMockRedirectRequest());
     });
 
@@ -80,19 +80,19 @@ describe('oidcUtil', function () {
           scope: ['openid', 'profile']
         },
         client: createMockOpenIdClient()
-      }
+      };
 
       oidcUtil.bootstrapPassportStrategy(context);
       const passportStrategy = passportStrategySetter.mock.calls[0][1];
 
       passportStrategy.success = function (response) {
         expect(response.userinfo).toEqual({cid: '123'});
-        expect(response.tokens).toEqual({access_token: 'token_value'})
+        expect(response.tokens).toEqual({access_token: 'token_value'});
         next();
-      }
+      };
       passportStrategy.error = function(error) {
         expect(error).toEqual(undefined);
-      }
+      };
       passportStrategy.authenticate(createMockRedirectRequest());
     })
   })

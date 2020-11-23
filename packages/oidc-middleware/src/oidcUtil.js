@@ -93,7 +93,6 @@ oidcUtil.bootstrapPassportStrategy = context => {
     if (typeof(callbackArg2) !== 'undefined') {
       done = callbackArg2;
       userinfo = callbackArg1;
-      
     } else {
       done = callbackArg1;
     }
@@ -106,7 +105,7 @@ oidcUtil.bootstrapPassportStrategy = context => {
         }) :
         done(null, {
           tokens: tokenSet
-        })
+        });
     } else {
       return done(null);
     }
