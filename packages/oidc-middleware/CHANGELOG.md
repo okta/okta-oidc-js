@@ -1,3 +1,10 @@
+# 4.0.2
+
+### Bug Fixes
+
+- [#949](https://github.com/okta/okta-oidc-js/pull/949) 
+  - oidcUtil: support for passport strategy callback without userinfo
+
 # 4.0.1
 
 ### Bug Fixes
