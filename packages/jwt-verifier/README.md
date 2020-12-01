@@ -3,7 +3,7 @@
 [![npm version](https://img.shields.io/npm/v/@okta/jwt-verifier.svg?style=flat-square)](https://www.npmjs.com/package/@okta/jwt-verifier)
 [![build status](https://img.shields.io/travis/okta/okta-oidc-js/master.svg?style=flat-square)](https://travis-ci.org/okta/okta-oidc-js)
 
-This library verifies Okta access tokens (issued by [Okta Custom Authorization servers](https://developer.okta.com/docs/concepts/auth-servers/) by fetching the public keys from the JWKS endpoint of the authorization server. If the access token is valid it will be converted to a JSON object and returned to your code. 
+This library verifies Okta access tokens (issued by [Okta Custom Authorization servers](https://developer.okta.com/docs/concepts/auth-servers/)) by fetching the public keys from the JWKS endpoint of the authorization server. If the access token is valid it will be converted to a JSON object and returned to your code. 
 
 This library does not yet verify id tokens.  You can learn about [access tokens](https://developer.okta.com/docs/reference/api/oidc/#access-token) and [id tokens](https://developer.okta.com/docs/reference/api/oidc/#id-token) in our [OIDC and OAuth 2.0 API Referece](https://developer.okta.com/docs/reference/api/oidc/).
 
@@ -20,7 +20,7 @@ For any access token to be valid, the following are asserted:
 
 Using Express?  Our [Express Resource Server Example](https://github.com/okta/samples-nodejs-express-4/tree/master/resource-server) will show you how to use this library in your Express application.
 
-To learn more about verification cases and Okta's tokens please read [Working With OAuth 2.0 Tokens](https://developer.okta.com/authentication-guide/tokens/)
+To learn more about verification cases and Okta's tokens please read [Working With OAuth 2.0 Tokens](https://developer.okta.com/authentication-guide/tokens/).
 
 ## Upgrading
 
@@ -55,7 +55,7 @@ oktaJwtVerifier.verifyAccessToken(accessTokenString, expectedAud)
 });
 ```
 
-The expected audience passed to `verifyAccessToken()` is required, and can be either a string (direct match) or an array strings (the actual `aud` claim in the token must match one of the strings).
+The expected audience passed to `verifyAccessToken()` is required, and can be either a string (direct match) or an array of strings (the actual `aud` claim in the token must match one of the strings).
 
 ```javascript
 // Passing a string for expectedAud
@@ -112,7 +112,7 @@ const verifier = new OktaJwtVerifier({
 });
 ```
 
-The values you want to assert are included are always represented as an array (the right side of the expression). The claim that you're checking against (the left side of the expression) can have either an array (like `groups`) or a space-separated list in a string (like `scp`) as its value type.
+The values you want to assert are always represented as an array (the right side of the expression). The claim that you're checking against (the left side of the expression) can have either an array (like `groups`) or a space-separated list in a string (like `scp`) as its value type.
 
 NOTE: Currently, `.includes` is the only supported claim operator.
 
@@ -134,11 +134,11 @@ const oktaJwtVerifier = new OktaJwtVerifier({
 ```
 
 ## Testing
-Setup SPA and Web App in your Okta org and testing environment variables by following [Testing](https://github.com/okta/okta-oidc-js#testing) section in okta-oidc-js Monorepo's README.
+Set up an SPA and a Web App in your Okta org and testing environment variables by following the [Testing](https://github.com/okta/okta-oidc-js#testing) section in okta-oidc-js Monorepo's README.
 
 **NOTE:** 
 
-When create SPA application in your Okta org, please make sure all `Implicit` checks have been checked in `General Settings -> Application -> Allowed grant types` section.
+When creating an SPA in your Okta org, please make sure all `Implicit` checks have been checked in the `General Settings -> Application -> Allowed grant types` section.
 
 Command for running unit test:
 ```
