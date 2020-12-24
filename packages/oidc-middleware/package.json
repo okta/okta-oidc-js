@@ -29,7 +29,8 @@
     "node": "^10.13.0 || >=12.0.0"
   },
   "jest": {
-    "testEnvironment": "jsdom"
+    "testEnvironment": "jsdom",
+    "restoreMocks": true
   },
   "license": "Apache-2.0",
   "dependencies": {
@@ -46,6 +47,7 @@
   },
   "devDependencies": {
     "babel-eslint": "^10.0.3",
+    "cookie-parser": "^1.4.5",
     "cross-env": "^7.0.0",
     "ejs": "^3.0.1",
     "eslint": "^6.6.0",
@@ -61,7 +63,8 @@
     "nock": "^11.7.2",
     "protractor": "^5.4.2",
     "read-package-tree": "^5.1.6",
-    "server-destroy": "^1.0.1"
+    "server-destroy": "^1.0.1",
+    "supertest": "^6.0.1"
   },
   "resolutions": {
     "webdriver-manager": "^12.1.4"

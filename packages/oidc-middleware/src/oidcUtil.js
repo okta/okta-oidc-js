@@ -72,7 +72,11 @@ oidcUtil.createClient = context => {
         redirect_uri
       ]
     });
-    client[custom.http_options] = customizeUserAgent;
+    client[custom.http_options] = options => {
+      options = customizeUserAgent(options);
+      options.timeout = timeout || 10000;
+      return options;
+    };
     client[custom.clock_tolerance] = maxClockSkew;
 
     return client;
