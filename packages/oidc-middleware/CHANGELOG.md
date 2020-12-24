@@ -1,3 +1,10 @@
+# 4.0.3
+
+### Bug Fixes
+
+- [#962](https://github.com/okta/okta-oidc-js/pull/962)
+  - fixes options.timeout for requests to /token
+  
 # 4.0.2
 
 ### Bug Fixes
