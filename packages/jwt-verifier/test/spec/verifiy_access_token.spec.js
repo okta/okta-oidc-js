@@ -10,23 +10,18 @@
  * See the License for the specific language governing permissions and limitations under the License.
  */
 
-const fs = require('fs');
-const njwt = require('njwt');
 const nock = require('nock');
-const path = require('path');
 const tk = require('timekeeper');
-const constants = require('../constants')
+const constants = require('../constants');
 
-const OktaJwtVerifier = require('../../lib');
-const getAccessToken = require('../util').getAccessToken;
+const { getAccessToken, createToken, createVerifier, createCustomClaimsVerifier, rsaKeyPair } = require('../util');
 
 // These need to be exported in the environment, from a working Okta org
 const ISSUER = constants.ISSUER;
 const CLIENT_ID = constants.CLIENT_ID;
 const USERNAME = constants.USERNAME;
 const PASSWORD = constants.PASSWORD;
-const REDIRECT_URI = constants.REDIRECT_URI
-const OKTA_TESTING_DISABLEHTTPSCHECK = constants.OKTA_TESTING_DISABLEHTTPSCHECK
+const REDIRECT_URI = constants.REDIRECT_URI;
 
 // Some tests makes LIVE requests using getAccessToken(). These may take much longer than normal tests
 const LONG_TIMEOUT = 60000;
@@ -40,25 +35,10 @@ const issuer1AccessTokenParams = {
   REDIRECT_URI
 };
 
-const NODE_MODULES = path.resolve(__dirname, '../../node_modules');
-const publicKeyPath = path.normalize(path.join(NODE_MODULES, '/njwt/test/rsa.pub'));
-const privateKeyPath = path.normalize(path.join(NODE_MODULES, '/njwt/test/rsa.priv'));
-const wrongPublicKeyPath = path.normalize(path.join(__dirname, '../keys/rsa-fake.pub'));
-const rsaKeyPair = {
-  public: fs.readFileSync(publicKeyPath, 'utf8'),
-  private: fs.readFileSync(privateKeyPath, 'utf8'),
-  wrongPublic: fs.readFileSync(wrongPublicKeyPath, 'utf8')
-};
-
-describe('Jwt Verifier', () => {
+describe('Jwt Verifier - Verify Access Token', () => {
   describe('Access token tests with api calls', () => {
     const expectedAud = 'api://default';
-    const verifier = new OktaJwtVerifier({
-      issuer: ISSUER,
-      testing: {
-        disableHttpsCheck: OKTA_TESTING_DISABLEHTTPSCHECK
-      }
-    });
+    const verifier = createVerifier();
 
     it('should allow me to verify Okta access tokens', () => {
       return getAccessToken(issuer1AccessTokenParams)
@@ -75,12 +55,7 @@ describe('Jwt Verifier', () => {
       .then(accessToken => verifier.verifyAccessToken(accessToken, expectedAud))
       .then(jwt => {
         // Create an access token with the same claims and kid, then re-sign it with another RSA private key - this should fail
-        const token = new njwt.Jwt(jwt.claims)
-          .setSigningAlgorithm('RS256')
-          .setSigningKey(rsaKeyPair.private)
-          .setIssuer(ISSUER)
-          .setHeader('kid', jwt.header.kid)
-          .compact();
+        const token = createToken(jwt.claims, { kid: jwt.header.kid });
         return verifier.verifyAccessToken(token, expectedAud)
         .catch(err => expect(err.message).toBe('Signature verification failed'));
       });
@@ -91,11 +66,7 @@ describe('Jwt Verifier', () => {
       .then(accessToken => verifier.verifyAccessToken(accessToken, expectedAud))
       .then(jwt => {
         // Create an access token that does not have a kid
-        const token = new njwt.Jwt(jwt.claims)
-          .setIssuer(ISSUER)
-          .setSigningAlgorithm('RS256')
-          .setSigningKey(rsaKeyPair.private)
-          .compact();
+        const token = createToken(jwt.claims);
         return verifier.verifyAccessToken(token, expectedAud)
         .catch(err => expect(err.message).toBe('Error while resolving signing key for kid "undefined"'));
       });
@@ -106,11 +77,7 @@ describe('Jwt Verifier', () => {
       .then(accessToken => verifier.verifyAccessToken(accessToken, expectedAud))
       .then(jwt => {
         // Create an access token with the same claims but a kid that will not resolve
-        const token = new njwt.Jwt(jwt.claims)
-          .setSigningAlgorithm('RS256')
-          .setSigningKey(rsaKeyPair.private)
-          .setHeader('kid', 'foo')
-          .compact();
+        const token = createToken(jwt.claims, { kid: 'foo' });
         return verifier.verifyAccessToken(token, expectedAud)
         .catch(err => expect(err.message).toBe('Error while resolving signing key for kid "foo"'));
       });
@@ -137,14 +104,10 @@ describe('Jwt Verifier', () => {
     }, LONG_TIMEOUT);
 
     it('should allow me to assert custom claims', () => {
-      const verifier = new OktaJwtVerifier({
-        issuer: ISSUER,
+      const verifier = createVerifier({
         assertClaims: {
           cid: 'baz',
           foo: 'bar'
-        },
-        testing: {
-          disableHttpsCheck: OKTA_TESTING_DISABLEHTTPSCHECK
         }
       });
       return getAccessToken(issuer1AccessTokenParams)
@@ -162,12 +125,8 @@ describe('Jwt Verifier', () => {
     }, LONG_TIMEOUT);
 
     it('should cache the jwks for the configured amount of time', () => {
-      const verifier = new OktaJwtVerifier({
-        issuer: ISSUER,
-        cacheMaxAge: 500,
-        testing: {
-          disableHttpsCheck: OKTA_TESTING_DISABLEHTTPSCHECK
-        }
+      const verifier = createVerifier({
+        cacheMaxAge: 500
       });
       return getAccessToken(issuer1AccessTokenParams)
       .then(accessToken => {
@@ -198,12 +157,8 @@ describe('Jwt Verifier', () => {
     }, LONG_TIMEOUT);
 
     it('should rate limit jwks endpoint requests on cache misses', () => {
-      const verifier = new OktaJwtVerifier({
-        issuer: ISSUER,
-        jwksRequestsPerMinute: 2,
-        testing: {
-          disableHttpsCheck: OKTA_TESTING_DISABLEHTTPSCHECK
-        }
+      const verifier = createVerifier({
+        jwksRequestsPerMinute: 2
       });
       return getAccessToken(issuer1AccessTokenParams)
       .then((accessToken => {
@@ -211,11 +166,7 @@ describe('Jwt Verifier', () => {
         return verifier.verifyAccessToken(accessToken, expectedAud)
         .then(jwt => {
           // Create an access token with the same claims but a kid that will not resolve
-          const token = new njwt.Jwt(jwt.claims)
-            .setSigningAlgorithm('RS256')
-            .setSigningKey(rsaKeyPair.private)
-            .setHeader('kid', 'foo')
-            .compact();
+          const token = createToken(jwt.claims, { kid: 'foo' });
           return verifier.verifyAccessToken(token, expectedAud)
           .catch(err => verifier.verifyAccessToken(token, expectedAud))
           .catch(err => {
@@ -236,22 +187,14 @@ describe('Jwt Verifier', () => {
     };
 
     it('fails if the signature is invalid', () => {
-      const claims = {
+      const token = createToken({
         aud: 'http://myapp.com/',
-      };
-      const token = new njwt.Jwt(claims)
-        .setIssuer(ISSUER)
-        .setSigningAlgorithm('RS256')
-        .setSigningKey(rsaKeyPair.private)
-        .setHeader('kid', rsaKeyPair.wrongPublic)
-        .compact();
-
-      const verifier = new OktaJwtVerifier({
-        issuer: ISSUER,
-        testing: {
-          disableHttpsCheck: OKTA_TESTING_DISABLEHTTPSCHECK
-        }
+        iss: ISSUER,
+      }, {
+        kid: rsaKeyPair.wrongPublic,
       });
+
+      const verifier = createVerifier();
       mockKidAsKeyFetch(verifier);
 
       return verifier.verifyAccessToken(token, 'http://myapp.com/')
@@ -262,48 +205,31 @@ describe('Jwt Verifier', () => {
     });
 
     it('passes if the signature is valid', () => {
-      const claims = {
+      const token = createToken({
         aud: 'http://myapp.com/',
         iss: ISSUER,
-      };
-      const token = new njwt.Jwt(claims)
-        .setSigningAlgorithm('RS256')
-        .setSigningKey(rsaKeyPair.private)
-        .setHeader('kid', rsaKeyPair.public)
-        .compact();
-
-      const verifier = new OktaJwtVerifier({
-        issuer: ISSUER,
-        testing: {
-          disableHttpsCheck: OKTA_TESTING_DISABLEHTTPSCHECK
-        }
+      }, {
+        kid: rsaKeyPair.public
       });
+
+      const verifier = createVerifier();
       mockKidAsKeyFetch(verifier);
 
       return verifier.verifyAccessToken(token, 'http://myapp.com/');
     });
 
     it('fails if iss claim does not match verifier issuer', () => {
-      const claims = {
+      const token = createToken({
         aud: 'http://myapp.com/',
         iss: 'not-the-issuer',
-      };
-
-      const token = new njwt.Jwt(claims)
-        .setSigningAlgorithm('RS256')
-        .setSigningKey(rsaKeyPair.private)
-        .setHeader('kid', rsaKeyPair.public) // For override of key retrieval below
-        .compact();
-
-      const verifier = new OktaJwtVerifier({
-        issuer: ISSUER,
-        testing: {
-          disableHttpsCheck: OKTA_TESTING_DISABLEHTTPSCHECK
-        }
+      }, {
+        kid: rsaKeyPair.public // For override of key retrieval below
       });
+
+      const verifier = createVerifier();
       mockKidAsKeyFetch(verifier);
 
-      return verifier.verifyAccessToken(token, claims.aud)
+      return verifier.verifyAccessToken(token, 'http://myapp.com/')
         .then( () => { throw new Error('invalid issuer did not throw an error'); } )
         .catch( err => {
           expect(err.message).toBe(`issuer not-the-issuer does not match expected issuer: ${ISSUER}`);
@@ -311,23 +237,14 @@ describe('Jwt Verifier', () => {
     });
 
     it('fails when no audience expectation is passed', () => {
-      const claims = {
+      const token = createToken({
         aud: 'http://any-aud.com/',
         iss: ISSUER,
-      };
-
-      const token = new njwt.Jwt(claims)
-        .setSigningAlgorithm('RS256')
-        .setSigningKey(rsaKeyPair.private)
-        .setHeader('kid', rsaKeyPair.public) // For override of key retrieval below
-        .compact();
-
-      const verifier = new OktaJwtVerifier({
-        issuer: ISSUER,
-        testing: {
-          disableHttpsCheck: OKTA_TESTING_DISABLEHTTPSCHECK
-        }
+      }, {
+        kid: rsaKeyPair.public // For override of key retrieval below
       });
+
+      const verifier = createVerifier();
       mockKidAsKeyFetch(verifier);
 
       return verifier.verifyAccessToken(token)
@@ -338,69 +255,42 @@ describe('Jwt Verifier', () => {
     });
 
     it('passes when given an audience matching expectation string', () => {
-      const claims = {
+      const token = createToken({
         aud: 'http://myapp.com/',
         iss: ISSUER,
-      };
-
-      const token = new njwt.Jwt(claims)
-        .setSigningAlgorithm('RS256')
-        .setSigningKey(rsaKeyPair.private)
-        .setHeader('kid', rsaKeyPair.public) // For override of key retrieval below
-        .compact();
-
-      const verifier = new OktaJwtVerifier({
-        issuer: ISSUER,
-        testing: {
-          disableHttpsCheck: OKTA_TESTING_DISABLEHTTPSCHECK
-        }
+      }, {
+        kid: rsaKeyPair.public // For override of key retrieval below
       });
+
+      const verifier = createVerifier();
       mockKidAsKeyFetch(verifier);
 
       return verifier.verifyAccessToken(token, 'http://myapp.com/');
     });
 
     it('passes when given an audience matching expectation array', () => {
-      const claims = {
+      const token = createToken({
         aud: 'http://myapp.com/',
         iss: ISSUER,
-      };
-
-      const token = new njwt.Jwt(claims)
-        .setSigningAlgorithm('RS256')
-        .setSigningKey(rsaKeyPair.private)
-        .setHeader('kid', rsaKeyPair.public) // For override of key retrieval below
-        .compact();
-
-      const verifier = new OktaJwtVerifier({
-        issuer: ISSUER,
-        testing: {
-          disableHttpsCheck: OKTA_TESTING_DISABLEHTTPSCHECK
-        }
+      }, {
+        kid: rsaKeyPair.public // For override of key retrieval below
       });
+
+      const verifier = createVerifier();
       mockKidAsKeyFetch(verifier);
 
       return verifier.verifyAccessToken(token, [ 'one', 'http://myapp.com/', 'three'] );
     });
 
     it('fails with a invalid audience when given a valid expectation', () => {
-      const claims = {
+      const token = createToken({
         aud: 'http://wrong-aud.com/',
         iss: ISSUER,
-      };
-
-      const token = new njwt.Jwt(claims)
-        .setSigningAlgorithm('RS256')
-        .setSigningKey(rsaKeyPair.private)
-        .setHeader('kid', rsaKeyPair.public) // For override of key retrieval below
-        .compact();
-
-      const verifier = new OktaJwtVerifier({
-        issuer: ISSUER,
-        testing: {
-          disableHttpsCheck: OKTA_TESTING_DISABLEHTTPSCHECK
-        }
+      }, {
+        kid: rsaKeyPair.public // For override of key retrieval below
       });
+
+      const verifier = createVerifier();
       mockKidAsKeyFetch(verifier);
 
       return verifier.verifyAccessToken(token, 'http://myapp.com/')
@@ -411,23 +301,14 @@ describe('Jwt Verifier', () => {
     });
 
     it('fails with a invalid audience when given an array of expectations', () => {
-      const claims = {
+      const token = createToken({
         aud: 'http://wrong-aud.com/',
         iss: ISSUER,
-      };
-
-      const token = new njwt.Jwt(claims)
-        .setSigningAlgorithm('RS256')
-        .setSigningKey(rsaKeyPair.private)
-        .setHeader('kid', rsaKeyPair.public) // For override of key retrieval below
-        .compact();
-
-      const verifier = new OktaJwtVerifier({
-        issuer: ISSUER,
-        testing: {
-          disableHttpsCheck: OKTA_TESTING_DISABLEHTTPSCHECK
-        }
+      }, {
+        kid: rsaKeyPair.public // For override of key retrieval below
       });
+
+      const verifier = createVerifier();
       mockKidAsKeyFetch(verifier);
 
       return verifier.verifyAccessToken(token, ['one', 'http://myapp.com/', 'three'])
@@ -438,23 +319,14 @@ describe('Jwt Verifier', () => {
     });
 
     it('fails when given an empty array of audience expectations', () => {
-      const claims = {
+      const token = createToken({
         aud: 'http://any-aud.com/',
         iss: ISSUER,
-      };
-
-      const token = new njwt.Jwt(claims)
-        .setSigningAlgorithm('RS256')
-        .setSigningKey(rsaKeyPair.private)
-        .setHeader('kid', rsaKeyPair.public) // For override of key retrieval below
-        .compact();
-
-      const verifier = new OktaJwtVerifier({
-        issuer: ISSUER,
-        testing: {
-          disableHttpsCheck: OKTA_TESTING_DISABLEHTTPSCHECK
-        }
+      }, {
+        kid: rsaKeyPair.public // For override of key retrieval below
       });
+
+      const verifier = createVerifier();
       mockKidAsKeyFetch(verifier);
 
       return verifier.verifyAccessToken(token, [])
@@ -467,31 +339,18 @@ describe('Jwt Verifier', () => {
 
 
   describe('Access Token custom claim tests with stubs', () => {
-
     const otherClaims = { 
       iss: ISSUER,
       aud: 'http://myapp.com/',
     };
 
-    const verifier = new OktaJwtVerifier({
-      issuer: ISSUER,
-      testing: {
-        disableHttpsCheck: OKTA_TESTING_DISABLEHTTPSCHECK
-      }
-    });
+    const verifier = createVerifier();
 
     it('should only allow includes operator for custom claims', () => {
       verifier.claimsToAssert = {'groups.blarg': 'Everyone'};
-      verifier.verifier = {
-        verify: function(jwt, cb) {
-          cb(null, {
-            body: {
-              ...otherClaims,
-              groups: ['Everyone', 'Another']
-            }
-          })
-        }
-      };
+      verifier.verifier = createCustomClaimsVerifier({
+        groups: ['Everyone', 'Another']
+      }, otherClaims);
 
       return verifier.verifyAccessToken('anything', otherClaims.aud)
       .catch(err => expect(err.message).toBe(
@@ -501,16 +360,9 @@ describe('Jwt Verifier', () => {
 
     it('should succeed in asserting claims where includes is flat, claim is array', () => {
       verifier.claimsToAssert = {'groups.includes': 'Everyone'};
-      verifier.verifier = {
-        verify: function(jwt, cb) {
-          cb(null, {
-            body: {
-              ...otherClaims,
-              groups: ['Everyone', 'Another']
-            }
-          })
-        }
-      };
+      verifier.verifier = createCustomClaimsVerifier({
+        groups: ['Everyone', 'Another']
+      }, otherClaims);
 
       return verifier.verifyAccessToken('anything', otherClaims.aud)
       .then(jwt => expect(jwt.claims.groups).toEqual(['Everyone', 'Another']));
@@ -518,16 +370,9 @@ describe('Jwt Verifier', () => {
 
     it('should succeed in asserting claims where includes is flat, claim is flat', () => {
       verifier.claimsToAssert = {'scp.includes': 'promos:read'};
-      verifier.verifier = {
-        verify: function(jwt, cb) {
-          cb(null, {
-            body: {
-              ...otherClaims,
-              scp: 'promos:read promos:write'
-            }
-          })
-        }
-      };
+      verifier.verifier = createCustomClaimsVerifier({
+        scp: 'promos:read promos:write'
+      }, otherClaims);
 
       return verifier.verifyAccessToken('anything', otherClaims.aud)
       .then(jwt => expect(jwt.claims.scp).toBe('promos:read promos:write'));
@@ -535,18 +380,12 @@ describe('Jwt Verifier', () => {
 
     it('should fail in asserting claims where includes is flat, claim is array', () => {
       verifier.claimsToAssert = {'groups.includes': 'Yet Another'};
-      verifier.verifier = {
-        verify: function(jwt, cb) {
-          cb(null, {
-            body: {
-              ...otherClaims,
-              groups: ['Everyone', 'Another']
-            }
-          })
-        }
-      };
+      verifier.verifier = createCustomClaimsVerifier({
+        groups: ['Everyone', 'Another']
+      }, otherClaims);
 
       return verifier.verifyAccessToken('anything', otherClaims.aud)
+      .then( () => { throw new Error(`Invalid 'groups' claim was accepted`) } )
       .catch(err => expect(err.message).toBe(
         `claim 'groups' value 'Everyone,Another' does not include expected value 'Yet Another'`
       ));
@@ -555,18 +394,12 @@ describe('Jwt Verifier', () => {
     it('should fail in asserting claims where includes is flat, claim is flat', () => {
       const expectedAud = 'http://myapp.com/';
       verifier.claimsToAssert = {'scp.includes': 'promos:delete'};
-      verifier.verifier = {
-        verify: function(jwt, cb) {
-          cb(null, {
-            body: {
-              ...otherClaims,
-              scp: 'promos:read promos:write'
-            }
-          })
-        }
-      };
+      verifier.verifier = createCustomClaimsVerifier({
+        scp: 'promos:read promos:write'
+      }, otherClaims);
 
       return verifier.verifyAccessToken('anything', otherClaims.aud)
+      .then( () => { throw new Error(`Invalid 'scp' claim was accepted`) } )
       .catch(err => expect(err.message).toBe(
         `claim 'scp' value 'promos:read promos:write' does not include expected value 'promos:delete'`
       ));
@@ -574,16 +407,9 @@ describe('Jwt Verifier', () => {
 
     it('should succeed in asserting claims where includes is array, claim is array', () => {
       verifier.claimsToAssert = {'groups.includes': ['Everyone', 'Yet Another']};
-      verifier.verifier = {
-        verify: function(jwt, cb) {
-          cb(null, {
-            body: {
-              ...otherClaims,
-              groups: ['Everyone', 'Another', 'Yet Another']
-            }
-          })
-        }
-      };
+      verifier.verifier = createCustomClaimsVerifier({
+        groups: ['Everyone', 'Another', 'Yet Another']
+      }, otherClaims);
 
       return verifier.verifyAccessToken('anything', otherClaims.aud)
       .then(jwt => expect(jwt.claims.groups).toEqual(['Everyone', 'Another', 'Yet Another']));
@@ -591,16 +417,9 @@ describe('Jwt Verifier', () => {
 
     it('should succeed in asserting claims where includes is array, claim is flat', () => {
       verifier.claimsToAssert = {'scp.includes': ['promos:read', 'promos:delete']};
-      verifier.verifier = {
-        verify: function(jwt, cb) {
-          cb(null, {
-            body: {
-              ...otherClaims,
-              scp: 'promos:read promos:write promos:delete'
-            }
-          })
-        }
-      };
+      verifier.verifier = createCustomClaimsVerifier({
+        scp: 'promos:read promos:write promos:delete'
+      }, otherClaims);
 
       return verifier.verifyAccessToken('anything', otherClaims.aud)
       .then(jwt => expect(jwt.claims.scp).toBe('promos:read promos:write promos:delete'));
@@ -608,18 +427,12 @@ describe('Jwt Verifier', () => {
 
     it('should fail in asserting claims where includes is array, claim is array', () => {
       verifier.claimsToAssert = {'groups.includes': ['Yet Another']};
-      verifier.verifier = {
-        verify: function(jwt, cb) {
-          cb(null, {
-            body: {
-              ...otherClaims,
-              groups: ['Everyone', 'Another']
-            }
-          })
-        }
-      };
+      verifier.verifier = createCustomClaimsVerifier({
+        groups: ['Everyone', 'Another']
+      }, otherClaims);
 
       return verifier.verifyAccessToken('anything', otherClaims.aud)
+      .then( () => { throw new Error(`Invalid 'groups' claim was accepted`) } )
       .catch(err => expect(err.message).toBe(
         `claim 'groups' value 'Everyone,Another' does not include expected value 'Yet Another'`
       ));
@@ -627,18 +440,12 @@ describe('Jwt Verifier', () => {
 
     it('should fail in asserting claims where includes is array, claim is flat', () => {
       verifier.claimsToAssert = {'scp.includes': ['promos:delete']};
-      verifier.verifier = {
-        verify: function(jwt, cb) {
-          cb(null, {
-            body: {
-              ...otherClaims,
-              scp: 'promos:read promos:write'
-            }
-          })
-        }
-      };
+      verifier.verifier = createCustomClaimsVerifier({
+        scp: 'promos:read promos:write'
+      }, otherClaims);
 
       return verifier.verifyAccessToken('anything', otherClaims.aud)
+      .then( () => { throw new Error(`Invalid 'scp' claim was accepted`) } )
       .catch(err => expect(err.message).toBe(
         `claim 'scp' value 'promos:read promos:write' does not include expected value 'promos:delete'`
       ));
