@@ -1,3 +1,17 @@
+# 1.1.0
+
+### Features
+
+- [#954](https://github.com/okta/okta-oidc-js/pull/954)
+  - Adds ES entry point for configuration-validation
+  - Adds sourcemaps
+
+# 1.0.0
+
+### Features
+
+- [#879](https://github.com/okta/okta-oidc-js/pull/879) Adds support for Typescript
+
 # 0.4.3
 
 ### Bug Fixes
