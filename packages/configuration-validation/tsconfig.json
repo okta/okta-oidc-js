@@ -3,7 +3,8 @@
     "declaration": true,
     "outDir": "./dist",
     "allowJs": true,
-    "target": "es5"
+    "target": "es5",
+    "sourceMap": true
   },
   "include": ["./src/**/*"]
 }

@@ -34,8 +34,7 @@ export interface OktaAuthOptions extends BaseOptions {
   // used only by this library
   testing?: TestingOptions;
 }
- 
-import { merge } from 'lodash';
+
 class ConfigurationValidationError extends Error {}
 
 const findDomainURL = 'https://bit.ly/finding-okta-domain';
@@ -73,7 +72,7 @@ export const buildConfigObject = (config?: OktaAuthOptions): OktaAuthOptions => 
   const storage = config.storage;
   if (storage !== undefined || autoRenew !== undefined ) {
     // Properties already defined within the "tokenManager" section will not be overwritten
-    tokenManager = merge({
+    tokenManager = Object.assign({
       autoRenew: autoRenew,
       storage: storage,
     }, tokenManager || {});
@@ -85,7 +84,7 @@ export const buildConfigObject = (config?: OktaAuthOptions): OktaAuthOptions => 
     responseType = responseType.split(/\s+/);
   }
 
-  const normalizedConfig = merge({}, config, {
+  const normalizedConfig = Object.assign({}, config, {
     clientId: config.clientId || config.client_id,
     redirectUri: config.redirectUri || config.redirect_uri,
     responseType: responseType,
