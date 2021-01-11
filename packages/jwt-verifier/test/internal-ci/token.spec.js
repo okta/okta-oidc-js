@@ -15,23 +15,25 @@ const constants = require('../constants')
 const LONG_TIMEOUT = 15000;
 
 const OktaJwtVerifier = require('../../lib');
-const getAccessToken = require('../util').getAccessToken;
+const { getAccessToken, getIdToken } = require('../util');
 
 // These need to be exported in the environment, from a working Okta org
 const ISSUER = constants.ISSUER;
 const CLIENT_ID = constants.CLIENT_ID;
 const USERNAME = constants.USERNAME;
 const PASSWORD = constants.PASSWORD;
-const REDIRECT_URI = constants.REDIRECT_URI
-const OKTA_TESTING_DISABLEHTTPSCHECK = constants.OKTA_TESTING_DISABLEHTTPSCHECK
+const REDIRECT_URI = constants.REDIRECT_URI;
+const OKTA_TESTING_DISABLEHTTPSCHECK = constants.OKTA_TESTING_DISABLEHTTPSCHECK;
+const NONCE = 'foo';
 
-// Used to get an access token from the AS
-const issuer1AccessTokenParams = {
+// Used to get an access token and id token from the AS
+const issuer1TokenParams = {
   ISSUER,
   CLIENT_ID,
   USERNAME,
   PASSWORD,
-  REDIRECT_URI
+  REDIRECT_URI,
+  NONCE
 };
 
 describe('Access token test with api call', () => {
@@ -44,10 +46,29 @@ describe('Access token test with api call', () => {
   });
 
   it('should allow me to verify Okta access tokens', () => {
-    return getAccessToken(issuer1AccessTokenParams)
+    return getAccessToken(issuer1TokenParams)
     .then(accessToken => verifier.verifyAccessToken(accessToken, expectedAud))
     .then(jwt => {
       expect(jwt.claims.iss).toBe(ISSUER);
     });
   }, LONG_TIMEOUT);
 });
+
+describe('ID token test with api call', () => {
+  const expectedClientId = CLIENT_ID;
+  const verifier = new OktaJwtVerifier({
+    issuer: ISSUER,
+    testing: {
+      disableHttpsCheck: OKTA_TESTING_DISABLEHTTPSCHECK
+    }
+  });
+
+  it('should allow me to verify Okta ID tokens', () => {
+    return getIdToken(issuer1TokenParams)
+    .then(idToken => verifier.verifyIdToken(idToken, expectedClientId, NONCE))
+    .then(jwt => {
+      expect(jwt.claims.iss).toBe(ISSUER);
+    });
+  }, LONG_TIMEOUT);
+});
+

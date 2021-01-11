@@ -3,11 +3,19 @@
 [![npm version](https://img.shields.io/npm/v/@okta/jwt-verifier.svg?style=flat-square)](https://www.npmjs.com/package/@okta/jwt-verifier)
 [![build status](https://img.shields.io/travis/okta/okta-oidc-js/master.svg?style=flat-square)](https://travis-ci.org/okta/okta-oidc-js)
 
-This library verifies Okta access tokens (issued by [Okta Custom Authorization servers](https://developer.okta.com/docs/concepts/auth-servers/) by fetching the public keys from the JWKS endpoint of the authorization server. If the access token is valid it will be converted to a JSON object and returned to your code. 
+This library verifies Okta access and ID tokens by fetching the public keys from the JWKS endpoint of the authorization server.
 
-This library does not yet verify id tokens.  You can learn about [access tokens](https://developer.okta.com/docs/reference/api/oidc/#access-token) and [id tokens](https://developer.okta.com/docs/reference/api/oidc/#id-token) in our [OIDC and OAuth 2.0 API Referece](https://developer.okta.com/docs/reference/api/oidc/).
+> This library is for Node.js applications and will not compile into a front-end application.  If you need to work with tokens in front-end applications, please see [okta-auth-js](https://github.com/okta/okta-auth-js).
 
-> Okta Custom Authorization Servers require the API Access Management license.  If you are using Okta Org Authorization Servers (which don’t require API Access Management) you can manually validate against the /introspect endpoint ( https://developer.okta.com/docs/reference/api/oidc/#introspect ). 
+Using Express?  Our [Express Resource Server Example](https://github.com/okta/samples-nodejs-express-4/tree/master/resource-server) will show you how to use this library in your Express application.
+
+## Access Tokens
+
+This library verifies Okta access tokens (issued by [Okta Custom Authorization servers](https://developer.okta.com/docs/concepts/auth-servers/#custom-authorization-server)) by fetching the public keys from the JWKS endpoint of the authorization server. If the access token is valid it will be converted to a JSON object and returned to your code. 
+
+You can learn about [access tokens](https://developer.okta.com/docs/reference/api/oidc/#access-token), [scopes](https://developer.okta.com/docs/reference/api/oidc/#scopes) and [claims](https://developer.okta.com/docs/reference/api/oidc/#claims) in our [OIDC and OAuth 2.0 API Referece](https://developer.okta.com/docs/reference/api/oidc/).
+
+> Okta Custom Authorization Servers require the [API Access Management](https://developer.okta.com/docs/concepts/api-access-management/) license.  If you are using Okta Org Authorization Servers (which don’t require API Access Management) you can manually validate against the /introspect endpoint ( https://developer.okta.com/docs/reference/api/oidc/#introspect ). 
 
 For any access token to be valid, the following are asserted:
 * Signature is valid (the token was signed by a private key which has a corresponding public key in the JWKS response from the authorization server).
@@ -16,11 +24,23 @@ For any access token to be valid, the following are asserted:
 * The `iss` claim matches the issuer the verifier is constructed with.
 * Any custom claim assertions that have been configured.
 
-> This library is for Node.js applications and will not compile into a front-end application.  If you need to work with tokens in front-end applications, please see [okta-auth-js](https://github.com/okta/okta-auth-js).
+To learn more about verification cases and Okta's tokens please read [Validate Access Tokens](https://developer.okta.com/docs/guides/validate-access-tokens/go/overview/). 
 
-Using Express?  Our [Express Resource Server Example](https://github.com/okta/samples-nodejs-express-4/tree/master/resource-server) will show you how to use this library in your Express application.
+## ID Tokens
 
-To learn more about verification cases and Okta's tokens please read [Working With OAuth 2.0 Tokens](https://developer.okta.com/authentication-guide/tokens/)
+This library verifies Okta ID tokens (issued by [Okta Custom Authorization servers](https://developer.okta.com/docs/concepts/auth-servers/#custom-authorization-server) or [Okta Org Authorization Server](https://developer.okta.com/docs/concepts/auth-servers/#org-authorization-server)) by fetching the public keys from the JWKS endpoint of the authorization server. If the token is valid it will be converted to a JSON object and returned to your code. 
+
+You can learn about [ID tokens](https://developer.okta.com/docs/reference/api/oidc/#id-token), [scopes](https://developer.okta.com/docs/reference/api/oidc/#scopes) and [claims](https://developer.okta.com/docs/reference/api/oidc/#claims) in our [OIDC and OAuth 2.0 API Referece](https://developer.okta.com/docs/reference/api/oidc/).
+
+For any ID token to be valid, the following are asserted:
+* Signature is valid (the token was signed by a private key which has a corresponding public key in the JWKS response from the authorization server).
+* ID token is not expired (requires local system time to be in sync with Okta, checks the `exp` claim of the ID token).
+* The `aud` claim matches the expected client ID passed to `verifyIdToken()`.
+* The `iss` claim matches the issuer the verifier is constructed with.
+* The `nonce` claim matches the expected nonce.
+* Any custom claim assertions that have been configured.
+
+To learn more about verification cases and Okta's tokens please read [Validate ID Tokens](https://developer.okta.com/docs/guides/validate-id-tokens/overview/). 
 
 ## Upgrading
 
@@ -42,7 +62,7 @@ const oktaJwtVerifier = new OktaJwtVerifier({
 });
 ```
 
-With a verifier, you can now verify access tokens:
+### Verify access tokens
 
 ```javascript
 oktaJwtVerifier.verifyAccessToken(accessTokenString, expectedAud)
@@ -68,6 +88,22 @@ oktaJwtVerifier.verifyAccessToken(accessTokenString, [ 'api://special', 'api://d
 .catch(err => console.warn('token failed validation') );
 ```
 
+### Verify ID tokens
+
+```javascript
+oktaJwtVerifier.verifyIdToken(idTokenString, expectedClientId, expectedNonce)
+.then(jwt => {
+  // the token is valid (per definition of 'valid' above)
+  console.log(jwt.claims);
+})
+.catch(err => {
+  // a validation failed, inspect the error
+});
+```
+
+The expected client ID passed to `verifyIdToken()` is required. Expected nonce value is optional and required if the claim is present in the token body.
+
+
 ## Custom Claims Assertions
 
 For basic use cases, you can ask the verifier to assert a custom set of claims. For example, if you need to assert that this JWT was issued for a given client id:
@@ -82,7 +118,7 @@ const verifier = new OktaJwtVerifier({
 });
 ```
 
-Validation fails and an error is returned if an access token does not have the configured claim.
+Validation fails and an error is returned if the token does not have the configured claim.
 
 For more complex use cases, you can ask the verifier to assert that a claim includes one or more values. This is useful for array type claims as well as claims that have space-separated values in a string.
 
