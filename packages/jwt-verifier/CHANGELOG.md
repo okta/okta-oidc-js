@@ -1,3 +1,13 @@
+# 2.0.0
+
+### Features
+
+- [#951](https://github.com/okta/okta-oidc-js/pull/951) - Adds verifyIdToken()
+
+### Breaking Changes
+
+- [#951](https://github.com/okta/okta-oidc-js/pull/951) - Verifier will throw error "No KID specified" if no KID is present in the JWT header
+
 # 1.0.1
 
 - [#935](https://github.com/okta/okta-oidc-js/pull/935) Updates jwks-rsa version for security fixes
