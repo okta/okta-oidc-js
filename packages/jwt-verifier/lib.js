@@ -135,7 +135,8 @@ class OktaJwtVerifier {
       cacheMaxAge: options.cacheMaxAge || (60 * 60 * 1000),
       cacheMaxEntries: 3,
       jwksRequestsPerMinute: options.jwksRequestsPerMinute || 10,
-      rateLimit: true
+      rateLimit: true,
+      proxy: options.proxy
     });
     this.verifier = nJwt.createVerifier().setSigningAlgorithm('RS256').withKeyResolver((kid, cb) => {
       if (kid) {
