@@ -75,7 +75,7 @@ oktaJwtVerifier.verifyAccessToken(accessTokenString, expectedAud)
 });
 ```
 
-The expected audience passed to `verifyAccessToken()` is required, and can be either a string (direct match) or an array strings (the actual `aud` claim in the token must match one of the strings).
+The expected audience passed to `verifyAccessToken()` is required, and can be either a string (direct match) or an array of strings (the actual `aud` claim in the token must match one of the strings).
 
 ```javascript
 // Passing a string for expectedAud
@@ -148,7 +148,7 @@ const verifier = new OktaJwtVerifier({
 });
 ```
 
-The values you want to assert are included are always represented as an array (the right side of the expression). The claim that you're checking against (the left side of the expression) can have either an array (like `groups`) or a space-separated list in a string (like `scp`) as its value type.
+The values you want to assert are always represented as an array (the right side of the expression). The claim that you're checking against (the left side of the expression) can have either an array (like `groups`) or a space-separated list in a string (like `scp`) as its value type.
 
 NOTE: Currently, `.includes` is the only supported claim operator.
 
@@ -170,11 +170,11 @@ const oktaJwtVerifier = new OktaJwtVerifier({
 ```
 
 ## Testing
-Setup SPA and Web App in your Okta org and testing environment variables by following [Testing](https://github.com/okta/okta-oidc-js#testing) section in okta-oidc-js Monorepo's README.
+Set up a SPA and a Web App in your Okta org and testing environment variables by following the [Testing](https://github.com/okta/okta-oidc-js#testing) section in okta-oidc-js Monorepo's README.
 
 **NOTE:** 
 
-When create SPA application in your Okta org, please make sure all `Implicit` checks have been checked in `General Settings -> Application -> Allowed grant types` section.
+When creating a SPA in your Okta org, please make sure all `Implicit` checks have been checked in the `General Settings -> Application -> Allowed grant types` section.
 
 Command for running unit test:
 ```
