@@ -1,3 +1,9 @@
+# 2.0.1
+
+### Other
+
+- [#952](https://github.com/okta/okta-oidc-js/pull/952) - Updates configuration-validation dependency to 1.0.0
+
 # 2.0.0
 
 ### Features
