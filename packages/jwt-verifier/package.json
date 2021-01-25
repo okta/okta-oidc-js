@@ -1,6 +1,6 @@
 {
   "name": "@okta/jwt-verifier",
-  "version": "2.0.0",
+  "version": "2.0.1",
   "description": "Easily validate Okta access tokens",
   "repository": "https://github.com/okta/okta-oidc-js",
   "homepage": "https://github.com/okta/okta-oidc-js/tree/master/packages/jwt-verifier",
@@ -34,7 +34,7 @@
   },
   "license": "Apache-2.0",
   "dependencies": {
-    "@okta/configuration-validation": "^0.1.1",
+    "@okta/configuration-validation": "^1.0.0",
     "jwks-rsa": "1.11.0",
     "njwt": "^1.0.0"
   },
