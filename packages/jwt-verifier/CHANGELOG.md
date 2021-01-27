@@ -3,6 +3,7 @@
 ### Other
 
 - [#952](https://github.com/okta/okta-oidc-js/pull/952) - Updates configuration-validation dependency to 1.0.0
+- [#953](https://github.com/okta/okta-oidc-js/pull/963) - Fixes security vulnerability in jwks-rsa dependency
 
 # 2.0.0
 
