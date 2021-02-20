@@ -9,10 +9,11 @@
     "src"
   ],
   "scripts": {
-    "test": "yarn test:unit && yarn test:integration",
+    "test": "yarn test:unit && yarn test:integration && yarn test:types",
     "test:integration": "../../scripts/tck.sh",
     "test:unit": "JEST_JUNIT_OUTPUT=./reports/junit/results.xml jest --runInBand test/spec",
-    "test:ci": "JEST_JUNIT_OUTPUT=./reports/junit/results.xml jest test/internal-ci"
+    "test:ci": "JEST_JUNIT_OUTPUT=./reports/junit/results.xml jest test/internal-ci",
+    "test:types": "tsc test/types/lib.spec.ts --noEmit"
   },
   "keywords": [
     "okta",
@@ -46,6 +47,7 @@
     "jest-junit": "^6.4.0",
     "nock": "^9.0.14",
     "node-fetch": "^2.6.0",
-    "timekeeper": "^1.0.0"
+    "timekeeper": "^1.0.0",
+    "typescript": "^4.1.5"
   }
 }
