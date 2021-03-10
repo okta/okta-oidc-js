@@ -12,7 +12,7 @@
 
 const constants = require('../util/constants');
 const util = require('../util/util');
-let widgetVersion = '4.4.1';
+let widgetVersion = '5.4.2';
 const options = {};
 
 // This is used as PDV for widget after artifact promotion to CDN
