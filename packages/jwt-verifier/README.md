@@ -111,7 +111,7 @@ For basic use cases, you can ask the verifier to assert a custom set of claims. 
 ```javascript
 const verifier = new OktaJwtVerifier({
   issuer: 'https://{yourOktaDomain}/oauth2/default',
-  clientId: '{clientId}'
+  clientId: '{clientId}',
   assertClaims: {
     cid: '{clientId}'
   }
@@ -166,6 +166,18 @@ const oktaJwtVerifier = new OktaJwtVerifier({
   clientId: '{clientId}',
   cacheMaxAge: 60 * 60 * 1000, // 1 hour
   jwksRequestsPerMinute: 10
+});
+```
+
+## Using a Proxy
+
+* You can configure a proxy to be used for the fetch call for the public keys.
+
+```javascript
+// All values are default files
+const oktaJwtVerifier = new OktaJwtVerifier({
+  // ...other options
+  proxy: '[protocol]://[username]:[pass]@[address]:[port]'
 });
 ```
 
