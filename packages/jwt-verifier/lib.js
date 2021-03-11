@@ -130,7 +130,7 @@ class OktaJwtVerifier {
     this.claimsToAssert = options.assertClaims || {};
     this.issuer = options.issuer;
     this.jwksClient = jwksClient({
-      jwksUri: options.issuer + '/v1/keys',
+      jwksUri:`${(options.issuer.indexOf('oauth2') > -1) ? options.issuer : options.issuer + '/oauth2'}/v1/keys`,
       cache: true,
       cacheMaxAge: options.cacheMaxAge || (60 * 60 * 1000),
       cacheMaxEntries: 3,
