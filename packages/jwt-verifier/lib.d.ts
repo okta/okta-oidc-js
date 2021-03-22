@@ -9,8 +9,10 @@
  *
  * See the License for the specific language governing permissions and limitations under the License.
  */
-export default class OktaJwtVerifier {
-  constructor(options: OktaJwt.VerifierOptions);
+export = OktaJwtVerifier;
+
+declare class OktaJwtVerifier {
+  constructor(options: OktaJwtVerifier.VerifierOptions);
 
   /**
    * Verify an access token
@@ -22,7 +24,7 @@ export default class OktaJwtVerifier {
   verifyAccessToken(
     accessTokenString: string,
     expectedAudience: string | string[]
-  ): Promise<OktaJwt.Jwt>;
+  ): Promise<OktaJwtVerifier.Jwt>;
 
   /**
    * Verify ID Tokens
@@ -34,12 +36,12 @@ export default class OktaJwtVerifier {
     idTokenString: string,
     expectedClientId: string,
     expectedNonce: string
-  ): Promise<OktaJwt.Jwt>;
+  ): Promise<OktaJwtVerifier.Jwt>;
 
-  private verifyAsPromise(tokenString: string): Promise<OktaJwt.Jwt>;
+  private verifyAsPromise(tokenString: string): Promise<OktaJwtVerifier.Jwt>;
 }
 
-export namespace OktaJwt {
+declare namespace OktaJwtVerifier {
   interface VerifierOptions {
     /**
      * Issuer/Authorization server URL
