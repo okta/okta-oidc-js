@@ -61,9 +61,7 @@
     "directory": "test/types",
     "compilerOptions": {
       "skipLibCheck": true,
-      "lib": [
-        "dom"
-      ],
+      "esModuleInterop": true,
       "paths": {
         "@okta/jwt-verifier": [
           "."
