@@ -9,9 +9,9 @@
  *
  * See the License for the specific language governing permissions and limitations under the License.
  */
-export = OktaJwtVerifier;
-declare class OktaJwtVerifier {
-  constructor(options: OktaJwtVerifier.VerifierOptions);
+export default class OktaJwtVerifier {
+  constructor(options: OktaJwt.VerifierOptions);
+
   /**
    * Verify an access token
    *
@@ -22,7 +22,8 @@ declare class OktaJwtVerifier {
   verifyAccessToken(
     accessTokenString: string,
     expectedAudience: string | string[]
-  ): Promise<OktaJwtVerifier.Jwt>;
+  ): Promise<OktaJwt.Jwt>;
+
   /**
    * Verify ID Tokens
    *
@@ -33,12 +34,12 @@ declare class OktaJwtVerifier {
     idTokenString: string,
     expectedClientId: string,
     expectedNonce: string
-  ): Promise<OktaJwtVerifier.Jwt>;
+  ): Promise<OktaJwt.Jwt>;
 
-  private verifyAsPromise(tokenString: string): Promise<OktaJwtVerifier.Jwt>;
+  private verifyAsPromise(tokenString: string): Promise<OktaJwt.Jwt>;
 }
 
-declare namespace OktaJwtVerifier {
+export namespace OktaJwt {
   interface VerifierOptions {
     /**
      * Issuer/Authorization server URL
@@ -74,6 +75,8 @@ declare namespace OktaJwtVerifier {
      */
     assertClaims?: Record<string, unknown>;
     /**
+     * Cache time in milliseconds
+     *
      * By default, found keys are cached by key ID for one hour. This can be
      * configured with the cacheMaxAge option for cache entries.
      *
@@ -81,6 +84,8 @@ declare namespace OktaJwtVerifier {
      */
     cacheMaxAge?: number;
     /**
+     * Rate limit in requests per minute
+     *
      * If a key ID is not found in the cache, the JWKs endpoint will be requested.
      * To prevent a DoS if many not-found keys are requested, a rate limit of 10
      * JWKs requests per minute is enforced. This is configurable with the
@@ -92,23 +97,20 @@ declare namespace OktaJwtVerifier {
   }
 
   type Algorithm =
-    | "HS256"
-    | "HS384"
-    | "HS512"
-    | "RS256"
-    | "RS384"
-    | "RS512"
-    | "ES256"
-    | "ES384"
-    | "ES512"
-    | "PS256"
-    | "PS384"
-    | "PS512"
-    | "none";
+    'HS256'
+    | 'HS384'
+    | 'HS512'
+    | 'RS256'
+    | 'RS384'
+    | 'RS512'
+    | 'ES256'
+    | 'ES384'
+    | 'ES512'
+    | 'none';
 
   interface JwtHeader {
     alg: Algorithm;
-    typ?: string;
+    typ: string;
     kid?: string;
     jku?: string;
     x5u?: string;
@@ -116,21 +118,23 @@ declare namespace OktaJwtVerifier {
   }
 
   interface JwtClaims {
-    iss?: string;
+    iss: string;
     sub: string;
-    aud?: string;
-    exp?: number;
+    aud: string;
+    exp: number;
     nbf?: number;
     iat?: number;
     jti?: string;
     nonce?: string;
     scp?: string[];
-    [key: string]: any;
+    [key: string]: unknown;
   }
 
   interface Jwt {
     claims: JwtClaims;
     header: JwtHeader;
     toString(): string;
+    isExpired(): boolean;
+    isNotBefore(): boolean;
   }
 }
