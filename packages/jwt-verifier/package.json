@@ -5,15 +5,17 @@
   "repository": "https://github.com/okta/okta-oidc-js",
   "homepage": "https://github.com/okta/okta-oidc-js/tree/master/packages/jwt-verifier",
   "main": "lib.js",
+  "types": "lib.d.ts",
   "files": [
-    "src"
+    "lib.js",
+    "lib.d.ts"
   ],
   "scripts": {
-    "test": "yarn test:unit && yarn test:integration && yarn test:types",
+    "test": "yarn test:unit && yarn test:integration && yarn lint",
     "test:integration": "../../scripts/tck.sh",
     "test:unit": "JEST_JUNIT_OUTPUT=./reports/junit/results.xml jest --runInBand test/spec",
     "test:ci": "JEST_JUNIT_OUTPUT=./reports/junit/results.xml jest test/internal-ci",
-    "test:types": "tsc test/types/lib.spec.ts --noEmit"
+    "lint": "eslint . --ext .js --ext .ts && tsd"
   },
   "keywords": [
     "okta",
@@ -24,7 +26,7 @@
     "jwt"
   ],
   "engines": {
-    "node": ">=6"
+    "node": ">=7.6"
   },
   "jest": {
     "reporters": [
@@ -40,14 +42,33 @@
     "njwt": "^1.0.0"
   },
   "devDependencies": {
+    "@typescript-eslint/eslint-plugin": "^4.18.0",
+    "@typescript-eslint/parser": "^4.18.0",
     "cors": "^2.8.4",
     "cross-env": "^5.1.1",
+    "eslint": "^7.22.0",
+    "eslint-plugin-node": "^11.1.0",
     "express": "^4.15.4",
     "jest": "^24.8.0",
     "jest-junit": "^6.4.0",
     "nock": "^9.0.14",
     "node-fetch": "^2.6.0",
     "timekeeper": "^1.0.0",
+    "tsd": "^0.14.0",
     "typescript": "^4.1.5"
+  },
+  "tsd": {
+    "directory": "test/types",
+    "compilerOptions": {
+      "skipLibCheck": true,
+      "lib": [
+        "dom"
+      ],
+      "paths": {
+        "@okta/jwt-verifier": [
+          "."
+        ]
+      }
+    }
   }
 }

@@ -15,7 +15,7 @@ const nJwt = require('njwt');
 
 const {
   assertIssuer,
-  assertClientId
+  assertClientId,
 } = require('@okta/configuration-validation');
 
 class AssertedClaimsVerifier {
@@ -41,18 +41,18 @@ class AssertedClaimsVerifier {
 
   isValidOperator(operator) {
     // may support more operators in the future
-    return !operator || operator === 'includes'
+    return !operator || operator === 'includes';
   }
 
   checkAssertions(op, claim, expectedValue, actualValue) {
     if (!op && actualValue !== expectedValue) {
       this.errors.push(`claim '${claim}' value '${actualValue}' does not match expected value '${expectedValue}'`);
     } else if (op === 'includes' && Array.isArray(expectedValue)) {
-      expectedValue.forEach(value => {
+      expectedValue.forEach((value) => {
         if (!actualValue || !actualValue.includes(value)) {
           this.errors.push(`claim '${claim}' value '${actualValue}' does not include expected value '${value}'`);
         }
-      })
+      });
     } else if (op === 'includes' && (!actualValue || !actualValue.includes(expectedValue))) {
       this.errors.push(`claim '${claim}' value '${actualValue}' does not include expected value '${expectedValue}'`);
     }
@@ -61,14 +61,14 @@ class AssertedClaimsVerifier {
 
 function verifyAssertedClaims(verifier, claims) {
   const assertedClaimsVerifier = new AssertedClaimsVerifier();
-  for (let [claimName, expectedValue] of Object.entries(verifier.claimsToAssert)) {
+  for (const [claimName, expectedValue] of Object.entries(verifier.claimsToAssert)) {
     const operator = assertedClaimsVerifier.extractOperator(claimName);
     if (!assertedClaimsVerifier.isValidOperator(operator)) {
       throw new Error(`operator: '${operator}' invalid. Supported operators: 'includes'.`);
     }
     const claim = assertedClaimsVerifier.extractClaim(claimName);
     const actualValue = claims[claim];
-    assertedClaimsVerifier.checkAssertions(operator, claim, expectedValue, actualValue)
+    assertedClaimsVerifier.checkAssertions(operator, claim, expectedValue, actualValue);
   }
   if (assertedClaimsVerifier.errors.length) {
     throw new Error(assertedClaimsVerifier.errors.join(', '));
@@ -76,45 +76,45 @@ function verifyAssertedClaims(verifier, claims) {
 }
 
 function verifyAudience(expected, aud) {
-  if( !expected ) {
+  if (!expected) {
     throw new Error('expected audience is required');
   }
 
-  if ( Array.isArray(expected) && !expected.includes(aud) ) {
-    throw new Error(`audience claim ${aud} does not match one of the expected audiences: ${ expected.join(', ') }`);
+  if (Array.isArray(expected) && !expected.includes(aud)) {
+    throw new Error(`audience claim ${aud} does not match one of the expected audiences: ${expected.join(', ')}`);
   }
 
-  if ( !Array.isArray(expected) && aud !== expected ) {
+  if (!Array.isArray(expected) && aud !== expected) {
     throw new Error(`audience claim ${aud} does not match expected audience: ${expected}`);
   }
 }
 
 function verifyClientId(expected, aud) {
-  if( !expected ) {
+  if (!expected) {
     throw new Error('expected client id is required');
   }
 
   assertClientId(expected);
 
-  if ( aud !== expected ) {
+  if (aud !== expected) {
     throw new Error(`audience claim ${aud} does not match expected client id: ${expected}`);
   }
 }
 
 function verifyIssuer(expected, issuer) {
-  if( issuer !== expected ) {
+  if (issuer !== expected) {
     throw new Error(`issuer ${issuer} does not match expected issuer: ${expected}`);
   }
 }
 
 function verifyNonce(expected, nonce) {
-  if( nonce && !expected ) {
+  if (nonce && !expected) {
     throw new Error('expected nonce is required');
   }
   if (!nonce && expected) {
     throw new Error(`nonce claim is missing but expected: ${expected}`);
   }
-  if( nonce && expected && nonce !== expected ) {
+  if (nonce && expected && nonce !== expected) {
     throw new Error(`nonce claim ${nonce} does not match expected nonce: ${expected}`);
   }
 }
@@ -123,19 +123,19 @@ class OktaJwtVerifier {
   constructor(options = {}) {
     // Assert configuration options exist and are well-formed (not necessarily correct!)
     assertIssuer(options.issuer, options.testing);
-    if( options.clientId ) {
+    if (options.clientId) {
       assertClientId(options.clientId);
     }
 
     this.claimsToAssert = options.assertClaims || {};
     this.issuer = options.issuer;
     this.jwksClient = jwksClient({
-      jwksUri: options.issuer + '/v1/keys',
+      jwksUri: `${options.issuer}/v1/keys`,
       cache: true,
       cacheMaxAge: options.cacheMaxAge || (60 * 60 * 1000),
       cacheMaxEntries: 3,
       jwksRequestsPerMinute: options.jwksRequestsPerMinute || 10,
-      rateLimit: true
+      rateLimit: true,
     });
     this.verifier = nJwt.createVerifier().setSigningAlgorithm('RS256').withKeyResolver((kid, cb) => {
       if (kid) {
@@ -143,7 +143,7 @@ class OktaJwtVerifier {
           cb(err, key && (key.publicKey || key.rsaPublicKey));
         });
       } else {
-        cb("No KID specified", null);
+        cb('No KID specified', null);
       }
     });
   }
