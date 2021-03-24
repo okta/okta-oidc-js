@@ -1,3 +1,9 @@
+# 2.1.0
+
+### Other
+
+- [#979](https://github.com/okta/okta-oidc-js/pull/979) - Adds TypeScript type declaration file. Configured eslint and tsd
+
 # 2.0.1
 
 ### Other
