@@ -1,9 +1,3 @@
-# 2.1.1
-
-### Other
-
-- [#980](https://github.com/okta/okta-oidc-js/pull/980) - Fixes eslint failure
-
 # 2.1.0
 
 ### Other
