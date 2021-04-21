@@ -113,7 +113,12 @@ connectUtil.createLoginCallbackHandler = context => {
           throw new OIDCMiddlewareError('middlewareError', 'Your custom callback handler must request "next"');
       }
     };
-    passport.authenticate('oidc')(req, res, nextHandler);
+    passport.authenticate("oidc", (err, ok, challenge, status) => {
+      if (!err && !ok) {
+        err = challenge;
+      }
+      nextHandler(err);
+    })(req, res, nextHandler);
   }
 };
 
