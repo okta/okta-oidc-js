@@ -1,6 +1,6 @@
 {
   "name": "@okta/oidc-middleware",
-  "version": "4.0.0",
+  "version": "4.0.3",
   "description": "OpenId Connect middleware for authorization code flows",
   "repository": "https://github.com/okta/okta-oidc-js",
   "homepage": "https://github.com/okta/okta-oidc-js/tree/master/packages/oidc-middleware",
@@ -18,7 +18,7 @@
   "scripts": {
     "lint": "eslint .",
     "test": "yarn lint && yarn test:unit && yarn test:e2e && yarn test:integration",
-    "pretest:e2e": "../../scripts/update_se_drivers.sh",
+    "pretest:e2e": "node ../../scripts/update-se-drivers.js",
     "test:e2e": "protractor test/e2e/protractor.conf.js",
     "test:integration": "../../scripts/tck.sh 0.4.0",
     "test:unit": "jest test/unit",
@@ -29,13 +29,13 @@
     "node": "^10.13.0 || >=12.0.0"
   },
   "jest": {
-    "testEnvironment": "jsdom"
+    "testEnvironment": "jsdom",
+    "restoreMocks": true
   },
   "license": "Apache-2.0",
   "dependencies": {
     "@okta/configuration-validation": "^0.4.1",
     "body-parser": "^1.18.2",
-    "connect-ensure-login": "^0.1.1",
     "csurf": "^1.9.0",
     "express": "^4.16.3",
     "lodash": "^4.17.5",
@@ -47,6 +47,7 @@
   },
   "devDependencies": {
     "babel-eslint": "^10.0.3",
+    "cookie-parser": "^1.4.5",
     "cross-env": "^7.0.0",
     "ejs": "^3.0.1",
     "eslint": "^6.6.0",
@@ -62,7 +63,8 @@
     "nock": "^11.7.2",
     "protractor": "^5.4.2",
     "read-package-tree": "^5.1.6",
-    "server-destroy": "^1.0.1"
+    "server-destroy": "^1.0.1",
+    "supertest": "^6.0.1"
   },
   "resolutions": {
     "webdriver-manager": "^12.1.4"

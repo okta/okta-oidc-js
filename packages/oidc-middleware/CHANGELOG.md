@@ -1,3 +1,25 @@
+# 4.0.3
+
+### Bug Fixes
+
+- [#962](https://github.com/okta/okta-oidc-js/pull/962)
+  - fixes options.timeout for requests to /token
+  
+# 4.0.2
+
+### Bug Fixes
+
+- [#949](https://github.com/okta/okta-oidc-js/pull/949) 
+  - oidcUtil: support for passport strategy callback without userinfo
+
+# 4.0.1
+
+### Bug Fixes
+
+- [#731](https://github.com/okta/okta-oidc-js/pull/731) 
+  - Fix redirect issue after login 
+  - Remove dependency `connect-ensure-login`
+
 # 4.0.0
 
 ### Breaking Changes

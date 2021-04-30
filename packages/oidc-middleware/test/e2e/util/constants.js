@@ -12,5 +12,4 @@
 
 const Config = require('../../../../../.oidc.config.js');
 
-module.exports = Config({ port: 8080 }).webConstants;
-
+module.exports = Config({ port: process.env.PORT || 8080 }).webConstants;

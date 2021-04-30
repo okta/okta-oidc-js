@@ -1,3 +1,30 @@
+# 2.1.0
+
+### Other
+
+- [#979](https://github.com/okta/okta-oidc-js/pull/979) - Adds TypeScript type declaration file. Configured eslint and tsd
+
+# 2.0.1
+
+### Other
+
+- [#952](https://github.com/okta/okta-oidc-js/pull/952) - Updates configuration-validation dependency to 1.0.0
+- [#953](https://github.com/okta/okta-oidc-js/pull/963) - Fixes security vulnerability in jwks-rsa dependency
+
+# 2.0.0
+
+### Features
+
+- [#951](https://github.com/okta/okta-oidc-js/pull/951) - Adds verifyIdToken()
+
+### Breaking Changes
+
+- [#951](https://github.com/okta/okta-oidc-js/pull/951) - Verifier will throw error "No KID specified" if no KID is present in the JWT header
+
+# 1.0.1
+
+- [#935](https://github.com/okta/okta-oidc-js/pull/935) Updates jwks-rsa version for security fixes
+
 # 1.0.0
 ### Features
 - [`9d76c9f`](https://github.com/okta/okta-oidc-js/commit/9d76c9f952506d3a51bb912a87a8da592dd7201d) - Adds verifications to verifyAccessToken() [#481](https://github.com/okta/okta-oidc-js/pull/481)

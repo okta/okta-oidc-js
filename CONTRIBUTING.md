@@ -59,9 +59,9 @@ Our types include:
     Resolves: #1234
 
 ### Example for specific package change
-    fix[okta-angular]: Fixes bad bug
+    fix[oidc-middleware]: Fixes bad bug
 
-    Fixes a very bad bug in okta-angular
+    Fixes a very bad bug in oidc-middleware
 
     Resolves: #5678
 

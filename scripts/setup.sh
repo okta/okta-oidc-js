@@ -31,16 +31,9 @@ OKTA_REGISTRY=${ARTIFACTORY_URL}/api/npm/npm-okta-master
 # Replace yarn registry with Okta's
 echo "Replacing $YARN_REGISTRY with $OKTA_REGISTRY within yarn.lock files..."
 sed -i "s#${YARN_REGISTRY}#${OKTA_REGISTRY}#" yarn.lock
-sed -i "s#${YARN_REGISTRY}#${OKTA_REGISTRY}#" packages/okta-angular/test/e2e/harness/yarn.lock
-sed -i "s#${YARN_REGISTRY}#${OKTA_REGISTRY}#" packages/okta-react/test/e2e/harness/yarn.lock
-sed -i "s#${YARN_REGISTRY}#${OKTA_REGISTRY}#" packages/okta-vue/test/e2e/harness/yarn.lock
 sed -i "s#${YARN_REGISTRY}#${OKTA_REGISTRY}#" packages/configuration-validation/yarn.lock
 sed -i "s#${YARN_REGISTRY}#${OKTA_REGISTRY}#" packages/jwt-verifier/yarn.lock
 sed -i "s#${YARN_REGISTRY}#${OKTA_REGISTRY}#" packages/oidc-middleware/yarn.lock
-sed -i "s#${YARN_REGISTRY}#${OKTA_REGISTRY}#" packages/okta-angular/yarn.lock
-sed -i "s#${YARN_REGISTRY}#${OKTA_REGISTRY}#" packages/okta-react/yarn.lock
-sed -i "s#${YARN_REGISTRY}#${OKTA_REGISTRY}#" packages/okta-vue/yarn.lock
-sed -i "s#${YARN_REGISTRY}#${OKTA_REGISTRY}#" packages/okta-react-native/yarn.lock
 
 if ! yarn install ; then
   echo "yarn install failed! Exiting..."
@@ -50,13 +43,6 @@ fi
 # Revert the original change(s)
 echo "Replacing $OKTA_REGISTRY with $YARN_REGISTRY within yarn.lock files..."
 sed -i "s#${OKTA_REGISTRY}#${YARN_REGISTRY}#" yarn.lock
-sed -i "s#${OKTA_REGISTRY}#${YARN_REGISTRY}#" packages/okta-angular/test/e2e/harness/yarn.lock
-sed -i "s#${YARN_REGISTRY}#${OKTA_REGISTRY}#" packages/okta-react/test/e2e/harness/yarn.lock
-sed -i "s#${OKTA_REGISTRY}#${YARN_REGISTRY}#" packages/okta-vue/test/e2e/harness/yarn.lock
 sed -i "s#${OKTA_REGISTRY}#${YARN_REGISTRY}#" packages/configuration-validation/yarn.lock
 sed -i "s#${OKTA_REGISTRY}#${YARN_REGISTRY}#" packages/jwt-verifier/yarn.lock
 sed -i "s#${OKTA_REGISTRY}#${YARN_REGISTRY}#" packages/oidc-middleware/yarn.lock
-sed -i "s#${OKTA_REGISTRY}#${YARN_REGISTRY}#" packages/okta-angular/yarn.lock
-sed -i "s#${OKTA_REGISTRY}#${YARN_REGISTRY}#" packages/okta-react/yarn.lock
-sed -i "s#${OKTA_REGISTRY}#${YARN_REGISTRY}#" packages/okta-vue/yarn.lock
-sed -i "s#${OKTA_REGISTRY}#${YARN_REGISTRY}#" packages/okta-react-native/yarn.lock

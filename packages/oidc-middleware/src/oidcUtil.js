@@ -12,7 +12,6 @@
 
 const passport = require('passport');
 const OpenIdClient = require('openid-client');
-const ensureLoggedIn = require('connect-ensure-login').ensureLoggedIn;
 const Negotiator = require('negotiator');
 const os = require('os');
 
@@ -73,7 +72,11 @@ oidcUtil.createClient = context => {
         redirect_uri
       ]
     });
-    client[custom.http_options] = customizeUserAgent;
+    client[custom.http_options] = options => {
+      options = customizeUserAgent(options);
+      options.timeout = timeout || 10000;
+      return options;
+    };
     client[custom.clock_tolerance] = maxClockSkew;
 
     return client;
@@ -87,13 +90,29 @@ oidcUtil.bootstrapPassportStrategy = context => {
     },
     sessionKey: context.options.sessionKey,
     client: context.client
-  }, (tokenSet, userinfo, done) => {
-    return tokenSet && userinfo
-      ? done(null, {
-        userinfo: userinfo,
-        tokens: tokenSet
-      })
-      : done(null);
+  }, (tokenSet, callbackArg1, callbackArg2) => {
+    let done;
+    let userinfo;
+
+    if (typeof(callbackArg2) !== 'undefined') {
+      done = callbackArg2;
+      userinfo = callbackArg1;
+    } else {
+      done = callbackArg1;
+    }
+
+    if(tokenSet) {
+      return userinfo ?
+        done(null, {
+          userinfo,
+          tokens: tokenSet,
+        }) :
+        done(null, {
+          tokens: tokenSet
+        });
+    } else {
+      return done(null);
+    }
   });
 
   // bypass passport's serializers
@@ -102,15 +121,24 @@ oidcUtil.bootstrapPassportStrategy = context => {
   passport.use('oidc', oidcStrategy);
 };
 
-oidcUtil.ensureAuthenticated = (context, options) => {
-  options = options || context.options.routes.login.path;
+oidcUtil.ensureAuthenticated = (context, options = {}) => {
   return (req, res, next) => {
-    if (req.isAuthenticated && req.isAuthenticated()) {
+    const isAuthenticated = req.isAuthenticated && req.isAuthenticated();
+    if (isAuthenticated) {
       return next();
     }
     const negotiator = new Negotiator(req);
     if (negotiator.mediaType() === 'text/html') {
-      ensureLoggedIn(options)(req, res, next);
+      if (!isAuthenticated) {
+        if (req.session) {
+          req.session.returnTo = req.originalUrl || req.url;
+        }
+
+        const url = options.redirectTo || context.options.routes.login.path;
+        return res.redirect(url);
+      }
+
+      next();
     } else {
       res.sendStatus(401);
     }

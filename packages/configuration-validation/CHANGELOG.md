@@ -1,3 +1,29 @@
+# 1.1.0
+
+### Features
+
+- [#954](https://github.com/okta/okta-oidc-js/pull/954)
+  - Adds ES entry point for configuration-validation
+  - Adds sourcemaps
+
+# 1.0.0
+
+### Features
+
+- [#879](https://github.com/okta/okta-oidc-js/pull/879) Adds support for Typescript
+
+# 0.4.3
+
+### Bug Fixes
+
+- [#818](https://github.com/okta/okta-oidc-js/pull/818) Remove bad regex for domain typo checking
+
+# 0.4.2
+
+### Bug Fixes
+
+- [#754] `autoRenew: false` at the top of a config (not in tokenManager) now actually passes into tokenManager.  The previous behavior caused problems with libraries (such as @okta/okta-auth-js) that tried to assign defaults of `true` to any params not explicitly set, as they would not see any explictly `false` setting.  
+
 # 0.4.1
 
 ### Bug Fixes
