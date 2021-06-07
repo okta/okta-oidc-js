@@ -67,6 +67,6 @@
     "supertest": "^6.0.1"
   },
   "resolutions": {
-    "webdriver-manager": "^12.1.4"
+    "webdriver-manager": "^12.1.8"
   }
 }
