@@ -160,7 +160,7 @@ Custom JWKS URI can be provided. It's useful when JWKS URI cannot be based on Is
 const verifier = new OktaJwtVerifier({
   issuer: 'https://{yourOktaDomain}',
   clientId: '{clientId}',
-  jwksUri: 'https://https://{yourOktaDomain}/oauth2/v1/keys'
+  jwksUri: 'https://{yourOktaDomain}/oauth2/v1/keys'
 });
 ```
 
