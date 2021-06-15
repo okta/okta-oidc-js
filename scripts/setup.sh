@@ -3,6 +3,10 @@
 # Add yarn to the $PATH so npm cli commands do not fail
 export PATH="${PATH}:$(yarn global bin)"
 
+# Install required node version
+export NVM_DIR="/root/.nvm"
+setup_service node v12.13.0
+
 cd ${OKTA_HOME}/${REPO}
 
 # undo permissions change on scripts/publish.sh
@@ -18,6 +22,8 @@ git config --global user.name "oktauploader-okta"
 #!/bin/bash
 YARN_REGISTRY=https://registry.yarnpkg.com
 OKTA_REGISTRY=${ARTIFACTORY_URL}/api/npm/npm-okta-master
+
+
 
 # Yarn does not utilize the npmrc/yarnrc registry configuration
 # if a lockfile is present. This results in `yarn install` problems

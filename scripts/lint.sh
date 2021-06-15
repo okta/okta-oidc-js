@@ -1,6 +1,6 @@
 #!/bin/bash -xe
 
-source $OKTA_HOME/$REPO/scripts/setup.sh
+source ${OKTA_HOME}/${REPO}/scripts/setup.sh
 
 PACKAGES=(
   "./packages/configuration-validation"
