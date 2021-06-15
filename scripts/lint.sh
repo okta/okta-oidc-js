@@ -1,9 +1,9 @@
 #!/bin/bash -xe
 
 PACKAGES=(
-  "./packages/configuration-validation"
-  "./packages/jwt-verifier"
-  "./packages/oidc-middleware"
+  "../packages/configuration-validation"
+  "../packages/jwt-verifier"
+  "../packages/oidc-middleware"
 )
 
 for PACKAGE in "${PACKAGES[@]}"
