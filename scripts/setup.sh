@@ -7,6 +7,12 @@ export PATH="${PATH}:$(yarn global bin)"
 export NVM_DIR="/root/.nvm"
 setup_service node v12.13.0
 
+# Export env vars
+export ISSUER=https://samples-javascript.okta.com/oauth2/default
+export USERNAME=george@acme.com
+get_secret prod/okta-sdk-vars/password PASSWORD
+export CLIENT_ID=0oapmwm72082GXal14x6
+
 cd ${OKTA_HOME}/${REPO}
 
 # undo permissions change on scripts/publish.sh
