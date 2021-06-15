@@ -1,9 +1,11 @@
 #!/bin/bash -xe
 
+source $OKTA_HOME/$REPO/scripts/setup.sh
+
 PACKAGES=(
-  "../packages/configuration-validation"
-  "../packages/jwt-verifier"
-  "../packages/oidc-middleware"
+  "./packages/configuration-validation"
+  "./packages/jwt-verifier"
+  "./packages/oidc-middleware"
 )
 
 for PACKAGE in "${PACKAGES[@]}"

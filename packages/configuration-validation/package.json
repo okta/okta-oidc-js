@@ -14,7 +14,7 @@
     "build": "rollup -c",
     "lint": "eslint . && tsc -p test",
     "prepare": "yarn build",
-    "test": "yarn lint && yarn test:unit",
+    "test": "yarn test:unit",
     "test:unit": "jest test/"
   },
   "repository": {

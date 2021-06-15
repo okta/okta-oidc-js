@@ -1,5 +1,7 @@
 #!/bin/bash -xe
 
+source $OKTA_HOME/$REPO/scripts/setup.sh
+
 PACKAGES=(
   "./packages/configuration-validation"
   # is having issues "./packages/jwt-verifier"
