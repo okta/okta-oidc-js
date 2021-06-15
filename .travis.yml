@@ -12,7 +12,7 @@ jdk:
   - default-jdk
 
 script:
-- bash ./scripts/runTests.sh
+- bash ./scripts/lint.sh
 - bash ./scripts/snyk.sh
 
 install:

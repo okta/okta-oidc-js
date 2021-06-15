@@ -1,0 +1,22 @@
+test_suites:
+    - name: lint
+      script_path: /root/okta/okta-oidc-js/scripts
+      sort_order: '1'
+      timeout: '60'
+      script_name: lint
+      criteria: MERGE
+      queue_name: small
+    - name: test
+      script_path: /root/okta/okta-oidc-js/scripts
+      sort_order: '2'
+      timeout: '10'
+      script_name: runTests
+      criteria: MERGE
+      queue_name: small
+    - name: publish
+      script_path: /root/okta/okta-oidc-js/scripts
+      sort_order: '3'
+      timeout: '60'
+      script_name: publish
+      criteria: MERGE
+      queue_name: small
