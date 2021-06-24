@@ -37,7 +37,6 @@
   },
   "license": "Apache-2.0",
   "dependencies": {
-    "@okta/configuration-validation": "^1.0.0",
     "jwks-rsa": "1.12.1",
     "njwt": "^1.0.0"
   },
