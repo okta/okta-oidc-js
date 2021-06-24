@@ -1,3 +1,9 @@
+# 2.2.0
+
+### Other
+
+- [#1012](https://github.com/okta/okta-oidc-js/pull/1012) Removes @okta/configuration-validation dependency
+
 # 2.1.0
 
 ### Other

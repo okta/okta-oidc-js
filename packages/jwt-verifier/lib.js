@@ -13,10 +13,52 @@
 const jwksClient = require('jwks-rsa');
 const nJwt = require('njwt');
 
-const {
-  assertIssuer,
-  assertClientId,
-} = require('@okta/configuration-validation');
+class ConfigurationValidationError extends Error {}
+
+const findDomainURL = 'https://bit.ly/finding-okta-domain';
+const findAppCredentialsURL = 'https://bit.ly/finding-okta-app-credentials';
+
+const assertIssuer = (issuer, testing = {}) => {
+  const isHttps = new RegExp('^https://');
+  const hasDomainAdmin = /-admin.(okta|oktapreview|okta-emea).com/;
+  const copyMessage = 'You can copy your domain from the Okta Developer ' +
+    'Console. Follow these instructions to find it: ' + findDomainURL;
+
+  if (testing.disableHttpsCheck) {
+    const httpsWarning = 'Warning: HTTPS check is disabled. ' +
+      'This allows for insecure configurations and is NOT recommended for production use.';
+    /* eslint-disable-next-line no-console */
+    console.warn(httpsWarning);
+  }
+
+  if (!issuer) {
+    throw new ConfigurationValidationError('Your Okta URL is missing. ' + copyMessage);
+  } else if (!testing.disableHttpsCheck && !issuer.match(isHttps)) {
+    throw new ConfigurationValidationError(
+      'Your Okta URL must start with https. ' +
+      `Current value: ${issuer}. ${copyMessage}`
+    );
+  } else if (issuer.match(/{yourOktaDomain}/)) {
+    throw new ConfigurationValidationError('Replace {yourOktaDomain} with your Okta domain. ' + copyMessage);
+  } else if (issuer.match(hasDomainAdmin)) {
+    throw new ConfigurationValidationError(
+      'Your Okta domain should not contain -admin. ' +
+      `Current value: ${issuer}. ${copyMessage}`
+    );
+  }
+};
+
+const assertClientId = (clientId) => {
+  const copyCredentialsMessage = 'You can copy it from the Okta Developer Console ' +
+    'in the details for the Application you created. ' +
+    `Follow these instructions to find it: ${findAppCredentialsURL}`;
+
+  if (!clientId) {
+    throw new ConfigurationValidationError('Your client ID is missing. ' + copyCredentialsMessage);
+  } else if (clientId.match(/{clientId}/)) {
+    throw new ConfigurationValidationError('Replace {clientId} with the client ID of your Application. ' + copyCredentialsMessage);
+  }
+};
 
 class AssertedClaimsVerifier {
   constructor() {
