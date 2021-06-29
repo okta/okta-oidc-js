@@ -43,7 +43,7 @@
     "node-fetch": "^2.3.0",
     "openid-client": "3.12.2",
     "passport": "^0.4.1",
-    "uuid": "^3.1.0"
+    "uuid": "^8.3.2"
   },
   "devDependencies": {
     "babel-eslint": "^10.0.3",
