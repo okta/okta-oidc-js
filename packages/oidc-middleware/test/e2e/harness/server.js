@@ -25,7 +25,7 @@ module.exports = class DemoServer {
     const app = express();
     this.app = app;
     app.use(session({
-      secret: uuid(), // this will invalidate all sessions on each restart
+      secret: uuid.v4(), // this will invalidate all sessions on each restart
       resave: true,
       saveUninitialized: false
     }));
@@ -75,13 +75,16 @@ module.exports = class DemoServer {
   stop() {
     console.log('Server shutting down');
     return new Promise((resolve, reject) => {
-      this.httpServer.destroy((err) => {
-        console.log('Server destroyed')
-        if (err) {
-          return reject(err);
-        }
+      if (this.httpServer) {
+        this.httpServer.destroy((err) => {
+          console.log('Server destroyed')
+          if (err) {
+            return reject(err);
+          }
+          return resolve();
+        });
+      } else
         return resolve();
-      });
     });
   }
 }
