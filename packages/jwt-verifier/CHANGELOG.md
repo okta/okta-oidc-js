@@ -1,3 +1,9 @@
+# 2.3.0
+
+### Features
+
+- [#708](https://github.com/okta/okta-oidc-js/pull/708) - Adds support for custom JWKS URI when it cannot be constructed from issuer URI
+
 # 2.2.0
 
 ### Other
