@@ -1,3 +1,9 @@
+# 4.2.0
+
+### Bug Fixes
+
+- [#1020](https://github.com/okta/okta-oidc-js/pull/1020) Fixes issue with UUID returning null
+
 # 4.1.0
 
 ### Features
