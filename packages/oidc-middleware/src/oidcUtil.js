@@ -140,7 +140,7 @@ oidcUtil.ensureAuthenticated = (context, options = {}) => {
 
       next();
     } else {
-      res.sendStatus(401);
+      res.sendStatus(406);
     }
   };
 };
