@@ -1,4 +1,5 @@
 const OpenIdClient = require('openid-client');
+const passport = require('passport');
 const nock = require('nock');
 const os = require('os');
 const path = require('path');
@@ -284,5 +285,23 @@ describe('new ExpressOIDC()', () => {
         done();
       })
     });
-  })
+  });
+
+  it('should set token_endpoint_auth_method', (done) => {
+    mockWellKnown();
+    const passportStrategySetter = jest.spyOn(passport, 'use').mockImplementation(() => {});
+
+    new ExpressOIDC({
+      ...minimumConfig,
+      oidcClientOptions: {
+        token_endpoint_auth_method: 'client_secret_post',
+      }
+    })
+    .on('ready', () => {
+      const passportStrategy = passportStrategySetter.mock.calls[0][1];
+      const oidcClient = passportStrategy._client;
+      expect(oidcClient.token_endpoint_auth_method).toBe('client_secret_post');
+      done();
+    });
+  });
 });
