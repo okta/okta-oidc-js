@@ -66,14 +66,13 @@ oidcUtil.createClient = context => {
 
   return Issuer.discover(issuer +  '/.well-known/openid-configuration')
   .then(iss => {
-    const client = new iss.Client({
-      ...oidcClientOptions,
+    const client = new iss.Client(Object.assign({
       client_id,
       client_secret,
       redirect_uris: [
         redirect_uri
       ]
-    });
+    }, oidcClientOptions));
     client[custom.http_options] = options => {
       options = customizeUserAgent(options);
       options.timeout = timeout || 10000;
