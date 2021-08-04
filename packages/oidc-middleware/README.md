@@ -170,6 +170,7 @@ Optional config:
 * **routes** - Allows customization of the generated routes. See [Customizing Routes](#customizing-routes) for details.
 * **maxClockSkew** - Defaults to 120. This is the maximum difference allowed between your server's clock and Okta's in seconds. Setting this to 0 is not recommended, because it increases the likelihood that valid jwts will fail verification due to `nbf` and `exp` issues.
 * **timeout** - Defaults to 10000 milliseconds. The HTTP max timeout for any requests to the issuer.  If a timeout exception occurs you can catch it with the `oidc.on('error', fn)` handler.
+* **oidcClientOptions** - Optional metadata passed to [OpenId Client constructor](https://github.com/panva/node-openid-client/blob/main/docs/README.md#new-clientmetadata-jwks-options). For example, you can override `token_endpoint_auth_method` to one of supported [client authentication methods](https://github.com/panva/node-openid-client/blob/main/docs/README.md#client-authentication-methods) eg. `client_secret_post` (default is `client_secret_basic`)
 
 #### oidc.router
 

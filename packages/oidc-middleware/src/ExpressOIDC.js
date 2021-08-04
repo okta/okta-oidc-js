@@ -52,6 +52,7 @@ module.exports = class ExpressOIDC extends EventEmitter {
    * @param {string} [options.routes.loginCallback.path=/authorization-code] Path where the callback middleware is hosted
    * @param {string} [options.routes.loginCallback.afterCallback=/] Where to redirect once callback is complete
    * @param {Function} [options.routes.loginCallback.handler] This handles responses from the OpenId Connect callback
+   * @param {Object} options.oidcClientOptions Custom options passed to OpenId Client
    */
   constructor(options = {}) {
     super();
