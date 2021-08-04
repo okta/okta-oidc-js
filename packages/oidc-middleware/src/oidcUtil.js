@@ -54,7 +54,8 @@ oidcUtil.createClient = context => {
     client_secret,
     loginRedirectUri: redirect_uri,
     maxClockSkew,
-    timeout
+    timeout,
+    oidcClientOptions
   } = context.options;
 
   Issuer[custom.http_options] = function(options) {
@@ -65,13 +66,13 @@ oidcUtil.createClient = context => {
 
   return Issuer.discover(issuer +  '/.well-known/openid-configuration')
   .then(iss => {
-    const client = new iss.Client({
+    const client = new iss.Client(Object.assign({
       client_id,
       client_secret,
       redirect_uris: [
         redirect_uri
       ]
-    });
+    }, oidcClientOptions));
     client[custom.http_options] = options => {
       options = customizeUserAgent(options);
       options.timeout = timeout || 10000;
