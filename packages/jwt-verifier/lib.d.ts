@@ -35,7 +35,7 @@ declare class OktaJwtVerifier {
   verifyIdToken(
     idTokenString: string,
     expectedClientId: string,
-    expectedNonce: string
+    expectedNonce?: string
   ): Promise<OktaJwtVerifier.Jwt>;
 
   private verifyAsPromise(tokenString: string): Promise<OktaJwtVerifier.Jwt>;
@@ -96,6 +96,13 @@ declare namespace OktaJwtVerifier {
      * Read more: https://github.com/okta/okta-oidc-js/tree/master/packages/jwt-verifier#caching--rate-limiting
      */
     jwksRequestsPerMinute?: number;
+    /**
+     * Custom JWKS URI
+     * It's useful when JWKS URI cannot be based on Issuer URI
+     * 
+     * Read more: https://github.com/okta/okta-oidc-js/tree/master/packages/jwt-verifier#custom-jwks-uri
+     */
+    jwksUri?: string;
   }
 
   type Algorithm =
