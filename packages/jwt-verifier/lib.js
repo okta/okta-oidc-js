@@ -1,3 +1,4 @@
+/* eslint-disable max-classes-per-file */
 /*!
  * Copyright (c) 2017-Present, Okta, Inc. and/or its affiliates. All rights reserved.
  * The Okta software accompanied by this notice is provided pursuant to the Apache License, Version 2.0 (the "License.")
@@ -56,7 +57,8 @@ const assertClientId = (clientId) => {
   if (!clientId) {
     throw new ConfigurationValidationError('Your client ID is missing. ' + copyCredentialsMessage);
   } else if (clientId.match(/{clientId}/)) {
-    throw new ConfigurationValidationError('Replace {clientId} with the client ID of your Application. ' + copyCredentialsMessage);
+    throw new ConfigurationValidationError(
+      'Replace {clientId} with the client ID of your Application. ' + copyCredentialsMessage);
   }
 };
 
