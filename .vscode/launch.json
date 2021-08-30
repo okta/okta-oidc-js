@@ -8,8 +8,8 @@
       "type": "node",
       "request": "launch",
       "protocol": "auto",
-      "name": "jwt-verifier Jest",
-      "cwd": "${workspaceFolder}/packages/jwt-verifier",
+      "name": "configuration-validation Jest",
+      "cwd": "${workspaceFolder}/packages/configuration-validation",
       "args": [
         "node_modules/.bin/jest",
         "--runInBand",
