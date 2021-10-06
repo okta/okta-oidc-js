@@ -37,7 +37,9 @@ const makeTokenRevoker = ({ issuer, client_id, client_secret, errorHandler }) =>
       body: querystring.stringify({token, token_type_hint: token_hint}),
     })
       // eslint-disable-next-line promise/no-nesting
-      .then( r => r.ok ? r : r.text().then(message => Promise.reject(new OIDCMiddlewareError('revokeError', message)) ))
+      .then( r => r.ok ? r : r.text().then((message) => {
+        throw new OIDCMiddlewareError('revokeError', message);
+      }))
       .catch( errorHandler ) // catch and emit - this promise chain can never fail
   };
 };

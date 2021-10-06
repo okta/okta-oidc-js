@@ -1,3 +1,21 @@
+# 2.3.0
+
+### Features
+
+- [#708](https://github.com/okta/okta-oidc-js/pull/708) - Adds support for custom JWKS URI when it cannot be constructed from issuer URI
+
+# 2.2.0
+
+### Other
+
+- [#1012](https://github.com/okta/okta-oidc-js/pull/1012) Removes @okta/configuration-validation dependency
+
+# 2.1.0
+
+### Other
+
+- [#979](https://github.com/okta/okta-oidc-js/pull/979) - Adds TypeScript type declaration file. Configured eslint and tsd
+
 # 2.0.1
 
 ### Other
