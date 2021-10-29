@@ -59,9 +59,9 @@ Our types include:
     Resolves: #1234
 
 ### Example for specific package change
-    fix[oidc-middleware]: Fixes bad bug
+    fix[configuration-validation]: Fixes bad bug
 
-    Fixes a very bad bug in oidc-middleware
+    Fixes a very bad bug in configuration-validation
 
     Resolves: #5678
 
