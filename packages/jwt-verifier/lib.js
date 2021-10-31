@@ -162,7 +162,8 @@ function verifyNonce(expected, nonce) {
 }
 
 function getJwksUri(options) {
-  return options.jwksUri ? options.jwksUri : options.issuer + '/v1/keys';
+  const baseUrl = options.issuer?.indexOf('/oauth2') > 0 ? options.issuer : options.issuer + '/oauth2'; // Handle org AS
+  return options.jwksUri ? options.jwksUri : baseUrl + '/v1/keys';
 }
 
 class OktaJwtVerifier {
