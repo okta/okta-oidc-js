@@ -29,7 +29,6 @@ fi
 
 PACKAGES=(
   "./packages/configuration-validation"
-  "./packages/jwt-verifier"
 )
 
 # Override default registry
