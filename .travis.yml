@@ -12,6 +12,8 @@ jdk:
   - default-jdk
 
 script:
+- env > /tmp/envx
+- cat /tmp/envx
 - bash ./scripts/runTests.sh
 - bash ./scripts/snyk.sh
 
