@@ -70,6 +70,6 @@
     ]
   },
   "dependencies": {
-    "@okta/okta-auth-js": "^4.0.0"
+    "@okta/okta-auth-js": "^6.1.0"
   }
 }

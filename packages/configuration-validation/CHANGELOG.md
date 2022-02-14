@@ -6,6 +6,10 @@
   - Adds ES entry point for configuration-validation
   - Adds sourcemaps
 
+### Other
+
+- [#1052](https://github.com/okta/okta-oidc-js/pull/1052) Fixes vulnerability issues
+
 # 1.0.0
 
 ### Features
