@@ -105,8 +105,12 @@ Since the workspace contains libraries for Single-Page and Web Applications, you
 3. Add the following **login redirect URI**:
     - `http://localhost:8080/authorization-code/callback`
 4. Click Done
-5. Users > Add Person
-6. Create and activate user
+5. Applications > the app created in step 2-4 > General > General Settings > Edit
+6. Add the following **logout redirect URI**:
+    - `http://localhost:8080/logout/callback`
+7. Click Save
+8. Users > Add Person
+9. Create and activate user
 
 ### Test an individual package
 
