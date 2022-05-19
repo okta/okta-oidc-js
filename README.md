@@ -2,6 +2,8 @@
 
 > :x: THIS REPO HAS BEEN RETIRED! 
 
+Packages have been moved to their own repos
+
 | Package                                                            | Description                                                                                   |
 |--------------------------------------------------------------------|-----------------------------------------------------------------------------------------------|
 | [**configuration-validation**](/packages/configuration-validation) | Standard pattern for validating configuration passed into Okta JavaScript libraries and SDKs. _**This package has been deprecated**_|
